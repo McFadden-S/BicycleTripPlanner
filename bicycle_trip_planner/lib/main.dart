@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Loading.dart';
 import 'Home.dart';
+import 'Navigation.dart';
+import 'RoutePlanning.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -15,6 +17,8 @@ Future<void> main() async {
         '/': (context) => const NavigateWindow(),
         '/loading': (context) => const Loading(),
         '/home': (context) => const Home(),
+        '/navigation': (context) => const Navigation(),
+        '/routePlanning': (context) => const RoutePlanning(),
       }
   ));
 }
@@ -32,6 +36,7 @@ class _NavigateWindowState extends State<NavigateWindow> {
     return Scaffold(
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
                 child: const Text("Loading"),
@@ -46,9 +51,15 @@ class _NavigateWindowState extends State<NavigateWindow> {
                 }
             ),
             TextButton(
-                child: const Text("Page1"),
+                child: const Text("Navigation"),
                 onPressed: () => {
-                  Navigator.pushNamed(context, '/loading')
+                  Navigator.pushNamed(context, '/navigation')
+                }
+            ),
+            TextButton(
+                child: const Text("RoutePlanning"),
+                onPressed: () => {
+                  Navigator.pushNamed(context, '/routePlanning')
                 }
             ),
           ],

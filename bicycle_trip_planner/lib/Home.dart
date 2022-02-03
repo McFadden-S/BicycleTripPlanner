@@ -20,6 +20,7 @@ class _HomeState extends State<Home> {
                  Padding(
                   padding: EdgeInsets.all(8.0),
                   child: TextField(
+                    onChanged: (input) => { search(input)},
                     decoration: InputDecoration(
                       fillColor: Colors.white,
                       filled: true,
@@ -34,5 +35,9 @@ class _HomeState extends State<Home> {
         )
       ),
     );
+  }
+
+  void search(String input) {
+    print('This method is triggered when search box is changed');
   }
 }
