@@ -4,7 +4,8 @@ import 'package:prototype_map_api/directions_model.dart';
 import 'package:prototype_map_api/directions_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-Future<void> main() async { 
+Future<void> main() async {
+  await dotenv.load();
   runApp(MyApp());
 }
 

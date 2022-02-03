@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../directions_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_config/flutter_config.dart';
 
 
 class DirectionsRepository {
@@ -10,7 +10,6 @@ class DirectionsRepository {
       'https://maps.googleapis.com/maps/api/directions/json?';
 
   final Dio _dio;
-  String googleAPIKey = FlutterConfig.get('googleAPIKey');
 
   DirectionsRepository({Dio dio}) : _dio = dio ?? Dio();
 
@@ -23,7 +22,7 @@ class DirectionsRepository {
       queryParameters: {
         'origin': '${origin.latitude},${origin.longitude}',
         'destination': '${destination.latitude},${destination.longitude}',
-        'key': "API-KEY",
+        'key': '${dotenv.env['googleAPIKey']}',
       },
     );
 
