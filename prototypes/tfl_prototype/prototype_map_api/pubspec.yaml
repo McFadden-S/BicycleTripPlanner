@@ -1,4 +1,4 @@
-name: flutter_gmaps
+name: prototype_map_api
 description: A new Flutter project.
 
 publish_to: 'none'
@@ -22,8 +22,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
 flutter:
   uses-material-design: true
+
   assets:
     - .env
