@@ -25,11 +25,22 @@ class _HomeState extends State<Home> {
         child: Container(
             padding: EdgeInsets.all(0),
             height: 56.0,
-            child: ListView.builder(
-                physics: PageScrollPhysics(),
-                scrollDirection: Axis.horizontal,
-                itemCount: stations.length,
-                itemBuilder: (BuildContext context, int index) => stationCard(context, index)
+            child: Row(
+              children: [
+                IconButton(
+                  onPressed: () => showExpandedList(),
+                  icon: Icon(Icons.menu),
+                  color: Colors.white,
+                ),
+                Flexible(
+                  child: ListView.builder(
+                      physics: PageScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemCount: stations.length,
+                      itemBuilder: (BuildContext context, int index) => stationCard(context, index)
+                  ),
+                ),
+              ],
             )
         ),
       ),
@@ -60,7 +71,7 @@ class _HomeState extends State<Home> {
     return InkWell(
       onTap: () => stationClicked(index),
       child: SizedBox(
-          width: MediaQuery.of(context).size.width,
+          width: 380,//MediaQuery.of(context).size.width * 0.9,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Card(
@@ -82,4 +93,43 @@ class _HomeState extends State<Home> {
   void stationClicked(int index) {
     print("Station of index $index was tapped");
   }
-}
+
+ void showExpandedList() {
+   showModalBottomSheet(
+       context: context,
+       builder: (BuildContext context) {
+         return Container(
+           child: Column(
+             mainAxisSize: MainAxisSize.min,
+             crossAxisAlignment: CrossAxisAlignment.end,
+             children: <Widget>[
+               SizedBox(
+                   height: (56 * 6).toDouble(),
+                   child: Container(
+                       decoration: BoxDecoration(
+                         borderRadius: BorderRadius.only(
+                           // topLeft: Radius.circular(16.0),
+                           // topRight: Radius.circular(16.0),
+                         ),
+                         color: Color(0xff345955),
+                       ),
+                       child: Stack(
+                         alignment: Alignment(0, 0),
+                         children: <Widget>[
+                           Positioned(
+                             child: ListView.builder(
+                                 physics: PageScrollPhysics(),
+                                 scrollDirection: Axis.vertical,
+                                 itemCount: stations.length,
+                                 itemBuilder: (BuildContext context, int index) => stationCard(context, index)
+                             ),
+                           )
+                         ],
+                       ))),
+             ],
+           ),
+         );
+       });
+ }
+ }
+
