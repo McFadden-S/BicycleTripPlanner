@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gmaps/directions_model.dart';
-import 'package:flutter_gmaps/directions_repository.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:prototype_map_api/directions_model.dart';
+import 'package:prototype_map_api/directions_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:flutter_config/flutter_config.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FlutterConfig.loadEnvVariables();
-  print(FlutterConfig.get('googleAPIKey'));
+Future<void> main() async {
+  await dotenv.load();
   runApp(MyApp());
 }
 
