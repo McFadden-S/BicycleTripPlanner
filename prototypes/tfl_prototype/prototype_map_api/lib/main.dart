@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
@@ -10,6 +12,19 @@ Future<void> main() async {
   Position position = await _getGeoLocationPosition(); 
   print(position.longitude);
   print(position.latitude);
+
+  // Defines how the location should be fine-tuned
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.high, // How accurate the location is
+    distanceFilter: 0, // The distance until the next update (0 means it will always update)
+  );
+  
+  // Create a listener that fires whenever a new position is retrieved
+  StreamSubscription<Position> positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+    (Position position) {
+      // Prints the new locaion on the terminal when it moves. 
+        print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
+    });
   runApp(MyApp());
 }
 
@@ -68,6 +83,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
 
+  // Creates an inital position for Google Maps to display
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(37.773972, -122.431297),
     zoom: 11.5,
@@ -79,6 +95,7 @@ class _MapScreenState extends State<MapScreen> {
   Marker _destination;
   Directions _info;
 
+  // Locates the current position of the phone and updates the camera position
   void locatePosition() async{
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     currentPosition = position;
@@ -199,11 +216,7 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
-        onPressed: () => _googleMapController.animateCamera(
-          _info != null
-              ? CameraUpdate.newLatLngBounds(_info.bounds, 100.0)
-              : CameraUpdate.newCameraPosition(_initialCameraPosition),
-        ),
+        onPressed: () => locatePosition(),
         child: const Icon(Icons.center_focus_strong),
       ),
     );
