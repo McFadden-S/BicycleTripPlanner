@@ -8,7 +8,18 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  PageController stationsPageViewController = PageController();
   List<String> stations = [
+    "station 1",
+    "station 2",
+    "station 3",
+    "station 4",
+    "station 5",
+    "station 1",
+    "station 2",
+    "station 3",
+    "station 4",
+    "station 5",
     "station 1",
     "station 2",
     "station 3",
@@ -19,69 +30,58 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: SafeArea(
+          child: Container(
+            color: Colors.green,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextField(
+                    onChanged: (input) => {search(input)},
+                    decoration: const InputDecoration(
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                      labelText: 'Search',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )),
       bottomNavigationBar: BottomAppBar(
         elevation: 0,
-        color: Color(0xff345955),
-        child: Container(
-            padding: EdgeInsets.all(0),
+        color: const Color(0xff345955),
+        child: SizedBox(
             height: 56.0,
             child: Row(
               children: [
                 IconButton(
                   onPressed: () => showExpandedList(),
-                  icon: Icon(Icons.menu),
+                  icon: const Icon(Icons.menu),
                   color: Colors.white,
                 ),
                 Flexible(
-                  child: ListView.builder(
-                      physics: PageScrollPhysics(),
+                  child: PageView.builder(
+                      controller: stationsPageViewController,
+                      physics: const PageScrollPhysics(),
                       scrollDirection: Axis.horizontal,
                       itemCount: stations.length,
-                      itemBuilder: (BuildContext context, int index) => stationCard(context, index)
+                      itemBuilder: (BuildContext context, int index) =>
+                          stationCard(context, index)),
+                ),
+                SizedBox(
+                  width: 30.0,
+                  child: IconButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () => stationsPageViewController.jumpTo(0),
+                    icon: const Icon(Icons.first_page),
+                    color: Colors.white,
                   ),
                 ),
               ],
-            )
-        ),
-      ),
-      body: SafeArea(
-          child: Container(
-        color: Colors.green,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: TextField(
-                onChanged: (input) => {search(input)},
-                decoration: const InputDecoration(
-                  fillColor: Colors.white,
-                  filled: true,
-                  border: OutlineInputBorder(),
-                  labelText: 'Search',
-                ),
-              ),
-            ),
-          ],
-        ),
-      )),
-    );
-  }
-
-  Widget stationCard(BuildContext context, int index) {
-    return InkWell(
-      onTap: () => stationClicked(index),
-      child: SizedBox(
-          width: 380,//MediaQuery.of(context).size.width * 0.9,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Card(
-                child: Row(
-              children: [
-                Text(stations[index]),
-                Text(" Index" + index.toString()),
-              ],
-                )),
-          )
+            )),
       ),
     );
   }
@@ -94,42 +94,101 @@ class _HomeState extends State<Home> {
     print("Station of index $index was tapped");
   }
 
- void showExpandedList() {
-   showModalBottomSheet(
-       context: context,
-       builder: (BuildContext context) {
-         return Container(
-           child: Column(
-             mainAxisSize: MainAxisSize.min,
-             crossAxisAlignment: CrossAxisAlignment.end,
-             children: <Widget>[
-               SizedBox(
-                   height: (56 * 6).toDouble(),
-                   child: Container(
-                       decoration: BoxDecoration(
-                         borderRadius: BorderRadius.only(
-                           // topLeft: Radius.circular(16.0),
-                           // topRight: Radius.circular(16.0),
-                         ),
-                         color: Color(0xff345955),
-                       ),
-                       child: Stack(
-                         alignment: Alignment(0, 0),
-                         children: <Widget>[
-                           Positioned(
-                             child: ListView.builder(
-                                 physics: PageScrollPhysics(),
-                                 scrollDirection: Axis.vertical,
-                                 itemCount: stations.length,
-                                 itemBuilder: (BuildContext context, int index) => stationCard(context, index)
-                             ),
-                           )
-                         ],
-                       ))),
-             ],
-           ),
-         );
-       });
- }
- }
+  void showExpandedList() {
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                    height: (56 * 6).toDouble(),
+                    child: Container(
+                        padding: EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          color: Color(0xff345955),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Select a station",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 5),
+                            Expanded(
+                              child: ListView.builder(
+                                  itemCount: stations.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                          stationCard(context, index)),
+                            ),
+                          ],
+                        ))),
+              ],
+            ),
+          );
+        });
+  }
 
+  Widget stationCard(BuildContext context, int index) {
+    return InkWell(
+      onTap: () => stationClicked(index),
+      child: SizedBox(
+          height: 60,
+          child: Card(
+              child: Row(
+            children: [
+              Spacer(),
+              Text(
+                "1.1 mi",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+              ),
+              Spacer(),
+              Container(
+                width: 2,
+                color: Colors.black54,
+              ),
+              Spacer(),
+              Text("River Street , Clerkenwell",
+                  style: TextStyle(fontSize: 20.0)),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
+                child: Row(
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          "5",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        Icon(
+                          Icons.directions_bike,
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: 5.0),
+                    Column(
+                      children: [
+                        Text(
+                          "8",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        Icon(
+                          Icons.chair_alt,
+                          size: 20.0,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(),
+            ],
+          ))),
+    );
+  }
+}
