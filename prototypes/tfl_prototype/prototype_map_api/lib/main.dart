@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:prototype_map_api/directions_model.dart';
@@ -12,19 +14,6 @@ Future<void> main() async {
   Position position = await _getGeoLocationPosition(); 
   print(position.longitude);
   print(position.latitude);
-
-  // Defines how the location should be fine-tuned
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high, // How accurate the location is
-    distanceFilter: 0, // The distance until the next update (0 means it will always update)
-  );
-  
-  // Create a listener that fires whenever a new position is retrieved
-  StreamSubscription<Position> positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-    (Position position) {
-      // Prints the new locaion on the terminal when it moves. 
-        print(position == null ? 'Unknown' : '${position.latitude.toString()}, ${position.longitude.toString()}');
-    });
   runApp(MyApp());
 }
 
@@ -93,6 +82,9 @@ class _MapScreenState extends State<MapScreen> {
   GoogleMapController _googleMapController;
   Marker _origin;
   Marker _destination;
+  Marker curPosMarker; 
+  Circle curPosCircle;
+  StreamSubscription<Position> positionStream;
   Directions _info;
 
   // Locates the current position of the phone and updates the camera position
@@ -104,6 +96,71 @@ class _MapScreenState extends State<MapScreen> {
 
     CameraPosition cameraPosition = CameraPosition(target: latlng, zoom: 14);
     _googleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
+
+  Future<Uint8List> getMarker() async {
+    ByteData byteData = await DefaultAssetBundle.of(context).load("assets/bike_icon.png");
+    return byteData.buffer.asUint8List();
+  }
+
+  void updateMarkerAndCircle(Position newPosition, Uint8List imageData) {
+    LatLng latlng = LatLng(newPosition.latitude, newPosition.longitude);
+    this.setState(() {
+      curPosMarker = Marker(
+          markerId: MarkerId("home"),
+          position: latlng,
+          rotation: newPosition.heading,
+          draggable: false,
+          zIndex: 2,
+          flat: true,
+          anchor: Offset(0.5, 0.5),
+          icon: BitmapDescriptor.fromBytes(imageData));
+      curPosCircle = Circle(
+          circleId: CircleId("car"),
+          radius: newPosition.accuracy,
+          zIndex: 1,
+          strokeColor: Colors.blue,
+          center: latlng,
+          fillColor: Colors.blue.withAlpha(70));
+    });
+  }
+
+  void getCurrentLocation() async {
+    try {
+
+      Uint8List imageData = await getMarker();
+      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+
+      updateMarkerAndCircle(position, imageData);
+
+      if (positionStream != null) {
+        positionStream.cancel();
+      }
+
+      // Defines how the location should be fine-tuned
+      final LocationSettings locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high, // How accurate the location is
+        distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
+      );
+      
+      // Create a listener that fires whenever a new position is retrieved
+      positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+        (Position position) {
+          if(_googleMapController != null){
+            // Updates the google maps to display the location of user
+            _googleMapController.animateCamera(CameraUpdate.newCameraPosition(new CameraPosition(
+              target: LatLng(position.latitude, position.longitude),
+              zoom: 18.00, 
+            )));
+            // Updates the marker according to the location of user
+            updateMarkerAndCircle(position, imageData);
+          }
+        });
+      } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        debugPrint("Permission Denied");
+      }
+    }
   }
 
   @override
@@ -168,8 +225,10 @@ class _MapScreenState extends State<MapScreen> {
             },
             markers: {
               if (_origin != null) _origin,
-              if (_destination != null) _destination
+              if (_destination != null) _destination,
+              if (curPosMarker != null) curPosMarker,
             },
+            circles: Set.of((curPosCircle != null) ? [curPosCircle] : []),
             polylines: {
               if (_info != null)
                 Polyline(
@@ -216,7 +275,7 @@ class _MapScreenState extends State<MapScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         foregroundColor: Colors.black,
-        onPressed: () => locatePosition(),
+        onPressed: () => getCurrentLocation(),
         child: const Icon(Icons.center_focus_strong),
       ),
     );
