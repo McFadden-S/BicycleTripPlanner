@@ -67,15 +67,27 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(37.773972, -122.431297),
     zoom: 11.5,
   );
 
+  Position currentPosition;
   GoogleMapController _googleMapController;
   Marker _origin;
   Marker _destination;
   Directions _info;
+
+  void locatePosition() async{
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    currentPosition = position;
+
+    LatLng latlng = LatLng(position.latitude, position.longitude);
+
+    CameraPosition cameraPosition = CameraPosition(target: latlng, zoom: 14);
+    _googleMapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+  }
 
   @override
   void dispose() {
@@ -130,10 +142,13 @@ class _MapScreenState extends State<MapScreen> {
         alignment: Alignment.center,
         children: [
           GoogleMap(
-            myLocationButtonEnabled: false,
-            zoomControlsEnabled: false,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: true,
             initialCameraPosition: _initialCameraPosition,
-            onMapCreated: (controller) => _googleMapController = controller,
+            onMapCreated: (controller) {
+              _googleMapController = controller;
+              locatePosition();
+            },
             markers: {
               if (_origin != null) _origin,
               if (_destination != null) _destination
