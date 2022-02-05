@@ -9,6 +9,13 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
+  bool extendedNavigation = false;
+  final List<Widget> entries = [NavigationDirection(), NavigationDirection()];
+
+  void setExtendNavigationVied(){
+    setState(()=> {extendedNavigation = !extendedNavigation});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,27 +30,39 @@ class _NavigationState extends State<Navigation> {
                 Card(
                   child: InkWell(
                     splashColor: Colors.blue.withAlpha(30),
-                    onTap: () {},
+                    onTap: ()=>setExtendNavigationVied(),
                     child: SizedBox(
-                      height: 100,
+                      height: !extendedNavigation ? 100 : 200,
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              const Spacer(),
-                              Icon(
-                                Icons.assistant_direction,
-                                color: Colors.grey[400],
-                                size: 60
-                              ),
-                              const Spacer(),
-                              const Text("Turn left in 1 miles"),
-                              const Spacer(flex: 5),
-                            ],
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                const Spacer(),
+                                Icon(
+                                  Icons.assistant_direction,
+                                  color: Colors.grey[400],
+                                  size: 60
+                                ),
+                                const Spacer(),
+                                const Text("Turn left in 1 miles"),
+                                const Spacer(flex: 5),
+                              ],
+                            ),
                           ),
-                          const Icon(Icons.expand_more)
+                          extendedNavigation ?
+                            SizedBox(
+                              height: 100,
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: entries,
+                              ),
+                            )
+                          :
+                            const Icon(Icons.expand_more)
                         ],
                       ),
                     )
@@ -54,7 +73,7 @@ class _NavigationState extends State<Navigation> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: ()=>{},
+                        onPressed: () => {},
                         child: const Icon(
                             Icons.location_on
                         ),
@@ -133,3 +152,22 @@ class _NavigationState extends State<Navigation> {
     );
   }
 }
+
+class NavigationDirection extends StatelessWidget {
+  const NavigationDirection({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.all(10),
+      child: Container(
+        color: Colors.cyanAccent,
+        child: Text(
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elementum dolor eget lorem euismod rutrum.',
+          style: TextStyle(fontSize: 30),
+        ),
+      ),
+    );
+  }
+}
+
