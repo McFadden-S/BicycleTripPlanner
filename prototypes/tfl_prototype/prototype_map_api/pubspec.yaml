@@ -18,6 +18,7 @@ dependencies:
   dio: ^4.0.0
   flutter_polyline_points: ^0.2.6
   google_maps_flutter: ^2.0.2
+  geolocator: ^8.1.1
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +34,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/bike_icon.png
     - .env
     
   # An image asset can refer to one or more resolution-specific "variants", see
