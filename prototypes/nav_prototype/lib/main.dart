@@ -110,6 +110,7 @@ class _MapScreenState extends State<MapScreen> {
   int _markerIdCounter = 1;
   int _polylineIdCounter = 1;
 
+  bool directionVisibility = false;
   bool detailsVisibility = false;
   String journeyDuration;
   String journeyDistance;
@@ -272,7 +273,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             if (detailsVisibility)
             Container(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.bottomLeft,
               margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
               child: Card(
                   color: Theme.of(context).primaryColor,
@@ -328,6 +329,21 @@ class _MapScreenState extends State<MapScreen> {
               },
               child: const
               Icon(Icons.timer),
+            ),
+          ),
+          Positioned(
+            top: 370,
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.black,
+              onPressed: () {
+                setState(() {
+                  directionVisibility = !directionVisibility;
+                });
+              },
+              child: const
+              Icon(Icons.directions),
             ),
           ),
         ],
