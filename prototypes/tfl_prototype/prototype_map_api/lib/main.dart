@@ -3,6 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:prototype_map_api/directions_model.dart';
 import 'package:prototype_map_api/directions_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'get_stations.dart';
+import 'station.dart';
 
 Future<void> main() async {
   await dotenv.load();
@@ -30,7 +32,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   static const _initialCameraPosition = CameraPosition(
-    target: LatLng(37.773972, -122.431297),
+    target: LatLng(51.509865, -0.118092),
     zoom: 11.5,
   );
 
@@ -38,6 +40,15 @@ class _MapScreenState extends State<MapScreen> {
   Marker _origin;
   Marker _destination;
   Directions _info;
+
+  Iterable<Station> stations;
+  final Set<Marker> markers = new Set();
+
+  _MapScreenState(){
+    getStations().then((val) => setState(() {
+      stations = val;
+    }));
+  }
 
   @override
   void dispose() {
@@ -96,10 +107,7 @@ class _MapScreenState extends State<MapScreen> {
             zoomControlsEnabled: true,
             initialCameraPosition: _initialCameraPosition,
             onMapCreated: (controller) => _googleMapController = controller,
-            markers: {
-              if (_origin != null) _origin,
-              if (_destination != null) _destination
-            },
+            markers: setMarkers(),
             polylines: {
               if (_info != null)
                 Polyline(
@@ -154,6 +162,29 @@ class _MapScreenState extends State<MapScreen> {
         child: const Icon(Icons.center_focus_strong),
       ),
     );
+  }
+
+  Marker _addStationMarker(Station station) {
+    LatLng pos = LatLng(station.lat, station.long);
+    Marker marker = Marker(
+      markerId: MarkerId('${station.name}'),
+      infoWindow: InfoWindow(title: '${station.name}'),
+      icon:
+      BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      position: pos,
+    );
+    return marker;
+  }
+
+  Set<Marker> setMarkers() {
+    setState(() {
+      if (_origin != null) _origin;
+      if (_destination != null) _destination;
+      for (final s in stations) {
+        markers.add(_addStationMarker(s));
+      }
+    });
+    return markers;
   }
 
   void _addMarker(LatLng pos) async {
