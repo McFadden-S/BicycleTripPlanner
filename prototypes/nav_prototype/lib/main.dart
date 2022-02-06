@@ -54,6 +54,7 @@ class _MapScreenState extends State<MapScreen> {
           if (direction != null) {
             _goToPlace(direction.legs.startLocation.lat, direction.legs.startLocation.lng, direction.bounds.northeast, direction.bounds.southwest);
             _setPolyline(direction.polyline.points);
+            _getDuration(direction.legs.duration);
           }
         });
   }
@@ -93,10 +94,18 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
+  void _getDuration(int seconds){
+    int minutes = (seconds/60).ceil();
+    journeryDuration = "$minutes min";
+  }
+
   Set<Marker> _markers = Set<Marker>();
   Set<Polyline> _polylines = Set<Polyline>();
   int _markerIdCounter = 1;
   int _polylineIdCounter = 1;
+
+  bool detailsVisibility = false;
+  String journeryDuration;
 
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(37.773972, -122.431297),
@@ -141,6 +150,7 @@ class _MapScreenState extends State<MapScreen> {
               polylines: _polylines,
               myLocationButtonEnabled: false,
               // zoomGesturesEnabled: false,
+              zoomControlsEnabled: false,
               initialCameraPosition: _initialCameraPosition,
               onMapCreated: (controller) => _googleMapController = controller,
             ),
@@ -253,26 +263,68 @@ class _MapScreenState extends State<MapScreen> {
                   ),
                 ),
               ),
+            if (detailsVisibility)
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
+              child: Card(
+                  color: Theme.of(context).primaryColor,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Text("Duration: 45 min; Distance: 5km"),
+                  )
+              ),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.black,
-        onPressed: () async {
-          applicationBloc.findRouteDirection(
-              originController.text, destinationController.text);
-        },
-        child: const Icon(Icons.directions_bike_rounded),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned(
+            bottom: 20,
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.black,
+              onPressed: () async {
+                applicationBloc.findRouteDirection(
+                    originController.text, destinationController.text);
+              },
+              child: const Icon(Icons.directions_bike_rounded),
+            ),
+          ),
+          Positioned(
+            top: 230,
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.black,
+              onPressed: () => _googleMapController.animateCamera(
+                CameraUpdate.newCameraPosition(_initialCameraPosition),
+              ),
+              child: const Icon(Icons.my_location_rounded),
+            ),
+          ),
+          Positioned(
+            top: 300,
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Theme.of(context).primaryColor,
+              foregroundColor: Colors.black,
+              onPressed: () {
+                setState(() {
+                  detailsVisibility = !detailsVisibility;
+                });
+                print(detailsVisibility);
+              },
+              child: const
+              Icon(Icons.timer),
+            ),
+          ),
+        ],
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Theme.of(context).primaryColor,
-      //   foregroundColor: Colors.black,
-      //   onPressed: () => _googleMapController.animateCamera(
-      //     CameraUpdate.newCameraPosition(_initialCameraPosition),
-      //   ),
-      //   child: const Icon(Icons.center_focus_strong),
-      // ),
     );
   }
 
