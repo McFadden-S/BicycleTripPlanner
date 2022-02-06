@@ -1,26 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:nav_prototype_test/models/place.dart';
-import 'package:nav_prototype_test/models/place_search.dart';
-import 'package:nav_prototype_test/services/places_service.dart';
+import 'package:nav_prototype/models/direction.dart';
+import 'package:nav_prototype/models/place.dart';
+import 'package:nav_prototype/models/place_search.dart';
+import 'package:nav_prototype/services/directions_service.dart';
+import 'package:nav_prototype/services/places_service.dart';
 
 class ApplicationBloc with ChangeNotifier {
-
   final placesService = PlacesService();
+  final directionsService = DirectionsService();
 
-  List<PlaceSearch> searchResults;
-  Set<Place> markers;
+  List<PlaceSearch> searchDestinationsResults;
+  List<PlaceSearch> searchOriginsResults;
+  StreamController<Direction> currentDirection = StreamController<Direction>();
   StreamController<Place> selectedLocation = StreamController<Place>();
 
-  searchPlaces(String searchTerm) async {
-    searchResults = await placesService.getAutocomplete(searchTerm);
+  searchOrigins(String searchTerm) async {
+    searchOriginsResults = await placesService.getAutocomplete(searchTerm);
+    searchDestinationsResults = null;
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId) async{
+  searchDestinations(String searchTerm) async {
+    searchDestinationsResults = await placesService.getAutocomplete(searchTerm);
+    searchOriginsResults = null;
+    notifyListeners();
+  }
+
+  setSelectedLocation(String placeId) async {
     selectedLocation.add(await placesService.getPlace(placeId));
-    searchResults = null;
+    searchOriginsResults = null;
+    searchDestinationsResults = null;
+    notifyListeners();
+  }
+
+  findRouteDirection(String origin, String destination) async {
+    currentDirection.add(await directionsService.getDirections(origin, destination));
     notifyListeners();
   }
 
