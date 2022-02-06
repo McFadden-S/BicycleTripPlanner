@@ -1,4 +1,4 @@
-package com.example.nav_prototype_test
+package com.example.nav_prototype
 
 import io.flutter.embedding.android.FlutterActivity
 

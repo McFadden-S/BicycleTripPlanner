@@ -1,13 +1,11 @@
-import 'package:nav_prototype_test/models/location.dart';
+import 'package:nav_prototype/models/location.dart';
 
 class Geometry {
-  final Location locaiton;
+  final Location location;
 
-  Geometry({this.locaiton});
+  Geometry({this.location});
 
-  factory Geometry.fromJson(Map<dynamic,dynamic> parsedJson){
-    return Geometry(
-      locaiton: Location.fromJson(parsedJson['location'])
-    );
+  factory Geometry.fromJson(Map<dynamic, dynamic> parsedJson) {
+    return Geometry(location: Location.fromJson(parsedJson['location']));
   }
 }

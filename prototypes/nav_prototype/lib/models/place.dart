@@ -1,4 +1,4 @@
-import 'package:nav_prototype_test/models/geometry.dart';
+import 'package:nav_prototype/models/geometry.dart';
 
 class Place {
 

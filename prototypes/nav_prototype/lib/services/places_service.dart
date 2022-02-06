@@ -1,14 +1,13 @@
 import 'package:http/http.dart' as http;
-import 'package:nav_prototype_test/models/place.dart';
+import 'package:nav_prototype/models/place.dart';
+import 'package:nav_prototype/models/place_search.dart';
 import 'dart:convert' as convert;
 
-import 'package:nav_prototype_test/models/place_search.dart';
-
 class PlacesService {
-
   Future<List<PlaceSearch>> getAutocomplete(String search) async {
     final key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-    var url = 'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=address&key=$key';
+    var url =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&types=(cities)&key=$key';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['predictions'] as List;
@@ -17,11 +16,11 @@ class PlacesService {
 
   Future<Place> getPlace(String placeId) async {
     final key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-    var url = 'https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId';
+    var url =
+        'https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['result'] as Map<String, dynamic>;
     return Place.fromJson(jsonResults);
   }
-
 }
