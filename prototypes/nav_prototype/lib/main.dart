@@ -55,9 +55,13 @@ class _MapScreenState extends State<MapScreen> {
     directionSubscription =
         applicationBloc.currentDirection.stream.listen((direction) {
           if (direction != null) {
-            _goToPlace(direction.legs.startLocation.lat, direction.legs.startLocation.lng, direction.bounds.northeast, direction.bounds.southwest);
+            _goToPlace(direction.legs.startLocation.lat,
+                direction.legs.startLocation.lng, direction.bounds.northeast,
+                direction.bounds.southwest);
             _setPolyline(direction.polyline.points);
+
             _setDirection(direction.legs.steps);
+
             _setDuration(direction.legs.duration);
             _setDistance(direction.legs.distance);
           }
@@ -86,31 +90,39 @@ class _MapScreenState extends State<MapScreen> {
     _polylineIdCounter++;
 
     _polylines.add(
-      Polyline(
-        polylineId: PolylineId(polylineIdVal),
-        width: 2,
-        color: Colors.blue,
-        points: points
-            .map(
-              (point) => LatLng(point.latitude, point.longitude),
-            )
-            .toList(),
-      )
+        Polyline(
+          polylineId: PolylineId(polylineIdVal),
+          width: 2,
+          color: Colors.blue,
+          points: points
+              .map(
+                (point) => LatLng(point.latitude, point.longitude),
+          )
+              .toList(),
+        )
     );
   }
 
-  void _setDuration(int seconds){
-    int minutes = (seconds/60).ceil();
+  void _setDuration(int seconds) {
+    int minutes = (seconds / 60).ceil();
     journeyDuration = "$minutes min";
   }
 
-  void _setDistance(int metre){
-    int km = (metre/1000).ceil();
+  void _setDistance(int metre) {
+    int km = (metre / 1000).ceil();
     journeyDistance = "$km km";
   }
 
-  void _setDirection(List<Steps> steps){
+  void _setDirection(List<Steps> steps) {
     _directions = steps;
+  }
+
+  void _setRouteCamera(LatLng origin, Map<String, dynamic> boundsSw,
+      Map<String, dynamic> boundsNe) {
+    routeBoundsNE = boundsNe;
+    routeBoundsSW = boundsSw;
+
+    originCamera = origin;
   }
 
   Set<Marker> _markers = Set<Marker>();
@@ -124,6 +136,10 @@ class _MapScreenState extends State<MapScreen> {
   bool detailsVisibility = false;
   String journeyDuration;
   String journeyDistance;
+
+  LatLng originCamera;
+  Map<String, dynamic> routeBoundsSW;
+  Map<String, dynamic> routeBoundsNE;
 
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(37.773972, -122.431297),
@@ -242,9 +258,11 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         onTap: () {
                           originController.text =
-                              applicationBloc.searchOriginsResults[index].description;
+                              applicationBloc.searchOriginsResults[index]
+                                  .description;
                           applicationBloc.setSelectedLocation(
-                              applicationBloc.searchOriginsResults[index].placeId);
+                              applicationBloc.searchOriginsResults[index]
+                                  .placeId);
                           applicationBloc.searchOriginsResults.clear();
                         },
                       );
@@ -271,9 +289,11 @@ class _MapScreenState extends State<MapScreen> {
                         ),
                         onTap: () {
                           destinationController.text =
-                              applicationBloc.searchDestinationsResults[index].description;
+                              applicationBloc.searchDestinationsResults[index]
+                                  .description;
                           applicationBloc.setSelectedLocation(
-                              applicationBloc.searchDestinationsResults[index].placeId);
+                              applicationBloc.searchDestinationsResults[index]
+                                  .placeId);
                           applicationBloc.searchDestinationsResults.clear();
                         },
                       );
@@ -282,41 +302,46 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ),
             if (detailsVisibility)
-            Container(
-              alignment: Alignment.bottomLeft,
-              margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
-              child: Card(
-                  color: Theme.of(context).primaryColor,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text("Duration: $journeyDuration; Distance: $journeyDistance"),
-                  )
+              Container(
+                alignment: Alignment.bottomLeft,
+                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
+                child: Card(
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(
+                          "Duration: $journeyDuration; Distance: $journeyDistance"),
+                    )
+                ),
               ),
-            ),
             if (directionVisibility)
               Container(
                 alignment: Alignment.topLeft,
                 margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
                 child: Card(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme
+                        .of(context)
+                        .primaryColor,
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: ListView.separated(
-                          itemCount: _directions.length,
-                          itemBuilder: (BuildContext context, int index){
-                            return ListTile(
-                                leading: Text("${index+1}."),
-                                trailing: Text(
-                                    "${_directions[index].distance} m"
-                                ),
-                                title: Html(
-                                  data: _directions[index].instruction,
-                                )
-                            );
-                          },
-                          separatorBuilder: (context, index) {
-                            return Divider();
-                          },
+                        itemCount: _directions.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ListTile(
+                              leading: Text("${index + 1}."),
+                              trailing: Text(
+                                  "${_directions[index].distance} m"
+                              ),
+                              title: Html(
+                                data: _directions[index].instruction,
+                              )
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider();
+                        },
                       ),
                     )
                 ),
@@ -332,7 +357,9 @@ class _MapScreenState extends State<MapScreen> {
             bottom: 20,
             right: 30,
             child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme
+                  .of(context)
+                  .primaryColor,
               foregroundColor: Colors.black,
               onPressed: () async {
                 applicationBloc.findRouteDirection(
@@ -345,11 +372,14 @@ class _MapScreenState extends State<MapScreen> {
             top: 230,
             right: 30,
             child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme
+                  .of(context)
+                  .primaryColor,
               foregroundColor: Colors.black,
-              onPressed: () => _googleMapController.animateCamera(
-                CameraUpdate.newCameraPosition(_initialCameraPosition),
-              ),
+              onPressed: () =>
+                  _googleMapController.animateCamera(
+                    CameraUpdate.newCameraPosition(_initialCameraPosition),
+                  ),
               child: const Icon(Icons.my_location_rounded),
             ),
           ),
@@ -357,7 +387,9 @@ class _MapScreenState extends State<MapScreen> {
             top: 300,
             right: 30,
             child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme
+                  .of(context)
+                  .primaryColor,
               foregroundColor: Colors.black,
               onPressed: () {
                 setState(() {
@@ -373,7 +405,9 @@ class _MapScreenState extends State<MapScreen> {
             top: 370,
             right: 30,
             child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: Theme
+                  .of(context)
+                  .primaryColor,
               foregroundColor: Colors.black,
               onPressed: () {
                 setState(() {
@@ -382,6 +416,19 @@ class _MapScreenState extends State<MapScreen> {
               },
               child: const
               Icon(Icons.directions),
+            ),
+          ),
+          Positioned(
+            top: 440,
+            right: 30,
+            child: FloatingActionButton(
+              backgroundColor: Theme
+                  .of(context)
+                  .primaryColor,
+              foregroundColor: Colors.black,
+              onPressed: () => _viewRoute(),
+              child: const
+              Icon(Icons.zoom_out_map_sharp),
             ),
           ),
         ],
@@ -404,26 +451,33 @@ class _MapScreenState extends State<MapScreen> {
         LatLng(lat, lng));
   }
 
-  Future<void> _goToPlace(double lat, double lng, Map<String, dynamic> boundsNe, Map<String, dynamic> boundsSw) async {
-
-    _googleMapController.animateCamera(
-      CameraUpdate.newCameraPosition(CameraPosition(
-        target:
-        LatLng(lat, lng),
-        zoom: 14.0,
-      )),
-    );
-
-    _googleMapController.animateCamera(
-      CameraUpdate.newLatLngBounds(
-          LatLngBounds(
-              southwest: LatLng(boundsSw['lat'], boundsSw['lng']),
-              northeast: LatLng(boundsNe['lat'], boundsNe['lng']),
-          ),
-          25),
-    );
+  Future<void> _goToPlace(double lat, double lng, Map<String, dynamic> boundsNe,
+      Map<String, dynamic> boundsSw) async {
+    _setRouteCamera(LatLng(lat, lng), boundsSw, boundsNe);
+    _viewRoute();
 
     _setMarker(
         LatLng(lat, lng));
   }
+
+  Future<void> _viewRoute() async {
+    if(originCamera != null && routeBoundsNE != null && routeBoundsSW != null){
+      _googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(
+          target: originCamera,
+          zoom: 14.0,
+        )),
+      );
+
+      _googleMapController.animateCamera(
+        CameraUpdate.newLatLngBounds(
+            LatLngBounds(
+              southwest: LatLng(routeBoundsSW['lat'], routeBoundsSW['lng']),
+              northeast: LatLng(routeBoundsNE['lat'], routeBoundsNE['lng']),
+            ),
+            25),
+      );
+    }
+  }
+
 }
