@@ -5,7 +5,10 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:nav_prototype/bloc/application_bloc.dart';
 import 'package:nav_prototype/models/place.dart';
+import 'package:nav_prototype/models/steps.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:html/dom.dart' as dom;
 
 void main() {
   runApp(MyApp());
@@ -54,6 +57,7 @@ class _MapScreenState extends State<MapScreen> {
           if (direction != null) {
             _goToPlace(direction.legs.startLocation.lat, direction.legs.startLocation.lng, direction.bounds.northeast, direction.bounds.southwest);
             _setPolyline(direction.polyline.points);
+            _setDirection(direction.legs.steps);
             _setDuration(direction.legs.duration);
             _setDistance(direction.legs.distance);
           }
@@ -105,12 +109,18 @@ class _MapScreenState extends State<MapScreen> {
     journeyDistance = "$km km";
   }
 
+  void _setDirection(List<Steps> steps){
+    _directions = steps;
+  }
+
   Set<Marker> _markers = Set<Marker>();
   Set<Polyline> _polylines = Set<Polyline>();
   int _markerIdCounter = 1;
   int _polylineIdCounter = 1;
 
   bool directionVisibility = false;
+  List<Steps> _directions = <Steps>[];
+
   bool detailsVisibility = false;
   String journeyDuration;
   String journeyDistance;
@@ -283,6 +293,34 @@ class _MapScreenState extends State<MapScreen> {
                   )
               ),
             ),
+            if (directionVisibility)
+              Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
+                child: Card(
+                    color: Theme.of(context).primaryColor,
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ListView.separated(
+                          itemCount: _directions.length,
+                          itemBuilder: (BuildContext context, int index){
+                            return ListTile(
+                                leading: Text("${index+1}."),
+                                trailing: Text(
+                                    "${_directions[index].distance} m"
+                                ),
+                                title: Html(
+                                  data: _directions[index].instruction,
+                                )
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return Divider();
+                          },
+                      ),
+                    )
+                ),
+              ),
           ],
         ),
       ),

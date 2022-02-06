@@ -1,10 +1,10 @@
 import 'location.dart';
-import 'step.dart';
+import 'steps.dart';
 
 class Legs {
   final Location startLocation;
   final Location endLocation;
-  final List<Step> steps;
+  final List<Steps> steps;
   final int distance;
   final int duration;
 
@@ -14,7 +14,7 @@ class Legs {
     return Legs(
       startLocation: Location.fromJson(parsedJson['start_location']),
       endLocation: Location.fromJson(parsedJson['end_location']),
-      steps: List<Step>.from(parsedJson["steps"].map((s) => Step.fromJson(s))),
+      steps: List<Steps>.from(parsedJson["steps"].map((s) => Steps.fromJson(s))),
       distance: parsedJson['distance']['value'],
       duration: parsedJson['duration']['value'],
     );
