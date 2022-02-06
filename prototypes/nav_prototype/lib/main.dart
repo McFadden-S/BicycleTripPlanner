@@ -54,7 +54,8 @@ class _MapScreenState extends State<MapScreen> {
           if (direction != null) {
             _goToPlace(direction.legs.startLocation.lat, direction.legs.startLocation.lng, direction.bounds.northeast, direction.bounds.southwest);
             _setPolyline(direction.polyline.points);
-            _getDuration(direction.legs.duration);
+            _setDuration(direction.legs.duration);
+            _setDistance(direction.legs.distance);
           }
         });
   }
@@ -94,9 +95,14 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 
-  void _getDuration(int seconds){
+  void _setDuration(int seconds){
     int minutes = (seconds/60).ceil();
-    journeryDuration = "$minutes min";
+    journeyDuration = "$minutes min";
+  }
+
+  void _setDistance(int metre){
+    int km = (metre/1000).ceil();
+    journeyDistance = "$km km";
   }
 
   Set<Marker> _markers = Set<Marker>();
@@ -105,7 +111,8 @@ class _MapScreenState extends State<MapScreen> {
   int _polylineIdCounter = 1;
 
   bool detailsVisibility = false;
-  String journeryDuration;
+  String journeyDuration;
+  String journeyDistance;
 
   static const _initialCameraPosition = CameraPosition(
     target: LatLng(37.773972, -122.431297),
@@ -271,7 +278,7 @@ class _MapScreenState extends State<MapScreen> {
                   color: Theme.of(context).primaryColor,
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
-                    child: Text("Duration: 45 min; Distance: 5km"),
+                    child: Text("Duration: $journeyDuration; Distance: $journeyDistance"),
                   )
               ),
             ),
