@@ -31,42 +31,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class dynamicWidget extends StatelessWidget{
-  TextEditingController destinationController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    final applicationBloc =
-    Provider.of<ApplicationBloc>(context, listen: false);
-    return Card(
-      margin: EdgeInsets.all(10.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextField(
-            controller: destinationController,
-            decoration: InputDecoration(
-              hintText: 'Search for destination',
-              suffixIcon: IconButton(
-                onPressed: (){},
-                icon: Icon(Icons.clear),
-              ),
-              border: InputBorder.none,
-            ),
-            onChanged: (value) {
-              applicationBloc.searchDestinations(value);
-              print(value);
-            }),
-
-      ),
-
-    );
-  }
-
-}
-
 class MapScreen extends StatefulWidget {
+  const MapScreen({
+    this.initialCount = 0,
+  });
+  final int initialCount;
   @override
   _MapScreenState createState() => _MapScreenState();
 }
@@ -76,6 +45,7 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
 
+    fieldCount = widget.initialCount;
     _setMarker(LatLng(37.773972, -122.431297));
 
     final applicationBloc =
@@ -102,31 +72,9 @@ class _MapScreenState extends State<MapScreen> {
           }
         });
   }
-  List<dynamicWidget> dynamicList = [];
   List<String> Address = [];
   bool addInter = false;
-  addDynamic(){
-    if(Address.length != 0){
-      Widget floatingIcon = new Icon(Icons.add);
 
-      Address = [];
-      dynamicList = [];
-    }
-    setState(() {});
-    if (dynamicList.length >= 3) {
-      return;
-    }
-    dynamicList.add(new dynamicWidget());
-    addInter = true;
-  }
-
-  removeDynamic(int index){
-    setState(() {});
-    if (dynamicList.length == 0) {
-      return;
-    }
-    dynamicList.removeAt(index);
-  }
 
   void _setMarker(LatLng point) {
     _markerIdCounter++;
@@ -230,9 +178,71 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
+  int fieldCount = 0;
+  int nextIndex = 0;
+  List<TextEditingController> controllers = <TextEditingController>[];
+
+  List<Widget> _buildList() {
+    int i;
+    // fill in keys if the list is not long enough (in case we added one)
+    if (controllers.length < fieldCount) {
+      for (i = controllers.length; i < fieldCount; i++) {
+        controllers.add(TextEditingController());
+      }
+    }
+    i = 0;
+    // cycle through the controllers, and recreate each, one per available controller
+    return controllers.map<Widget>((TextEditingController controller) {
+      int displayNumber = i + 1;
+      i++;
+      return TextField(
+        controller: controller,
+        maxLength: 20,
+        decoration: InputDecoration(
+          labelText: "Destination $displayNumber",
+          counterText: "",
+          suffixIcon: IconButton(
+            icon: Icon(Icons.clear),
+            onPressed: () {
+              setState(() {
+                fieldCount--;
+                controllers.remove(controller);
+              });
+            },
+          ),
+        ),
+      );
+    }).toList(); // convert to a list
+  }
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final List<Widget> children = _buildList();
+
+    children.add(
+      GestureDetector(
+        onTap: () {
+          setState(() {
+            if(fieldCount < 3){ //max amount of destinations
+              fieldCount++;
+            }
+          });
+        },
+        child: Container(
+          color: Colors.blue,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(
+              'add destination',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -276,42 +286,12 @@ class _MapScreenState extends State<MapScreen> {
                           }),
                     ),
                   ),
-                  if (addInter) ConstrainedBox(
-                    constraints: BoxConstraints.expand(height: 90, width: 1000),
-                    child: new ListView.builder(
-                      itemCount: dynamicList.length,
-                      itemBuilder: (_, index) => dynamicList[index],
-                    ),
+                  ListView(
+                    padding: EdgeInsets.all(0),
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: children,
                   ),
-                  Card(
-                    margin: EdgeInsets.all(10.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
-                          controller: destinationController,
-                          decoration: InputDecoration(
-                            hintText: 'Search for destination',
-                            suffixIcon: Icon(Icons.search),
-                            border: InputBorder.none,
-                          ),
-                          onChanged: (value) {
-                            applicationBloc.searchDestinations(value);
-                            print(value);
-                          }),
-                    ),
-                  ),
-
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: new FloatingActionButton(
-                        onPressed:addDynamic,
-                        child:new Icon(Icons.add)
-                    ),
-                  ),
-
                 ],
               ),
 
@@ -555,6 +535,16 @@ class _MapScreenState extends State<MapScreen> {
             25),
       );
     }
+  }
+
+  @override
+  void didUpdateWidget(MapScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
 }
