@@ -95,6 +95,7 @@ class _MapScreenState extends State<MapScreen> {
   }
   List<dynamicWidget> dynamicList = [];
   List<String> Address = [];
+  bool addInter = false;
   addDynamic(){
     if(Address.length != 0){
       Widget floatingIcon = new Icon(Icons.add);
@@ -107,6 +108,7 @@ class _MapScreenState extends State<MapScreen> {
       return;
     }
     dynamicList.add(new dynamicWidget());
+    addInter = true;
   }
 
   removeDynamic(int index){
@@ -240,8 +242,8 @@ class _MapScreenState extends State<MapScreen> {
                           }),
                     ),
                   ),
-                  Expanded(
-
+                  if (addInter) ConstrainedBox(
+                    constraints: BoxConstraints.expand(height: 90, width: 1000),
                     child: new ListView.builder(
                       itemCount: dynamicList.length,
                       itemBuilder: (_, index) => dynamicList[index],
