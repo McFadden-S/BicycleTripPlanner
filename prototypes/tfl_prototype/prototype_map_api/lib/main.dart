@@ -42,7 +42,7 @@ class _MapScreenState extends State<MapScreen> {
   Directions _info;
 
   Iterable<Station> stations;
-  final Set<Marker> markers = new Set();
+  final Set<Marker> stationMarkers = new Set();
 
   _MapScreenState(){
     getStations().then((val) => setState(() {
@@ -181,10 +181,10 @@ class _MapScreenState extends State<MapScreen> {
       if (_origin != null) _origin;
       if (_destination != null) _destination;
       for (final s in stations) {
-        markers.add(_addStationMarker(s));
+        stationMarkers.add(_addStationMarker(s));
       }
     });
-    return markers;
+    return stationMarkers;
   }
 
   void _addMarker(LatLng pos) async {
