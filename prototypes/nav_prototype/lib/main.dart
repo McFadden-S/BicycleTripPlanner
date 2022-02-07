@@ -28,6 +28,41 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class dynamicWidget extends StatelessWidget{
+  TextEditingController destinationController = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    final applicationBloc =
+    Provider.of<ApplicationBloc>(context, listen: false);
+    return Card(
+      margin: EdgeInsets.all(10.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: TextField(
+            controller: destinationController,
+            decoration: InputDecoration(
+              hintText: 'Search for destination',
+              suffixIcon: IconButton(
+                onPressed: (){},
+                icon: Icon(Icons.clear),
+              ),
+              border: InputBorder.none,
+            ),
+            onChanged: (value) {
+              applicationBloc.searchDestinations(value);
+              print(value);
+            }),
+
+      ),
+
+    );
+  }
+
+}
+
 class MapScreen extends StatefulWidget {
   @override
   _MapScreenState createState() => _MapScreenState();
@@ -57,6 +92,29 @@ class _MapScreenState extends State<MapScreen> {
             _getDuration(direction.legs.duration);
           }
         });
+  }
+  List<dynamicWidget> dynamicList = [];
+  List<String> Address = [];
+  addDynamic(){
+    if(Address.length != 0){
+      Widget floatingIcon = new Icon(Icons.add);
+
+      Address = [];
+      dynamicList = [];
+    }
+    setState(() {});
+    if (dynamicList.length >= 3) {
+      return;
+    }
+    dynamicList.add(new dynamicWidget());
+  }
+
+  removeDynamic(int index){
+    setState(() {});
+    if (dynamicList.length == 0) {
+      return;
+    }
+    dynamicList.removeAt(index);
   }
 
   void _setMarker(LatLng point) {
@@ -182,6 +240,13 @@ class _MapScreenState extends State<MapScreen> {
                           }),
                     ),
                   ),
+                  Expanded(
+
+                    child: new ListView.builder(
+                      itemCount: dynamicList.length,
+                      itemBuilder: (_, index) => dynamicList[index],
+                    ),
+                  ),
                   Card(
                     margin: EdgeInsets.all(10.0),
                     shape: RoundedRectangleBorder(
@@ -202,8 +267,18 @@ class _MapScreenState extends State<MapScreen> {
                           }),
                     ),
                   ),
+
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: new FloatingActionButton(
+                        onPressed:addDynamic,
+                        child:new Icon(Icons.add)
+                    ),
+                  ),
+
                 ],
               ),
+
             ),
             if (applicationBloc.searchOriginsResults != null &&
                 applicationBloc.searchOriginsResults.length != 0)
@@ -296,7 +371,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
           Positioned(
-            top: 230,
+            top: 300,
             right: 30,
             child: FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
@@ -308,7 +383,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
           Positioned(
-            top: 300,
+            top: 370,
             right: 30,
             child: FloatingActionButton(
               backgroundColor: Theme.of(context).primaryColor,
