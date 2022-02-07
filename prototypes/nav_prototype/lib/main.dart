@@ -72,9 +72,6 @@ class _MapScreenState extends State<MapScreen> {
           }
         });
   }
-  List<String> Address = [];
-  bool addInter = false;
-
 
   void _setMarker(LatLng point) {
     _markerIdCounter++;
