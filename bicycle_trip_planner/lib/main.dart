@@ -1,23 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
+import 'package:provider/provider.dart';
 import 'Loading.dart';
 import 'Home.dart';
 import 'Navigation.dart';
 import 'RoutePlanning.dart';
+import 'bloc/application_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MaterialApp(initialRoute: '/', routes: {
-    '/': (context) => const NavigateWindow(),
-    '/loading': (context) => const Loading(),
-    '/home': (context) => const Home(),
-    '/navigation': (context) => const Navigation(),
-    '/routePlanning': (context) => const RoutePlanning(),
-  }));
+  runApp(
+      ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(),
+          child: const MyApp()
+      )
+  );
+}
+
+class MyApp extends StatelessWidget{
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        initialRoute: '/',
+        routes: <String, WidgetBuilder>{
+          '/': (context) => const NavigateWindow(),
+          '/loading': (context) => const Loading(),
+          '/home': (context) => const Home(),
+          '/navigation': (context) => const Navigation(),
+          '/routePlanning': (context) => const RoutePlanning(),
+        });
+  }
+
 }
 
 class NavigateWindow extends StatefulWidget {

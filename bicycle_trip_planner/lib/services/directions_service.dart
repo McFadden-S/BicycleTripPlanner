@@ -4,7 +4,7 @@ import 'dart:convert' as convert;
 
 class DirectionsService {
   Future<Direction> getDirections(String origin, String destination) async {
-    final key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+    const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&mode=bicycling&key=$key';
     var response = await http.get(Uri.parse(url));
