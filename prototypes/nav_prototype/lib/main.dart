@@ -214,7 +214,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             onChanged: (value) {
-              applicationBloc.searchOrigins(value);
+              applicationBloc.searchDestinations(value);
               print(value);
             }
         );
