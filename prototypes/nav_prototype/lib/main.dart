@@ -79,20 +79,13 @@ class _MapScreenState extends State<MapScreen> {
     _markers.add(Marker(
       markerId: MarkerId('marker_$_markerIdCounter'),
       position: point,
-      // onTap: () {
-      //   _googleMapController.animateCamera(
-      //     CameraUpdate.newCameraPosition(CameraPosition(
-      //       target: point,
-      //       zoom: 14.0,
-      //     )),
-      //   );
-      // }
     ));
   }
 
   void _setPolyline(List<PointLatLng> points) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
+    _polylines.clear();
 
     _polylines.add(
         Polyline(
@@ -348,6 +341,8 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                         ),
                         onTap: () {
+                          /*TODO: Change this from destination Controller to the correct controller
+                             from controllers line 173 to update text*/
                           destinationController.text =
                               applicationBloc.searchDestinationsResults[index]
                                   .description;

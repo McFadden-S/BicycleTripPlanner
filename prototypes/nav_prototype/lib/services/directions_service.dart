@@ -11,7 +11,6 @@ class DirectionsService {
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
     print(jsonResults);
-    print(Direction.fromJson(jsonResults).legs.steps.first.instruction);
     return Direction.fromJson(jsonResults);
     // PlaceSearch.fromJson(data)).toList();
   }
