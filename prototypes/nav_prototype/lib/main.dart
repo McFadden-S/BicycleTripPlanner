@@ -170,6 +170,7 @@ class _MapScreenState extends State<MapScreen> {
 
   int fieldCount = 0;
   int nextIndex = 0;
+  int indexPressed = 0;
   List<TextEditingController> controllers = <TextEditingController>[];
 
 
@@ -208,6 +209,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
             onChanged: (value) {
               applicationBloc.searchDestinations(value);
+              indexPressed = i-1;
               print(value);
             }
         );
@@ -341,10 +343,7 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                         ),
                         onTap: () {
-                          /*TODO: Change this from destination Controller to the correct controller
-                             from controllers line 173 to update text*/
-
-                          destinationController.text =
+                          controllers[indexPressed].text =
                               applicationBloc.searchDestinationsResults[index]
                                   .description;
                           applicationBloc.setSelectedLocation(
