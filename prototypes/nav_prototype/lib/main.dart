@@ -192,7 +192,7 @@ class _MapScreenState extends State<MapScreen> {
         i++;
         return TextField(
             controller: controller,
-            maxLength: 20,
+            maxLength: 50,
             decoration: InputDecoration(
               labelText: "Destination $displayNumber",
               counterText: "",
@@ -343,6 +343,7 @@ class _MapScreenState extends State<MapScreen> {
                         onTap: () {
                           /*TODO: Change this from destination Controller to the correct controller
                              from controllers line 173 to update text*/
+
                           destinationController.text =
                               applicationBloc.searchDestinationsResults[index]
                                   .description;
