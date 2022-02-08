@@ -179,42 +179,48 @@ class _MapScreenState extends State<MapScreen> {
   int nextIndex = 0;
   List<TextEditingController> controllers = <TextEditingController>[];
 
-  List<Widget> _buildList() {
-    int i;
-    // fill in keys if the list is not long enough (in case we added one)
-    if (controllers.length < fieldCount) {
-      for (i = controllers.length; i < fieldCount; i++) {
-        controllers.add(TextEditingController());
-      }
-    }
-    i = 0;
-    // cycle through the controllers, and recreate each, one per available controller
-    return controllers.map<Widget>((TextEditingController controller) {
-      int displayNumber = i + 1;
-      i++;
-      return TextField(
-        controller: controller,
-        maxLength: 20,
-        decoration: InputDecoration(
-          labelText: "Destination $displayNumber",
-          counterText: "",
-          suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: () {
-              setState(() {
-                fieldCount--;
-                controllers.remove(controller);
-              });
-            },
-          ),
-        ),
-      );
-    }).toList(); // convert to a list
-  }
 
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
+    List<Widget> _buildList() {
+      int i;
+      // fill in keys if the list is not long enough (in case we added one)
+      if (controllers.length < fieldCount) {
+        for (i = controllers.length; i < fieldCount; i++) {
+          controllers.add(TextEditingController());
+        }
+      }
+      i = 0;
+      // cycle through the controllers, and recreate each, one per available controller
+      return controllers.map<Widget>((TextEditingController controller) {
+        int displayNumber = i + 1;
+        i++;
+        return TextField(
+            controller: controller,
+            maxLength: 20,
+            decoration: InputDecoration(
+              labelText: "Destination $displayNumber",
+              counterText: "",
+              suffixIcon: IconButton(
+                icon: Icon(Icons.clear),
+                onPressed: () {
+                  setState(() {
+                    fieldCount--;
+                    controllers.remove(controller);
+                  });
+                },
+              ),
+            ),
+            onChanged: (value) {
+              applicationBloc.searchOrigins(value);
+              print(value);
+            }
+        );
+      }).toList(); // convert to a list
+    }
+
     final List<Widget> children = _buildList();
 
     children.add(
