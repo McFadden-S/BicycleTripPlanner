@@ -1,11 +1,11 @@
 import 'package:bicycle_trip_planner/models/geometry.dart';
 
 class Place {
-  final Geometry? geometry;
-  final String? name;
-  final String? vicinity;
+  final Geometry geometry;
+  final String name;
+  final String vicinity;
 
-  Place({this.geometry, this.name, this.vicinity});
+  Place({required this.geometry, required this.name, required this.vicinity});
 
   factory Place.fromJson(Map<String, dynamic> parsedJson) {
     return Place(

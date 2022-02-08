@@ -2,18 +2,18 @@ import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 
 class Legs {
-  final Location? startLocation;
-  final Location? endLocation;
-  final List<Steps>? steps;
-  final int? distance;
-  final int? duration;
+  final Location startLocation;
+  final Location endLocation;
+  final List<Steps> steps;
+  final int distance;
+  final int duration;
 
   Legs(
-      {this.startLocation,
-        this.endLocation,
-        this.steps,
-        this.distance,
-        this.duration});
+      {required this.startLocation,
+      required this.endLocation,
+      required this.steps,
+      required this.distance,
+      required this.duration});
 
   factory Legs.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Legs(

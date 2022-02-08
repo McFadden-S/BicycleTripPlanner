@@ -1,10 +1,12 @@
-
 class Steps {
-  final String? instruction;
-  final int? distance;
-  final int? duration;
+  final String instruction;
+  final int distance;
+  final int duration;
 
-  Steps({this.instruction, this.distance, this.duration});
+  Steps(
+      {required this.instruction,
+      required this.distance,
+      required this.duration});
 
   factory Steps.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Steps(
