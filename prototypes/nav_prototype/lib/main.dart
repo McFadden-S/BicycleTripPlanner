@@ -343,9 +343,6 @@ class _MapScreenState extends State<MapScreen> {
                           ),
                         ),
                         onTap: () {
-                          /*TODO: Change this from destination Controller to the correct controller
-                             from controllers line 173 to update text*/
-
                           controllers[indexPressed].text =
                               applicationBloc.searchDestinationsResults[index]
                                   .description;
