@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
+// Main From Navigation Prototype
+// Used for integration
+
 void main() {
   runApp(MyApp());
 }

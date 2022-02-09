@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
-import 'Loading.dart';
-import 'Home.dart';
-import 'Navigation.dart';
-import 'RoutePlanning.dart';
+import 'widgets/Loading.dart';
+import 'widgets/Home.dart';
+import 'widgets/Navigation.dart';
+import 'widgets/RoutePlanning.dart';
 import 'bloc/application_bloc.dart';
 
 Future<void> main() async {
