@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:html/dom.dart' as dom;
 
+// Main From Navigation Prototype
+// Used for integration
+
 void main() {
   runApp(MyApp());
 }
@@ -198,7 +201,7 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
             onChanged: (value) {
-              applicationBloc.searchDestinations(value);
+              applicationBloc.searchPlaces(value);
               indexPressed = i - 1;
               print(value);
             });
@@ -269,7 +272,7 @@ class _MapScreenState extends State<MapScreen> {
                             border: InputBorder.none,
                           ),
                           onChanged: (value) {
-                            applicationBloc.searchOrigins(value);
+                            applicationBloc.searchPlaces(value);
                             print(value);
                           }),
                     ),
@@ -283,59 +286,57 @@ class _MapScreenState extends State<MapScreen> {
                 ],
               ),
             ),
-            if (applicationBloc.searchOriginsResults != null &&
-                applicationBloc.searchOriginsResults!.isNotEmpty)
+            if (applicationBloc.ifSearchResult())
               Container(
                 margin: const EdgeInsets.fromLTRB(10.0, 80.0, 10.0, 0.0),
                 child: Card(
                   color: Colors.blueGrey,
                   child: ListView.builder(
-                    itemCount: applicationBloc.searchOriginsResults!.length,
+                    itemCount: applicationBloc.searchResults.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(
                           applicationBloc
-                              .searchOriginsResults![index].description,
+                              .searchResults[index].description,
                           style: const TextStyle(
                             color: Colors.white,
                           ),
                         ),
                         onTap: () {
                           originController.text = applicationBloc
-                              .searchOriginsResults![index].description;
+                              .searchResults[index].description;
                           applicationBloc.setSelectedLocation(applicationBloc
-                              .searchOriginsResults![index].placeId);
-                          applicationBloc.searchOriginsResults!.clear();
+                              .searchResults[index].placeId);
+                          applicationBloc.searchResults.clear();
                         },
                       );
                     },
                   ),
                 ),
               ),
-            if (applicationBloc.searchDestinationsResults != null &&
-                applicationBloc.searchDestinationsResults!.isNotEmpty)
+            if (applicationBloc.ifSearchResult())
               Container(
                 margin: const EdgeInsets.fromLTRB(10.0, 165.0, 10.0, 0.0),
                 child: Card(
                   color: Colors.blueGrey,
                   child: ListView.builder(
                     itemCount:
-                        applicationBloc.searchDestinationsResults!.length,
+                        applicationBloc.searchResults.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(
                           applicationBloc
-                              .searchDestinationsResults![index].description,
+                              .searchResults[index].description,
                           style: const TextStyle(
                             color: Colors.white,
                           ),
                         ),
                         onTap: () {
                           controllers[indexPressed].text = applicationBloc
-                              .searchDestinationsResults![index].description;
+                              .searchResults[index].description;
                           applicationBloc.setSelectedLocation(applicationBloc
-                              .searchDestinationsResults![index].placeId);
-                          applicationBloc.searchDestinationsResults!.clear();
+                              .searchResults[index].placeId);
+                          applicationBloc.searchResults.clear();
                         },
                       );
                     },
