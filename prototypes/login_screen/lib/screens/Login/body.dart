@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/constants.dart';
 import 'package:prototypes/screens/Login/background.dart';
+import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/components/already_have_account.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
@@ -30,7 +31,17 @@ class Body extends StatelessWidget {
               text: "Login",
               press: () {},
           ),
-          AlreadyHaveAnAccount(press: () {},) // redirect to sign up page instead
+          AlreadyHaveAnAccount(press: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context){
+                    return SignUpScreen();
+                  }
+                ),
+            );
+          },
+          ), // redirect to sign up page instead
         ],
       ),
     );

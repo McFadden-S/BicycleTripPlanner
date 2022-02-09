@@ -27,7 +27,8 @@ class AlreadyHaveAnAccount extends StatelessWidget {
             login ? "Sign Up" : "Sign In",
             style: TextStyle(
                 color: kPrimaryColor,
-                fontWeight: FontWeight.bold
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
             ),
           ),
         ),
