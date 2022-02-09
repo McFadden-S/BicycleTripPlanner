@@ -1,9 +1,9 @@
 import 'package:http/http.dart' as http;
-import 'package:bicycle_trip_planner/models/direction.dart';
+import 'package:bicycle_trip_planner/models/route.dart';
 import 'dart:convert' as convert;
 
 class DirectionsService {
-  Future<Direction> getDirections(String origin, String destination) async {
+  Future<Route> getRoutes(String origin, String destination) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination&mode=bicycling&key=$key';
@@ -11,7 +11,7 @@ class DirectionsService {
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
     print(jsonResults);
-    return Direction.fromJson(jsonResults);
+    return Route.fromJson(jsonResults);
     // PlaceSearch.fromJson(data)).toList();
   }
 }
