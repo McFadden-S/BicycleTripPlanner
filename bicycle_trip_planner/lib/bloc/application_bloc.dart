@@ -1,20 +1,30 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/direction.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
+import 'package:bicycle_trip_planner/services/stations_service.dart';
 
 class ApplicationBloc with ChangeNotifier {
+  
   final placesService = PlacesService();
   final directionsService = DirectionsService();
+  final stationsService = StationsService();
 
+  List<Station>? stations; 
   List<PlaceSearch>? searchDestinationsResults;
   List<PlaceSearch>? searchOriginsResults;
   StreamController<Direction> currentDirection = StreamController<Direction>();
   StreamController<Place> selectedLocation = StreamController<Place>();
+
+  getStations() async {
+    stations = await stationsService.getStations();
+    notifyListeners();
+  }
 
   searchOrigins(String searchTerm) async {
     searchOriginsResults = await placesService.getAutocomplete(searchTerm);
