@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:bicycle_trip_planner/widgets/search.dart';
+import 'package:bicycle_trip_planner/widgets/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/map.dart';
+import 'package:bicycle_trip_planner/widgets/Map.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {

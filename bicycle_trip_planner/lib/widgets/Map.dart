@@ -22,7 +22,7 @@ class _MapWidgetState extends State<MapWidget> {
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
 
-  //********** Google Maps **********
+  //********** Camera **********
 
   late GoogleMapController _googleMapController;
 
@@ -121,26 +121,6 @@ class _MapWidgetState extends State<MapWidget> {
     ));
   }
 
-  //********** Directions **********
-
-  List<Steps> _directions = <Steps>[];
-  late String journeyDuration;
-  late String journeyDistance;
-
-  void _setDuration(int seconds) {
-    int minutes = (seconds / 60).ceil();
-    journeyDuration = "$minutes min";
-  }
-
-  void _setDistance(int metre) {
-    int km = (metre / 1000).ceil();
-    journeyDistance = "$km km";
-  }
-
-  void _setDirection(List<Steps> steps) {
-    _directions = steps;
-  }
-
   //********** Widget **********
 
   @override
@@ -162,11 +142,6 @@ class _MapWidgetState extends State<MapWidget> {
               direction.bounds.northeast,
               direction.bounds.southwest);
           _setPolyline(direction.polyline.points);
-
-          _setDirection(direction.legs.steps);
-
-          _setDuration(direction.legs.duration);
-          _setDistance(direction.legs.distance);
         });
 
   }
