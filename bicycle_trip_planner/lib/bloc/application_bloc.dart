@@ -11,27 +11,22 @@ class ApplicationBloc with ChangeNotifier {
   final placesService = PlacesService();
   final directionsService = DirectionsService();
 
-  List<PlaceSearch>? searchDestinationsResults;
-  List<PlaceSearch>? searchOriginsResults;
+  List<PlaceSearch> searchResults = List.empty();
   StreamController<Direction> currentDirection = StreamController<Direction>();
   StreamController<Place> selectedLocation = StreamController<Place>();
 
-  searchOrigins(String searchTerm) async {
-    searchOriginsResults = await placesService.getAutocomplete(searchTerm);
-    searchDestinationsResults = null;
-    notifyListeners();
+  bool ifSearchResult(){
+    return searchResults.isNotEmpty;
   }
 
-  searchDestinations(String searchTerm) async {
-    searchDestinationsResults = await placesService.getAutocomplete(searchTerm);
-    searchOriginsResults = null;
+  searchPlaces(String searchTerm) async {
+    searchResults = await placesService.getAutocomplete(searchTerm);
     notifyListeners();
   }
 
   setSelectedLocation(String placeId) async {
     selectedLocation.add(await placesService.getPlace(placeId));
-    searchOriginsResults = null;
-    searchDestinationsResults = null;
+    searchResults.clear();
     notifyListeners();
   }
 

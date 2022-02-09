@@ -7,8 +7,6 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:html/dom.dart' as dom;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
