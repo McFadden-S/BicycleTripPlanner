@@ -19,7 +19,7 @@ class Background extends StatelessWidget {
           children: <Widget>[
             Positioned(
               top: 0,
-              left: 0,
+              left: size.width * 0.35,
               child: Image.asset("assets/icons/profile_icon.png"),
               width: size.width * 0.3, ),
             child,

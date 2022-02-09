@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prototypes/constants.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/background.dart';
+import 'package:prototypes/screens/components/or_divider.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/Login/login_screen.dart';
 
@@ -48,9 +49,12 @@ class Body extends StatelessWidget {
                 color: kPrimaryLightColor,
                 textColor: Colors.black,
               ),
+              OrDivider(),
             ],
           ),
         )
     );
   }
 }
+
+
