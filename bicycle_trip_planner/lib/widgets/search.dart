@@ -39,7 +39,7 @@ class _SearchState extends State<Search> {
           Container(
             margin: const EdgeInsets.fromLTRB(10.0, 70.0, 10.0, 0.0),
             child: Card(
-              color: Colors.blueGrey,
+              color: Colors.grey[850],
               child: ListView.builder(
                 itemCount:
                 applicationBloc.searchResults.length,

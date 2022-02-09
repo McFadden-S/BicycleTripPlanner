@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/widgets/search.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/widgets/map.dart';
 import 'package:provider/provider.dart';
 
@@ -189,11 +187,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-
   void stationClicked(int index) {
     print("Station of index $index was tapped");
   }
-
-
 
 }
