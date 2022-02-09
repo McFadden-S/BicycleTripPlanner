@@ -14,7 +14,8 @@ class ApplicationBloc with ChangeNotifier {
   final placesService = PlacesService();
   final directionsService = DirectionsService();
   final stationsService = StationsService();
-
+  
+  List<PlaceSearch> searchResults = List.empty();
   List<Station>? stations; 
   List<PlaceSearch>? searchDestinationsResults;
   List<PlaceSearch>? searchOriginsResults;
@@ -32,16 +33,18 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  searchDestinations(String searchTerm) async {
-    searchDestinationsResults = await placesService.getAutocomplete(searchTerm);
-    searchOriginsResults = null;
+  bool ifSearchResult(){
+    return searchResults.isNotEmpty;
+  }
+
+  searchPlaces(String searchTerm) async {
+    searchResults = await placesService.getAutocomplete(searchTerm);
     notifyListeners();
   }
 
   setSelectedLocation(String placeId) async {
     selectedLocation.add(await placesService.getPlace(placeId));
-    searchOriginsResults = null;
-    searchDestinationsResults = null;
+    searchResults.clear();
     notifyListeners();
   }
 
