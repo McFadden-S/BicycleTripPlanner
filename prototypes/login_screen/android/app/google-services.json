@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "841329250348",
+    "project_id": "bicycletripplanner-b58a7",
+    "storage_bucket": "bicycletripplanner-b58a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841329250348:android:d3fc45c3f4380cc40a4189",
+        "android_client_info": {
+          "package_name": "com.example.prototypes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "841329250348-sjpvlgnnclpqdsbgf13676119966nivd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-toNudmNxb2sJqjBrdJN4pjbvN41CIYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "841329250348-sjpvlgnnclpqdsbgf13676119966nivd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
