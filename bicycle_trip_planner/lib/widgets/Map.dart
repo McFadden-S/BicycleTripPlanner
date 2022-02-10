@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
+import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +23,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
+  late StreamSubscription locatorSubscription;
 
   //********** Camera **********
 
@@ -121,6 +124,29 @@ class _MapWidgetState extends State<MapWidget> {
     ));
   }
 
+  //********** User Position **********
+
+  // Defines how the location should be fine-tuned
+  // ignore: prefer_const_constructors
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.high, // How accurate the location is
+    distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
+  );
+
+  // Note: Provider package and the locator.dart package both have a Locator class. 
+  // This is specifying the Locator class in locator.dart 
+  Locater.Locator locator = Locater.Locator();   
+
+  Future<LocationPermission> requestPermission() async{
+    return await Geolocator.requestPermission();
+  }
+
+  // Sets the camera to the user's location
+  void _setCameraToUser() async {
+    LatLng userLocation = await locator.locate(); 
+    _setCameraPosition(userLocation);
+  }
+
   //********** Widget **********
 
   @override
@@ -143,7 +169,21 @@ class _MapWidgetState extends State<MapWidget> {
               direction.bounds.southwest);
           _setPolyline(direction.polyline.points);
         });
+    
+    // Requires permission for the locator to work
+    LocationPermission perm; 
+    requestPermission().then((permission) => perm = permission); 
 
+    // Better to just update marker position on the map. Remove/comment _setcameraposition
+    // as it will always bring the camera back to the user's location even if you want to 
+    // look at another location on the map.
+    //
+    // To center back onto the user's location is prefarable to use a button. 
+    locatorSubscription =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position position) {
+            _setCameraPosition(LatLng(position.latitude, position.longitude)); 
+    });
   }
 
   @override
@@ -155,6 +195,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     locationSubscription.cancel();
     directionSubscription.cancel();
+    locatorSubscription.cancel(); 
 
     super.dispose();
   }
