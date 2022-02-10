@@ -1,17 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
+import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   final Widget child;
 
   const Body({
     Key? key,
     required this.child
   }) : super(key: key);
+
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
+  final _auth = FirebaseAuth.instance;
+  late String email;
+  late String password;
+  String? confirmPassword;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -28,20 +41,48 @@ class Body extends StatelessWidget {
             height: size.height * 0.35,
           ),
           RoundedInputField(
-              hintText: "Email",
-              onChanged: (value) {},
-              ),
+
+            hintText: "Email",
+            onChanged: (value) {
+              email = value;
+            },
+          ),
           RoundedPasswordField(
               text: "Password",
-              onChanged: (value) {}
+              onChanged: (value) {
+                password = value;
+              }
               ),
           RoundedPasswordField(
             text: "Confirm Password",
-              onChanged: (value) {}
+              onChanged: (value) {
+                confirmPassword = value;
+              }
           ),
           RoundedButton(
             text: "Sign Up",
-            press: () {},
+            press: () async {
+              try {
+                final newUser = await _auth.createUserWithEmailAndPassword(
+                    email: email, password: password);
+                if(newUser != null){
+                  print("hi");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context){
+                            return WelcomeScreen();
+                          }
+                      ),
+                  );
+                } else{
+                  print("nope");
+                }
+              }
+              catch(e){
+                print(e);
+              }
+            },
           ),
           back_button()
         ],
