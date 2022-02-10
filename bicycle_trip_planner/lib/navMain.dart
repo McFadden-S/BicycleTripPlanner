@@ -61,7 +61,7 @@ class _MapScreenState extends State<MapScreen> {
       viewPlace(place);
     });
     directionSubscription =
-        applicationBloc.currentDirection.stream.listen((direction) {
+        applicationBloc.currentRoute.stream.listen((direction) {
       _goToPlace(
           direction.legs.startLocation.lat,
           direction.legs.startLocation.lng,
@@ -394,7 +394,7 @@ class _MapScreenState extends State<MapScreen> {
               backgroundColor: Theme.of(context).primaryColor,
               foregroundColor: Colors.black,
               onPressed: () async {
-                applicationBloc.findRouteDirection(
+                applicationBloc.findRoute(
                     originController.text, destinationController.text);
               },
               child: const Icon(Icons.directions_bike_rounded),

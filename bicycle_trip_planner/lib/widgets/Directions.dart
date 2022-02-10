@@ -42,7 +42,7 @@ class _DirectionsState extends State<Directions> {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     directionSubscription =
-        applicationBloc.currentDirection.stream.listen((direction) {
+        applicationBloc.currentRoute.stream.listen((direction) {
           _setDirection(direction.legs.steps);
           _setDuration(direction.legs.duration);
           _setDistance(direction.legs.distance);

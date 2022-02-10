@@ -5,7 +5,6 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
 
 class MapWidget extends StatefulWidget {
@@ -135,7 +134,7 @@ class _MapWidgetState extends State<MapWidget> {
         });
 
     directionSubscription =
-        applicationBloc.currentDirection.stream.listen((direction) {
+        applicationBloc.currentRoute.stream.listen((direction) {
           _goToPlace(
               direction.legs.startLocation.lat,
               direction.legs.startLocation.lng,
