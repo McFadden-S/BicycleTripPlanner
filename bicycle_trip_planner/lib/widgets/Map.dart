@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,6 +25,7 @@ class _MapWidgetState extends State<MapWidget> {
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
+  late StreamSubscription stationSubscription;
 
   //********** Camera **********
 
@@ -88,10 +90,13 @@ class _MapWidgetState extends State<MapWidget> {
 
   //********** Markers **********
 
+
+
   final Set<Marker> _markers = <Marker>{};
   int _markerIdCounter = 1;
   final String _finalDestinationMarkerID = "Final Destination";
   final String _originMarkerID = "Origin";
+  List<Station> stations = List.empty(); 
 
   void _setMarker(LatLng point) {
     _markerIdCounter++;
@@ -100,6 +105,17 @@ class _MapWidgetState extends State<MapWidget> {
       markerId: MarkerId('marker_$_markerIdCounter'),
       position: point,
     ));
+  }
+
+  Marker _addStationMarker(Station station) {
+    LatLng pos = LatLng(station.lat, station.long);
+    Marker marker = Marker(
+      markerId: MarkerId(station.name),
+      infoWindow: InfoWindow(title: station.name),
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      position: pos,
+    );
+    return marker; 
   }
 
   //********** Polylines **********
@@ -169,7 +185,19 @@ class _MapWidgetState extends State<MapWidget> {
               direction.bounds.southwest);
           _setPolyline(direction.polyline.points);
         });
-    
+
+    stationSubscription =
+        applicationBloc.stations.stream.listen((stations){
+          setState((){
+            for(Station station in stations){
+                _markers.add(_addStationMarker(station)); 
+            }
+          });
+        });
+
+    // Get the initial update for the markers
+    applicationBloc.updateStations(); 
+
     // Requires permission for the locator to work
     LocationPermission perm; 
     requestPermission().then((permission) => perm = permission); 
@@ -184,6 +212,12 @@ class _MapWidgetState extends State<MapWidget> {
             .listen((Position position) {
             _setCameraPosition(LatLng(position.latitude, position.longitude)); 
     });
+
+    //Use a periodic timer to update the TFL Santander bike stations 
+    //(Once every 30 seconds) 
+    const duration = Duration(seconds: 30); 
+    Timer.periodic(duration, (Timer t) => applicationBloc.updateStations());
+
   }
 
   @override
@@ -196,6 +230,7 @@ class _MapWidgetState extends State<MapWidget> {
     locationSubscription.cancel();
     directionSubscription.cancel();
     locatorSubscription.cancel(); 
+    stationSubscription.cancel();
 
     super.dispose();
   }
