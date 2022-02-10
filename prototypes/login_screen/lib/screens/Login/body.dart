@@ -8,6 +8,7 @@ import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Body extends StatelessWidget {
   const Body({
@@ -17,11 +18,17 @@ class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    final _auth = FirebaseAuth.instance;
+    late String email;
+    late String password;
     return Background(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Login", style: TextStyle(fontWeight: FontWeight.bold),
+          Text(
+            "Login",
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: size.height * 0.03),
           Image.asset(
@@ -31,26 +38,40 @@ class Body extends StatelessWidget {
           SizedBox(height: size.height * 0.03),
           RoundedInputField(
             hintText: "Email",
-            onChanged: (value) {},
+            onChanged: (value) {
+              email = value;
+            },
           ),
           RoundedPasswordField(
             text: "Password",
-            onChanged: (value) {},
+            onChanged: (value) {
+              password = value;
+            },
           ),
           RoundedButton(
-              text: "Login",
-              press: () {},
+            text: "Login",
+            press: () async {
+              final user = await _auth.signInWithEmailAndPassword(
+                  email: email, password: password);
+              if (user != null) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) {
+                    return WelcomeScreen();
+                  }),
+                );
+              }
+            },
           ),
-          AlreadyHaveAnAccount(press: () {
-            Navigator.push(
+          AlreadyHaveAnAccount(
+            press: () {
+              Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context){
-                    return SignUpScreen();
-                  }
-                ),
-            );
-          },
+                MaterialPageRoute(builder: (context) {
+                  return SignUpScreen();
+                }),
+              );
+            },
           ),
           SizedBox(height: size.height * 0.03),
           back_button()
@@ -59,6 +80,3 @@ class Body extends StatelessWidget {
     );
   }
 }
-
-
-

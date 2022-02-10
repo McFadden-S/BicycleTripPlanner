@@ -65,18 +65,15 @@ class _BodyState extends State<Body> {
               try {
                 final newUser = await _auth.createUserWithEmailAndPassword(
                     email: email, password: password);
-                if(newUser != null){
-                  print("hi");
+                if(newUser != null) {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context){
-                            return WelcomeScreen();
-                          }
-                      ),
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) {
+                          return WelcomeScreen();
+                        }
+                    ),
                   );
-                } else{
-                  print("nope");
                 }
               }
               catch(e){
