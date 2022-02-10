@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prototypes/constants.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/background.dart';
+import 'package:prototypes/screens/components/elavated_button_with_icon.dart';
 import 'package:prototypes/screens/components/or_divider.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/Login/login_screen.dart';
@@ -27,13 +28,13 @@ class Body extends StatelessWidget {
               RoundedButton(
                 text: "Login",
                 press: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:(context) {
-                        return LoginScreen();
-                      },
-                    ),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder:(context) {
+                      return LoginScreen();
+                    },
+                  ),
+                );
                 },
               ),
               SizedBox(height: size.height * 0.05),
@@ -53,27 +54,25 @@ class Body extends StatelessWidget {
                 textColor: Colors.black,
               ),
               OrDivider(),
-              ElevatedButton.icon(
-                onPressed: (){
+              ElavatedButtonWithIcon(
+                text: "Sign Up/Log In With Google",
+                press: () {
                   final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
                   provider.googleLogin();
                 },
-                label: Text('Sign Up/Log In With Google'),
                 icon: FaIcon(FontAwesomeIcons.google),
               ),
-              ElevatedButton.icon(
-                onPressed: (){
+              ElavatedButtonWithIcon(
+                text: "Temp Log Out",
+                press: () {
                   final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
                   provider.logout();
                 },
-                label: Text('Temp Log Out'),
                 icon: FaIcon(FontAwesomeIcons.google),
-              )
+              ),
             ],
           ),
         )
     );
   }
 }
-
-

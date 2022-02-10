@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/constants.dart';
 
-
 class RoundedButton extends StatelessWidget {
   final String text;
   final VoidCallback press;

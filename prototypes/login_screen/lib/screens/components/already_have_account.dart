@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../constants.dart';
+import 'package:prototypes/constants.dart';
 
 // login screen
 class AlreadyHaveAnAccount extends StatelessWidget {
