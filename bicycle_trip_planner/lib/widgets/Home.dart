@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/Search.dart';
 import 'package:bicycle_trip_planner/widgets/StationCard.dart';
 import 'package:flutter/material.dart';
@@ -22,25 +23,7 @@ class _HomeState extends State<Home> {
 
   //********** Station **********
 
-  List<String> stations = [
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5",
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5",
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5"
-  ];
-
-  void showExpandedList() {
+  void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -100,7 +83,7 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () => showExpandedList(),
+                  onPressed: () => showExpandedList(applicationBloc.stations),
                   icon: const Icon(Icons.menu),
                   color: Colors.white,
                 ),
@@ -109,7 +92,7 @@ class _HomeState extends State<Home> {
                       controller: stationsPageViewController,
                       physics: const PageScrollPhysics(),
                       scrollDirection: Axis.horizontal,
-                      itemCount: stations.length,
+                      itemCount: applicationBloc.stations.length,
                       itemBuilder: (BuildContext context, int index) =>
                           StationCard(index: index)),
                 ),

@@ -220,7 +220,7 @@ class _MapWidgetState extends State<MapWidget> {
         });
 
     stationSubscription =
-        applicationBloc.stations.stream.listen((stations){
+        applicationBloc.allStations.stream.listen((stations){
           setState((){
             for(Station station in stations){
                 _markers.add(_addStationMarker(station)); 

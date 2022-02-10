@@ -15,15 +15,17 @@ class ApplicationBloc with ChangeNotifier {
   final directionsService = DirectionsService();
   final stationsService = StationsService();
   
+  List<Station> stations = List.empty(); 
   List<PlaceSearch> searchResults = List.empty(); 
   List<PlaceSearch>? searchDestinationsResults;
   List<PlaceSearch>? searchOriginsResults;
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>();
   StreamController<Place> selectedLocation = StreamController<Place>();
-  StreamController<List<Station>> stations = StreamController<List<Station>>();
+  StreamController<List<Station>> allStations = StreamController<List<Station>>();
 
   updateStations() async {
-    stations.add(await stationsService.getStations());
+    stations = await stationsService.getStations(); 
+    allStations.add(stations);
     notifyListeners(); 
   }
 
