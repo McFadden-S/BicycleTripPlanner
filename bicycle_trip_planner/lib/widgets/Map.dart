@@ -161,7 +161,7 @@ class _MapWidgetState extends State<MapWidget> {
         });
 
     directionSubscription =
-        applicationBloc.currentDirection.stream.listen((direction) {
+        applicationBloc.currentRoute.stream.listen((direction) {
           _goToPlace(
               direction.legs.startLocation.lat,
               direction.legs.startLocation.lng,

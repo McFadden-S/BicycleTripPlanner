@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/models/direction.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
@@ -19,7 +19,7 @@ class ApplicationBloc with ChangeNotifier {
   List<Station>? stations; 
   List<PlaceSearch>? searchDestinationsResults;
   List<PlaceSearch>? searchOriginsResults;
-  StreamController<Direction> currentDirection = StreamController<Direction>();
+  StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>();
   StreamController<Place> selectedLocation = StreamController<Place>();
 
   getStations() async {
@@ -48,9 +48,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  findRouteDirection(String origin, String destination) async {
-    currentDirection
-        .add(await directionsService.getDirections(origin, destination));
+  findRoute(String origin, String destination) async {
+    currentRoute
+        .add(await directionsService.getRoutes(origin, destination));
     notifyListeners();
   }
 
