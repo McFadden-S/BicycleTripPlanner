@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,7 @@ class _MapWidgetState extends State<MapWidget> {
 
 
   final Set<Marker> _markers = <Marker>{};
+  Marker? _userMarker; 
   int _markerIdCounter = 1;
   final String _finalDestinationMarkerID = "Final Destination";
   final String _originMarkerID = "Origin";
@@ -105,6 +107,34 @@ class _MapWidgetState extends State<MapWidget> {
       markerId: MarkerId('marker_$_markerIdCounter'),
       position: point,
     ));
+  }
+
+  Future<Uint8List> getMarkerImage() async {
+    ByteData byteData =
+        await DefaultAssetBundle.of(context).load("assets/bike_icon.png");
+    return byteData.buffer.asUint8List();
+  }
+
+  // Same as set marker with hardcoded ID and other variables
+  void _setUserMarker(Position point, Uint8List imageData) {
+    LatLng latlng = LatLng(point.latitude, point.longitude);
+    _markers.add(Marker(
+      markerId: MarkerId('user'),
+      position: latlng,
+      rotation: point.heading,
+      draggable: false,
+      zIndex: 2,
+      flat: true,
+      anchor: Offset(0.5, 0.5),
+      icon: BitmapDescriptor.fromBytes(imageData)
+    )); 
+  }
+
+  void updateMarker(Position newPosition, Uint8List imageData) {
+    LatLng latlng = LatLng(newPosition.latitude, newPosition.longitude);
+    setState(() {
+      _setUserMarker(newPosition, imageData); 
+    });
   }
 
   Marker _addStationMarker(Station station) {
@@ -202,6 +232,9 @@ class _MapWidgetState extends State<MapWidget> {
     LocationPermission perm; 
     requestPermission().then((permission) => perm = permission); 
 
+    Uint8List? imageData; 
+    getMarkerImage().then((image) => imageData = image); 
+
     // Better to just update marker position on the map. Remove/comment _setcameraposition
     // as it will always bring the camera back to the user's location even if you want to 
     // look at another location on the map.
@@ -210,14 +243,13 @@ class _MapWidgetState extends State<MapWidget> {
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
-            _setCameraPosition(LatLng(position.latitude, position.longitude)); 
+            updateMarker(position, imageData!); 
     });
 
     //Use a periodic timer to update the TFL Santander bike stations 
     //(Once every 30 seconds) 
     const duration = Duration(seconds: 30); 
     Timer.periodic(duration, (Timer t) => applicationBloc.updateStations());
-
   }
 
   @override
@@ -239,7 +271,7 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return GoogleMap(
       mapType: MapType.normal,
-      markers: _markers,
+      markers: _markers, 
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       initialCameraPosition: _initialCameraPosition,
