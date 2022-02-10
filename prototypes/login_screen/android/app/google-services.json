@@ -1,20 +1,20 @@
 {
   "project_info": {
-    "project_number": "625848310107",
-    "project_id": "login-637ae",
-    "storage_bucket": "login-637ae.appspot.com"
+    "project_number": "276314456455",
+    "project_id": "test-67b4e",
+    "storage_bucket": "test-67b4e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:625848310107:android:4128df51811df52638227e",
+        "mobilesdk_app_id": "1:276314456455:android:40d29b4fcad5c99a869322",
         "android_client_info": {
-          "package_name": "com.example.flutter_login"
+          "package_name": "com.example.bike_planner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "625848310107-6nin3u9dg72h0duhbtiutbrcg9sfm0a7.apps.googleusercontent.com",
+          "client_id": "276314456455-b1e9ak8657cardvsscg9qav731nnpc45.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,7 +27,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "625848310107-6nin3u9dg72h0duhbtiutbrcg9sfm0a7.apps.googleusercontent.com",
+              "client_id": "276314456455-b1e9ak8657cardvsscg9qav731nnpc45.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
@@ -36,14 +36,22 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:625848310107:android:e43205913369a28f38227e",
+        "mobilesdk_app_id": "1:276314456455:android:7ef3c9f9e33de1fc869322",
         "android_client_info": {
-          "package_name": "com.example.login"
+          "package_name": "com.example.firebase_test"
         }
       },
       "oauth_client": [
         {
-          "client_id": "625848310107-6nin3u9dg72h0duhbtiutbrcg9sfm0a7.apps.googleusercontent.com",
+          "client_id": "276314456455-7nduvdvvp0o05emt6kq666tdsqos1idm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.firebase_test",
+            "certificate_hash": "6aacbb6220d0a8c31b6887aa8db23fb84f51e306"
+          }
+        },
+        {
+          "client_id": "276314456455-b1e9ak8657cardvsscg9qav731nnpc45.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -56,7 +64,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "625848310107-6nin3u9dg72h0duhbtiutbrcg9sfm0a7.apps.googleusercontent.com",
+              "client_id": "276314456455-b1e9ak8657cardvsscg9qav731nnpc45.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
