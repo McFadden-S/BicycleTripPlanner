@@ -11,6 +11,7 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
+import 'dart:ui' as ui;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -109,10 +110,12 @@ class _MapWidgetState extends State<MapWidget> {
     ));
   }
 
-  Future<Uint8List> getMarkerImage() async {
+  Future<Uint8List> getMarkerImage(int width) async {
     ByteData byteData =
         await DefaultAssetBundle.of(context).load("assets/bike_icon.png");
-    return byteData.buffer.asUint8List();
+    ui.Codec codec = await ui.instantiateImageCodec(byteData.buffer.asUint8List(), targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
   }
 
   // Same as set marker with hardcoded ID and other variables
@@ -233,7 +236,7 @@ class _MapWidgetState extends State<MapWidget> {
     requestPermission().then((permission) => perm = permission); 
 
     Uint8List? imageData; 
-    getMarkerImage().then((image) => imageData = image); 
+    getMarkerImage(100).then((image) => imageData = image); 
 
     // Better to just update marker position on the map. Remove/comment _setcameraposition
     // as it will always bring the camera back to the user's location even if you want to 
