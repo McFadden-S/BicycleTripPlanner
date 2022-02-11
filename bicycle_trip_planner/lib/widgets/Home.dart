@@ -34,5 +34,4 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: StationBar(),
     );
   }
-
 }
