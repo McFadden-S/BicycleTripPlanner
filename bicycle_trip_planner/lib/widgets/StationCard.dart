@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
 import 'package:provider/provider.dart';
 
 class StationCard extends StatefulWidget {
@@ -24,7 +25,7 @@ class _StationCardState extends State<StationCard> {
   late StreamSubscription locatorSubscription; 
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.high, // How accurate the location is
-    distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
+    distanceFilter: 100, // The distance needed to travel until the next update (0 means it will always update)
   );
 
   double distance = 0; 
@@ -35,12 +36,21 @@ class _StationCardState extends State<StationCard> {
 
     final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
+    // Obtain initial distances from current position (for quicker loading)
+    Station station = applicationBloc.stations[widget.index];
+    LatLng stationPos = LatLng(station.lat, station.long);
+    Locater.Locator locator = Locater.Locator(); 
+    locator.locate().then((pos){
+      setState((){
+        distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
+      });
+    }); 
+
     locatorSubscription =
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position position) {
           LatLng pos = LatLng(position.latitude, position.longitude);
-          Station station = applicationBloc.stations[widget.index]; 
-          LatLng stationPos = LatLng(station.lat, station.long);
+          station = applicationBloc.stations[widget.index]; 
           setState((){
             distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
           });
