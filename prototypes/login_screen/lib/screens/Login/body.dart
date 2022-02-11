@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:prototypes/constants.dart';
 import 'package:prototypes/screens/Login/background.dart';
+import 'package:prototypes/screens/ResetPassword/reset_password_screen.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/already_have_account.dart';
@@ -8,8 +10,6 @@ import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../../constants.dart';
 
 class Body extends StatelessWidget {
   const Body({
@@ -78,7 +78,26 @@ class Body extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: size.height * 0.01),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ResetPasswordScreen();
+                }),
+              );
+            },
+            child: Text(
+               "Reset Password",
+                style: TextStyle(
+                  color: secondaryFontColor,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+          SizedBox(height: size.height * 0.02),
           back_button()
         ],
       ),
