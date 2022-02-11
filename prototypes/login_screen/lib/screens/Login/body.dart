@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/constants.dart';
+import 'package:prototypes/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:prototypes/screens/Login/background.dart';
-import 'package:prototypes/screens/ResetPassword/reset_password_screen.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/already_have_account.dart';
@@ -84,7 +84,7 @@ class Body extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return ResetPasswordScreen();
+                  return ForgotPassword();
                 }),
               );
             },

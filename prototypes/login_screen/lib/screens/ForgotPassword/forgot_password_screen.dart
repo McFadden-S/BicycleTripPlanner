@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prototypes/screens/ResetPassword/body.dart';
+import 'package:prototypes/screens/ForgotPassword/body.dart';
 
-class ResetPasswordScreen extends StatelessWidget {
+class ForgotPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
