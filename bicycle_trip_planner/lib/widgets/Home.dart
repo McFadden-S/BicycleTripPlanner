@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/Search.dart';
+import 'package:bicycle_trip_planner/widgets/StationCard.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/Map.dart';
@@ -21,25 +23,7 @@ class _HomeState extends State<Home> {
 
   //********** Station **********
 
-  List<String> stations = [
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5",
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5",
-    "station 1",
-    "station 2",
-    "station 3",
-    "station 4",
-    "station 5"
-  ];
-
-  void showExpandedList() {
+  void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
@@ -66,73 +50,13 @@ class _HomeState extends State<Home> {
                                 itemCount: stations.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
-                                    stationCard(context, index)),
+                                    StationCard(index: index)),
                           ),
                         ],
                       ))),
             ],
           );
         });
-  }
-
-  Widget stationCard(BuildContext context, int index) {
-    return InkWell(
-      onTap: () => stationClicked(index),
-      child: SizedBox(
-          height: 60,
-          child: Card(
-              child: Row(
-                children: [
-                  const Spacer(),
-                  const Text(
-                    "1.1 mi",
-                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 2,
-                    color: Colors.black54,
-                  ),
-                  const Spacer(),
-                  const Text("River Street , Clerkenwell",
-                      style: TextStyle(fontSize: 20.0)),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                    child: Row(
-                      children: [
-                        Column(
-                          children: const [
-                            Text(
-                              "5",
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            Icon(
-                              Icons.directions_bike,
-                              size: 20.0,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 5.0),
-                        Column(
-                          children: const [
-                            Text(
-                              "8",
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            Icon(
-                              Icons.chair_alt,
-                              size: 20.0,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ))),
-    );
   }
 
   //********** Widget **********
@@ -159,7 +83,7 @@ class _HomeState extends State<Home> {
             child: Row(
               children: [
                 IconButton(
-                  onPressed: () => showExpandedList(),
+                  onPressed: () => showExpandedList(applicationBloc.stations),
                   icon: const Icon(Icons.menu),
                   color: Colors.white,
                 ),
@@ -168,9 +92,9 @@ class _HomeState extends State<Home> {
                       controller: stationsPageViewController,
                       physics: const PageScrollPhysics(),
                       scrollDirection: Axis.horizontal,
-                      itemCount: stations.length,
+                      itemCount: applicationBloc.stations.length,
                       itemBuilder: (BuildContext context, int index) =>
-                          stationCard(context, index)),
+                          StationCard(index: index)),
                 ),
                 SizedBox(
                   width: 30.0,
@@ -185,10 +109,6 @@ class _HomeState extends State<Home> {
             )),
       ),
     );
-  }
-
-  void stationClicked(int index) {
-    print("Station of index $index was tapped");
   }
 
 }

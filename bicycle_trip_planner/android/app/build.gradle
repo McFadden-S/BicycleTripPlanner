@@ -6,6 +6,11 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+def localPropertyApiToken = localProperties.getProperty("googleAPIKey")
+def systemEnvApiToken = System.getenv("googleAPIKey")
+def googleAPIKey = localPropertyApiToken != null ? 
+localPropertyApiToken : systemEnvApiToken
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
 if (flutterRoot == null) {
     throw GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
@@ -49,6 +54,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        manifestPlaceholders.googleAPIKey = googleAPIKey
     }
 
     buildTypes {
