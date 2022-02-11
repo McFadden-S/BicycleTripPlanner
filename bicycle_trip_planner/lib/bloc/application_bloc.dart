@@ -16,9 +16,7 @@ class ApplicationBloc with ChangeNotifier {
   final stationsService = StationsService();
   
   List<Station> stations = List.empty(); 
-  List<PlaceSearch> searchResults = List.empty(); 
-  List<PlaceSearch>? searchDestinationsResults;
-  List<PlaceSearch>? searchOriginsResults;
+  List<PlaceSearch> searchResults = List.empty();
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>();
   StreamController<Place> selectedLocation = StreamController<Place>();
   StreamController<List<Station>> allStations = StreamController<List<Station>>();
@@ -27,12 +25,6 @@ class ApplicationBloc with ChangeNotifier {
     stations = await stationsService.getStations(); 
     allStations.add(stations);
     notifyListeners(); 
-  }
-
-  searchOrigins(String searchTerm) async {
-    searchOriginsResults = await placesService.getAutocomplete(searchTerm);
-    searchDestinationsResults = null;
-    notifyListeners();
   }
 
   bool ifSearchResult(){
