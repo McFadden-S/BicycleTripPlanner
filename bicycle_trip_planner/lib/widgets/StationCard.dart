@@ -1,7 +1,12 @@
 
 
+import 'dart:async';
+
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class StationCard extends StatefulWidget {
@@ -16,10 +21,54 @@ class StationCard extends StatefulWidget {
 
 class _StationCardState extends State<StationCard> { 
 
+  late StreamSubscription locatorSubscription; 
+  final LocationSettings locationSettings = LocationSettings(
+    accuracy: LocationAccuracy.high, // How accurate the location is
+    distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
+  );
+
+  double distance = 0; 
+
+  @override
+  void initState() {
+    super.initState(); 
+
+    final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
+    locatorSubscription =
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position position) {
+          LatLng pos = LatLng(position.latitude, position.longitude);
+          Station station = applicationBloc.stations[widget.index]; 
+          LatLng stationPos = LatLng(station.lat, station.long);
+          setState((){
+            distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
+          });
+      });
+  }
+
+    @override
+    void dispose(){ 
+      super.dispose(); 
+      final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+      applicationBloc.dispose(); 
+
+      locatorSubscription.cancel(); 
+    }
+
+    double _convertMetresToMiles(double distance){
+      return distance * 0.000621;
+    }
+
+    // Returns the distance between the two points in metres
+    double _calculateDistance(LatLng pos1, LatLng pos2){
+      return Geolocator.distanceBetween(pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude); 
+    }  
+
   @override
   Widget build(BuildContext context) {
 
-    final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context);  
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     return InkWell(
       onTap: () => stationClicked(widget.index),
@@ -29,8 +78,8 @@ class _StationCardState extends State<StationCard> {
               child: Row(
                 children: [
                   const Spacer(),
-                  const Text(
-                    "1.1 mi",
+                  Text(
+                    "${distance.toStringAsFixed(1)}mi",
                     style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
                   ),
                   const Spacer(),
