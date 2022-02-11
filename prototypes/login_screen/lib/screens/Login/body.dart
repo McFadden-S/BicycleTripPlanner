@@ -9,6 +9,8 @@ import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../constants.dart';
+
 class Body extends StatelessWidget {
   const Body({
     Key? key,
@@ -27,7 +29,11 @@ class Body extends StatelessWidget {
         children: <Widget>[
           Text(
             "Login",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: mainFontColor,
+            ),
           ),
           SizedBox(height: size.height * 0.03),
           Image.asset(
@@ -79,3 +85,4 @@ class Body extends StatelessWidget {
     );
   }
 }
+

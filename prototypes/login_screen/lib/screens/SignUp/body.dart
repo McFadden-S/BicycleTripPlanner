@@ -7,6 +7,8 @@ import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../constants.dart';
+
 class Body extends StatefulWidget {
   final Widget child;
 
@@ -34,7 +36,11 @@ class _BodyState extends State<Body> {
         children: <Widget>[
           Text(
             "Sign Up",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: mainFontColor,
+            ),
           ),
           Image.asset(
             "assets/images/signup_image.png",

@@ -22,7 +22,11 @@ class Body extends StatelessWidget {
             children: <Widget>[
               Text(
                 "Welcome to Bike Planner",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: mainFontColor,
+                ),
               ),
               SizedBox(height: size.height * 0.03),
               RoundedButton(
