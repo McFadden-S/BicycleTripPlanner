@@ -48,10 +48,10 @@ class Body extends StatelessWidget {
             },
           ),
           RoundedPasswordField(
-            text: "Password",
-            onChanged: (value) {
+             (value) {
               password = value;
             },
+            "Password",
           ),
           RoundedButton(
             text: "Login",
