@@ -92,8 +92,6 @@ class _MapWidgetState extends State<MapWidget> {
 
   //********** Markers **********
 
-
-
   final Set<Marker> _markers = <Marker>{};
   Marker? _userMarker; 
   int _markerIdCounter = 1;
@@ -110,16 +108,8 @@ class _MapWidgetState extends State<MapWidget> {
     ));
   }
 
-  Future<Uint8List> getMarkerImage(int width) async {
-    ByteData byteData =
-        await DefaultAssetBundle.of(context).load("assets/bike_icon.png");
-    ui.Codec codec = await ui.instantiateImageCodec(byteData.buffer.asUint8List(), targetWidth: width);
-    ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
-  }
-
   // Same as set marker with hardcoded ID and other variables
-  void _setUserMarker(Position point, Uint8List imageData) {
+  void _setUserMarker(Position point) {
     LatLng latlng = LatLng(point.latitude, point.longitude);
     _markers.add(Marker(
       markerId: MarkerId('user'),
@@ -129,15 +119,7 @@ class _MapWidgetState extends State<MapWidget> {
       zIndex: 2,
       flat: true,
       anchor: Offset(0.5, 0.5),
-      icon: BitmapDescriptor.fromBytes(imageData)
     )); 
-  }
-
-  void updateMarker(Position newPosition, Uint8List imageData) {
-    LatLng latlng = LatLng(newPosition.latitude, newPosition.longitude);
-    setState(() {
-      _setUserMarker(newPosition, imageData); 
-    });
   }
 
   Marker _addStationMarker(Station station) {
@@ -233,10 +215,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     // Requires permission for the locator to work
     LocationPermission perm; 
-    requestPermission().then((permission) => perm = permission); 
-
-    Uint8List? imageData; 
-    getMarkerImage(100).then((image) => imageData = image); 
+    requestPermission().then((permission) => perm = permission);
 
     // Better to just update marker position on the map. Remove/comment _setcameraposition
     // as it will always bring the camera back to the user's location even if you want to 
@@ -246,7 +225,7 @@ class _MapWidgetState extends State<MapWidget> {
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
-            updateMarker(position, imageData!); 
+            _setUserMarker(position);
     });
 
     //Use a periodic timer to update the TFL Santander bike stations 
