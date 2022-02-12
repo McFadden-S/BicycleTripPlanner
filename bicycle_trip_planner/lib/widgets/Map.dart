@@ -188,17 +188,21 @@ class _MapWidgetState extends State<MapWidget> {
 
     locationSubscription =
         applicationBloc.selectedLocation.stream.listen((place) {
-          viewPlace(place);
+          setState(() {
+            viewPlace(place);
+          });
         });
 
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
-          _goToPlace(
-              direction.legs.startLocation.lat,
-              direction.legs.startLocation.lng,
-              direction.bounds.northeast,
-              direction.bounds.southwest);
-          _setPolyline(direction.polyline.points);
+          setState(() {
+            _goToPlace(
+                direction.legs.startLocation.lat,
+                direction.legs.startLocation.lng,
+                direction.bounds.northeast,
+                direction.bounds.southwest);
+            _setPolyline(direction.polyline.points);
+          });
         });
 
     stationSubscription =
@@ -225,7 +229,9 @@ class _MapWidgetState extends State<MapWidget> {
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
-            _setUserMarker(position);
+              setState(() {
+                _setUserMarker(position);
+              });
     });
 
     //Use a periodic timer to update the TFL Santander bike stations 
