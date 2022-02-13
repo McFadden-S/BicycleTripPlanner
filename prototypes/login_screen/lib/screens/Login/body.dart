@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prototypes/constants.dart';
+import 'package:prototypes/screens/ForgotPassword/forgot_password_screen.dart';
 import 'package:prototypes/screens/Login/background.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/welcome_screen.dart';
@@ -27,7 +29,11 @@ class Body extends StatelessWidget {
         children: <Widget>[
           Text(
             "Login",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: mainFontColor,
+            ),
           ),
           SizedBox(height: size.height * 0.03),
           Image.asset(
@@ -42,10 +48,10 @@ class Body extends StatelessWidget {
             },
           ),
           RoundedPasswordField(
-            text: "Password",
-            onChanged: (value) {
+             (value) {
               password = value;
             },
+            "Password",
           ),
           RoundedButton(
             text: "Login",
@@ -72,10 +78,30 @@ class Body extends StatelessWidget {
               );
             },
           ),
-          SizedBox(height: size.height * 0.03),
+          SizedBox(height: size.height * 0.01),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) {
+                  return ForgotPassword();
+                }),
+              );
+            },
+            child: Text(
+               "Reset Password",
+                style: TextStyle(
+                  color: secondaryFontColor,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline,
+              ),
+            ),
+          ),
+          SizedBox(height: size.height * 0.02),
           back_button()
         ],
       ),
     );
   }
 }
+
