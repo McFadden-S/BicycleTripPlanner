@@ -38,11 +38,13 @@ class _StationBarState extends State<StationBar> {
                           ),
                           const SizedBox(height: 5),
                           Expanded(
-                            child: ListView.builder(
-                                itemCount: stations.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                    StationCard(index: index)),
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: <Widget>[
+                                  for(int i = 0; i < stations.length; i++) StationCard(index: i)
+                                ],
+                              ),
+                            ),
                           ),
                         ],
                       ))),

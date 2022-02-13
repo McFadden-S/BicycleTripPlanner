@@ -24,8 +24,8 @@ class _StationCardState extends State<StationCard> {
 
   late StreamSubscription locatorSubscription; 
   final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high, // How accurate the location is
-    distanceFilter: 100, // The distance needed to travel until the next update (0 means it will always update)
+    accuracy: LocationAccuracy.best, // How accurate the location is
+    distanceFilter: 150, // The distance needed to travel until the next update (0 means it will always update)
   );
 
   double distance = 0; 
