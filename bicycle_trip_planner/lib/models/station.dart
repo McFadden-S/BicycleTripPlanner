@@ -2,6 +2,7 @@ import 'package:xml/xml.dart';
 
 class Station{ 
 
+  int id; 
   String name; 
   double lat;
   double long;  
@@ -9,7 +10,8 @@ class Station{
   int emptyDocks; 
   int totalDocks;
 
-  Station({required this.name, 
+  Station({required this.id,
+           required this.name, 
            required this.lat, 
            required this.long, 
            required this.bikes, 
@@ -18,6 +20,7 @@ class Station{
   
   factory Station.fromXml(XmlElement element) {
     return Station(
+      id: int.parse(element.findElements("id").first.text),
       name: element.findElements("name").first.text,
       lat: double.parse(element.findElements("lat").first.text),
       long: double.parse(element.findElements("long").first.text),
