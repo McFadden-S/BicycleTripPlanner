@@ -40,6 +40,7 @@ Widget build(BuildContext context) {
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  // Make elevated button its own method/class? (Pass in the icon it needs)
                   ElevatedButton(
                     onPressed: () => {},
                     child: const Icon(Icons.group),
@@ -72,6 +73,7 @@ Widget build(BuildContext context) {
                       )
                   ),
                   const Spacer(flex: 10),
+                  // Button repeated here
                   ElevatedButton(
                     onPressed: () => {},
                     child: const Icon(Icons.directions_bike),
@@ -89,30 +91,4 @@ Widget build(BuildContext context) {
   ),
   );
 }
-}
-
-class RoutePlanningDirection extends StatelessWidget {
-  RoutePlanningDirection({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Container(
-        color: Colors.cyanAccent,
-        child: ListView(
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(),
-                labelText: 'Stop',
-              ),
-            ),
-          ],
-        )
-      ),
-    );
-  }
 }

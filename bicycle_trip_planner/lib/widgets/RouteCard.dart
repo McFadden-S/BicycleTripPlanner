@@ -9,34 +9,15 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-    List<Widget> stopsList = [
-    Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: TextField(
-        decoration: InputDecoration(
-          fillColor: Colors.white,
-          filled: true,
-          border: OutlineInputBorder(),
-          labelText: 'Stop',
-        ),
-      ),
-    ),
-  ];
+  List<Widget> stopsList = []; 
+
+  // Initialise the stopsList with its first widget
+  _RouteCardState(){
+    addStopWidget(); 
+  }
 
   void addStopWidget() {
-    stopsList.add(
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: TextField(
-          decoration: InputDecoration(
-            fillColor: Colors.white,
-            filled: true,
-            border: OutlineInputBorder(),
-            labelText: 'Stop',
-          ),
-        ),
-      ),
-    );
+    stopsList.add(_textBox(text: "Stop"));
   }
 
   bool extendedRoutePlanning = false;
@@ -46,6 +27,21 @@ class _RouteCardState extends State<RouteCard> {
 
   void updateExtendedRoutePlanningView(){
     setState(()=>{extendedRoutePlanning = true});
+  }
+
+  // Should this be abstracted as well? 
+  Widget _textBox({String text = ""}){
+    return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+                border: OutlineInputBorder(),
+                labelText: text,
+              ),
+            ),
+          );
   }
 
   @override
@@ -65,17 +61,7 @@ class _RouteCardState extends State<RouteCard> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
-                                border: OutlineInputBorder(),
-                                labelText: 'Starting Point',
-                              ),
-                            ),
-                          ),
+                          _textBox(text: "Starting Point"),
                           TextButton(
                               child: const Text("Add Stop(s)"),
                               onPressed: () {
@@ -94,17 +80,7 @@ class _RouteCardState extends State<RouteCard> {
                           )
                             :
                           const Icon(Icons.expand_more),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: const TextField(
-                              decoration: InputDecoration(
-                                fillColor: Colors.white,
-                                filled: true,
-                                border: OutlineInputBorder(),
-                                labelText: 'Destination',
-                              ),
-                            ),
-                          ),
+                          _textBox(text: "Destination"),
                             // const Icon(Icons.expand_more),
                         ],
                       ),
