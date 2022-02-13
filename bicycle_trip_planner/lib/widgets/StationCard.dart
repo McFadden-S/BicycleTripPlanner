@@ -49,21 +49,29 @@ class _StationCardState extends State<StationCard> {
     locatorSubscription =
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position position) {
-          LatLng pos = LatLng(position.latitude, position.longitude);
-          station = applicationBloc.stations[widget.index]; 
-          setState((){
-            distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
-          });
+          
+            LatLng pos = LatLng(position.latitude, position.longitude);
+            station = applicationBloc.stations[widget.index]; 
+            setState((){
+                distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
+            });
       });
   }
 
     @override
-    void dispose(){ 
-      super.dispose(); 
-      final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-      applicationBloc.dispose(); 
+    void setState(fn){
+      try{super.setState(fn);}
+      catch(e){};
+    }
 
-      locatorSubscription.cancel(); 
+    @override
+    void dispose(){ 
+      try{
+        final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+        applicationBloc.dispose(); 
+      }catch(e){};
+      locatorSubscription.cancel();
+      super.dispose();  
     }
 
     double _convertMetresToMiles(double distance){
