@@ -24,8 +24,8 @@ class _StationCardState extends State<StationCard> {
 
   late StreamSubscription locatorSubscription; 
   final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.high, // How accurate the location is
-    distanceFilter: 100, // The distance needed to travel until the next update (0 means it will always update)
+    accuracy: LocationAccuracy.best, // How accurate the location is
+    distanceFilter: 150, // The distance needed to travel until the next update (0 means it will always update)
   );
 
   double distance = 0; 
@@ -49,21 +49,29 @@ class _StationCardState extends State<StationCard> {
     locatorSubscription =
       Geolocator.getPositionStream(locationSettings: locationSettings)
           .listen((Position position) {
-          LatLng pos = LatLng(position.latitude, position.longitude);
-          station = applicationBloc.stations[widget.index]; 
-          setState((){
-            distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
-          });
+          
+            LatLng pos = LatLng(position.latitude, position.longitude);
+            station = applicationBloc.stations[widget.index]; 
+            setState((){
+                distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
+            });
       });
   }
 
     @override
-    void dispose(){ 
-      super.dispose(); 
-      final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-      applicationBloc.dispose(); 
+    void setState(fn){
+      try{super.setState(fn);}
+      catch(e){};
+    }
 
-      locatorSubscription.cancel(); 
+    @override
+    void dispose(){ 
+      try{
+        final ApplicationBloc applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+        applicationBloc.dispose(); 
+      }catch(e){};
+      locatorSubscription.cancel();
+      super.dispose();  
     }
 
     double _convertMetresToMiles(double distance){

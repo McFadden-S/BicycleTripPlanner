@@ -236,8 +236,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     //Use a periodic timer to update the TFL Santander bike stations 
     //(Once every 30 seconds) 
-    const duration = Duration(seconds: 30); 
-    Timer.periodic(duration, (Timer t) => applicationBloc.updateStations());
+    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
   }
 
   @override
@@ -245,6 +244,7 @@ class _MapWidgetState extends State<MapWidget> {
     _googleMapController.dispose();
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    applicationBloc.cancelStationTimer();
     applicationBloc.dispose();
 
     locationSubscription.cancel();
