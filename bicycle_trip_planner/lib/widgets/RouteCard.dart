@@ -11,7 +11,7 @@ class _RouteCardState extends State<RouteCard> {
 
   List<Widget> stopsList = []; 
 
-  // Initialise the stopsList with its first widget
+  // TODO Initialise the stopsList with its first widget
   _RouteCardState(){
     addStopWidget(); 
   }
@@ -29,7 +29,7 @@ class _RouteCardState extends State<RouteCard> {
     setState(()=>{extendedRoutePlanning = true});
   }
 
-  // Should this be abstracted as well? 
+  // TODO Should this be abstracted as well?
   Widget _textBox({String text = ""}){
     return Padding(
             padding: const EdgeInsets.all(8.0),
