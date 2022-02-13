@@ -40,7 +40,7 @@ Widget build(BuildContext context) {
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Make elevated button its own method/class? (Pass in the icon it needs)
+                  // TODO Make elevated button its own method/class? (Pass in the icon it needs)
                   ElevatedButton(
                     onPressed: () => {},
                     child: const Icon(Icons.group),
@@ -73,7 +73,7 @@ Widget build(BuildContext context) {
                       )
                   ),
                   const Spacer(flex: 10),
-                  // Button repeated here
+                  // TODO Button repeated here
                   ElevatedButton(
                     onPressed: () => {},
                     child: const Icon(Icons.directions_bike),
