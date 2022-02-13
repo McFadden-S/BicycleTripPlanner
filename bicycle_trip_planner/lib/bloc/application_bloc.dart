@@ -21,6 +21,20 @@ class ApplicationBloc with ChangeNotifier {
   StreamController<Place> selectedLocation = StreamController<Place>();
   StreamController<List<Station>> allStations = StreamController<List<Station>>();
 
+  bool stationTimer = false; 
+
+  cancelStationTimer(){
+    stationTimer = false;
+  }
+
+  updateStationsPeriodically(Duration duration){
+    stationTimer = true; 
+    Timer.periodic(duration, (Timer timer){
+      if(stationTimer){updateStations();}
+      else{timer.cancel();}
+    });  
+  }
+
   updateStations() async {
     stations = await stationsService.getStations(); 
     allStations.add(stations);
