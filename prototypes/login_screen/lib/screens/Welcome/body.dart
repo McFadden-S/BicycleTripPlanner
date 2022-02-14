@@ -47,6 +47,8 @@ class _BodyState extends State<Body> {
                     },
                   ),
                 );
+              }
+            }
           ),
           if (_auth.currentUser != null)
             RoundedButton(
@@ -54,7 +56,6 @@ class _BodyState extends State<Body> {
               press: () {
                 _auth.signOut();
                 setState(() => _auth.currentUser);
-                print("Log out successful");
               },
             ),
           SizedBox(height: size.height * 0.05),
