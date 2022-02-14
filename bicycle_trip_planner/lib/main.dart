@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget{
           splashColor: Colors.transparent,
           extendedPadding: EdgeInsets.all(10)
         ),
+
         fontFamily: 'Outfit',
         textTheme: const TextTheme(
           headline6: TextStyle(fontSize: 36.0),

@@ -5,11 +5,18 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  bool bike = false;
+  @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Welcome to Flutter',
       theme: ThemeData(
@@ -34,6 +41,13 @@ class MyApp extends StatelessWidget {
           splashColor: Colors.transparent,
         ),
 
+        cardTheme: CardTheme(
+          margin: const EdgeInsets.all(5.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(9.0),
+          ),
+        ),
+
 
         fontFamily: 'Outfit',
         textTheme: const TextTheme(
@@ -46,43 +60,56 @@ class MyApp extends StatelessWidget {
           title: const Text('Welcome to Flutter'),
         ),
         body: Center(
-          child: Row(
+          child: Column(
             children: [
-              ElevatedButton(
-                child: Text(
-                  'Hello Worlds',
-                ),
-                onPressed: () {
-                  print("Hi");
-                },
-              ),
-              FloatingActionButton(onPressed: () => print('float')),
-              ElevatedButton(
-                child: Icon(
-                  Icons.directions_bike,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  print("Go");
-                },
-              ),
-              ElevatedButton(
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.directions_walk,
-                      color: Colors.white,
+              Row(
+                children: [
+                  ElevatedButton(
+                    child: Text(
+                      'Hello Worlds',
                     ),
-                    Text('/'),
-                    Icon(
+                    onPressed: () {
+                      print("Hi");
+                    },
+                  ),
+                  FloatingActionButton(onPressed: () => print('float')),
+                  ElevatedButton(
+                    child: Icon(
                       Icons.directions_bike,
                       color: Colors.white,
                     ),
-                  ],
+                    onPressed: () {
+                      print("Go");
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.directions_walk,
+                          color: bike ? Colors.red[900] : Colors.white,
+                        ),
+                        Text('/'),
+                        Icon(
+                          Icons.directions_bike,
+                          color: bike ? Colors.white : Colors.red[900],
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      print(bike);
+                      setState(() {
+                        bike = !bike;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              Card(
+                child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    child: const Text("12 : 02")
                 ),
-                onPressed: () {
-                  print("Go");
-                },
               ),
             ],
           ),
