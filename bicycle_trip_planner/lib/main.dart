@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget{
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             textStyle: buttonTextStyle,
-            padding: EdgeInsets.fromLTRB(15, 8, 15, 8),
+            padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
             primary: const Color(0xFF0C9CEE),
             shadowColor: Colors.grey,
             elevation: 5,
@@ -51,11 +51,12 @@ class MyApp extends StatelessWidget{
             ),
           ),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: Colors.white,
-          hoverColor: Colors.red,
+          foregroundColor: Colors.black54,
           elevation: 3,
           splashColor: Colors.transparent,
+          extendedPadding: EdgeInsets.all(10)
         ),
         fontFamily: 'Outfit',
         textTheme: const TextTheme(

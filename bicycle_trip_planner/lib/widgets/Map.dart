@@ -12,6 +12,7 @@ import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui' as ui;
+import 'package:flutter/services.dart' show rootBundle;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -21,6 +22,8 @@ class MapWidget extends StatefulWidget {
 }
 
 class _MapWidgetState extends State<MapWidget> {
+
+  String? style;
 
   //********** Providers **********
 
@@ -184,6 +187,11 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
 
+    rootBundle.loadString('assets/map_style.txt').then((string) {
+      style = string;
+    });
+    print(style);
+
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     locationSubscription =
@@ -263,7 +271,10 @@ class _MapWidgetState extends State<MapWidget> {
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       initialCameraPosition: _initialCameraPosition,
-      onMapCreated: (controller) => _googleMapController = controller,
+      onMapCreated: (controller) {
+        _googleMapController = controller;
+        _googleMapController.setMapStyle(style);
+      }
     );
   }
 

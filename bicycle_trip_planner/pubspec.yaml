@@ -44,7 +44,6 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_spinkit: ^5.1.0
   geolocator: ^8.1.1
-  #google_fonts: ^2.3.0
 
 
 dev_dependencies:
@@ -72,6 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/bike_icon.png
+    - assets/map_style.txt
 
   fonts:
     - family: Outfit
