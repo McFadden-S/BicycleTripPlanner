@@ -47,10 +47,6 @@ class _BodyState extends State<Body> {
                     },
                   ),
                 );
-              } else {
-                print("You are already logged in");
-              }
-            },
           ),
           if (_auth.currentUser != null)
             RoundedButton(
