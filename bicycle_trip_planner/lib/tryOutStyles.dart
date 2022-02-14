@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             textStyle: buttonTextStyle,
             padding: EdgeInsets.fromLTRB(15, 8, 15, 8),
-            primary: Colors.red[700],
+            primary: const Color(0xFF0C9CEE),
             shadowColor: Colors.grey,
             elevation: 5,
             shape: RoundedRectangleBorder(
