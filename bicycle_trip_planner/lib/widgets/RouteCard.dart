@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'Search.dart';
 
 class RouteCard extends StatefulWidget {
   const RouteCard({ Key? key }) : super(key: key);
@@ -61,7 +62,7 @@ class _RouteCardState extends State<RouteCard> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          _textBox(text: "Starting Point"),
+                          Search(labelTextIn: "Starting Point"),
                           TextButton(
                               child: const Text("Add Stop(s)"),
                               onPressed: () {
@@ -80,7 +81,7 @@ class _RouteCardState extends State<RouteCard> {
                           )
                             :
                           const Icon(Icons.expand_more),
-                          _textBox(text: "Destination"),
+                          Search(labelTextIn: "Starting Point"),
                             // const Icon(Icons.expand_more),
                         ],
                       ),
