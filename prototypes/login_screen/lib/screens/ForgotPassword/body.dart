@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
+import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,9 +24,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Background(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -45,7 +44,7 @@ class _BodyState extends State<Body> {
           Text(
             "Please enter your email to reset password",
             style: TextStyle(
-              color: secondaryFontColor,
+                color: secondaryFontColor,
             ),
           ),
           RoundedInputField(
@@ -56,23 +55,13 @@ class _BodyState extends State<Body> {
           ),
           RoundedButton(
             text: "Send email to reset password",
-            press: () {
-              resetPassword();
-            }, // to be modified...
+            press: () {}, // to be modified...
           ),
-          const BackButton(
-          ),
+          back_button(),
         ],
       ),
     );
   }
-
-  Future resetPassword() async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-    } catch (e) {
-
-    }
-  }
-
 }
+
+
