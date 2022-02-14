@@ -47,11 +47,10 @@ class _RouteCardState extends State<RouteCard> {
 
   @override
   Widget build(BuildContext context) {
-
         return Card(
           child: InkWell(
               splashColor: Colors.deepPurple.withAlpha(30),
-              onTap: ()=>setExtendRoutePlanningView(),
+              onTap: () => setExtendRoutePlanningView(),
               child: Expanded(
                // height: !extendedRoutePlanning ? 250 : 350,
                 child: Column(
@@ -71,7 +70,7 @@ class _RouteCardState extends State<RouteCard> {
                                 // setExtendRoutePlanningView();
                               },
                           ),
-                          extendedRoutePlanning ?
+                          extendedRoutePlanning?
                           SizedBox(
                             height: 100,
                             child: ListView(

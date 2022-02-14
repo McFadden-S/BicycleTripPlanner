@@ -39,10 +39,11 @@ class _SearchState extends State<Search> {
         ),
         if (applicationBloc.ifSearchResult() && isSearching)
           Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+            margin: const EdgeInsets.fromLTRB(10.0, 65.0, 10.0, 0.0),
             child: Card(
               color: Colors.grey[850],
               child: ListView.builder(
+                shrinkWrap: true,
                 itemCount:
                 applicationBloc.searchResults.length,
                 itemBuilder: (context, index) {
