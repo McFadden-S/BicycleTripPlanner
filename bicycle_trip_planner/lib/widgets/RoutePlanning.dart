@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/widgets/RouteCard.dart';
 import 'package:flutter/material.dart';
+import 'CircleButton.dart';
 
 
 class RoutePlanning extends StatefulWidget {
@@ -26,29 +27,16 @@ Widget build(BuildContext context) {
             Row (
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () => {},
-                    child: const Icon(Icons.location_searching),
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10),
-                    ),
-                  )
+                  //TODO: an empty function is being passed here for now
+                  CircleButton(iconIn: Icons.location_searching, onButtonClicked: () => {print("location_searching icon")})
                 ]
             ),
             const Spacer(),
             Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // TODO Make elevated button its own method/class? (Pass in the icon it needs)
-                  ElevatedButton(
-                    onPressed: () => {},
-                    child: const Icon(Icons.group),
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10),
-                    ),
-                  )
+                  //TODO: an empty function is being passed here for now
+                  CircleButton(iconIn: Icons.group, onButtonClicked: () => {print("group icon")})
                 ]
             ),
             const Spacer(flex: 50),
@@ -73,15 +61,8 @@ Widget build(BuildContext context) {
                       )
                   ),
                   const Spacer(flex: 10),
-                  // TODO Button repeated here
-                  ElevatedButton(
-                    onPressed: () => {},
-                    child: const Icon(Icons.directions_bike),
-                    style: ElevatedButton.styleFrom(
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(10),
-                    ),
-                  )
+                  //TODO: an empty function is being passed here for now
+                  CircleButton(iconIn: Icons.directions_bike, onButtonClicked: () => {print("directions_bike icon")})
                 ]
             ),
           ],
