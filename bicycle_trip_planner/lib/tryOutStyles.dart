@@ -33,6 +33,8 @@ class MyApp extends StatelessWidget {
           elevation: 3,
           splashColor: Colors.transparent,
         ),
+
+
         fontFamily: 'Outfit',
         textTheme: const TextTheme(
           headline6: TextStyle(fontSize: 36.0),
