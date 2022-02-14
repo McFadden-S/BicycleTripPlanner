@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
-import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,7 +56,7 @@ class _BodyState extends State<Body> {
             text: "Send email to reset password",
             press: () {}, // to be modified...
           ),
-          back_button(),
+          BackButton(),
         ],
       ),
     );

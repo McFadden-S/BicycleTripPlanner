@@ -5,7 +5,6 @@ import 'package:prototypes/screens/Login/background.dart';
 import 'package:prototypes/screens/SignUp/signup_screen.dart';
 import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/already_have_account.dart';
-import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
@@ -98,7 +97,7 @@ class Body extends StatelessWidget {
             ),
           ),
           SizedBox(height: size.height * 0.02),
-          back_button()
+          BackButton()
         ],
       ),
     );

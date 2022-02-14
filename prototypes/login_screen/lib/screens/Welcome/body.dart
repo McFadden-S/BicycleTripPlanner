@@ -74,6 +74,7 @@ class Body extends StatelessWidget {
                 },
                 icon: FaIcon(FontAwesomeIcons.google),
               ),
+              BackButton(),
             ],
           ),
         )
