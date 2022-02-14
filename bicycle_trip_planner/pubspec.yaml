@@ -44,7 +44,7 @@ dependencies:
   flutter_html: ^2.2.1
   flutter_spinkit: ^5.1.0
   geolocator: ^8.1.1
-  google_fonts: ^2.3.0
+  #google_fonts: ^2.3.0
 
 
 dev_dependencies:
@@ -72,6 +72,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/bike_icon.png
+
+  fonts:
+    - family: Outfit
+      fonts:
+        - asset: assets/Outfit-Regular.ttf
+        - asset: assets/Outfit-Thin.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
