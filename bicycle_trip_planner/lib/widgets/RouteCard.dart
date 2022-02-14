@@ -81,7 +81,7 @@ class _RouteCardState extends State<RouteCard> {
                           )
                             :
                           const Icon(Icons.expand_more),
-                          Search(labelTextIn: "Starting Point"),
+                          Search(labelTextIn: "Destination"),
                             // const Icon(Icons.expand_more),
                         ],
                       ),
