@@ -52,7 +52,7 @@ class _BodyState extends State<Body> {
           ),
           RoundedButton(
             text: "Send email to reset password",
-            press: () {}, // to be modified...
+            press: resetPassword, // to be modified...
           ),
           back_button(),
         ],
@@ -62,6 +62,7 @@ class _BodyState extends State<Body> {
   Future resetPassword() async{
     try{
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      _showSnackBar("Password reset email sent");
     }catch(e){
       _showSnackBar(e.toString());
     }
