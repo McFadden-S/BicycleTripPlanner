@@ -1,17 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
 import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../../constants.dart';
 
 class Body extends StatefulWidget {
-  final Widget child;
 
   const Body({
     Key? key,
-    required this.child
   }) : super(key: key);
 
   @override
@@ -19,7 +17,6 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  final _auth = FirebaseAuth.instance;
   late String email;
 
   @override
@@ -62,6 +59,21 @@ class _BodyState extends State<Body> {
       ),
     );
   }
+  Future resetPassword() async{
+    try{
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    }catch(e){
+      _showSnackBar(e.toString());
+    }
+
+  }
+
+  Future<void> _showSnackBar(String m)async {
+    final snackBar = SnackBar(content: Text(m), duration: const Duration(seconds: 3),backgroundColor: Colors.blue,);
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+
 }
 
 

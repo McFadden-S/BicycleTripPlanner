@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
+import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
@@ -9,9 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../constants.dart';
 
 class Body extends StatefulWidget {
-  final Widget child;
-
-  const Body({Key? key, required this.child}) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
@@ -49,14 +48,14 @@ class _BodyState extends State<Body> {
             },
           ),
           RoundedPasswordField(
-                (value) {
+            (value) {
               password = value;
             },
             "Password",
 
           ),
           RoundedPasswordField(
-                (value) {
+            (value) {
               confirmPassword = value;
             },
             "Confirm Password",
@@ -65,8 +64,8 @@ class _BodyState extends State<Body> {
             text: "Sign Up",
             press: () async {
               try {
-                final newUser = await _auth.createUserWithEmailAndPassword(
-                    email: email, password: password);
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
               } catch (e) {
                 print(e);
                 _showSnackBar(e.toString());
