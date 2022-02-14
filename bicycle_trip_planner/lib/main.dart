@@ -58,6 +58,13 @@ class MyApp extends StatelessWidget{
           splashColor: Colors.transparent,
           extendedPadding: EdgeInsets.all(10)
         ),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(width: 0.5, color: Color(0xff969393))
+          ),
+          elevation: 3,
+        ),
 
         fontFamily: 'Outfit',
         textTheme: const TextTheme(

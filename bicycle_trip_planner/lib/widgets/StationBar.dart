@@ -17,36 +17,48 @@ class _StationBarState extends State<StationBar> {
 
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              SizedBox(
-                  height: (56 * 6).toDouble(),
-                  child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        color: Color(0xff345955),
-                      ),
-                      child: Column(
-                        children: [
-                          const Text(
-                            "Select a station",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          const SizedBox(height: 5),
-                          Expanded(
-                            child: ListView.builder(
-                                itemCount: stations.length,
-                                itemBuilder:
-                                    (BuildContext context, int index) =>
-                                    StationCard(index: index)),
-                          ),
-                        ],
-                      ))),
-            ],
+          return Container(
+            padding: EdgeInsets.fromLTRB(15, 00, 15, 20),
+            decoration: BoxDecoration(
+              //color: const Color(0xff345955),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+                //boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                SizedBox(
+                    height: (56 * 6).toDouble(),
+                    child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: const BoxDecoration(
+                          //color: Color(0xff345955),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Select a station",
+                              //style: TextStyle(color: Colors.white),
+                            ),
+                            const SizedBox(height: 10),
+                            Expanded(
+                              child: ListView.builder(
+                                  itemCount: stations.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) =>
+                                      StationCard(index: index)),
+                            ),
+                          ],
+                        )
+                    )
+                ),
+              ],
+            ),
           );
         });
   }
@@ -56,38 +68,62 @@ class _StationBarState extends State<StationBar> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    return BottomAppBar(
-        elevation: 0,
-        color: const Color(0xff345955),
-        child: SizedBox(
-            height: 56.0,
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () => showExpandedList(applicationBloc.stations),
-                  icon: const Icon(Icons.menu),
-                  color: Colors.white,
-                ),
-                Flexible(
-                  child: PageView.builder(
-                      controller: stationsPageViewController,
-                      physics: const PageScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      itemCount: applicationBloc.stations.length,
-                      itemBuilder: (BuildContext context, int index) =>
-                          StationCard(index: index)),
-                ),
-                SizedBox(
-                  width: 30.0,
-                  child: IconButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () => stationsPageViewController.jumpTo(0),
-                    icon: const Icon(Icons.first_page),
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            )),
-      );
+    return Container(
+      padding: EdgeInsets.fromLTRB(15, 0, 15, 20),
+      decoration: BoxDecoration(
+          //color: const Color(0xff345955),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+          boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
+      ),
+      //child: BottomAppBar(
+          //elevation: 0,
+            child: SizedBox(
+                height: 170.0,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: Row(
+                          children: [
+                            Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
+                            Spacer(),
+                            IconButton(
+                              onPressed: () => showExpandedList(applicationBloc.stations),
+                              icon: const Icon(Icons.menu),
+                            ),
+                          ],
+                        )
+                    ),
+                    Container(
+                      height: 100,
+                      child: Row(
+                        children: [
+
+                          Flexible(
+                              child: ListView.builder(
+                                  controller: stationsPageViewController,
+                                  physics: const PageScrollPhysics(),
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: applicationBloc.stations.length,
+                                  itemBuilder: (BuildContext context, int index) =>
+                                      StationCard(index: index)),
+                          ),
+                          SizedBox(
+                            width: 30.0,
+                            child: IconButton(
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () => stationsPageViewController.jumpTo(0),
+                              icon: const Icon(Icons.first_page),
+                              //color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+            ),
+     //     ),
+    );
   }
 }

@@ -91,8 +91,47 @@ class _StationCardState extends State<StationCard> {
     return InkWell(
       onTap: () => stationClicked(widget.index),
       child: SizedBox(
-          height: 60, 
+          width: 250,
+          height: 100,
           child: Card(
+            child:
+              Container(
+                padding: EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 10,
+                          child: Text(applicationBloc.stations[widget.index].name,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 20.0)
+                          ),
+                        ),
+                        Spacer(flex: 1),
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                              "${distance.toStringAsFixed(1)}mi",
+                              overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                    Text(
+                      applicationBloc.stations[widget.index].bikes.toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                    Text(
+                      applicationBloc.stations[widget.index].totalDocks.toString(),
+                      style: TextStyle(fontSize: 15.0),
+                    ),
+                  ],
+                ),
+              )
+          ),
+        /*Card(
               child: Row(
                 children: [
                   const Spacer(),
@@ -147,7 +186,9 @@ class _StationCardState extends State<StationCard> {
                   ),
                   const Spacer(),
                 ],
-              ))),
+              )
+          )*/
+      ),
     );
   }
 }
