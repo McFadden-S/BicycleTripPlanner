@@ -9,12 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../constants.dart';
 
 class Body extends StatefulWidget {
-  final Widget child;
-
-  const Body({
-    Key? key,
-    required this.child
-  }) : super(key: key);
+  const Body({Key? key}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
@@ -24,7 +19,7 @@ class _BodyState extends State<Body> {
   final _auth = FirebaseAuth.instance;
   late String email;
   late String password;
-  String? confirmPassword;
+  late String confirmPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +31,9 @@ class _BodyState extends State<Body> {
           Text(
             "Sign Up",
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-                color: mainFontColor,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: mainFontColor,
             ),
           ),
           Image.asset(
@@ -46,43 +41,33 @@ class _BodyState extends State<Body> {
             height: size.height * 0.35,
           ),
           RoundedInputField(
-
             hintText: "Email",
             onChanged: (value) {
               email = value;
             },
           ),
           RoundedPasswordField(
-                (value) {
-              password = value;
-            },
-              "Password",
-              ),
+
+              text: "Password",
+              onChanged: (value) {
+                password = value;
+              }
+          ),
           RoundedPasswordField(
-             (value) {
-              confirmPassword = value;
-            },
-             "Confirm Password",
+              text: "Confirm Password",
+              onChanged: (value) {
+                confirmPassword = value;
+              }
           ),
           RoundedButton(
             text: "Sign Up",
             press: () async {
               try {
-                final newUser = await _auth.createUserWithEmailAndPassword(
-                    email: email, password: password);
-                if(newUser != null) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) {
-                          return WelcomeScreen();
-                        }
-                    ),
-                  );
-                }
-              }
-              catch(e){
+                  final newUser = await _auth.createUserWithEmailAndPassword(
+                      email: email, password: password);
+              } catch (e) {
                 print(e);
+                _showSnackBar(e.toString());
               }
             },
           ),
@@ -91,6 +76,13 @@ class _BodyState extends State<Body> {
       ),
     );
   }
+
+  Future<void> _showSnackBar(String m) async {
+    final snackBar = SnackBar(
+      content: Text(m),
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.blue,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 }
-
-
