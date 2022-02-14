@@ -52,8 +52,8 @@ class _RouteCardState extends State<RouteCard> {
           child: InkWell(
               splashColor: Colors.deepPurple.withAlpha(30),
               onTap: ()=>setExtendRoutePlanningView(),
-              child: SizedBox(
-                height: !extendedRoutePlanning ? 250 : 350,
+              child: Expanded(
+               // height: !extendedRoutePlanning ? 250 : 350,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
