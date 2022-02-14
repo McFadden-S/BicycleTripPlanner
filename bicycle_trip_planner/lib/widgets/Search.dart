@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
-  const Search({Key? key}) : super(key: key);
+  final String labelTextIn;
+
+  const Search({Key? key, required this.labelTextIn }) : super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -27,11 +29,11 @@ class _SearchState extends State<Search> {
             controller: searchController,
             onChanged: (input) => {applicationBloc.searchPlaces(input)},
             onTap: (){isSearching = true;},
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
               border: OutlineInputBorder(),
-              labelText: 'Search',
+              labelText: widget.labelTextIn,
             ),
           ),
         ),

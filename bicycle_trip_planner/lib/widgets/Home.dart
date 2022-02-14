@@ -27,7 +27,7 @@ class _HomeState extends State<Home> {
           child: Stack(
             children: [
               MapWidget(),
-              Search(),
+              Search(labelTextIn: 'Search',),
             ],
           )
       ),

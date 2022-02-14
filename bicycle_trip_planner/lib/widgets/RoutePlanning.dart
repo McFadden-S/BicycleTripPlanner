@@ -1,6 +1,8 @@
 import 'package:bicycle_trip_planner/widgets/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'CircleButton.dart';
+import 'Search.dart';
+
 
 
 class RoutePlanning extends StatefulWidget {
@@ -22,7 +24,7 @@ Widget build(BuildContext context) {
         child: Column(
           children: [
             const Spacer(),
-            RouteCard(), 
+            RouteCard(),
             const Spacer(),
             Row (
                 mainAxisAlignment: MainAxisAlignment.end,
