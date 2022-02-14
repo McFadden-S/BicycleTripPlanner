@@ -48,17 +48,17 @@ class _BodyState extends State<Body> {
             },
           ),
           RoundedPasswordField(
-            (value) {
-              password = value;
-            },
-            "Password",
 
+              text: "Password",
+              onChanged: (value) {
+                password = value;
+              }
           ),
           RoundedPasswordField(
-            (value) {
-              confirmPassword = value;
-            },
-            "Confirm Password",
+              text: "Confirm Password",
+              onChanged: (value) {
+                confirmPassword = value;
+              }
           ),
           RoundedButton(
             text: "Sign Up",
