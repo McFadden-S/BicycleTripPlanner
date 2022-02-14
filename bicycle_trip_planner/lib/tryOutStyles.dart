@@ -24,7 +24,7 @@ class _MyAppState extends State<MyApp> {
         direction.toLowerCase().contains('straight') ?
           Icons.arrow_upward :
         Icons.circle,
-      color: Colors.blueAccent,
+      color: buttonPrimaryColor,
     );
   }
 

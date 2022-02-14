@@ -1,5 +1,7 @@
+import 'package:bicycle_trip_planner/widgets/Map.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/shims/dart_ui_real.dart';
+import '../constants.dart';
 import 'Directions.dart';
 
 
@@ -13,7 +15,6 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   bool extendedNavigation = false;
   bool cycling = false;
-  final List<Widget> entries = [NavigationDirection(), NavigationDirection()];
 
   void setExtendNavigationVied(){
     setState(()=> {extendedNavigation = !extendedNavigation});
@@ -27,10 +28,10 @@ class _NavigationState extends State<Navigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-          child: Container(
-            color: Colors.blueAccent,
-            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 0.0),
-            child: Column(
+        child: Stack(
+          children: [
+            MapWidget(),
+            Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.max,
               children: [
@@ -39,8 +40,9 @@ class _NavigationState extends State<Navigation> {
                   child: InkWell(
                     splashColor: Colors.blue.withAlpha(30),
                     onTap: ()=>setExtendNavigationVied(),
-                    child: SizedBox(
-                      height: !extendedNavigation ? 100 : 200,
+                    child:
+                    SizedBox(
+                      height: !extendedNavigation ? 100 : 300,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -62,13 +64,7 @@ class _NavigationState extends State<Navigation> {
                             ),
                           ),
                           extendedNavigation ?
-                            SizedBox(
-                              height: 100,
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: entries,
-                              ),
-                            )
+                            Directions()
                           :
                             const Icon(Icons.expand_more),
                           extendedNavigation ? const Icon(Icons.expand_less) : const SizedBox.shrink(),
@@ -129,6 +125,8 @@ class _NavigationState extends State<Navigation> {
                 Row(
                   children: [
                     Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
                       child:
                         Container(
                           padding: const EdgeInsets.all(5.0),
@@ -147,17 +145,18 @@ class _NavigationState extends State<Navigation> {
                     ),
                     const Spacer(flex: 1),
                     ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white)),
                       child: Row(
                         children: [
                           Icon(
                             Icons.directions_walk,
-                            color: cycling ? Colors.white70 : Colors.white,
+                            color: cycling ? Colors.black26 : Colors.red,
                             size: 30,
                           ),
-                          const Text('/', style: TextStyle(fontSize: 25),),
+                          const Text('/', style: TextStyle(fontSize: 25, color: Colors.black),),
                           Icon(
                             Icons.directions_bike,
-                            color: cycling ? Colors.white : Colors.white70,
+                            color: cycling ? Colors.red : Colors.black26,
                             size: 30,
                           ),
                         ],
@@ -180,8 +179,9 @@ class _NavigationState extends State<Navigation> {
                 ),
                 const Spacer(),
               ],
-            ),
-          )
+            )
+          ],
+        )
       ),
     );
   }

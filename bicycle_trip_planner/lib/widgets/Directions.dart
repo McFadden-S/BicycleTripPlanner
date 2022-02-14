@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import '../constants.dart';
+
 class Directions extends StatefulWidget {
   const Directions({Key? key}) : super(key: key);
 
@@ -35,6 +37,20 @@ class _DirectionsState extends State<Directions> {
     _directions = steps;
   }
 
+  Icon directionIcon(String direction) {
+    return Icon(
+      direction.toLowerCase().contains('left') ?
+      Icons.arrow_back :
+      direction.toLowerCase().contains('right') ?
+      Icons.arrow_forward_outlined :
+      direction.toLowerCase().contains('straight') ?
+      Icons.arrow_upward :
+      Icons.circle,
+      color: buttonPrimaryColor,
+    );
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -61,29 +77,51 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        alignment: Alignment.topLeft,
-        margin: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 43.0),
-        child: Card(
-            color: Theme.of(context).primaryColor,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: ListView.separated(
-                itemCount: _directions.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                      leading: Text("${index + 1}."),
-                      trailing:
-                      Text("${_directions[index].distance} m"),
-                      title: Html(
-                        data: _directions[index].instruction,
-                      ));
-                },
-                separatorBuilder: (context, index) {
-                  return const Divider();
-                },
-              ),
-            )),
-      );
+    return SizedBox(
+      height: 300,
+      child: ListView.separated(
+        itemCount: _directions.length,
+        itemBuilder: (BuildContext context, int index) {
+          return ListTile(
+              leading: directionIcon(_directions[index].instruction),
+              trailing:
+              Text("${_directions[index].distance} m"),
+              title: Html(
+                data: _directions[index].instruction,
+              ));
+        },
+        separatorBuilder: (context, index) {
+          return const Divider();
+        },
+      ),
+    );
   }
 }
+
+
+
+
+
+
+/*
+Card(
+color: Theme.of(context).primaryColor,
+child: Padding(
+padding: const EdgeInsets.all(12.0),
+child: ListView.separated(
+itemCount: _directions.length,
+itemBuilder: (BuildContext context, int index) {
+return ListTile(
+leading: directionIcon(_directions[index].instruction),
+trailing:
+Text("${_directions[index].distance} m"),
+title: Html(
+data: _directions[index].instruction,
+));
+},
+separatorBuilder: (context, index) {
+return const Divider();
+},
+),
+)),
+*/
