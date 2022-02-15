@@ -27,13 +27,12 @@ class _NavigationState extends State<Navigation> {
           children: [
             MapWidget(),
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 5, 8, 8),
+              padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Spacer(),
                   Directions(),
                   const Spacer(),
                   Row(
@@ -139,7 +138,6 @@ class _NavigationState extends State<Navigation> {
                       ),
                     ],
                   ),
-                  const Spacer(),
                 ],
               ),
             )
