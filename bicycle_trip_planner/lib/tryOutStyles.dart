@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       title: 'Welcome to Flutter',
+
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: const Color(0xFF0C9CEE),
@@ -34,6 +35,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
         ),
+
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: Colors.white,
           hoverColor: Colors.red,
@@ -60,59 +62,101 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Welcome to Flutter'),
         ),
         body: Center(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  ElevatedButton(
-                    child: Text(
-                      'Hello Worlds',
-                    ),
-                    onPressed: () {
-                      print("Hi");
-                    },
-                  ),
-                  FloatingActionButton(onPressed: () => print('float')),
-                  ElevatedButton(
-                    child: Icon(
-                      Icons.directions_bike,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      print("Go");
-                    },
-                  ),
-                  ElevatedButton(
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.directions_walk,
-                          color: bike ? Colors.red[900] : Colors.white,
-                        ),
-                        Text('/'),
-                        Icon(
-                          Icons.directions_bike,
-                          color: bike ? Colors.white : Colors.red[900],
-                        ),
-                      ],
-                    ),
-                    onPressed: () {
-                      print(bike);
-                      setState(() {
-                        bike = !bike;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Card(
-                child: Container(
-                    padding: const EdgeInsets.all(5.0),
-                    child: const Text("12 : 02")
-                ),
-              ),
-            ],
-          ),
+          child:
+
+          // destination textfield widget styled:
+
+          // Padding(
+          //   padding: EdgeInsets.all(8.0),
+          //   child: TextField(
+          //     style: TextStyle(
+          //       fontFamily: 'Outfit',
+          //       fontSize: 36.0,
+          //     ),
+          //     decoration: InputDecoration(
+          //       hintText: 'Destination',
+          //       hintStyle: TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
+          //       border: OutlineInputBorder(
+          //         borderRadius: BorderRadius.circular(30.0),
+          //         borderSide: BorderSide(color: Color.fromRGBO(5, 61, 93, 1.0), width: 10000.0),
+          //       ),
+          //       fillColor: Colors.white,
+          //       filled: true,
+          //       labelText: null,
+          //     ),
+          //   ),
+          // )
+
+          // expandable card styled:
+
+          // SizedBox(
+          //   height: 212,
+          //   child: Container(
+          //     decoration: new BoxDecoration(
+          //       boxShadow: [
+          //         new BoxShadow(
+          //           color: Color.fromRGBO(38, 36, 36, 0.5),
+          //           blurRadius: 20.0,
+          //         ),
+          //       ],
+          //     ),
+          //     child: Card(
+          //       color: Colors.white,
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(30.0),
+          //         side: BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+          //       ),
+          //       child: ListView(
+          //         shrinkWrap: true,
+          //         children: [
+          //           Padding(
+          //             padding: EdgeInsets.all(8.0),
+          //             child: TextField(
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontFamily: 'Outfit',
+          //                 fontSize: 36.0,
+          //               ),
+          //               decoration: InputDecoration(
+          //                 hintText: '----START----',
+          //                 hintStyle: TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
+          //                 border: OutlineInputBorder(
+          //                   borderRadius: BorderRadius.circular(30.0),
+          //                   borderSide: BorderSide(color: Color.fromRGBO(5, 61, 93, 1.0), width: 10000.0),
+          //                 ),
+          //                 fillColor: Colors.white,
+          //                 filled: true,
+          //                 labelText: null,
+          //               ),
+          //             ),
+          //           ),
+          //           Padding(
+          //             padding: EdgeInsets.all(8.0),
+          //             child: TextField(
+          //               textAlign: TextAlign.center,
+          //               style: TextStyle(
+          //                 fontFamily: 'Outfit',
+          //                 fontSize: 36.0,
+          //               ),
+          //               decoration: InputDecoration(
+          //                 hintText: '----END----',
+          //                 hintStyle: TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
+          //                 border: OutlineInputBorder(
+          //                   borderRadius: BorderRadius.circular(30.0),
+          //                   borderSide: BorderSide(color: Color.fromRGBO(5, 61, 93, 1.0), width: 10000.0),
+          //                 ),
+          //                 fillColor: Colors.white,
+          //                 filled: true,
+          //                 labelText: null,
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
         ),
       ),
     );
