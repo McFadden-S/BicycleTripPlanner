@@ -52,7 +52,6 @@ class _RouteCardState extends State<RouteCard> {
               splashColor: Colors.deepPurple.withAlpha(30),
               onTap: () => setExtendRoutePlanningView(),
               child: Expanded(
-               // height: !extendedRoutePlanning ? 250 : 350,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
