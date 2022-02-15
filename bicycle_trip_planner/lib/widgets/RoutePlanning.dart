@@ -33,7 +33,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 const Spacer(),
                 Stack(
                   children: [RouteCard(
-                    startSearchController: originSearchController,
+                    startSearchController: startSearchController,
                     destinationSearchController: destinationSearchController,
                   ),]
                 ),
