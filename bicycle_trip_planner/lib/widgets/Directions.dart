@@ -16,7 +16,6 @@ class Directions extends StatefulWidget {
 }
 
 class _DirectionsState extends State<Directions> {
-
   late StreamSubscription directionSubscription;
 
   List<Steps> _directions = <Steps>[];
@@ -39,17 +38,22 @@ class _DirectionsState extends State<Directions> {
 
   Icon directionIcon(String direction) {
     return Icon(
-      direction.toLowerCase().contains('left') ?
-      Icons.arrow_back :
-      direction.toLowerCase().contains('right') ?
-      Icons.arrow_forward_outlined :
-      direction.toLowerCase().contains('straight') ?
-      Icons.arrow_upward :
-      Icons.circle,
+      direction.toLowerCase().contains('left')
+          ? Icons.arrow_back
+          : direction.toLowerCase().contains('right')
+              ? Icons.arrow_forward_outlined
+              : direction.toLowerCase().contains('straight')
+                  ? Icons.arrow_upward
+                  : Icons.circle,
       color: buttonPrimaryColor,
     );
   }
 
+  bool extendedNavigation = false;
+
+  void setExtendNavigationView() {
+    setState(() => {extendedNavigation = !extendedNavigation});
+  }
 
   @override
   void initState() {
@@ -59,10 +63,10 @@ class _DirectionsState extends State<Directions> {
 
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
-          _setDirection(direction.legs.steps);
-          _setDuration(direction.legs.duration);
-          _setDistance(direction.legs.distance);
-        });
+      _setDirection(direction.legs.steps);
+      _setDuration(direction.legs.duration);
+      _setDistance(direction.legs.distance);
+    });
   }
 
   @override
@@ -77,31 +81,59 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 300,
-      child: ListView.separated(
-        itemCount: _directions.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-              leading: directionIcon(_directions[index].instruction),
-              trailing:
-              Text("${_directions[index].distance} m"),
-              title: Html(
-                data: _directions[index].instruction,
-              ));
-        },
-        separatorBuilder: (context, index) {
-          return const Divider();
-        },
-      ),
+    return Card(
+      child: InkWell(
+          splashColor: Colors.blue.withAlpha(30),
+          onTap: () => setExtendNavigationView(),
+          child: SizedBox(
+            height: !extendedNavigation ? 100 : 300,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Spacer(),
+                      Icon(Icons.assistant_direction,
+                          color: Colors.grey[400], size: 60),
+                      const Spacer(),
+                      const Text("Turn left in 1 miles"),
+                      const Spacer(flex: 5),
+                    ],
+                  ),
+                ),
+                extendedNavigation
+                    ? SizedBox(
+                        height: 300,
+                        child: ListView.separated(
+                          itemCount: _directions.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return ListTile(
+                                leading: directionIcon(
+                                    _directions[index].instruction),
+                                trailing:
+                                    Text("${_directions[index].distance} m"),
+                                title: Html(
+                                  data: _directions[index].instruction,
+                                ));
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider();
+                          },
+                        ),
+                      )
+                    : const Icon(Icons.expand_more),
+                extendedNavigation
+                    ? const Icon(Icons.expand_less)
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          )),
     );
   }
 }
-
-
-
-
-
 
 /*
 Card(

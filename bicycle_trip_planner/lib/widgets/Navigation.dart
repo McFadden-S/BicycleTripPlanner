@@ -13,12 +13,7 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool extendedNavigation = false;
   bool cycling = false;
-
-  void setExtendNavigationVied(){
-    setState(()=> {extendedNavigation = !extendedNavigation});
-  }
 
   void setCycling(){
     setState(()=> {cycling = !cycling});
@@ -36,43 +31,7 @@ class _NavigationState extends State<Navigation> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 const Spacer(),
-                Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: ()=>setExtendNavigationVied(),
-                    child:
-                    SizedBox(
-                      height: !extendedNavigation ? 100 : 300,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                const Spacer(),
-                                Icon(
-                                  Icons.assistant_direction,
-                                  color: Colors.grey[400],
-                                  size: 60
-                                ),
-                                const Spacer(),
-                                const Text("Turn left in 1 miles"),
-                                const Spacer(flex: 5),
-                              ],
-                            ),
-                          ),
-                          extendedNavigation ?
-                            Directions()
-                          :
-                            const Icon(Icons.expand_more),
-                          extendedNavigation ? const Icon(Icons.expand_less) : const SizedBox.shrink(),
-                        ],
-                      ),
-                    )
-                  ),
-                ),
+                Directions(),
                 const Spacer(),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.end,
