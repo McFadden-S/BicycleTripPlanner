@@ -52,7 +52,7 @@ class _BodyState extends State<Body> {
           ),
           RoundedButton(
             text: "Send email to reset password",
-            press: () {}, // to be modified...
+            press: resetPassword, // to be modified...
           ),
           back_button(),
         ],
@@ -63,17 +63,9 @@ class _BodyState extends State<Body> {
     try{
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
     }catch(e){
-      _showSnackBar(e.toString());
+       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), duration: const Duration(seconds: 3),backgroundColor: Colors.blue));
     }
-
   }
-
-  Future<void> _showSnackBar(String m)async {
-    final snackBar = SnackBar(content: Text(m), duration: const Duration(seconds: 3),backgroundColor: Colors.blue,);
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
-
-
 }
 
 

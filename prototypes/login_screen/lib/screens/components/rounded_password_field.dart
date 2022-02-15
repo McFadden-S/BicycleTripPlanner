@@ -3,7 +3,7 @@ import 'package:prototypes/constants.dart';
 import 'package:prototypes/screens/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatefulWidget {
-  final ValueChanged<String> onChanged; // unused
+  final ValueChanged<String> onChanged;
   final String text;
   RoundedPasswordField({Key? key,required this.onChanged, required this.text}): super(key: key);
   @override

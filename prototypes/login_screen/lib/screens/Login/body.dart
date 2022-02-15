@@ -71,7 +71,7 @@ class _BodyState extends State<Body> {
                   }),
                 );
               }catch(e){
-                _showSnackBar(e.toString());
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), duration: const Duration(seconds: 3),backgroundColor: Colors.blue));
               }
             },
           ),
@@ -110,15 +110,6 @@ class _BodyState extends State<Body> {
         ],
       ),
     );
-  }
-
-  Future<void> _showSnackBar(String m) async {
-    final snackBar = SnackBar(
-      content: Text(m),
-      duration: const Duration(seconds: 3),
-      backgroundColor: Colors.blue,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 

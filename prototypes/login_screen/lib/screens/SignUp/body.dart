@@ -63,11 +63,10 @@ class _BodyState extends State<Body> {
             text: "Sign Up",
             press: () async {
               try {
-                  final newUser = await _auth.createUserWithEmailAndPassword(
+                  await _auth.createUserWithEmailAndPassword(
                       email: email, password: password);
               } catch (e) {
-                print(e);
-                _showSnackBar(e.toString());
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString()), duration: const Duration(seconds: 3), backgroundColor: Colors.blue));
               }
             },
           ),
@@ -77,12 +76,4 @@ class _BodyState extends State<Body> {
     );
   }
 
-  Future<void> _showSnackBar(String m) async {
-    final snackBar = SnackBar(
-      content: Text(m),
-      duration: const Duration(seconds: 3),
-      backgroundColor: Colors.blue,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 }
