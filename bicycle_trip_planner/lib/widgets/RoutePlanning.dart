@@ -14,7 +14,7 @@ class RoutePlanning extends StatefulWidget {
 
 class _RoutePlanningState extends State<RoutePlanning> {
 
-  final TextEditingController originSearchController = TextEditingController();
+  final TextEditingController startSearchController = TextEditingController();
   final TextEditingController destinationSearchController = TextEditingController();
 
   @override
@@ -23,6 +23,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
@@ -30,9 +31,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
             Column(
               children: [
                 const Spacer(),
-                RouteCard(
-                  originSearchController: originSearchController,
-                  destinationSearchController: destinationSearchController,
+                Stack(
+                  children: [RouteCard(
+                    startSearchController: originSearchController,
+                    destinationSearchController: destinationSearchController,
+                  ),]
                 ),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -62,13 +65,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     ),
                   )),
                   const Spacer(flex: 10),
-                  //TODO: an empty function is being passed here for now
                   CircleButton(
                       iconIn: Icons.directions_bike,
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
-                            originSearchController.text, destinationSearchController.text);
-                      }
+                            startSearchController.text, destinationSearchController.text);
+                        }
                       )
                 ]),
               ],
