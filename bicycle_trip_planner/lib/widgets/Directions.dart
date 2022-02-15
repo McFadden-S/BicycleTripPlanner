@@ -136,26 +136,3 @@ class _DirectionsState extends State<Directions> {
     );
   }
 }
-
-/*
-Card(
-color: Theme.of(context).primaryColor,
-child: Padding(
-padding: const EdgeInsets.all(12.0),
-child: ListView.separated(
-itemCount: _directions.length,
-itemBuilder: (BuildContext context, int index) {
-return ListTile(
-leading: directionIcon(_directions[index].instruction),
-trailing:
-Text("${_directions[index].distance} m"),
-title: Html(
-data: _directions[index].instruction,
-));
-},
-separatorBuilder: (context, index) {
-return const Divider();
-},
-),
-)),
-*/
