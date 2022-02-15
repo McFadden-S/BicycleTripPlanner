@@ -19,52 +19,68 @@ class _SearchState extends State<Search> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: TextField(
-            controller: searchController,
-            onChanged: (input) => {applicationBloc.searchPlaces(input)},
-            onTap: (){isSearching = true;},
-            decoration: const InputDecoration(
-              fillColor: Colors.white,
-              filled: true,
-              border: OutlineInputBorder(),
-              labelText: 'Search',
-            ),
-          ),
-        ),
-        if (applicationBloc.ifSearchResult() && isSearching)
-          Container(
-            margin: const EdgeInsets.fromLTRB(10.0, 70.0, 10.0, 0.0),
-            child: Card(
-              color: Colors.grey[850],
-              child: ListView.builder(
-                itemCount:
-                applicationBloc.searchResults.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(
-                      applicationBloc
-                          .searchResults[index].description,
-                      style: const TextStyle(
-                        color: Colors.white,
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Stack(
+        children: [
+          if (applicationBloc.ifSearchResult() && isSearching)
+            Card(
+              color: Colors.white,
+              child: Container(
+                padding: const EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
+                child: ListView.builder(
+                  itemCount:
+                  applicationBloc.searchResults.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            applicationBloc
+                                .searchResults[index].description,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(),
+                          ),
+                          const Divider()
+                        ],
                       ),
-                    ),
-                    onTap: () {
-                      searchController.text = applicationBloc
-                          .searchResults[index].description;
-                      applicationBloc.setSelectedLocation(applicationBloc
-                          .searchResults[index].placeId);
-                      isSearching = false;
-                    },
-                  );
-                },
+                      onTap: () {
+                        searchController.text = applicationBloc
+                            .searchResults[index].description;
+                        applicationBloc.setSelectedLocation(applicationBloc
+                            .searchResults[index].placeId);
+                        isSearching = false;
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          Card(
+            child: TextField(
+              controller: searchController,
+              onChanged: (input) => {applicationBloc.searchPlaces(input)},
+              onTap: (){isSearching = true;},
+              decoration: const InputDecoration(
+                fillColor: Colors.white,
+                filled: true,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                  borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+                ),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                    borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+                ),
+                hintText: 'Search your destination here',
               ),
             ),
           ),
-      ],
+          //if (applicationBloc.ifSearchResult() && isSearching)
+
+        ],
+      ),
     );
   }
 }
