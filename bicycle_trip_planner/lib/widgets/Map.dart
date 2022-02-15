@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
-import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
-import 'dart:ui' as ui;
-import 'package:flutter/services.dart' show rootBundle;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -96,11 +92,11 @@ class _MapWidgetState extends State<MapWidget> {
   //********** Markers **********
 
   final Set<Marker> _markers = <Marker>{};
-  Marker? _userMarker; 
+  Marker? _userMarker;
   int _markerIdCounter = 1;
   final String _finalDestinationMarkerID = "Final Destination";
   final String _originMarkerID = "Origin";
-  List<Station> stations = List.empty(); 
+  List<Station> stations = List.empty();
 
   void _setMarker(LatLng point) {
     _markerIdCounter++;
@@ -122,7 +118,7 @@ class _MapWidgetState extends State<MapWidget> {
       zIndex: 2,
       flat: true,
       anchor: Offset(0.5, 0.5),
-    )); 
+    ));
   }
 
   Marker _addStationMarker(Station station) {
@@ -133,7 +129,7 @@ class _MapWidgetState extends State<MapWidget> {
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       position: pos,
     );
-    return marker; 
+    return marker;
   }
 
   //********** Polylines **********
@@ -167,9 +163,9 @@ class _MapWidgetState extends State<MapWidget> {
     distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
   );
 
-  // Note: Provider package and the locator.dart package both have a Locator class. 
-  // This is specifying the Locator class in locator.dart 
-  Locater.Locator locator = Locater.Locator();   
+  // Note: Provider package and the locator.dart package both have a Locator class.
+  // This is specifying the Locator class in locator.dart
+  Locater.Locator locator = Locater.Locator();
 
   Future<LocationPermission> requestPermission() async{
     return await Geolocator.requestPermission();
@@ -177,7 +173,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   // Sets the camera to the user's location
   void _setCameraToUser() async {
-    LatLng userLocation = await locator.locate(); 
+    LatLng userLocation = await locator.locate();
     _setCameraPosition(userLocation);
   }
 
@@ -217,23 +213,23 @@ class _MapWidgetState extends State<MapWidget> {
         applicationBloc.allStations.stream.listen((stations){
           setState((){
             for(Station station in stations){
-                _markers.add(_addStationMarker(station)); 
+                _markers.add(_addStationMarker(station));
             }
           });
         });
 
     // Get the initial update for the markers
-    applicationBloc.updateStations(); 
+    applicationBloc.updateStations();
 
     // Requires permission for the locator to work
-    LocationPermission perm; 
+    LocationPermission perm;
     requestPermission().then((permission) => perm = permission);
 
     // Better to just update marker position on the map. Remove/comment _setcameraposition
-    // as it will always bring the camera back to the user's location even if you want to 
+    // as it will always bring the camera back to the user's location even if you want to
     // look at another location on the map.
     //
-    // To center back onto the user's location is prefarable to use a button. 
+    // To center back onto the user's location is prefarable to use a button.
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position position) {
@@ -242,9 +238,9 @@ class _MapWidgetState extends State<MapWidget> {
               });
     });
 
-    //Use a periodic timer to update the TFL Santander bike stations 
-    //(Once every 30 seconds) 
-    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
+    //Use a periodic timer to update the TFL Santander bike stations
+    //(Once every 30 seconds)
+    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   @override
@@ -257,7 +253,7 @@ class _MapWidgetState extends State<MapWidget> {
 
     locationSubscription.cancel();
     directionSubscription.cancel();
-    locatorSubscription.cancel(); 
+    locatorSubscription.cancel();
     stationSubscription.cancel();
 
     super.dispose();
@@ -267,7 +263,8 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return GoogleMap(
       mapType: MapType.normal,
-      markers: _markers, 
+      markers: _markers,
+      polylines: _polylines,
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       initialCameraPosition: _initialCameraPosition,
