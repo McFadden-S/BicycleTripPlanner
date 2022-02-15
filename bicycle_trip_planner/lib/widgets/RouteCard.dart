@@ -74,9 +74,12 @@ class _RouteCardState extends State<RouteCard> {
                                     },
                                   ),
                                 if(isShowingIntermediate)
-                                  ListView(
-                                    shrinkWrap: true,
-                                    children: stopsList,
+                                  LimitedBox(
+                                    maxHeight: MediaQuery.of(context).size.height * 0.2,
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      children: stopsList,
+                                    ),
                                   ),
                                   const Icon(Icons.expand_more),
                               ]

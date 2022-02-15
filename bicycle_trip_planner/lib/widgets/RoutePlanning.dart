@@ -23,6 +23,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Stack(
           children: [
@@ -30,9 +31,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
             Column(
               children: [
                 const Spacer(),
-                RouteCard(
-                  originSearchController: originSearchController,
-                  destinationSearchController: destinationSearchController,
+                Stack(
+                  children: [RouteCard(
+                    originSearchController: originSearchController,
+                    destinationSearchController: destinationSearchController,
+                  ),]
                 ),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
