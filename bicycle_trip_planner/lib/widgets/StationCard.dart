@@ -92,102 +92,65 @@ class _StationCardState extends State<StationCard> {
       onTap: () => stationClicked(widget.index),
       child: SizedBox(
           width: 250,
-          height: 100,
+          height: 110,
           child: Card(
             child:
               Container(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   children: [
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
                       children: [
                         Expanded(
-                          flex: 10,
-                          child: Text(applicationBloc.stations[widget.index].name,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 20.0)
+                          flex: 25,
+                          child: Text(
+                              applicationBloc.stations[widget.index].name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 18.0)
                           ),
                         ),
-                        Spacer(flex: 1),
+                        const Spacer(flex: 1),
                         Expanded(
-                          flex: 2,
+                          flex: 5,
                           child: Text(
                               "${distance.toStringAsFixed(1)}mi",
                               overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 12.0)
                           ),
                         ),
                       ],
                     ),
-                    Divider(),
-                    Text(
-                      applicationBloc.stations[widget.index].bikes.toString(),
-                      style: TextStyle(fontSize: 15.0),
+                    const Divider(),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.directions_bike,
+                          size: 20.0,
+                        ),
+                        Text(
+                          "\t\t${applicationBloc.stations[widget.index].bikes.toString()} bikes available",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                      ],
                     ),
-                    Text(
-                      applicationBloc.stations[widget.index].totalDocks.toString(),
-                      style: TextStyle(fontSize: 15.0),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.chair_alt,
+                          size: 20.0,
+                        ),
+                        Text(
+                          "\t\t${applicationBloc.stations[widget.index].totalDocks.toString()} free docks",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               )
           ),
-        /*Card(
-              child: Row(
-                children: [
-                  const Spacer(),
-                  Text(
-                    "${distance.toStringAsFixed(1)}mi",
-                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold)
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 2,
-                    color: Colors.black54,
-                  ),
-                  const Spacer(),
-                    Container(
-                      width: 150, 
-                      child: Text(applicationBloc.stations[widget.index].name,
-                             overflow: TextOverflow.ellipsis,
-                             style: TextStyle(fontSize: 20.0)),
-                    ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                    child: Row(
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              applicationBloc.stations[widget.index].bikes.toString(),
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            Icon(
-                              Icons.directions_bike,
-                              size: 20.0,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 5.0),
-                        Column(
-                          children: [
-                            Text(
-                              applicationBloc.stations[widget.index].totalDocks.toString(),
-                              style: TextStyle(fontSize: 15.0),
-                            ),
-                            Icon(
-                              Icons.chair_alt,
-                              size: 20.0,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              )
-          )*/
       ),
     );
   }

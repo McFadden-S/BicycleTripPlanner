@@ -21,19 +21,17 @@ class _StationBarState extends State<StationBar> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            padding: EdgeInsets.fromLTRB(15, 00, 15, 20),
-            decoration: BoxDecoration(
-              //color: const Color(0xff345955),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
+            decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-                //boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 SizedBox(
-                    height: (56 * 6).toDouble(),
+                    height: (110 * 4).toDouble(),
                     child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
@@ -41,9 +39,11 @@ class _StationBarState extends State<StationBar> {
                         ),
                         child: Column(
                           children: [
-                            const Text(
-                              "Select a station",
-                              //style: TextStyle(color: Colors.white),
+                             Row(
+                              children: const [
+                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
+                                Spacer(),
+                              ],
                             ),
                             const SizedBox(height: 10),
                             Expanded(
@@ -69,61 +69,57 @@ class _StationBarState extends State<StationBar> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return Container(
-      padding: EdgeInsets.fromLTRB(15, 0, 15, 20),
-      decoration: BoxDecoration(
-          //color: const Color(0xff345955),
+      padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+      decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
           boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
       ),
-      //child: BottomAppBar(
-          //elevation: 0,
-            child: SizedBox(
-                height: 170.0,
-                child: Column(
+      child: SizedBox(
+          height: 180.0,
+          child: Column(
+            children: [
+              Expanded(
+                  child: Row(
+                    children: [
+                      const Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => showExpandedList(applicationBloc.stations),
+                        icon: const Icon(Icons.menu),
+                      ),
+                    ],
+                  )
+              ),
+              SizedBox(
+                height: 110,
+                child: Row(
                   children: [
-                    Expanded(
-                        child: Row(
-                          children: [
-                            Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
-                            Spacer(),
-                            IconButton(
-                              onPressed: () => showExpandedList(applicationBloc.stations),
-                              icon: const Icon(Icons.menu),
-                            ),
-                          ],
-                        )
-                    ),
-                    Container(
-                      height: 100,
-                      child: Row(
-                        children: [
 
-                          Flexible(
-                              child: ListView.builder(
-                                  controller: stationsPageViewController,
-                                  physics: const PageScrollPhysics(),
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: applicationBloc.stations.length,
-                                  itemBuilder: (BuildContext context, int index) =>
-                                      StationCard(index: index)),
-                          ),
-                          SizedBox(
-                            width: 30.0,
-                            child: IconButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () => stationsPageViewController.jumpTo(0),
-                              icon: const Icon(Icons.first_page),
-                              //color: Colors.white,
-                            ),
-                          ),
-                        ],
+                    Flexible(
+                        child: ListView.builder(
+                            controller: stationsPageViewController,
+                            physics: const PageScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: applicationBloc.stations.length,
+                            itemBuilder: (BuildContext context, int index) =>
+                                StationCard(index: index)
+                        ),
+                    ),
+                    SizedBox(
+                      width: 30.0,
+                      child: IconButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () => stationsPageViewController.jumpTo(0),
+                        icon: const Icon(Icons.first_page),
                       ),
                     ),
                   ],
-                )
-            ),
-     //     ),
+                ),
+              ),
+            ],
+          )
+      ),
     );
   }
 }
