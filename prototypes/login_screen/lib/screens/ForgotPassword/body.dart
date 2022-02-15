@@ -33,9 +33,11 @@ class _BodyState extends State<Body> {
               color: mainFontColor,
             ),
           ),
-          Image.asset(
-            "assets/images/reset_password_image.png",
-            height: size.height * 0.35,
+          Expanded(
+            child: Image.asset(
+              "assets/images/reset_password_image.png",
+              height: size.height * 0.35,
+            ),
           ),
           Text(
             "Please enter your email to reset password",

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
-import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../constants.dart';
 
 class Body extends StatefulWidget {
@@ -25,7 +23,9 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Background(
+      
       child: Column(
+        
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
@@ -36,9 +36,11 @@ class _BodyState extends State<Body> {
               color: mainFontColor,
             ),
           ),
-          Image.asset(
-            "assets/images/signup_image.png",
-            height: size.height * 0.35,
+          Expanded(
+            child: Image.asset(
+              "assets/images/signup_image.png",
+              height: size.height * 0.35,
+            ),
           ),
           RoundedInputField(
             hintText: "Email",
@@ -47,7 +49,6 @@ class _BodyState extends State<Body> {
             },
           ),
           RoundedPasswordField(
-
               text: "Password",
               onChanged: (value) {
                 password = value;
@@ -66,7 +67,6 @@ class _BodyState extends State<Body> {
                   final newUser = await _auth.createUserWithEmailAndPassword(
                       email: email, password: password);
               } catch (e) {
-                print(e);
                 _showSnackBar(e.toString());
               }
             },

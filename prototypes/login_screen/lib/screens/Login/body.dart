@@ -34,12 +34,12 @@ class Body extends StatelessWidget {
                 color: mainFontColor,
             ),
           ),
-          SizedBox(height: size.height * 0.03),
-          Image.asset(
-            "assets/images/login_image.png",
-            height: size.height * 0.35,
+          Expanded(
+            child: Image.asset(
+              "assets/images/login_image.png",
+              height: size.height * 0.35,
+            ),
           ),
-          SizedBox(height: size.height * 0.03),
           RoundedInputField(
             hintText: "Email",
             onChanged: (value) {
