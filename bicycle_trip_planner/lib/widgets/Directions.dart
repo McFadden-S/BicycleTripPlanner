@@ -63,9 +63,11 @@ class _DirectionsState extends State<Directions> {
 
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
-      _setDirection(direction.legs.steps);
-      _setDuration(direction.legs.duration);
-      _setDistance(direction.legs.distance);
+          setState(() {
+            _setDirection(direction.legs.steps);
+            _setDuration(direction.legs.duration);
+            _setDistance(direction.legs.distance);
+          });
     });
   }
 
