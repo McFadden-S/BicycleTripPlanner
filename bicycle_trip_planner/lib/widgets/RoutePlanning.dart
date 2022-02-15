@@ -13,6 +13,10 @@ class RoutePlanning extends StatefulWidget {
 }
 
 class _RoutePlanningState extends State<RoutePlanning> {
+
+  final TextEditingController originSearchController = TextEditingController();
+  final TextEditingController destinationSearchController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +27,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
             Column(
               children: [
                 const Spacer(),
-                RouteCard(),
+                RouteCard(
+                  originSearchController: originSearchController,
+                  destinationSearchController: destinationSearchController,
+                ),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   //TODO: an empty function is being passed here for now

@@ -4,8 +4,13 @@ import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
   final String labelTextIn;
+  final TextEditingController searchController;
 
-  const Search({Key? key, required this.labelTextIn }) : super(key: key);
+  const Search({
+    Key? key,
+    required this.labelTextIn,
+    required this.searchController
+  }) : super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -13,7 +18,6 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
 
-  final TextEditingController searchController = TextEditingController();
   bool isSearching = false;
 
   @override
@@ -26,7 +30,7 @@ class _SearchState extends State<Search> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-            controller: searchController,
+            controller: widget.searchController,
             onChanged: (input) => {applicationBloc.searchPlaces(input)},
             onTap: (){isSearching = true;},
             decoration: InputDecoration(
@@ -56,7 +60,7 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
-                      searchController.text = applicationBloc
+                      widget.searchController.text = applicationBloc
                           .searchResults[index].description;
                       applicationBloc.setSelectedLocation(applicationBloc
                           .searchResults[index].placeId);

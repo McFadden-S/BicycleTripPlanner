@@ -17,12 +17,14 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
 
+    final TextEditingController searchController = TextEditingController();
+
     return Scaffold(
       body: SafeArea(
           child: Stack(
             children: [
               MapWidget(),
-              Search(labelTextIn: 'Search'),
+              Search(labelTextIn: 'Search', searchController: searchController),
             ],
           )
       ),

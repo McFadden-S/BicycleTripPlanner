@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'Search.dart';
 
 class RouteCard extends StatefulWidget {
-  const RouteCard({ Key? key }) : super(key: key);
+
+  final TextEditingController originSearchController;
+  final TextEditingController destinationSearchController;
+
+  const RouteCard({
+    Key? key,
+    required this.originSearchController,
+    required this.destinationSearchController,
+  }) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -50,7 +58,10 @@ class _RouteCardState extends State<RouteCard> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Search(labelTextIn: "Starting Point"),
+                          Search(
+                              labelTextIn: "Starting Point",
+                              searchController: widget.originSearchController
+                          ),
                           InkWell(
                             splashColor: Colors.deepPurple.withAlpha(30),
                             onTap: toggleShowingIntermediate,
@@ -71,7 +82,10 @@ class _RouteCardState extends State<RouteCard> {
                               ]
                             )
                           ),
-                          Search(labelTextIn: "Destination"),
+                          Search(
+                            labelTextIn: "Destination",
+                            searchController: widget.destinationSearchController,
+                          ),
                             // const Icon(Icons.expand_more),
                         ],
                       ),
