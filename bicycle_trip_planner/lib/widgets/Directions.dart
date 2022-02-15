@@ -46,6 +46,7 @@ class _DirectionsState extends State<Directions> {
                   ? Icons.arrow_upward
                   : Icons.circle,
       color: buttonPrimaryColor,
+      size: 60,
     );
   }
 
@@ -55,25 +56,38 @@ class _DirectionsState extends State<Directions> {
     setState(() => {extendedNavigation = !extendedNavigation});
   }
 
+  void createDummyDirections() {
+    List<Steps> steps = [];
+    //steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
+    //steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+    //steps.add(Steps(instruction: "Continue straight", distance: 250, duration: 16));
+    //steps.add(Steps(instruction: "Continue straight", distance: 250, duration: 16));
+    _setDirection(steps);
+  }
+
   @override
   void initState() {
     super.initState();
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
 
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
-          setState(() {
-            _setDirection(direction.legs.steps);
-            _setDuration(direction.legs.duration);
-            _setDistance(direction.legs.distance);
-          });
+      setState(() {
+        _setDirection(direction.legs.steps);
+        _setDuration(direction.legs.duration);
+        _setDistance(direction.legs.distance);
+      });
     });
+
+    createDummyDirections();
   }
 
   @override
   void dispose() {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
     applicationBloc.dispose();
 
     directionSubscription.cancel();
@@ -88,7 +102,11 @@ class _DirectionsState extends State<Directions> {
           splashColor: Colors.blue.withAlpha(30),
           onTap: () => setExtendNavigationView(),
           child: SizedBox(
-            height: !extendedNavigation ? 100 : 300,
+            height: !extendedNavigation
+                ? 110
+                : _directions.length < 3
+                    ? (_directions.length) * 70 + 110
+                    : 330,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -98,18 +116,28 @@ class _DirectionsState extends State<Directions> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const Spacer(),
-                      Icon(Icons.assistant_direction,
-                          color: Colors.grey[400], size: 60),
+                      directionIcon(
+                          "Turn left in 1 miles"), //_directions[0].instruction),
                       const Spacer(),
-                      const Text("Turn left in 1 miles"),
+                      const Text(
+                          "Turn left in 1 miles"), //_directions[0].instruction),
                       const Spacer(flex: 5),
                     ],
                   ),
                 ),
+                !extendedNavigation
+                    ? const Spacer()
+                    : const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                      child: Divider(thickness: 0.7),
+                    ),
                 extendedNavigation
                     ? SizedBox(
-                        height: 200,
+                        height: _directions.length < 3
+                            ? (_directions.length) * 70
+                            : 220,
                         child: ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           itemCount: _directions.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
