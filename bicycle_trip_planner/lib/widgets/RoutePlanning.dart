@@ -1,9 +1,9 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/Map.dart';
 import 'package:bicycle_trip_planner/widgets/RouteCard.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'CircleButton.dart';
-import 'Search.dart';
 
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);
@@ -19,6 +19,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   @override
   Widget build(BuildContext context) {
+
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return Scaffold(
       body: SafeArea(
         child: Stack(
@@ -62,7 +65,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   //TODO: an empty function is being passed here for now
                   CircleButton(
                       iconIn: Icons.directions_bike,
-                      onButtonClicked: () => {print("directions_bike icon")})
+                      onButtonClicked: () async {
+                        applicationBloc.findRoute(
+                            originSearchController.text, destinationSearchController.text);
+                      }
+                      )
                 ]),
               ],
             ),

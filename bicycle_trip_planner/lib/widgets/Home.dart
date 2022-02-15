@@ -1,9 +1,7 @@
 import 'package:bicycle_trip_planner/widgets/Search.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/Map.dart';
-
-
-import 'StationBar.dart';
+import 'package:bicycle_trip_planner/widgets/StationBar.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);

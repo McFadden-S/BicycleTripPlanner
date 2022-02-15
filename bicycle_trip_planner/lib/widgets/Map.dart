@@ -259,7 +259,8 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return GoogleMap(
       mapType: MapType.normal,
-      markers: _markers, 
+      markers: _markers,
+      polylines: _polylines,
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       initialCameraPosition: _initialCameraPosition,
