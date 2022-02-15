@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/screens/SignUp/background.dart';
-import 'package:prototypes/screens/Welcome/welcome_screen.dart';
 import 'package:prototypes/screens/components/back_button_to_welcome.dart';
 import 'package:prototypes/screens/components/rounded_button.dart';
 import 'package:prototypes/screens/components/rounded_input_field.dart';

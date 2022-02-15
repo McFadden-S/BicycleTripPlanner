@@ -11,11 +11,16 @@ import 'package:prototypes/screens/components/rounded_input_field.dart';
 import 'package:prototypes/screens/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class Body extends StatelessWidget {
+class Body extends StatefulWidget {
   const Body({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -56,15 +61,17 @@ class Body extends StatelessWidget {
           RoundedButton(
             text: "Login",
             press: () async {
-              final user = await _auth.signInWithEmailAndPassword(
-                  email: email, password: password);
-              if (user != null) {
+              try{
+                await _auth.signInWithEmailAndPassword(
+                    email: email, password: password);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) {
                     return WelcomeScreen();
                   }),
                 );
+              }catch(e){
+                _showSnackBar(e.toString());
               }
             },
           ),
@@ -84,6 +91,7 @@ class Body extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
+
                   return ForgotPassword();
                 }),
               );
@@ -102,6 +110,15 @@ class Body extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Future<void> _showSnackBar(String m) async {
+    final snackBar = SnackBar(
+      content: Text(m),
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.blue,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
 
