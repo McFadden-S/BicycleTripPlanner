@@ -1,5 +1,5 @@
+import 'package:bicycle_trip_planner/widgets/NavigationCard.dart';
 import 'package:flutter/material.dart';
-
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -9,12 +9,6 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool extendedNavigation = false;
-  final List<Widget> entries = [NavigationDirection(), NavigationDirection()];
-
-  void setExtendNavigationVied(){
-    setState(()=> {extendedNavigation = !extendedNavigation});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,47 +21,7 @@ class _NavigationState extends State<Navigation> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const Spacer(),
-                Card(
-                  child: InkWell(
-                    splashColor: Colors.blue.withAlpha(30),
-                    onTap: ()=>setExtendNavigationVied(),
-                    child: SizedBox(
-                      height: !extendedNavigation ? 100 : 200,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                const Spacer(),
-                                Icon(
-                                  Icons.assistant_direction,
-                                  color: Colors.grey[400],
-                                  size: 60
-                                ),
-                                const Spacer(),
-                                const Text("Turn left in 1 miles"),
-                                const Spacer(flex: 5),
-                              ],
-                            ),
-                          ),
-                          extendedNavigation ?
-                            SizedBox(
-                              height: 100,
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: entries,
-                              ),
-                            )
-                          :
-                            const Icon(Icons.expand_more)
-                        ],
-                      ),
-                    )
-                  ),
-                ),
+                NavigationCard(), 
                 const Spacer(),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -148,24 +102,6 @@ class _NavigationState extends State<Navigation> {
               ],
             ),
           )
-      ),
-    );
-  }
-}
-
-class NavigationDirection extends StatelessWidget {
-  const NavigationDirection({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(10),
-      child: Container(
-        color: Colors.cyanAccent,
-        child: Text(
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elementum dolor eget lorem euismod rutrum.',
-          style: TextStyle(fontSize: 30),
-        ),
       ),
     );
   }
