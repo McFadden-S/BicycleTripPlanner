@@ -20,30 +20,29 @@ class _SearchState extends State<Search> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
       child: Stack(
         children: [
           if (applicationBloc.ifSearchResult() && isSearching)
             Card(
               color: Colors.white,
               child: Container(
-                padding: const EdgeInsets.fromLTRB(0.0, 70.0, 0.0, 0.0),
-                child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(0.0, 60.0, 0.0, 10.0),
+                child: ListView.separated(
+                  shrinkWrap: true,
                   itemCount:
                   applicationBloc.searchResults.length,
+                  separatorBuilder: (context, index) {
+                    return const Divider();
+                  },
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            applicationBloc
-                                .searchResults[index].description,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(),
-                          ),
-                          const Divider()
-                        ],
+                        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                      title: Text(
+                        applicationBloc
+                            .searchResults[index].description,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 15),
                       ),
                       onTap: () {
                         searchController.text = applicationBloc
@@ -51,7 +50,8 @@ class _SearchState extends State<Search> {
                         applicationBloc.setSelectedLocation(applicationBloc
                             .searchResults[index].placeId);
                         isSearching = false;
-                      },
+                        },
+                        dense : true
                     );
                   },
                 ),
@@ -77,8 +77,6 @@ class _SearchState extends State<Search> {
               ),
             ),
           ),
-          //if (applicationBloc.ifSearchResult() && isSearching)
-
         ],
       ),
     );
