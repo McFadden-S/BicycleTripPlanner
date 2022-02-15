@@ -108,7 +108,7 @@ class _DirectionsState extends State<Directions> {
                 ),
                 extendedNavigation
                     ? SizedBox(
-                        height: 300,
+                        height: 200,
                         child: ListView.separated(
                           itemCount: _directions.length,
                           itemBuilder: (BuildContext context, int index) {
