@@ -14,7 +14,7 @@ class RoutePlanning extends StatefulWidget {
 
 class _RoutePlanningState extends State<RoutePlanning> {
 
-  final TextEditingController originSearchController = TextEditingController();
+  final TextEditingController startSearchController = TextEditingController();
   final TextEditingController destinationSearchController = TextEditingController();
 
   @override
@@ -31,7 +31,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 const Spacer(),
                 RouteCard(
-                  originSearchController: originSearchController,
+                  startSearchController: startSearchController,
                   destinationSearchController: destinationSearchController,
                 ),
                 const Spacer(),
@@ -62,13 +62,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     ),
                   )),
                   const Spacer(flex: 10),
-                  //TODO: an empty function is being passed here for now
                   CircleButton(
                       iconIn: Icons.directions_bike,
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
-                            originSearchController.text, destinationSearchController.text);
-                      }
+                            startSearchController.text, destinationSearchController.text);
+                        }
                       )
                 ]),
               ],

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
-import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:provider/provider.dart';
-import 'dart:ui' as ui;
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);

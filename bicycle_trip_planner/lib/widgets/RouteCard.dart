@@ -3,12 +3,12 @@ import 'Search.dart';
 
 class RouteCard extends StatefulWidget {
 
-  final TextEditingController originSearchController;
+  final TextEditingController startSearchController;
   final TextEditingController destinationSearchController;
 
   const RouteCard({
     Key? key,
-    required this.originSearchController,
+    required this.startSearchController,
     required this.destinationSearchController,
   }) : super(key: key);
 
@@ -60,7 +60,7 @@ class _RouteCardState extends State<RouteCard> {
                         children: [
                           Search(
                               labelTextIn: "Starting Point",
-                              searchController: widget.originSearchController
+                              searchController: widget.startSearchController
                           ),
                           InkWell(
                             splashColor: Colors.deepPurple.withAlpha(30),
