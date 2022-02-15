@@ -1,5 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/Map.dart';
+import 'package:bicycle_trip_planner/widgets/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,20 +55,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 ]),
                 const Spacer(flex: 50),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Card(
-                      child: Container(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Row(
-                          children: [
-                            Column(
-                              children: const [Icon(Icons.timer), Text("[ETA]")]),
-                            const Text("3.5 miles")
-                      ],
-                    ),
-                  )),
+                  DistanceETACard(),
                   const Spacer(flex: 10),
-                  CircleButton(
+                  RoundedRectangleButton(
                       iconIn: Icons.directions_bike,
+                      buttonColor: Colors.green,
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
                             startSearchController.text, destinationSearchController.text);
