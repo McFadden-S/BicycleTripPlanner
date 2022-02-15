@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
+import 'constants.dart';
 import 'widgets/Loading.dart';
 import 'widgets/Home.dart';
 import 'widgets/Navigation.dart';
@@ -34,7 +35,37 @@ class MyApp extends StatelessWidget{
           '/home': (context) => const Home(),
           '/navigation': (context) => const Navigation(),
           '/routePlanning': (context) => const RoutePlanning(),
-        });
+        },
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: const Color(0xFF0C9CEE),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            textStyle: buttonTextStyle,
+            padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+            primary: const Color(0xFF0C9CEE),
+            shadowColor: Colors.grey,
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(13.0),
+            ),
+          ),
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black54,
+          elevation: 3,
+          splashColor: Colors.transparent,
+          extendedPadding: EdgeInsets.all(10)
+        ),
+
+        fontFamily: 'Outfit',
+        textTheme: const TextTheme(
+          headline6: TextStyle(fontSize: 36.0),
+          button: TextStyle(fontSize: 18.0),
+        ),
+      ),
+        );
   }
 
 }

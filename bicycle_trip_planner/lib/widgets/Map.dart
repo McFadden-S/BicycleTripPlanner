@@ -19,6 +19,8 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
 
+  String? style;
+
   //********** Providers **********
 
   late StreamSubscription locationSubscription;
@@ -181,6 +183,11 @@ class _MapWidgetState extends State<MapWidget> {
   void initState() {
     super.initState();
 
+    rootBundle.loadString('assets/map_style.txt').then((string) {
+      style = string;
+    });
+    print(style);
+
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     locationSubscription =
@@ -261,7 +268,10 @@ class _MapWidgetState extends State<MapWidget> {
       myLocationButtonEnabled: false,
       zoomControlsEnabled: false,
       initialCameraPosition: _initialCameraPosition,
-      onMapCreated: (controller) => _googleMapController = controller,
+      onMapCreated: (controller) {
+        _googleMapController = controller;
+        _googleMapController.setMapStyle(style);
+      }
     );
   }
 
