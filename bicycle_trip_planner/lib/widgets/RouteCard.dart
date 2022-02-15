@@ -10,24 +10,18 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  List<Widget> stopsList = []; 
-
-  // TODO Initialise the stopsList with its first widget
-  _RouteCardState(){
-    addStopWidget(); 
-  }
+  List<Widget> stopsList = [];
+  bool isShowingIntermediate = false;
 
   void addStopWidget() {
-    stopsList.add(_textBox(text: "Stop"));
+    setState(() {
+      stopsList.add(_textBox(text: "Stop"));
+      isShowingIntermediate = true;
+    });
   }
 
-  bool extendedRoutePlanning = false;
-  void setExtendRoutePlanningView(){
-    setState(()=> {extendedRoutePlanning = !extendedRoutePlanning});
-  }
-
-  void updateExtendedRoutePlanningView(){
-    setState(()=>{extendedRoutePlanning = true});
+  void toggleShowingIntermediate(){
+    setState(()=> {isShowingIntermediate = !isShowingIntermediate});
   }
 
   // TODO Should this be abstracted as well?
@@ -48,11 +42,7 @@ class _RouteCardState extends State<RouteCard> {
   @override
   Widget build(BuildContext context) {
         return Card(
-          child: InkWell(
-              splashColor: Colors.deepPurple.withAlpha(30),
-              onTap: () => setExtendRoutePlanningView(),
-              child: Expanded(
-                child: Column(
+          child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
@@ -61,24 +51,26 @@ class _RouteCardState extends State<RouteCard> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Search(labelTextIn: "Starting Point"),
-                          TextButton(
-                              child: const Text("Add Stop(s)"),
-                              onPressed: () {
-                                addStopWidget();
-                                updateExtendedRoutePlanningView();
-                                // setExtendRoutePlanningView();
-                              },
+                          InkWell(
+                            splashColor: Colors.deepPurple.withAlpha(30),
+                            onTap: toggleShowingIntermediate,
+                            child: Column(
+                                children: [
+                                  TextButton(
+                                    child: const Text("Add Stop(s)"),
+                                    onPressed: () {
+                                      addStopWidget();
+                                    },
+                                  ),
+                                if(isShowingIntermediate)
+                                  ListView(
+                                    shrinkWrap: true,
+                                    children: stopsList,
+                                  ),
+                                  const Icon(Icons.expand_more),
+                              ]
+                            )
                           ),
-                          extendedRoutePlanning?
-                          SizedBox(
-                            height: 100,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children: stopsList,
-                            ),
-                          )
-                            :
-                          const Icon(Icons.expand_more),
                           Search(labelTextIn: "Destination"),
                             // const Icon(Icons.expand_more),
                         ],
@@ -86,8 +78,6 @@ class _RouteCardState extends State<RouteCard> {
                     ),
                   ],
                 ),
-              )
-          ),
         );
   }
 }
