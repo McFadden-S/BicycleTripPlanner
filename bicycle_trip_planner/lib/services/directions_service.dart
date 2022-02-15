@@ -10,7 +10,6 @@ class DirectionsService {
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
-    print(jsonResults);
     return Route.fromJson(jsonResults);
     // PlaceSearch.fromJson(data)).toList();
   }
