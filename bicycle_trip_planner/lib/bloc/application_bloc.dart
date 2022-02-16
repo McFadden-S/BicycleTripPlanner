@@ -17,10 +17,10 @@ class ApplicationBloc with ChangeNotifier {
   
   List<Station> stations = List.empty(); 
   List<PlaceSearch> searchResults = List.empty();
-  
-  StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>();
-  StreamController<Place> selectedLocation = StreamController<Place>();
-  StreamController<List<Station>> allStations = StreamController<List<Station>>();
+
+  StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
+  StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
+  StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
   bool stationTimer = false; 
 
