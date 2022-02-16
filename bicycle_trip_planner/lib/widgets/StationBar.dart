@@ -31,7 +31,6 @@ class _StationBarState extends State<StationBar> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 SizedBox(
-                    //height: (110 * 4).toDouble(),
                   height: MediaQuery.of(context).size.height * 0.5,
                     child: Container(
                         padding: const EdgeInsets.all(5),
