@@ -31,8 +31,13 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   onPressed: (){
                     setState(() {
                       int indexPressed = stopsControllers.indexOf(searchController);
-                      stopsList.removeAt(indexPressed);
-                      stopsControllers.removeAt(indexPressed);
+
+                      for(int i = indexPressed; i < stopsControllers.length - 1; i++){
+                        stopsControllers[i].text = stopsControllers[i+1].text;
+                      }
+
+                      stopsList.removeLast();
+                      stopsControllers.removeLast();
                     });
                   },
                   icon: const Icon(
