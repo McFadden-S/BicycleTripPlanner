@@ -43,18 +43,20 @@ dependencies:
   font_awesome_flutter: ^9.0.0
   provider: ^5.0.0
 
-  test:
-  mockito: ^4.1.1
-  rxdart:
-
 dev_dependencies:
-
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
+  flutter_driver:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  # mockito: ^5.1.0 # doesn't work at the moment
+  rxdart:
+  flutter_automation: any
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
