@@ -1,11 +1,11 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/Map.dart';
-import 'package:bicycle_trip_planner/widgets/RoundedRectangleButton.dart';
-import 'package:bicycle_trip_planner/widgets/RouteCard.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/map/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);

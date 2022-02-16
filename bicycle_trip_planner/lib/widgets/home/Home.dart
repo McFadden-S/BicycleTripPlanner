@@ -1,6 +1,6 @@
 import 'package:bicycle_trip_planner/widgets/Search.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Map.dart';
+import 'package:bicycle_trip_planner/widgets/map/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/StationBar.dart';
 
 class Home extends StatefulWidget {

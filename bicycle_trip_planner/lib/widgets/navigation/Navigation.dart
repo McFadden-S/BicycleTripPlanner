@@ -162,7 +162,7 @@ class NavigationDirection extends StatelessWidget {
       padding: EdgeInsets.all(10),
       child: Container(
         color: Colors.cyanAccent,
-        child: Text(
+        child: const Text(
           'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam elementum dolor eget lorem euismod rutrum.',
           style: TextStyle(fontSize: 30),
         ),
