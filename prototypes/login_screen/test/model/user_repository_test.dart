@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/rxdart.dart';
@@ -14,6 +13,7 @@ void main() {
   when(_auth.authStateChanges()).thenAnswer((_){
     return _user;
   });
+
   UserRepository _repo = UserRepository.instance(auth: _auth);
   group('user repository test', (){
     when(_auth.signInWithEmailAndPassword(email: "email",password: "password")).thenAnswer((_)async{
