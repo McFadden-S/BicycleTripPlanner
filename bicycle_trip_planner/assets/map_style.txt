@@ -73,7 +73,16 @@
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#c5c5c5"
+                "color": "#cacaca"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural.terrain",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#3c2403"
             }
         ]
     },
@@ -87,11 +96,38 @@
         ]
     },
     {
+        "featureType": "poi.attraction",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#c72020"
+            }
+        ]
+    },
+    {
         "featureType": "poi.park",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#92e48e"
+                "color": "#6fc46b"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#4d9c3c"
             }
         ]
     },
@@ -113,6 +149,21 @@
         "stylers": [
             {
                 "visibility": "simplified"
+            },
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "visibility": "off"
+            },
+            {
+                "color": "#c5acac"
             }
         ]
     },
@@ -121,7 +172,16 @@
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#ffffff"
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#b0b0b0"
             }
         ]
     },

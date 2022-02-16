@@ -20,7 +20,7 @@ class _SearchState extends State<Search> {
 
   bool isSearching = false;
 
-  @override
+   @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);

@@ -70,70 +70,74 @@ class _StationCardState extends State<StationCard> {
 
   @override
   Widget build(BuildContext context) {
+    
     final applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
 
     return InkWell(
       onTap: () => stationClicked(widget.index),
       child: SizedBox(
-          height: 60,
+          width: 250,
+          height: 110,
           child: Card(
-              child: Row(
-            children: [
-              const Spacer(),
-              Text("${distance.toStringAsFixed(1)}mi",
-                  style: const TextStyle(
-                      fontSize: 15.0, fontWeight: FontWeight.bold)),
-              const Spacer(),
+            child:
               Container(
-                width: 2,
-                color: Colors.black54,
-              ),
-              const Spacer(),
-              Container(
-                width: 150,
-                child: Text(applicationBloc.stations[widget.index].name,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(fontSize: 20.0)),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 3, 0, 0),
-                child: Row(
+                padding: const EdgeInsets.all(10),
+                child: Column(
                   children: [
-                    Column(
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.baseline,
+                      textBaseline: TextBaseline.alphabetic,
                       children: [
-                        Text(
-                          applicationBloc.stations[widget.index].bikes
-                              .toString(),
-                          style: const TextStyle(fontSize: 15.0),
+                        Expanded(
+                          flex: 25,
+                          child: Text(
+                              applicationBloc.stations[widget.index].name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 18.0)
+                          ),
                         ),
+                        const Spacer(flex: 1),
+                        Expanded(
+                          flex: 5,
+                          child: Text(
+                              "${distance.toStringAsFixed(1)}mi",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 12.0)
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                    Row(
+                      children: [
                         const Icon(
                           Icons.directions_bike,
                           size: 20.0,
                         ),
+                        Text(
+                          "\t\t${applicationBloc.stations[widget.index].bikes.toString()} bikes available",
+                          style: TextStyle(fontSize: 15.0),
+                        ),
                       ],
                     ),
-                    const SizedBox(width: 5.0),
-                    Column(
+                    Row(
                       children: [
-                        Text(
-                          applicationBloc.stations[widget.index].totalDocks
-                              .toString(),
-                          style: const TextStyle(fontSize: 15.0),
-                        ),
                         const Icon(
                           Icons.chair_alt,
                           size: 20.0,
+                        ),
+                        Text(
+                          "\t\t${applicationBloc.stations[widget.index].totalDocks.toString()} free docks",
+                          style: TextStyle(fontSize: 15.0),
                         ),
                       ],
                     ),
                   ],
                 ),
-              ),
-              const Spacer(),
-            ],
-          ))),
+              )
+          ),
+      ),
     );
   }
 }
