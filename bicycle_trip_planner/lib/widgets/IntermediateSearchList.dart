@@ -61,8 +61,24 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         child: Column(
             children: [
               TextButton(
-                child: const Text("Add Stop(s)"),
+                child: const Text(
+                  'Add Stop(s)',
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 16.0,
+                    color: Colors.white,
+                  ),
+                ),
                 onPressed: () => {addStopWidget()},
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
+                    ),
+                  ),
+                ),
               ),
               if(isShowingIntermediate)
                 LimitedBox(
