@@ -62,8 +62,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       buttonColor: Colors.green,
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
-                            startSearchController.text, destinationSearchController.text);
-                        }
+                            startSearchController.text,
+                            destinationSearchController.text
+                        );
+                      }
                       )
                 ]),
               ],

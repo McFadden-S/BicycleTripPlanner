@@ -47,7 +47,16 @@ class _SearchState extends State<Search> {
               ),
               fillColor: Colors.white,
               filled: true,
-              labelText: null,
+              border: OutlineInputBorder(),
+              labelText: widget.labelTextIn,
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  setState(() {
+                    widget.searchController.clear();
+                  });
+                },
+              ),
             ),
           ),
         ),

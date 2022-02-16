@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/widgets/IntermediateSearchList.dart';
 import 'package:flutter/material.dart';
 import 'Search.dart';
 
@@ -9,7 +10,7 @@ class RouteCard extends StatefulWidget {
   const RouteCard({
     Key? key,
     required this.startSearchController,
-    required this.destinationSearchController,
+    required this.destinationSearchController
   }) : super(key: key);
 
   @override
@@ -79,6 +80,7 @@ class _RouteCardState extends State<RouteCard> {
                                 labelTextIn: "Starting Point",
                                 searchController: widget.startSearchController,
                             ),
+                            IntermediateSearchList(),
                             InkWell(
                               splashColor: Colors.deepPurple.withAlpha(30),
                               onTap: toggleShowingIntermediate,
