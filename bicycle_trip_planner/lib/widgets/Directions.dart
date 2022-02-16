@@ -52,13 +52,13 @@ class _DirectionsState extends State<Directions> {
               ? Icons.arrow_forward_outlined
               : direction.toLowerCase().contains('straight')
                   ? Icons.arrow_upward
-          : direction.toLowerCase().contains('continue')
-          ? Icons.arrow_upward
-          : direction.toLowerCase().contains('head')
-          ? Icons.arrow_upward
-          : direction.toLowerCase().contains('roundabout')
-          ? Icons.data_usage_rounded
-                  : Icons.circle,
+                  : direction.toLowerCase().contains('continue')
+                      ? Icons.arrow_upward
+                      : direction.toLowerCase().contains('head')
+                          ? Icons.arrow_upward
+                          : direction.toLowerCase().contains('roundabout')
+                              ? Icons.data_usage_rounded
+                              : Icons.circle,
       color: buttonPrimaryColor,
       size: 60,
     );
