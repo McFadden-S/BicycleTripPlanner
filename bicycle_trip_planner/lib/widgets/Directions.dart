@@ -19,6 +19,7 @@ class _DirectionsState extends State<Directions> {
   late StreamSubscription directionSubscription;
 
   List<Steps> _directions = <Steps>[];
+  Steps? _actual;
   late String journeyDuration;
   late String journeyDistance;
 
@@ -33,7 +34,14 @@ class _DirectionsState extends State<Directions> {
   }
 
   void _setDirection(List<Steps> steps) {
-    _directions = steps;
+    if (steps.isNotEmpty) {
+      _actual = steps[0];
+      steps.removeAt(0);
+      _directions = steps;
+    } else {
+      _actual = null;
+      _directions = steps;
+    }
   }
 
   Icon directionIcon(String direction) {
@@ -58,10 +66,14 @@ class _DirectionsState extends State<Directions> {
 
   void createDummyDirections() {
     List<Steps> steps = [];
-    //steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
-    //steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    //steps.add(Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    //steps.add(Steps(instruction: "Continue straight", distance: 250, duration: 16));
+    steps.add(Steps(instruction: "Turn right fiuh iuh ak", distance: 50, duration: 16));
+    steps.add(Steps(instruction: "Turn left on to the streee of bla bla blaleft aishdfiwh eifuoh ilashdfiuh ak", distance: 150, duration: 16));
+    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(
+        Steps(instruction: "Continue straight", distance: 250, duration: 16));
+    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(
+        Steps(instruction: "Continue straight", distance: 250, duration: 16));
     _setDirection(steps);
   }
 
@@ -108,29 +120,48 @@ class _DirectionsState extends State<Directions> {
                     ? (_directions.length) * 70 + 110
                     : 330,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Spacer(),
-                      directionIcon(
-                          "Turn left in 1 miles"), //_directions[0].instruction),
-                      const Spacer(),
-                      const Text(
-                          "Turn left in 1 miles"), //_directions[0].instruction),
-                      const Spacer(flex: 5),
+                      const Spacer(flex: 1),
+                      _actual != null
+                          ? directionIcon(_actual!.instruction)
+                          : const Spacer(flex: 3),
+                      //const Spacer(flex: 1),
+                      _actual != null
+                          ? Flexible(
+                        flex: 15,
+                            child: Text(
+                        _actual!.instruction,
+                            textAlign: TextAlign.left,),
+                          )
+                          : const Padding(
+                              padding: EdgeInsets.all(10.0),
+                              child: Text(
+                                "No given directions",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ),
+                      const Spacer(flex: 1),
+                      _actual != null
+                          ? Text("${_actual!.distance} m")
+                          : const Spacer(),
+                      const Spacer(flex: 1),
                     ],
                   ),
                 ),
                 !extendedNavigation
                     ? const Spacer()
                     : const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                      child: Divider(thickness: 0.7),
-                    ),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                        child: Divider(thickness: 0.7),
+                      ),
                 extendedNavigation
                     ? SizedBox(
                         height: _directions.length < 3
