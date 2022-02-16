@@ -52,6 +52,12 @@ class _DirectionsState extends State<Directions> {
               ? Icons.arrow_forward_outlined
               : direction.toLowerCase().contains('straight')
                   ? Icons.arrow_upward
+          : direction.toLowerCase().contains('continue')
+          ? Icons.arrow_upward
+          : direction.toLowerCase().contains('head')
+          ? Icons.arrow_upward
+          : direction.toLowerCase().contains('roundabout')
+          ? Icons.data_usage_rounded
                   : Icons.circle,
       color: buttonPrimaryColor,
       size: 60,
@@ -73,12 +79,10 @@ class _DirectionsState extends State<Directions> {
             "Turn left on to the streee of bla bla blaleft aishdfiwh eifuoh ilashdfiuh ak",
         distance: 150,
         duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
     steps.add(
         Steps(instruction: "Continue straight", distance: 250, duration: 16));
     steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
     _setDirection(steps);
   }
 
