@@ -73,10 +73,10 @@ class _DirectionsState extends State<Directions> {
   void createDummyDirections() {
     List<Steps> steps = [];
     steps.add(Steps(
-        instruction: "Turn right fiuh iuh ak", distance: 50, duration: 16));
+        instruction: "Turn right", distance: 50, duration: 16));
     steps.add(Steps(
         instruction:
-            "Turn left on to the streee of bla bla blaleft aishdfiwh eifuoh ilashdfiuh ak",
+            "Turn left",
         distance: 150,
         duration: 16));
     steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
