@@ -11,9 +11,9 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 
 class ApplicationBloc with ChangeNotifier {
   
-  final placesService = PlacesService();
-  final directionsService = DirectionsService();
-  final stationsService = StationsService();
+  final _placesService = PlacesService();
+  final _directionsService = DirectionsService();
+  final _stationsService = StationsService();
   
   List<Station> stations = List.empty(); 
   List<PlaceSearch> searchResults = List.empty();
@@ -22,22 +22,22 @@ class ApplicationBloc with ChangeNotifier {
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
   StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
-  bool stationTimer = false; 
+  bool _stationTimer = false;
 
   cancelStationTimer(){
-    stationTimer = false;
+    _stationTimer = false;
   }
 
   updateStationsPeriodically(Duration duration){
-    stationTimer = true; 
+    _stationTimer = true;
     Timer.periodic(duration, (Timer timer){
-      if(stationTimer){updateStations();}
+      if(_stationTimer){updateStations();}
       else{timer.cancel();}
     });  
   }
 
   updateStations() async {
-    stations = await stationsService.getStations(); 
+    stations = await _stationsService.getStations();
     allStations.add(stations);
     notifyListeners(); 
   }
@@ -47,19 +47,19 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   searchPlaces(String searchTerm) async {
-    searchResults = await placesService.getAutocomplete(searchTerm);
+    searchResults = await _placesService.getAutocomplete(searchTerm);
     notifyListeners();
   }
 
   setSelectedLocation(String placeId) async {
-    selectedLocation.add(await placesService.getPlace(placeId));
+    selectedLocation.add(await _placesService.getPlace(placeId));
     searchResults.clear();
     notifyListeners();
   }
 
   findRoute(String origin, String destination) async {
     currentRoute
-        .add(await directionsService.getRoutes(origin, destination));
+        .add(await _directionsService.getRoutes(origin, destination));
     notifyListeners();
   }
 
