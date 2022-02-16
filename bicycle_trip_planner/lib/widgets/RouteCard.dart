@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/widgets/IntermediateSearchList.dart';
 import 'package:flutter/material.dart';
 import 'Search.dart';
 
@@ -9,7 +10,7 @@ class RouteCard extends StatefulWidget {
   const RouteCard({
     Key? key,
     required this.startSearchController,
-    required this.destinationSearchController,
+    required this.destinationSearchController
   }) : super(key: key);
 
   @override
@@ -17,35 +18,6 @@ class RouteCard extends StatefulWidget {
 }
 
 class _RouteCardState extends State<RouteCard> {
-
-  List<Widget> stopsList = [];
-  bool isShowingIntermediate = false;
-
-  void addStopWidget() {
-    setState(() {
-      stopsList.add(_textBox(text: "Stop"));
-      isShowingIntermediate = true;
-    });
-  }
-
-  void toggleShowingIntermediate(){
-    setState(()=> {isShowingIntermediate = !isShowingIntermediate});
-  }
-
-  // TODO Should this be abstracted as well?
-  Widget _textBox({String text = ""}){
-    return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(),
-                labelText: text,
-              ),
-            ),
-          );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,29 +34,7 @@ class _RouteCardState extends State<RouteCard> {
                               labelTextIn: "Starting Point",
                               searchController: widget.startSearchController
                           ),
-                          InkWell(
-                            splashColor: Colors.deepPurple.withAlpha(30),
-                            onTap: toggleShowingIntermediate,
-                            child: Column(
-                                children: [
-                                  TextButton(
-                                    child: const Text("Add Stop(s)"),
-                                    onPressed: () {
-                                      addStopWidget();
-                                    },
-                                  ),
-                                if(isShowingIntermediate)
-                                  LimitedBox(
-                                    maxHeight: MediaQuery.of(context).size.height * 0.2,
-                                    child: ListView(
-                                      shrinkWrap: true,
-                                      children: stopsList.toList(growable: true),
-                                    ),
-                                  ),
-                                  const Icon(Icons.expand_more),
-                              ]
-                            )
-                          ),
+                          IntermediateSearchList(),
                           Search(
                             labelTextIn: "Destination",
                             searchController: widget.destinationSearchController,
