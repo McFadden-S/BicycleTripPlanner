@@ -108,9 +108,12 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    applicationBloc.cancelStationTimer();
-    applicationBloc.dispose();
+    try{
+      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+      applicationBloc.cancelStationTimer();
+      applicationBloc.dispose();
+    }
+    catch(e){}; 
 
     cameraManager.dispose();
     locationSubscription.cancel();
