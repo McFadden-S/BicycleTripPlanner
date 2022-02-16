@@ -21,7 +21,7 @@ class _StationBarState extends State<StationBar> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
@@ -31,7 +31,8 @@ class _StationBarState extends State<StationBar> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 SizedBox(
-                    height: (110 * 4).toDouble(),
+                    //height: (110 * 4).toDouble(),
+                  height: MediaQuery.of(context).size.height * 0.5,
                     child: Container(
                         padding: const EdgeInsets.all(5),
                         decoration: const BoxDecoration(
