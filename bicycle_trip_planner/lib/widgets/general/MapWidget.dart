@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/widgets/general/LocationManager.dart';
-import 'package:bicycle_trip_planner/widgets/map/MarkerManager.dart';
-import 'package:bicycle_trip_planner/widgets/map/PolylineManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:provider/provider.dart';
 
-import 'CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);
@@ -107,18 +107,28 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   void dispose() {
+
+    try{
+      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+      applicationBloc.cancelStationTimer();
+      applicationBloc.dispose();
+    }
+    catch(e){}; 
+
     cameraManager.dispose();
-
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    applicationBloc.cancelStationTimer();
-    applicationBloc.dispose();
-
     locationSubscription.cancel();
     directionSubscription.cancel();
     locatorSubscription.cancel(); 
     stationSubscription.cancel();
 
     super.dispose();
+  }
+
+  @override
+  void setState(fn) {
+    try {
+      super.setState(fn);
+    } catch (e) {};
   }
 
   @override

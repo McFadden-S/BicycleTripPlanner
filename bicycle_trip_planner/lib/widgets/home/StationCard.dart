@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,11 +20,7 @@ class StationCard extends StatefulWidget {
 
 class _StationCardState extends State<StationCard> {
   late StreamSubscription locatorSubscription;
-  final LocationSettings locationSettings = const LocationSettings(
-    accuracy: LocationAccuracy.best, // How accurate the location is
-    distanceFilter:
-        150, // The distance needed to travel until the next update (0 means it will always update)
-  );
+  final LocationManager locationManager = LocationManager();
 
   double distance = 0;
 
@@ -37,20 +34,17 @@ class _StationCardState extends State<StationCard> {
     // Obtain initial distances from current position (for quicker loading)
     Station station = applicationBloc.stations[widget.index];
     LatLng stationPos = LatLng(station.lat, station.long);
-    Locater.Locator locator = Locater.Locator();
-    locator.locate().then((pos) {
-      setState(() {
-        distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
-      });
+
+    locationManager.distanceTo(stationPos).then((distance) => {
+     setState(() {this.distance = distance;}) 
     });
 
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
             .listen((Position position) {
       LatLng pos = LatLng(position.latitude, position.longitude);
-      station = applicationBloc.stations[widget.index];
       setState(() {
-        distance = _convertMetresToMiles(_calculateDistance(pos, stationPos));
+        distance = locationManager.distanceFromTo(pos, stationPos);
       });
     });
   }
@@ -59,8 +53,7 @@ class _StationCardState extends State<StationCard> {
   void setState(fn) {
     try {
       super.setState(fn);
-    } catch (e) {}
-    ;
+    } catch (e) {};
   }
 
   @override
@@ -73,16 +66,6 @@ class _StationCardState extends State<StationCard> {
     ;
     locatorSubscription.cancel();
     super.dispose();
-  }
-
-  double _convertMetresToMiles(double distance) {
-    return distance * 0.000621;
-  }
-
-  // Returns the distance between the two points in metres
-  double _calculateDistance(LatLng pos1, LatLng pos2) {
-    return Geolocator.distanceBetween(
-        pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
   @override
