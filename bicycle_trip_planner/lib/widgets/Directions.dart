@@ -66,8 +66,13 @@ class _DirectionsState extends State<Directions> {
 
   void createDummyDirections() {
     List<Steps> steps = [];
-    steps.add(Steps(instruction: "Turn right fiuh iuh ak", distance: 50, duration: 16));
-    steps.add(Steps(instruction: "Turn left on to the streee of bla bla blaleft aishdfiwh eifuoh ilashdfiuh ak", distance: 150, duration: 16));
+    steps.add(Steps(
+        instruction: "Turn right fiuh iuh ak", distance: 50, duration: 16));
+    steps.add(Steps(
+        instruction:
+            "Turn left on to the streee of bla bla blaleft aishdfiwh eifuoh ilashdfiuh ak",
+        distance: 150,
+        duration: 16));
     steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
     steps.add(
         Steps(instruction: "Continue straight", distance: 250, duration: 16));
@@ -131,14 +136,14 @@ class _DirectionsState extends State<Directions> {
                       _actual != null
                           ? directionIcon(_actual!.instruction)
                           : const Spacer(flex: 3),
-                      //const Spacer(flex: 1),
                       _actual != null
                           ? Flexible(
-                        flex: 15,
-                            child: Text(
-                        _actual!.instruction,
-                            textAlign: TextAlign.left,),
-                          )
+                              flex: 15,
+                              child: Text(
+                                _actual!.instruction,
+                                textAlign: TextAlign.left,
+                              ),
+                            )
                           : const Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Text(
