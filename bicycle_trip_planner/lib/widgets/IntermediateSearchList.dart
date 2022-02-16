@@ -75,7 +75,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
+                        side: const BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
                     ),
                   ),
                 ),

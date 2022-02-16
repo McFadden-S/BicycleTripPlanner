@@ -19,44 +19,18 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  List<Widget> stopsList = [];
   bool isShowingIntermediate = false;
-
-  void addStopWidget() {
-    setState(() {
-      stopsList.add(Search(
-        labelTextIn: "Stop",
-        searchController: widget.startSearchController,
-      ),);
-      isShowingIntermediate = true;
-    });
-  }
 
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
   }
 
-  // TODO Should this be abstracted as well?
-  Widget _textBox({String text = ""}){
-    return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                fillColor: Colors.white,
-                filled: true,
-                border: OutlineInputBorder(),
-                labelText: text,
-              ),
-            ),
-          );
-  }
-
   @override
   Widget build(BuildContext context) {
         return Container(
-          decoration: new BoxDecoration(
+          decoration: const BoxDecoration(
             boxShadow: [
-              new BoxShadow(
+              BoxShadow(
                 offset: Offset(0,10),
                 color: Colors.black45,
                 blurRadius: 30.0,
@@ -72,22 +46,20 @@ class _RouteCardState extends State<RouteCard> {
             child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Search(
-                                labelTextIn: "Starting Point",
-                                searchController: widget.startSearchController,
-                            ),
-                            IntermediateSearchList(),
-                            Search(
-                              labelTextIn: "Destination",
-                              searchController: widget.destinationSearchController,
-                            ),
-                              // const Icon(Icons.expand_more),
-                          ],
-                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Search(
+                              labelTextIn: "Starting Point",
+                              searchController: widget.startSearchController,
+                          ),
+                          IntermediateSearchList(),
+                          Search(
+                            labelTextIn: "Destination",
+                            searchController: widget.destinationSearchController,
+                          ),
+                            // const Icon(Icons.expand_more),
+                        ],
                       ),
                     ],
                   ),
