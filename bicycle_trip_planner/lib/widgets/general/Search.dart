@@ -31,7 +31,7 @@ class _SearchState extends State<Search> {
           padding: const EdgeInsets.all(10.0),
           child: TextField(
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Outfit',
               fontSize: 28.0,
             ),
@@ -40,10 +40,10 @@ class _SearchState extends State<Search> {
             onTap: (){isSearching = true;},
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
-              hintStyle: TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
+              hintStyle: const TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0), width: 1.0),
+                borderSide: const BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0), width: 1.0),
               ),
               fillColor: Colors.white,
               filled: true,

@@ -3,11 +3,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'constants.dart';
-import 'widgets/Loading.dart';
-import 'widgets/Home.dart';
-import 'widgets/Navigation.dart';
-import 'widgets/RoutePlanning.dart';
-import 'bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

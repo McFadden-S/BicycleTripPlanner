@@ -14,10 +14,10 @@ class _StationCardState extends State<DistanceETACard> {
   Widget build(BuildContext context) {
 
     return Card(
-        color: Color.fromRGBO(12, 156, 238, 1.0),
+        color: const Color.fromRGBO(12, 156, 238, 1.0),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
-          side: BorderSide(color: Colors.black, width: 1.0),
+          side: const BorderSide(color: Colors.black, width: 1.0),
         ),
         child:
         Container(

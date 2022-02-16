@@ -26,7 +26,7 @@ class _StationCardState extends State<CircleButton> {
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(10),
-        primary: Color.fromRGBO(12, 156, 238, 1.0),
+        primary: const Color.fromRGBO(12, 156, 238, 1.0),
       ),
     );
   }

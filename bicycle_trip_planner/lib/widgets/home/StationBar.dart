@@ -2,7 +2,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'StationCard.dart';
+import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 
 class StationBar extends StatefulWidget {
   const StationBar({ Key? key }) : super(key: key);

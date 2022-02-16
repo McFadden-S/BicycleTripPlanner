@@ -1,6 +1,7 @@
-import 'package:bicycle_trip_planner/widgets/IntermediateSearchList.dart';
 import 'package:flutter/material.dart';
-import 'Search.dart';
+
+import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
+import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
 class RouteCard extends StatefulWidget {
 
@@ -41,7 +42,7 @@ class _RouteCardState extends State<RouteCard> {
             color: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
-              side: BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+              side: const BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
             ),
             child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
