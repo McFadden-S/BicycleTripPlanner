@@ -47,8 +47,6 @@ class _SearchState extends State<Search> {
               ),
               fillColor: Colors.white,
               filled: true,
-              border: OutlineInputBorder(),
-              labelText: widget.labelTextIn,
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
