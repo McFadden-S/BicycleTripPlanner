@@ -122,6 +122,13 @@ class _MapWidgetState extends State<MapWidget> {
   }
 
   @override
+  void setState(fn) {
+    try {
+      super.setState(fn);
+    } catch (e) {};
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GoogleMap(
       mapType: MapType.normal,

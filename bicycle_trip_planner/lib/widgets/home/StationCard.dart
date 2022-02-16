@@ -59,8 +59,7 @@ class _StationCardState extends State<StationCard> {
   void setState(fn) {
     try {
       super.setState(fn);
-    } catch (e) {}
-    ;
+    } catch (e) {};
   }
 
   @override
