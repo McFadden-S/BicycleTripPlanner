@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:bicycle_trip_planner/constants.dart';
 
 class Directions extends StatefulWidget {
   const Directions({Key? key}) : super(key: key);
@@ -15,6 +15,9 @@ class Directions extends StatefulWidget {
 }
 
 class _DirectionsState extends State<Directions> {
+
+  final NavigationManager navigationManager = NavigationManager();
+
   late StreamSubscription directionSubscription;
 
   List<Steps> _directions = <Steps>[];
@@ -43,26 +46,6 @@ class _DirectionsState extends State<Directions> {
     }
   }
 
-  Icon directionIcon(String direction) {
-    return Icon(
-      direction.toLowerCase().contains('left')
-          ? Icons.arrow_back
-          : direction.toLowerCase().contains('right')
-              ? Icons.arrow_forward_outlined
-              : direction.toLowerCase().contains('straight')
-                  ? Icons.arrow_upward
-                  : direction.toLowerCase().contains('continue')
-                      ? Icons.arrow_upward
-                      : direction.toLowerCase().contains('head')
-                          ? Icons.arrow_upward
-                          : direction.toLowerCase().contains('roundabout')
-                              ? Icons.data_usage_rounded
-                              : Icons.circle,
-      color: buttonPrimaryColor,
-      size: 60,
-    );
-  }
-
   bool extendedNavigation = false;
 
   void setExtendNavigationView() {
@@ -74,14 +57,13 @@ class _DirectionsState extends State<Directions> {
     steps.add(Steps(
         instruction: "Turn right", distance: 50, duration: 16));
     steps.add(Steps(
-        instruction:
-            "Turn left",
-        distance: 150,
-        duration: 16));
-    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+        instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(Steps(
+      instruction: "Roundabout", distance: 150, duration: 16));
+    steps.add(Steps(
+      instruction: "Continue straight", distance: 250, duration: 16));
+    steps.add(Steps(
+      instruction: "Turn left", distance: 150, duration: 16));
     _setDirection(steps);
   }
 
@@ -137,7 +119,7 @@ class _DirectionsState extends State<Directions> {
                     children: [
                       const Spacer(flex: 1),
                       _actual != null
-                          ? directionIcon(_actual!.instruction)
+                          ? navigationManager.directionIcon(_actual!.instruction)
                           : const Spacer(flex: 3),
                       _actual != null
                           ? Flexible(
@@ -180,7 +162,7 @@ class _DirectionsState extends State<Directions> {
                           itemCount: _directions.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
-                                leading: directionIcon(
+                                leading: navigationManager.directionIcon(
                                     _directions[index].instruction),
                                 trailing:
                                     Text("${_directions[index].distance} m"),
