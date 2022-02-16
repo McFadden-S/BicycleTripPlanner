@@ -22,9 +22,23 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
       stopsControllers.add(searchController);
       stopsList.add(
-          Search(
-              labelTextIn: "Stop ${stopsControllers.length}",
-              searchController: searchController));
+          ListTile(
+            title:
+              Search(
+                  labelTextIn: "Stop ${stopsControllers.length}",
+                  searchController: searchController),
+              trailing: IconButton(
+                  onPressed: (){
+                    setState(() {
+                      int indexPressed = stopsControllers.indexOf(searchController);
+                      stopsList.removeAt(indexPressed);
+                      stopsControllers.removeAt(indexPressed);
+                    });
+                  },
+                  icon: const Icon(
+                      Icons.remove_circle_outline))
+          )
+      );
 
       isShowingIntermediate = true;
     });

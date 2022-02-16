@@ -59,8 +59,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         child: Row(
                           children: [
                             Column(
-                              children: const [Icon(Icons.timer), Text("[ETA]")]),
-                            const Text("3.5 miles")
+                              children:
+                                  //TODO Display Route Metrics
+                                const [Icon(Icons.timer), Text("[ETA]")]),
+                                const Text("3.5 miles")
                       ],
                     ),
                   )),
@@ -69,8 +71,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       iconIn: Icons.directions_bike,
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
-                            startSearchController.text, destinationSearchController.text);
-                        }
+                            startSearchController.text,
+                            destinationSearchController.text
+                        );
+                      }
                       )
                 ]),
               ],

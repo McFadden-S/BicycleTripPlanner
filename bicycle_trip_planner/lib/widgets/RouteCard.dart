@@ -26,7 +26,7 @@ class _RouteCardState extends State<RouteCard> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Container(
-                      margin: EdgeInsets.only(top: 10),
+                      margin: const EdgeInsets.only(top: 10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
