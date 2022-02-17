@@ -77,6 +77,9 @@ flutter:
   assets:
     - assets/bike_icon.png
     - assets/map_style.txt
+    - assets/login_image.png
+    - assets/reset_password_image.png
+    - assets/signup_image.png
 
   fonts:
     - family: Outfit

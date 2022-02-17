@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:prototypes/Login/constants.dart';
-import 'package:prototypes/screens/ForgotPassword/forgot_password_screen.dart';
-import 'package:prototypes/screens/Login/background.dart';
-import 'package:prototypes/screens/SignUp/signup_screen.dart';
-import 'package:prototypes/screens/Welcome/welcome_screen.dart';
-import 'package:prototypes/screens/components/already_have_account.dart';
-import 'package:prototypes/screens/components/rounded_button.dart';
-import 'package:prototypes/screens/components/rounded_input_field.dart';
-import 'package:prototypes/screens/components/rounded_password_field.dart';
+import 'package:prototypes/Login/forgot_password_screen.dart';
+import 'package:prototypes/Login/background.dart';
+import 'package:prototypes/Login/signup_screen.dart';
+import 'package:prototypes/Login/welcome_screen.dart';
+import 'package:prototypes/Login//components/already_have_account.dart';
+import 'package:prototypes/Login//components/rounded_button.dart';
+import 'package:prototypes/Login//components/rounded_input_field.dart';
+import 'package:prototypes/Login//components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class Body extends StatelessWidget {
@@ -88,7 +88,7 @@ class Body extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return ForgotPassword();
+                  return ForgotPasswordScreen();
                 }),
               );
             },
