@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/DirectionTile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:bicycle_trip_planner/constants.dart';
 
 class Directions extends StatefulWidget {
   const Directions({Key? key}) : super(key: key);
@@ -15,10 +17,11 @@ class Directions extends StatefulWidget {
 }
 
 class _DirectionsState extends State<Directions> {
+
+  final DirectionManager directionManager = DirectionManager();
   late StreamSubscription directionSubscription;
 
-  List<Steps> _directions = <Steps>[];
-  Steps? _actual;
+  Steps? _actual; // TODO: Temporary placeholders. Actual steps should be passed in
   late String journeyDuration;
   late String journeyDistance;
 
@@ -36,53 +39,17 @@ class _DirectionsState extends State<Directions> {
     if (steps.isNotEmpty) {
       _actual = steps[0];
       steps.removeAt(0);
-      _directions = steps;
+      directionManager.directions = steps;
     } else {
       _actual = null;
-      _directions = steps;
+      directionManager.directions = steps;
     }
-  }
-
-  Icon directionIcon(String direction) {
-    return Icon(
-      direction.toLowerCase().contains('left')
-          ? Icons.arrow_back
-          : direction.toLowerCase().contains('right')
-              ? Icons.arrow_forward_outlined
-              : direction.toLowerCase().contains('straight')
-                  ? Icons.arrow_upward
-                  : direction.toLowerCase().contains('continue')
-                      ? Icons.arrow_upward
-                      : direction.toLowerCase().contains('head')
-                          ? Icons.arrow_upward
-                          : direction.toLowerCase().contains('roundabout')
-                              ? Icons.data_usage_rounded
-                              : Icons.circle,
-      color: buttonPrimaryColor,
-      size: 60,
-    );
   }
 
   bool extendedNavigation = false;
 
-  void setExtendNavigationView() {
+  void _toggleExtendNavigationView() {
     setState(() => {extendedNavigation = !extendedNavigation});
-  }
-
-  void createDummyDirections() {
-    List<Steps> steps = [];
-    steps.add(Steps(
-        instruction: "Turn right", distance: 50, duration: 16));
-    steps.add(Steps(
-        instruction:
-            "Turn left",
-        distance: 150,
-        duration: 16));
-    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    _setDirection(steps);
   }
 
   @override
@@ -95,13 +62,13 @@ class _DirectionsState extends State<Directions> {
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
       setState(() {
-        _setDirection(direction.legs.steps);
+        directionManager.directions = direction.legs.steps;
         _setDuration(direction.legs.duration);
         _setDistance(direction.legs.distance);
       });
     });
 
-    createDummyDirections();
+    _setDirection(directionManager.createDummyDirections());
   }
 
   @override
@@ -120,49 +87,18 @@ class _DirectionsState extends State<Directions> {
     return Card(
       child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
-          onTap: () => setExtendNavigationView(),
+          onTap: () => _toggleExtendNavigationView(),
+          // TODO: Change hardcoded design
           child: SizedBox(
             height: !extendedNavigation
                 ? 110
-                : _directions.length < 3
-                    ? (_directions.length) * 70 + 110
+                : directionManager.directions.length < 3
+                    ? (directionManager.directions.length) * 70 + 110
                     : 330,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Spacer(flex: 1),
-                      _actual != null
-                          ? directionIcon(_actual!.instruction)
-                          : const Spacer(flex: 3),
-                      _actual != null
-                          ? Flexible(
-                              flex: 15,
-                              child: Text(
-                                _actual!.instruction,
-                                textAlign: TextAlign.left,
-                              ),
-                            )
-                          : const Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text(
-                                "No given directions",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                      const Spacer(flex: 1),
-                      _actual != null
-                          ? Text("${_actual!.distance} m")
-                          : const Spacer(),
-                      const Spacer(flex: 1),
-                    ],
-                  ),
-                ),
+                CurrentDirection(currentDirection: _actual!), 
                 !extendedNavigation
                     ? const Spacer()
                     : const Padding(
@@ -170,23 +106,17 @@ class _DirectionsState extends State<Directions> {
                             EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                         child: Divider(thickness: 0.7),
                       ),
+                  // TODO: Change hardcoded design
                 extendedNavigation
                     ? SizedBox(
-                        height: _directions.length < 3
-                            ? (_directions.length) * 70
+                        height: directionManager.directions.length < 3
+                            ? (directionManager.directions.length) * 70
                             : 220,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          itemCount: _directions.length,
+                          itemCount: directionManager.directions.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                leading: directionIcon(
-                                    _directions[index].instruction),
-                                trailing:
-                                    Text("${_directions[index].distance} m"),
-                                title: Html(
-                                  data: _directions[index].instruction,
-                                ));
+                            return DirectionTile(index: index, directionManager: directionManager);
                           },
                           separatorBuilder: (context, index) {
                             return const Divider();

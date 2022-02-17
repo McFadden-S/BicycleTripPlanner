@@ -1,5 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
@@ -55,7 +55,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 ]),
                 const Spacer(flex: 50),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  DistanceETACard(),
+                  const DistanceETACard(),
                   const Spacer(flex: 10),
                   RoundedRectangleButton(
                       iconIn: Icons.directions_bike,

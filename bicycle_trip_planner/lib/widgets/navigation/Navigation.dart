@@ -1,4 +1,8 @@
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 
@@ -10,14 +14,11 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool cycling = false;
+  
   bool mapZoomed = false;
+  DirectionManager directionManager = DirectionManager(); 
 
-  void setCycling() {
-    setState(() => {cycling = !cycling});
-  }
-
-  void setMapZoomInOut() {
+  void _toggleMapZoomInOut() {
     setState(() => {mapZoomed = !mapZoomed});
   }
 
@@ -30,6 +31,8 @@ class _NavigationState extends State<Navigation> {
           MapWidget(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
+            // TODO: Potential abstraction of the column?
+            // Routeplanning also has 2 buttons at the side (can make a reusable widget of sorts)
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.max,
@@ -38,18 +41,16 @@ class _NavigationState extends State<Navigation> {
                 Directions(),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  FloatingActionButton(
-                    onPressed: () => {},
-                    child: const Icon(Icons.location_on),
-                  )
+                  CircleButton(iconIn: Icons.location_on, onButtonClicked: (){}, buttonColor: Colors.white, iconColor: Colors.black54), 
                 ]),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  FloatingActionButton(
-                      onPressed: setMapZoomInOut,
-                      child: mapZoomed
-                          ? const Icon(Icons.zoom_out_map)
-                          : const Icon(Icons.fullscreen_exit, size: 40)),
+                  CircleButton(
+                    iconIn: mapZoomed ? Icons.zoom_out_map: Icons.fullscreen_exit, 
+                    onButtonClicked: (){_toggleMapZoomInOut();},
+                    buttonColor: Colors.white,
+                    iconColor: Colors.black54,
+                  ),
                 ]),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -69,61 +70,14 @@ class _NavigationState extends State<Navigation> {
                         )),
                   )
                 ]),
-                Spacer(flex: 50),
+                const Spacer(flex: 50),
                 Row(
                   children: [
-                    Card(
-                        elevation: 5,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(13)),
-                        child: Container(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Row(
-                            children: [
-                              Column(children: const [
-                                Icon(Icons.timer),
-                                Text("[ETA]")
-                              ]),
-                              const Text("3.5 miles")
-                            ],
-                          ),
-                        )),
+                    const DistanceETACard(),
                     const Spacer(flex: 1),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white)),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.directions_walk,
-                            color: cycling ? Colors.black26 : Colors.red,
-                            size: 30,
-                          ),
-                          const Text(
-                            '/',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
-                          ),
-                          Icon(
-                            Icons.directions_bike,
-                            color: cycling ? Colors.red : Colors.black26,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                      onPressed: () {
-                        setCycling();
-                      },
-                    ),
+                    WalkOrCycleToggle(directionManager: directionManager), 
                     const Spacer(flex: 10),
-                    FloatingActionButton(
-                        onPressed: () => {},
-                        backgroundColor: Colors.red,
-                        child: const Icon(
-                          Icons.cancel_outlined,
-                          color: Colors.white,
-                          size: 35,
-                        )),
+                    CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){}, buttonColor: Colors.red),
                   ],
                 ),
               ],
