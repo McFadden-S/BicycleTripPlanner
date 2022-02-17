@@ -7,7 +7,7 @@ import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/Login/welcome_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget{
         initialRoute: '/',
         routes: <String, WidgetBuilder>{
           '/': (context) => const NavigateWindow(),
-          '/login': (context) => const WelcomeScreen(),
+          '/login': (context) => const LoginHomeScreen(),
           '/loading': (context) => const Loading(),
           '/home': (context) => const Home(),
           '/navigation': (context) => const Navigation(),
@@ -101,7 +101,7 @@ class _NavigateWindowState extends State<NavigateWindow> {
                 child: const Text("Loading"),
                 onPressed: () => {Navigator.pushNamed(context, '/loading')}),
             TextButton(
-                child: const Text("Home"),
+                child:  const Text("Home"),
                 onPressed: () => {Navigator.pushNamed(context, '/home')}),
             TextButton(
                 child: const Text("Navigation"),
