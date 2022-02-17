@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:prototypes/Login/constants.dart';
-import 'package:prototypes/Login/components/text_field_container.dart';
+import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatefulWidget {
   final ValueChanged<String> onChanged; // unused

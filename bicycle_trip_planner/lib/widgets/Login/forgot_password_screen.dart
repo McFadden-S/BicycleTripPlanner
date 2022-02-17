@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:prototypes/Login/background.dart';
-import 'package:prototypes/Login/components/rounded_button.dart';
-import 'package:prototypes/Login/components/rounded_input_field.dart';
+import 'package:bicycle_trip_planner/widgets/Login/background.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
 import 'constants.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {

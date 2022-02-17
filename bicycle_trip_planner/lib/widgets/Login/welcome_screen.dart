@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:prototypes/Login/background.dart';
-import 'package:prototypes/Login/components/rounded_button.dart';
-import 'package:prototypes/Login/login_screen.dart';
-import 'package:prototypes/Login/constants.dart';
-import 'package:prototypes/Login/signup_screen.dart';
-import 'package:prototypes/Login/components/elavated_button_with_icon.dart';
-import 'package:prototypes/Login/components/or_divider.dart';
+import 'package:bicycle_trip_planner/widgets/Login/background.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login/login_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/elavated_button_with_icon.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/or_divider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:prototypes/Login/google_sign_in.dart';
+import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
