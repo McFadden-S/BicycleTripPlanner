@@ -20,6 +20,11 @@ class _SearchState extends State<Search> {
 
   bool isSearching = false;
 
+  hideSearch() {
+    isSearching = false;
+    FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
    @override
   Widget build(BuildContext context) {
 
@@ -49,7 +54,6 @@ class _SearchState extends State<Search> {
                             .searchResults[index].description,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          //color: Colors.white,
                         ),
                       ),
                       onTap: () {
@@ -57,7 +61,7 @@ class _SearchState extends State<Search> {
                             .searchResults[index].description;
                         applicationBloc.setSelectedLocation(applicationBloc
                             .searchResults[index].placeId);
-                        isSearching = false;
+                        hideSearch();
                       },
                     );
                   },
@@ -69,10 +73,9 @@ class _SearchState extends State<Search> {
             child: TextField(
               controller: widget.searchController,
               onChanged: (input) {
-                if(input=="") {
-                  isSearching = false;
-                  FocusScope.of(context).requestFocus(new FocusNode());
-                }
+                if(input=="")
+                  hideSearch();
+
                 else
                   isSearching = true;
                 applicationBloc.searchPlaces(input);
@@ -98,8 +101,7 @@ class _SearchState extends State<Search> {
                       widget.searchController.clear();
                     }
                     );
-                    isSearching = false;
-                    FocusScope.of(context).requestFocus(new FocusNode());
+                    hideSearch();
                   },
                 ),
               ),
