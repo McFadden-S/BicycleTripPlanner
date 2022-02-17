@@ -3,7 +3,8 @@ import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 
 class DirectionManager{
-
+  
+  bool isCycling = false; 
   List<Steps> directions = <Steps>[];
 
   // TODO: DirectManager should take/obtain directions/steps

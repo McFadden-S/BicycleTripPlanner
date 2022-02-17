@@ -1,6 +1,8 @@
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 
@@ -12,12 +14,9 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool cycling = false;
+  
   bool mapZoomed = false;
-
-  void setCycling() {
-    setState(() => {cycling = !cycling});
-  }
+  DirectionManager directionManager = DirectionManager(); 
 
   void _toggleMapZoomInOut() {
     setState(() => {mapZoomed = !mapZoomed});
@@ -92,32 +91,7 @@ class _NavigationState extends State<Navigation> {
                     //       ),
                     //     )),
                     const Spacer(flex: 1),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white)),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.directions_walk,
-                            color: cycling ? Colors.black26 : Colors.red,
-                            size: 30,
-                          ),
-                          const Text(
-                            '/',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
-                          ),
-                          Icon(
-                            Icons.directions_bike,
-                            color: cycling ? Colors.red : Colors.black26,
-                            size: 30,
-                          ),
-                        ],
-                      ),
-                      onPressed: () {
-                        setCycling();
-                      },
-                    ),
+                    WalkOrCycleToggle(directionManager: directionManager), 
                     const Spacer(flex: 10),
                     // TODO: Make cross white and background red
                     CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){}),
