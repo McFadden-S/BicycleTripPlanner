@@ -32,7 +32,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
               ),
               Flexible(
                 child: Image.asset(
-                  "assets/images/reset_password_image.png",
+                  "assets/reset_password_image.png",
                   height: size.height * 0.35,
                 ),
                 flex: 1,
