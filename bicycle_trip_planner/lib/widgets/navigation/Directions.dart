@@ -18,10 +18,8 @@ class Directions extends StatefulWidget {
 class _DirectionsState extends State<Directions> {
 
   final DirectionManager directionManager = DirectionManager();
-
   late StreamSubscription directionSubscription;
 
-  List<Steps> _directions = <Steps>[];
   Steps? _actual; // TODO: Temporary placeholders. Actual steps should be passed in
   late String journeyDuration;
   late String journeyDistance;
@@ -40,10 +38,10 @@ class _DirectionsState extends State<Directions> {
     if (steps.isNotEmpty) {
       _actual = steps[0];
       steps.removeAt(0);
-      _directions = steps;
+      directionManager.directions = steps;
     } else {
       _actual = null;
-      _directions = steps;
+      directionManager.directions = steps;
     }
   }
 
@@ -89,11 +87,12 @@ class _DirectionsState extends State<Directions> {
       child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () => _toggleExtendNavigationView(),
+          // TODO: Change hardcoded design + Repeated code
           child: SizedBox(
             height: !extendedNavigation
                 ? 110
-                : _directions.length < 3
-                    ? (_directions.length) * 70 + 110
+                : directionManager.directions.length < 3
+                    ? (directionManager.directions.length) * 70 + 110
                     : 330,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,22 +105,23 @@ class _DirectionsState extends State<Directions> {
                             EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                         child: Divider(thickness: 0.7),
                       ),
+                  // TODO: Change hardcoded design + Repeated code
                 extendedNavigation
                     ? SizedBox(
-                        height: _directions.length < 3
-                            ? (_directions.length) * 70
+                        height: directionManager.directions.length < 3
+                            ? (directionManager.directions.length) * 70
                             : 220,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          itemCount: _directions.length,
+                          itemCount: directionManager.directions.length,
                           itemBuilder: (BuildContext context, int index) {
                             return ListTile(
                                 leading: directionManager.directionIcon(
-                                    _directions[index].instruction),
+                                    directionManager.directions[index].instruction),
                                 trailing:
-                                    Text("${_directions[index].distance} m"),
+                                    Text("${directionManager.directions[index].distance} m"),
                                 title: Html(
-                                  data: _directions[index].instruction,
+                                  data: directionManager.directions[index].instruction,
                                 ));
                             },
                           separatorBuilder: (context, index) {
