@@ -342,4 +342,14 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+### CocoaPods ###
+## CocoaPods GitIgnore Template
+
+# CocoaPods - Only use to conserve bandwidth / Save time on Pushing
+#           - Also handy if you have a large number of dependant pods
+#           - AS PER https://guides.cocoapods.org/using/using-cocoapods.html NEVER IGNORE THE LOCK FILE
+Pods/
+
+# End of https://www.toptal.com/developers/gitignore/api/cocoapods
+
 # End of https://www.toptal.com/developers/gitignore/api/flutter,macos,linux,windows,dart,firebase,androidstudio,visualstudiocode,xcode
