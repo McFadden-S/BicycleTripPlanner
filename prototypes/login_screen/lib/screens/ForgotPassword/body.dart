@@ -33,18 +33,24 @@ class _BodyState extends State<Body> {
               color: mainFontColor,
             ),
           ),
-          Expanded(
+          Flexible(
             child: Image.asset(
               "assets/images/reset_password_image.png",
               height: size.height * 0.35,
             ),
+            flex: 1,
           ),
-          Text(
-            "Please enter your email to reset password",
-            style: TextStyle(
+
+          Flexible(
+            child: Text(
+              "Please enter your email to reset password",
+              style: TextStyle(
                 color: secondaryFontColor,
+              ),
             ),
+            flex: 2,
           ),
+
           RoundedInputField(
             hintText: "Email",
             onChanged: (value) {
