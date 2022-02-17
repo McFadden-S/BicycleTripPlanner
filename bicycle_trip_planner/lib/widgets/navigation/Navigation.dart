@@ -41,14 +41,16 @@ class _NavigationState extends State<Navigation> {
                 Directions(),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  CircleButton(iconIn: Icons.location_on, onButtonClicked: (){}), 
+                  CircleButton(iconIn: Icons.location_on, onButtonClicked: (){}, buttonColor: Colors.white, iconColor: Colors.black54), 
                 ]),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  // TODO: Background should be white
                   CircleButton(
                     iconIn: mapZoomed ? Icons.zoom_out_map: Icons.fullscreen_exit, 
-                    onButtonClicked: (){_toggleMapZoomInOut();}),
+                    onButtonClicked: (){_toggleMapZoomInOut();},
+                    buttonColor: Colors.white,
+                    iconColor: Colors.black54,
+                  ),
                 ]),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -75,8 +77,7 @@ class _NavigationState extends State<Navigation> {
                     const Spacer(flex: 1),
                     WalkOrCycleToggle(directionManager: directionManager), 
                     const Spacer(flex: 10),
-                    // TODO: Make cross white and background red
-                    CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){}),
+                    CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){}, buttonColor: Colors.red),
                   ],
                 ),
               ],
