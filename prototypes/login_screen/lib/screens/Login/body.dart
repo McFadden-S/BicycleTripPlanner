@@ -34,18 +34,23 @@ class Body extends StatelessWidget {
                 color: mainFontColor,
             ),
           ),
-          Expanded(
+          Flexible(
             child: Image.asset(
               "assets/images/login_image.png",
               height: size.height * 0.35,
             ),
+            flex: 1,
           ),
-          RoundedInputField(
-            hintText: "Email",
-            onChanged: (value) {
-              email = value;
-            },
+          Flexible(
+            child: RoundedInputField(
+              hintText: "Email",
+              onChanged: (value) {
+                email = value;
+              },
+            ),
+            flex: 2,
           ),
+
           RoundedPasswordField(
               text: "Password",
               onChanged: (value) {
