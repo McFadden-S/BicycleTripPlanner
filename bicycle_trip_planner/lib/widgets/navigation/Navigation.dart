@@ -72,24 +72,6 @@ class _NavigationState extends State<Navigation> {
                 Row(
                   children: [
                     const DistanceETACard(),
-                    // TODO: STANDARDISE ETA CARD. WE HAVE TWO DIFFERENT DESIGNS 
-                    //(Will comment out this design and use the ETA card used in RoutePlanner for now)
-                    // Card(
-                    //     elevation: 5,
-                    //     shape: RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(13)),
-                    //     child: Container(
-                    //       padding: const EdgeInsets.all(5.0),
-                    //       child: Row(
-                    //         children: [
-                    //           Column(children: const [
-                    //             Icon(Icons.timer),
-                    //             Text("[ETA]")
-                    //           ]),
-                    //           const Text("3.5 miles")
-                    //         ],
-                    //       ),
-                    //     )),
                     const Spacer(flex: 1),
                     WalkOrCycleToggle(directionManager: directionManager), 
                     const Spacer(flex: 10),
