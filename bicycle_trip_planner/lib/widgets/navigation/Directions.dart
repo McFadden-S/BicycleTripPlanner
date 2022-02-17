@@ -4,6 +4,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/DirectionTile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -87,7 +88,7 @@ class _DirectionsState extends State<Directions> {
       child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () => _toggleExtendNavigationView(),
-          // TODO: Change hardcoded design + Repeated code
+          // TODO: Change hardcoded design
           child: SizedBox(
             height: !extendedNavigation
                 ? 110
@@ -105,7 +106,7 @@ class _DirectionsState extends State<Directions> {
                             EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                         child: Divider(thickness: 0.7),
                       ),
-                  // TODO: Change hardcoded design + Repeated code
+                  // TODO: Change hardcoded design
                 extendedNavigation
                     ? SizedBox(
                         height: directionManager.directions.length < 3
@@ -115,15 +116,8 @@ class _DirectionsState extends State<Directions> {
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           itemCount: directionManager.directions.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return ListTile(
-                                leading: directionManager.directionIcon(
-                                    directionManager.directions[index].instruction),
-                                trailing:
-                                    Text("${directionManager.directions[index].distance} m"),
-                                title: Html(
-                                  data: directionManager.directions[index].instruction,
-                                ));
-                            },
+                            return DirectionTile(index: index, directionManager: directionManager);
+                          },
                           separatorBuilder: (context, index) {
                             return const Divider();
                           },
