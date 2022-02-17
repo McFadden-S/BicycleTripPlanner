@@ -93,6 +93,9 @@ class _NavigateWindowState extends State<NavigateWindow> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextButton(
+                child: const Text("Login"),
+                onPressed: () => {}),
+            TextButton(
                 child: const Text("Loading"),
                 onPressed: () => {Navigator.pushNamed(context, '/loading')}),
             TextButton(
