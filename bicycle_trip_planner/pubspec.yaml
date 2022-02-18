@@ -32,6 +32,11 @@ dependencies:
 
   firebase_core: ^1.11.0
   firebase_database: ^9.0.5
+  flutter_svg: ^0.22.0
+  firebase_auth: ^3.3.6
+  cloud_firestore: ^3.1.7
+  google_sign_in: ^5.0.3
+  font_awesome_flutter: ^9.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -72,6 +77,9 @@ flutter:
   assets:
     - assets/bike_icon.png
     - assets/map_style.txt
+    - assets/login_image.png
+    - assets/reset_password_image.png
+    - assets/signup_image.png
 
   fonts:
     - family: Outfit

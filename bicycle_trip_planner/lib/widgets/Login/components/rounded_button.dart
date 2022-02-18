@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prototypes/constants.dart';
+import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;

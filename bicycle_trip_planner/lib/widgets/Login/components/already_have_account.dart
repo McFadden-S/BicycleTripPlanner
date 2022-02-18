@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:prototypes/constants.dart';
+import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
 
 // login screen
 class AlreadyHaveAnAccount extends StatelessWidget {

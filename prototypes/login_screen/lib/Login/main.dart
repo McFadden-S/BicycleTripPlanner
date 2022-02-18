@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:prototypes/screens/Welcome/welcome_screen.dart';
-import 'package:prototypes/constants.dart';
+import 'package:prototypes/Login/welcome_screen.dart';
+import 'package:prototypes/Login/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'google_sign_in.dart';
+import 'package:prototypes/Login/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
