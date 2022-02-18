@@ -4,6 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class LocationManager{
 
+  //********** Fields **********
+
   // Defines how the location should be fine-tuned
   // ignore: prefer_const_constructors
   final LocationSettings locationSettings = LocationSettings(
@@ -14,9 +16,17 @@ class LocationManager{
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
 
-  LocationManager();
+  //********** Singleton **********
 
-  //********** public *********
+  static final LocationManager _locationManager = LocationManager._internal();
+
+  factory LocationManager() {return _locationManager;}
+
+  LocationManager._internal();
+
+  //********** Private **********
+
+  //********** Public *********
 
   Future<LatLng> locate() async{
     return _locator.locate();
