@@ -32,15 +32,13 @@ class _MapWidgetState extends State<MapWidget> {
 
   //********** Markers **********
 
-  final Set<Marker> _markers = <Marker>{};
-
-  late MarkerManager markerManager = MarkerManager(markers: _markers);
+  final MarkerManager markerManager = MarkerManager();
+  late final Set<Marker> _markers = markerManager.getMarkers();
 
   //********** Polylines **********
 
-  final Set<Polyline> _polylines = <Polyline>{};
-
-  late PolylineManager polylineManager = PolylineManager(polylines: _polylines);
+  final PolylineManager polylineManager = PolylineManager();
+  late final Set<Polyline> _polylines = polylineManager.getPolyLines();
 
   //********** Camera **********
 

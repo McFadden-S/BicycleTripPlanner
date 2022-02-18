@@ -4,18 +4,34 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class PolylineManager{
 
-  final Set<Polyline> polylines;
+  //********** Fields **********
+
+  final Set<Polyline> _polylines = <Polyline>{};
 
   int _polylineIdCounter = 1;
 
-  PolylineManager({required this.polylines});
+  //********** Singleton **********
+
+  static final PolylineManager _polylineManager = PolylineManager._internal();
+
+  factory PolylineManager() {return _polylineManager;}
+
+  PolylineManager._internal();
+
+  //********** Private **********
+
+  //********** Public **********
+
+  Set<Polyline> getPolyLines(){
+    return _polylines;
+  }
 
   void setPolyline(List<PointLatLng> points) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
-    polylines.clear();
+    _polylines.clear();
 
-    polylines.add(Polyline(
+    _polylines.add(Polyline(
       polylineId: PolylineId(polylineIdVal),
       width: 2,
       color: Colors.blue,

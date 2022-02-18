@@ -7,7 +7,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MarkerManager {
 
-  final Set<Marker> markers;
+  //********** Fields **********
+
+  final Set<Marker> _markers = <Marker>{};
 
   int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
@@ -15,13 +17,27 @@ class MarkerManager {
 
   final List<Station> _stations = List.empty();
 
-  MarkerManager({required this.markers});
+  //********** Singleton **********
+
+  static final MarkerManager _markerManager = MarkerManager._internal();
+
+  factory MarkerManager() {return _markerManager;}
+
+  MarkerManager._internal();
+
+  //********** Private **********
+
+  //********** Public **********
+
+  Set<Marker> getMarkers(){
+    return _markers;
+  }
 
   //TODO Fix marker duplication bug but setting marker id
   void setMarker(LatLng point) {
     _markerIdCounter++;
 
-    markers.add(Marker(
+    _markers.add(Marker(
       markerId: MarkerId('marker_$_markerIdCounter'),
       position: point,
     ));
@@ -37,7 +53,7 @@ class MarkerManager {
   // Same as set marker with hardcoded ID and other variables
   void setUserMarker(Position point) {
     LatLng latlng = LatLng(point.latitude, point.longitude);
-    markers.add(Marker(
+    _markers.add(Marker(
       markerId: const MarkerId('user'),
       position: latlng,
       rotation: point.heading,
@@ -59,5 +75,7 @@ class MarkerManager {
     );
     return marker;
   }
+
+
 
 }
