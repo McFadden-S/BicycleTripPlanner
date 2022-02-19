@@ -47,14 +47,6 @@ void main() {
     expect(currentLocation, findsOneWidget);
   });
 
-  testWidgets("Navigation has DistanceETACard", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
-
-    final distanceETACard = find.byType(DistanceETACard);
-
-    expect(distanceETACard, findsOneWidget);
-  });
-
   testWidgets("Navigation has Directions", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
 
