@@ -262,7 +262,7 @@ void main() {
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop 1');
     final stopSearchBar2 = find.text('Stop 2');
-    final removeStopButton = find.byIcon(Icons.remove_circle_outline);
+    final removeStopButton = find.byKey(Key("Remove 2"));
 
     expect(stopSearchBar, findsNothing);
 
@@ -279,7 +279,7 @@ void main() {
     await tester.tap(removeStopButton);
     await tester.pump();
 
-    expect(stopSearchBar, findsNothing);
+    expect(stopSearchBar2, findsNothing);
   });
 
 
