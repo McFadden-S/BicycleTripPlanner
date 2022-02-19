@@ -22,17 +22,15 @@ class ApplicationBloc with ChangeNotifier {
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
   StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
-  bool _stationTimer = false;
+  late Timer _stationTimer; 
 
   cancelStationTimer(){
-    _stationTimer = false;
+    _stationTimer.cancel(); 
   }
 
   updateStationsPeriodically(Duration duration){
-    _stationTimer = true;
-    Timer.periodic(duration, (Timer timer){
-      if(_stationTimer){updateStations();}
-      else{timer.cancel();}
+    _stationTimer = Timer.periodic(duration, (timer){
+      updateStations(); 
     });  
   }
 
