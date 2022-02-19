@@ -8,13 +8,16 @@ import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
 
 //@GenerateMocks([http.Client])
 void main() {
+
   setUpAll(() async {
+
     HttpOverrides.global = null;
   });
 
@@ -114,7 +117,7 @@ void main() {
       ),
     );
 
-    final directions = find.byWidget(Directions());
+    final directions = find.byType(Directions);
 
     expect(directions, findsOneWidget);
   });
