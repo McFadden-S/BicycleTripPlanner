@@ -18,6 +18,8 @@ class Directions extends StatefulWidget {
 
 class _DirectionsState extends State<Directions> {
 
+  late final applicationBloc;
+
   final DirectionManager directionManager = DirectionManager();
   late StreamSubscription directionSubscription;
 
@@ -56,7 +58,7 @@ class _DirectionsState extends State<Directions> {
   void initState() {
     super.initState();
 
-    final applicationBloc =
+    applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
 
     directionSubscription =
@@ -73,9 +75,6 @@ class _DirectionsState extends State<Directions> {
 
   @override
   void dispose() {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-    applicationBloc.dispose();
 
     directionSubscription.cancel();
 
