@@ -28,6 +28,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   labelTextIn: "Stop ${stopsControllers.length}",
                   searchController: searchController),
               trailing: IconButton(
+                key: Key("Remove ${stopsControllers.length}"),
                   onPressed: (){
                     setState(() {
                       int indexPressed = stopsControllers.indexOf(searchController);
