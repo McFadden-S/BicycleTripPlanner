@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +14,7 @@ import 'package:provider/provider.dart';
 
 //@GenerateMocks([http.Client])
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
     HttpOverrides.global = null;
   });
 
@@ -28,8 +30,7 @@ void main() {
             return MaterialApp(home: Navigation());
           },
         ),
-      );
-      await tester.pumpAndSettle(const Duration(minutes: 1));
+       );
 
       final cancelButton = find.widgetWithIcon(CircleButton, Icons.cancel_outlined);
 
@@ -94,7 +95,8 @@ void main() {
       ),
     );
 
-    final distanceETACard = find.byWidget(DistanceETACard());
+    //final distanceETACard = find.widgetWithIcon(DistanceETACard, Icons.timer);
+    final distanceETACard = find.byType(DistanceETACard);
 
     expect(distanceETACard, findsOneWidget);
   });
@@ -115,5 +117,23 @@ void main() {
     final directions = find.byWidget(Directions());
 
     expect(directions, findsOneWidget);
+  });
+
+  testWidgets("Navigation has DistanceETACard", (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ListenableProvider(create: (context) => ApplicationBloc()),
+        ],
+        builder: (context, child) {
+          return MaterialApp(home: Navigation());
+        },
+      ),
+    );
+
+    //final distanceETACard = find.widgetWithIcon(DistanceETACard, Icons.timer);
+    final distanceETACard = find.byType(DistanceETACard);
+
+    expect(distanceETACard, findsOneWidget);
   });
 }
