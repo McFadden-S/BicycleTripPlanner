@@ -24,8 +24,23 @@ void main() {
   });
 
   testWidgets("StationBar has a title 'Nearby Stations'", (WidgetTester tester) async {
-    await tester.pumpWidget(buildWidget(MaterialApp(home: StationBar())));
+    await tester.pumpWidget(buildWidget(MaterialApp(home: Material(child:StationBar()))));
     expect(find.text('Nearby Stations'), findsOneWidget);
+  });
+
+  testWidgets("StationBar has an icon button 'firstPage'", (WidgetTester tester) async {
+    await tester.pumpWidget(buildWidget(MaterialApp(home: Material(child:StationBar()))));
+    expect(find.widgetWithIcon(IconButton, Icons.first_page), findsOneWidget);
+  });
+
+  testWidgets("StationBar has an icon button 'expanded station list'", (WidgetTester tester) async {
+    await tester.pumpWidget(buildWidget(MaterialApp(home: Material(child:StationBar()))));
+    expect(find.widgetWithIcon(IconButton, Icons.menu), findsOneWidget);
+  });
+
+  testWidgets("StationBar has a stations listView", (WidgetTester tester) async {
+    await tester.pumpWidget(buildWidget(MaterialApp(home: Material(child:StationBar()))));
+    expect(find.byType(ListView), findsOneWidget);
   });
 
 }
