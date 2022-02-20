@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
