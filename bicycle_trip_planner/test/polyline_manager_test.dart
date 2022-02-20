@@ -1,4 +1,3 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
