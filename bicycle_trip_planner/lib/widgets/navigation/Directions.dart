@@ -110,17 +110,15 @@ class _DirectionsState extends State<Directions> {
                         height: directionManager.directions.length < 3
                             ? (directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
                             : MediaQuery.of(context).size.height * 0.3,
-                        child: Expanded(
-                          child: ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            itemCount: directionManager.directions.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return DirectionTile(index: index, directionManager: directionManager);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider();
-                            },
-                          ),
+                        child: ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          itemCount: directionManager.directions.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return DirectionTile(index: index, directionManager: directionManager);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider();
+                          },
                         ),
                       )
                     : const Icon(Icons.expand_more),
