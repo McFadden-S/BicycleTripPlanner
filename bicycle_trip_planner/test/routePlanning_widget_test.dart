@@ -285,37 +285,55 @@ void main() {
 
   //TODO finish test for clicking location button
   // testWidgets('When location button is clicked the map should centre on the current location of the user', (WidgetTester tester) async {
-  //   // final ...
   //
-  //   await tester.pumpWidget(const MaterialApp(home: RoutePlanning()));
-  //   await tester.tap(find.byIcon(Icons.location_searching));
-  //   await tester.pump();
+  // await tester.pumpWidget(
+  //   MultiProvider(
+  //     providers: [
+  //       ListenableProvider(create: (context) => ApplicationBloc()),
+  //     ],
+  //     builder: (context, child) {
+  //       return MaterialApp(home: RoutePlanning());
+  //     },
+  //   ),
+  // );
   //
-  //   // expect(updated map widget with the map centred on the user, findsOneWidget)
+  // expect(updated map widget with the map centred on the user, findsOneWidget)
   //
   // });
 
   //TODO finish test for clicking group button
   // testWidgets('When the group button is clicked the group options menu should expand outwards', (WidgetTester tester) async {
-  //   // final ...
   //
-  //   await tester.pumpWidget(const MaterialApp(home: RoutePlanning()));
-  //   await tester.tap(find.byIcon(Icons.group));
-  //   await tester.pump();
+  // await tester.pumpWidget(
+  //   MultiProvider(
+  //     providers: [
+  //       ListenableProvider(create: (context) => ApplicationBloc()),
+  //     ],
+  //     builder: (context, child) {
+  //       return MaterialApp(home: RoutePlanning());
+  //     },
+  //   ),
+  // );
   //
-  //   // expect(expended group options menu widget, findsOneWidget);
+  // expect(expended group options menu widget, findsOneWidget);
   //
   // });
 
   //TODO finish test for clicking bike button
   // testWidgets('When the bike button is clicked the user should be taken to the navigation screen', (WidgetTester tester) async {
-  //   // final ...
   //
-  //   await tester.pumpWidget(const MaterialApp(home: RoutePlanning()));
-  //   await tester.tap(find.byIcon(Icons.directions_bike));
-  //   await tester.pump();
+  // await tester.pumpWidget(
+  //   MultiProvider(
+  //     providers: [
+  //       ListenableProvider(create: (context) => ApplicationBloc()),
+  //     ],
+  //     builder: (context, child) {
+  //       return MaterialApp(home: RoutePlanning());
+  //     },
+  //   ),
+  // );
   //
-  //   // expect(navigation widget, findsOneWidget);
+  // expect(navigation widget, findsOneWidget);
   // });
 
 }
