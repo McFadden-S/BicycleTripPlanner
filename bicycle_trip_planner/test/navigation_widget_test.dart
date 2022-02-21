@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -81,4 +82,11 @@ void main() {
     expect(walkOrCycleButton, findsOneWidget);
   });
 
+  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(Countdown);
+
+    expect(walkOrCycleButton, findsOneWidget);
+  });
 }
