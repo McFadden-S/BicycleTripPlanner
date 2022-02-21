@@ -13,6 +13,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // TODO: Ensure firebase initialization only occurs once
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
