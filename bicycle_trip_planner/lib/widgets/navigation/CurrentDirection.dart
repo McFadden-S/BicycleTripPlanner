@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class CurrentDirection extends StatefulWidget {
 
@@ -26,10 +27,9 @@ class _CurrentDirectionState extends State<CurrentDirection> {
           directionManager.directionIcon(widget.currentDirection.instruction),
           Flexible(
             flex: 15,
-            child: Text(
-              widget.currentDirection.instruction,
-              textAlign: TextAlign.left,
-            ),
+            child: Html(
+              data: widget.currentDirection.instruction,
+            )
           ),
               // : const Padding(
               //     padding: EdgeInsets.all(10.0),
