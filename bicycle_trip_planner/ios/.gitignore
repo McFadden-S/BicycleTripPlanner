@@ -385,6 +385,22 @@ fabric.properties
 #           - AS PER https://guides.cocoapods.org/using/using-cocoapods.html NEVER IGNORE THE LOCK FILE
 Pods/
 
+
+# Xcode per-user config
+*.mode1
+*.perspective
+*.xcworkspace
+
+# Build products
+*.o
+*.LinkFileList
+*.hmap
+
+# Automatic backup files
+*~.nib/
+*.dat
+*.dep
+
 # End of https://www.toptal.com/developers/gitignore/api/cocoapods
 
 # End of https://www.toptal.com/developers/gitignore/api/flutter,macos,linux,windows,dart,firebase,androidstudio,visualstudiocode,xcode
