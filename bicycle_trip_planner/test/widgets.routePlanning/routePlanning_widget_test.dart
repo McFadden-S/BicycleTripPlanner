@@ -336,4 +336,21 @@ void main() {
   // expect(navigation widget, findsOneWidget);
   // });
 
+  //TODO finish test for ETA update
+  // testWidgets('When the ETA is updated, the ETA field in the distanceETA card should update accordingly', (WidgetTester tester) async {
+  //
+  // await tester.pumpWidget(
+  //   MultiProvider(
+  //     providers: [
+  //       ListenableProvider(create: (context) => ApplicationBloc()),
+  //     ],
+  //     builder: (context, child) {
+  //       return MaterialApp(home: RoutePlanning());
+  //     },
+  //   ),
+  // );
+  //
+  // expect(ETA field in ETA card widget, findsOneWidget);
+  // });
+
 }
