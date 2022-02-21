@@ -15,6 +15,7 @@ import 'setUp.dart';
 
 void main() {
   setUpAll(() async {
+
     HttpOverrides.global = null;
   });
 
@@ -28,6 +29,7 @@ void main() {
 
   testWidgets("Navigation has zoom in/out button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
+
 
     final zoomOutButton = find.widgetWithIcon(CircleButton, Icons.zoom_out_map);
     final zoomInButton = find.widgetWithIcon(CircleButton, Icons.fullscreen_exit);
@@ -44,6 +46,7 @@ void main() {
 
   testWidgets("Navigation has current location button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
+
 
     final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_on);
 
@@ -65,7 +68,7 @@ void main() {
 
     expect(distanceETACard, findsOneWidget);
   });
-
+  
   testWidgets("Navigation has Walk or Cycle button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
 
@@ -90,3 +93,4 @@ void main() {
     expect(walkOrCycleButton, findsOneWidget);
   });
 }
+
