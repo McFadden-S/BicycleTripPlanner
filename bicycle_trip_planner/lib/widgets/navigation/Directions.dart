@@ -40,7 +40,8 @@ class _DirectionsState extends State<Directions> {
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
       setState(() {
-        directionManager.directions = direction.legs.steps;
+        directionManager.currentDirection = direction.legs.steps.first;
+        directionManager.directions = direction.legs.steps.removeAt(0);
         directionManager.setDuration(direction.legs.duration);
         directionManager.setDistance(direction.legs.distance);
         print(direction.legs.steps); 
@@ -53,6 +54,7 @@ class _DirectionsState extends State<Directions> {
   
   void findRoute() async {
     await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
+    directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
     directionManager.directions = applicationBloc.route.legs.steps;
     directionManager.setDuration(applicationBloc.route.legs.duration);
     directionManager.setDistance(applicationBloc.route.legs.distance);
@@ -82,7 +84,7 @@ class _DirectionsState extends State<Directions> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CurrentDirection(currentDirection: directionManager.directions[0]), 
+                CurrentDirection(currentDirection: directionManager.currentDirection),
                 !extendedNavigation
                     ? const Spacer()
                     : directionManager.directions.isNotEmpty

@@ -9,6 +9,7 @@ class DirectionManager{
   String duration = "No data";
   String distance = "No data";
   List<Steps> directions = <Steps>[];
+  Steps currentDirection = Steps(instruction: "", distance: 0, duration: 0);
 
   // TODO: IMPLEMENT SINGLETON DESIGN
   DirectionManager();
