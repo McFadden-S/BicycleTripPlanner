@@ -11,7 +11,10 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class Directions extends StatefulWidget {
-  const Directions({Key? key}) : super(key: key);
+
+  final DirectionManager directionManager;
+
+  const Directions({Key? key, required this.directionManager }) : super(key: key);
 
   @override
   _DirectionsState createState() => _DirectionsState();
@@ -21,7 +24,7 @@ class _DirectionsState extends State<Directions> {
 
   late final applicationBloc;
 
-  final DirectionManager directionManager = DirectionManager();
+  //final DirectionManager directionManager = DirectionManager();
   late StreamSubscription directionSubscription;
 
   bool extendedNavigation = false;
@@ -40,10 +43,10 @@ class _DirectionsState extends State<Directions> {
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
       setState(() {
-        directionManager.currentDirection = direction.legs.steps.first;
-        directionManager.directions = direction.legs.steps.removeAt(0);
-        directionManager.setDuration(direction.legs.duration);
-        directionManager.setDistance(direction.legs.distance);
+        widget.directionManager.currentDirection = direction.legs.steps.first;
+        widget.directionManager.directions = direction.legs.steps.removeAt(0);
+        widget.directionManager.setDuration(direction.legs.duration);
+        widget.directionManager.setDistance(direction.legs.distance);
         print(direction.legs.steps); 
       });
     });
@@ -54,10 +57,10 @@ class _DirectionsState extends State<Directions> {
   
   void findRoute() async {
     await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
-    directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
-    directionManager.directions = applicationBloc.route.legs.steps;
-    directionManager.setDuration(applicationBloc.route.legs.duration);
-    directionManager.setDistance(applicationBloc.route.legs.distance);
+    widget.directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
+    widget.directionManager.directions = applicationBloc.route.legs.steps;
+    widget.directionManager.setDuration(applicationBloc.route.legs.duration);
+    widget.directionManager.setDistance(applicationBloc.route.legs.distance);
   }
 
   @override
@@ -77,17 +80,17 @@ class _DirectionsState extends State<Directions> {
           child: SizedBox(
             height: !extendedNavigation
                 ? MediaQuery.of(context).size.height * 0.15
-                : directionManager.directions.length < 3
-                    ? (directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
+                : widget.directionManager.directions.length < 3
+                    ? (widget.directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
                     + (MediaQuery.of(context).size.height * 0.15)
                     : MediaQuery.of(context).size.height * 0.5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CurrentDirection(currentDirection: directionManager.currentDirection),
+                CurrentDirection(currentDirection: widget.directionManager.currentDirection),
                 !extendedNavigation
                     ? const Spacer()
-                    : directionManager.directions.isNotEmpty
+                    : widget.directionManager.directions.isNotEmpty
                       ? const Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -96,14 +99,14 @@ class _DirectionsState extends State<Directions> {
                       : const Spacer(),
                 extendedNavigation
                     ? SizedBox(
-                        height: directionManager.directions.length < 3
-                            ? (directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
+                        height: widget.directionManager.directions.length < 3
+                            ? (widget.directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
                             : MediaQuery.of(context).size.height * 0.30,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          itemCount: directionManager.directions.length,
+                          itemCount: widget.directionManager.directions.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return DirectionTile(index: index, directionManager: directionManager);
+                            return DirectionTile(index: index, directionManager: widget.directionManager);
                           },
                           separatorBuilder: (context, index) {
                             return const Divider();
