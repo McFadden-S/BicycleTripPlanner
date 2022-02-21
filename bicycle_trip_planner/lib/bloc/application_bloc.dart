@@ -1,4 +1,10 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -8,22 +14,30 @@ import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
   
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
+  Widget selectedScreen = HomeWidgets();
+  final screens = <String, Widget>{
+    'home': HomeWidgets(),
+    'navigation': Navigation(),
+    'routePlanning': RoutePlanning(),
+  };
   
   Rou.Route? route; // TODO: Potential refactor on route here
-  List<Station> stations = List.empty(); 
   List<PlaceSearch> searchResults = List.empty();
 
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
-  StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
-  late Timer _stationTimer; 
+  final StationManager _stationManager = StationManager();
+  final MarkerManager _markerManager = MarkerManager();
+
+  late Timer _stationTimer;
 
   cancelStationTimer(){
     _stationTimer.cancel(); 
@@ -35,9 +49,16 @@ class ApplicationBloc with ChangeNotifier {
     });  
   }
 
+  setupStations() async{
+    List<Station> stations = await _stationsService.getStations();
+    _stationManager.setStations(stations);
+    _markerManager.setStationMarkers(stations);
+    updateStations();
+    notifyListeners();
+  }
+
   updateStations() async {
-    stations = await _stationsService.getStations();
-    allStations.add(stations);
+    await _stationManager.setStations(await _stationsService.getStations());
     notifyListeners(); 
   }
 
@@ -50,14 +71,24 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId) async {
-    selectedLocation.add(await _placesService.getPlace(placeId));
+  setSelectedLocation(String placeId, SearchType searchType, [int intermediateIndex = 0]) async {
+    Place selected = await _placesService.getPlace(placeId);
+
+    selectedLocation.add(selected);
+    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+
     searchResults.clear();
     notifyListeners();
   }
 
-  findRoute(String origin, String destination) async {
-    route = await _directionsService.getRoutes(origin, destination); 
+  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
+    _markerManager.clearMarker(searchType, intermediateIndex);
+
+    notifyListeners();
+  }
+
+  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+    route = await _directionsService.getRoutes(origin, destination, intermediates);
     currentRoute.add(route!);
     notifyListeners();
   }
@@ -68,4 +99,14 @@ class ApplicationBloc with ChangeNotifier {
     selectedLocation.close();
     super.dispose();
   }
+
+  Widget getSelectedScreen() {
+    return selectedScreen;
+  }
+
+  void setSelectedScreen(String screenName) {
+    selectedScreen = screens[screenName] ?? HomeWidgets();
+    notifyListeners();
+  }
+
 }

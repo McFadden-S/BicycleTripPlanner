@@ -1,13 +1,12 @@
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CameraManager{
 
   static const initialCameraPosition = CameraPosition(
-    target: LatLng(37.773972, -122.431297),
+    target: LatLng(51.509865, -0.118092),
     zoom: 12.5,
   );
 

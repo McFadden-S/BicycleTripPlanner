@@ -4,6 +4,7 @@ import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dar
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'components/error_snackbar.dart';
 import 'constants.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -13,7 +14,6 @@ class SignUpScreen extends StatefulWidget {
   _SignUpScreen createState() => _SignUpScreen();
 }
 
-
 class _SignUpScreen extends State<SignUpScreen> {
   final _auth = FirebaseAuth.instance;
   late String email;
@@ -22,11 +22,10 @@ class _SignUpScreen extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Background(
-
           child: Column(
-
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
@@ -70,10 +69,18 @@ class _SignUpScreen extends State<SignUpScreen> {
                 text: "Sign Up",
                 press: () async {
                   try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
+                    if (password==confirmPassword){
+                      final newUser = await _auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                    }
+                    else{
+                      ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
+                    }
                   } catch (e) {
-                    _showSnackBar(e.toString());
+                    //_showSnackBar(e.toString());
+                    ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }
                 },
               ),
@@ -83,14 +90,4 @@ class _SignUpScreen extends State<SignUpScreen> {
         ),
     );
   }
-  Future<void> _showSnackBar(String m) async {
-    final snackBar = SnackBar(
-      content: Text(m),
-      duration: const Duration(seconds: 3),
-      backgroundColor: Colors.blue,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 }
-
-

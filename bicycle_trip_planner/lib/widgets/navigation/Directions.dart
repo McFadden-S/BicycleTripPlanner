@@ -33,6 +33,8 @@ class _DirectionsState extends State<Directions> {
     setState(() => {extendedNavigation = !extendedNavigation});
   }
 
+  // TODO: Potentially move this up to Navigation.dart, other widgets also need to listen to
+  // directionManager. (Or make DirectionManager a singleton)
   @override
   void initState() {
     super.initState();
@@ -47,20 +49,22 @@ class _DirectionsState extends State<Directions> {
         widget.directionManager.directions = direction.legs.steps.removeAt(0);
         widget.directionManager.setDuration(direction.legs.duration);
         widget.directionManager.setDistance(direction.legs.distance);
-        print(direction.legs.steps); 
       });
     });
 
     // TODO: TEMPORARY SETUP USING APPLICATION API - TO BE REMOVED WHEN ROUTEPLANNING LINKS WITH NAVIGATION
-    findRoute(); 
+      findRoute();
   }
   
   void findRoute() async {
     await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
-    widget.directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
-    widget.directionManager.directions = applicationBloc.route.legs.steps;
-    widget.directionManager.setDuration(applicationBloc.route.legs.duration);
-    widget.directionManager.setDistance(applicationBloc.route.legs.distance);
+
+    setState((){
+      widget.directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
+      widget.directionManager.directions = applicationBloc.route.legs.steps;
+      widget.directionManager.setDuration(applicationBloc.route.legs.duration);
+      widget.directionManager.setDistance(applicationBloc.route.legs.distance);
+    });
   }
 
   @override
@@ -79,24 +83,22 @@ class _DirectionsState extends State<Directions> {
           onTap: () => _toggleExtendNavigationView(),
           child: SizedBox(
             height: !extendedNavigation
-                ? MediaQuery.of(context).size.height * 0.15
+                ? MediaQuery.of(context).size.height * 0.16
                 : widget.directionManager.directions.length < 3
                     ? (widget.directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
-                    + (MediaQuery.of(context).size.height * 0.15)
+                    + (MediaQuery.of(context).size.height * 0.16)
                     : MediaQuery.of(context).size.height * 0.5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CurrentDirection(currentDirection: widget.directionManager.currentDirection),
-                !extendedNavigation
-                    ? const Spacer()
-                    : widget.directionManager.directions.isNotEmpty
-                      ? const Padding(
+                if(!extendedNavigation) const Spacer() else
+                    if(widget.directionManager.directions.isNotEmpty)
+                      const Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                           child: Divider(thickness: 0.7),
-                        )
-                      : const Spacer(),
+                        ), 
                 extendedNavigation
                     ? SizedBox(
                         height: widget.directionManager.directions.length < 3

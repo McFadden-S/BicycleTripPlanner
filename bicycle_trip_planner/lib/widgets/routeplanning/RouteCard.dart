@@ -1,18 +1,15 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
 
-  final TextEditingController startSearchController;
-  final TextEditingController destinationSearchController;
-
-  const RouteCard({
-    Key? key,
-    required this.startSearchController,
-    required this.destinationSearchController
-  }) : super(key: key);
+  const RouteCard({Key? key}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -20,14 +17,40 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
+  final TextEditingController startSearchController = TextEditingController();
+  final TextEditingController destinationSearchController = TextEditingController();
+  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
+
+  final RouteManager routeManager = RouteManager();
+
   bool isShowingIntermediate = false;
 
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
+
+  }
+
+  List<String> getIntermediateSearchText(){
+    if(intermediateSearchControllers.isNotEmpty){
+      return intermediateSearchControllers.map((controller) => controller.text).toList();
+    }
+    return <String>[];
   }
 
   @override
   Widget build(BuildContext context) {
+
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
+    if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      applicationBloc.findRoute(
+          routeManager.getStart(),
+          routeManager.getDestination(),
+          routeManager.getIntermediates()
+      );
+      routeManager.clearChanged();
+    }
+
         return Container(
           decoration: const BoxDecoration(
             boxShadow: [
@@ -50,14 +73,24 @@ class _RouteCardState extends State<RouteCard> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Search(
-                              labelTextIn: "Starting Point",
-                              searchController: widget.startSearchController,
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Search(
+                                labelTextIn: "Starting Point",
+                                searchController: startSearchController,
+                                searchType: SearchType.start,
+                            ),
                           ),
-                          IntermediateSearchList(),
-                          Search(
-                            labelTextIn: "Destination",
-                            searchController: widget.destinationSearchController,
+                          IntermediateSearchList(
+                            intermediateSearchControllers: intermediateSearchControllers,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Search(
+                              labelTextIn: "Destination",
+                              searchController: destinationSearchController,
+                              searchType: SearchType.end,
+                            ),
                           ),
                             // const Icon(Icons.expand_more),
                         ],

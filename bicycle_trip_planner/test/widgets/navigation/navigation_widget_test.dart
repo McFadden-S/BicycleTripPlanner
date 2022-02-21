@@ -10,11 +10,12 @@ import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'setUp.dart';
+import '../../setUp.dart';
 
 
 void main() {
   setUpAll(() async {
+
     HttpOverrides.global = null;
   });
 
@@ -28,6 +29,7 @@ void main() {
 
   testWidgets("Navigation has zoom in/out button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
+
 
     final zoomOutButton = find.widgetWithIcon(CircleButton, Icons.zoom_out_map);
     final zoomInButton = find.widgetWithIcon(CircleButton, Icons.fullscreen_exit);
@@ -44,6 +46,7 @@ void main() {
 
   testWidgets("Navigation has current location button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
+
 
     final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_on);
 
@@ -65,7 +68,7 @@ void main() {
 
     expect(distanceETACard, findsOneWidget);
   });
-
+  
   testWidgets("Navigation has Walk or Cycle button", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
 
@@ -74,19 +77,12 @@ void main() {
     expect(walkOrCycleButton, findsOneWidget);
   });
 
-  testWidgets("Navigation has Map Widget", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
-
-    final walkOrCycleButton = find.byType(MapWidget);
-
-    expect(walkOrCycleButton, findsOneWidget);
-  });
-
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
 
-    final walkOrCycleButton = find.byType(Countdown);
+    final countdown = find.byType(Countdown);
 
-    expect(walkOrCycleButton, findsOneWidget);
+    expect(countdown, findsOneWidget);
   });
 }
+

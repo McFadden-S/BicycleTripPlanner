@@ -4,6 +4,7 @@ import 'package:bicycle_trip_planner/widgets/Login/background.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
 import 'constants.dart';
+import 'components/error_snackbar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Background(
           child: Column(
@@ -37,7 +39,6 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 ),
                 flex: 1,
               ),
-
               Flexible(
                 child: Text(
                   "Please enter your email to reset password",
@@ -47,7 +48,6 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 ),
                 flex: 2,
               ),
-
               RoundedInputField(
                 hintText: "Email",
                 onChanged: (value) {
@@ -64,20 +64,16 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
         ),
     );
   }
+
   Future resetPassword() async{
     try{
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      _showSnackBar("Password reset email sent");
-    }catch(e){
-      _showSnackBar(e.toString());
+      ErrorSnackBar.buildErrorSnackbar(context, "password-reset-sent");
+    } catch(e) {
+      ErrorSnackBar.buildErrorSnackbar(context, e.toString());
     }
-
   }
 
-  Future<void> _showSnackBar(String m)async {
-    final snackBar = SnackBar(content: Text(m), duration: const Duration(seconds: 3),backgroundColor: Colors.blue,);
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 }
 
 

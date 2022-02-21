@@ -8,7 +8,7 @@ import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'setUp.dart';
+import '../../setUp.dart';
 
 void main() {
   DirectionManager directionManager = DirectionManager();
@@ -43,12 +43,14 @@ void main() {
   testWidgets('Directions expand after tap if next directions exist', (WidgetTester tester) async {
     await pumpWidget(tester, Directions(directionManager: directionManager,));
 
-    final directions = find.byType(DirectionTile);
+    var directions = find.byType(ListView);
 
     expect(directions, findsNothing);
 
     await tester.tap(find.byIcon(Icons.expand_more));
     await tester.pump();
+
+    directions = find.byType(ListView);
 
     expect(directions, findsWidgets);
   });

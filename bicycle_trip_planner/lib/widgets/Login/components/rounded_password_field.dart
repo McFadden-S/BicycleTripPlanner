@@ -3,7 +3,7 @@ import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatefulWidget {
-  final ValueChanged<String> onChanged; // unused
+  final ValueChanged<String> onChanged;
   final String text;
   RoundedPasswordField({Key? key,required this.onChanged, required this.text}): super(key: key);
   @override
