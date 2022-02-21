@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/DirectionTile.dart';
 import 'package:flutter/material.dart';
@@ -23,31 +24,6 @@ class _DirectionsState extends State<Directions> {
   final DirectionManager directionManager = DirectionManager();
   late StreamSubscription directionSubscription;
 
-  Steps? _actual; // TODO: Temporary placeholders. Actual steps should be passed in
-  late String journeyDuration;
-  late String journeyDistance;
-
-  void _setDuration(int seconds) {
-    int minutes = (seconds / 60).ceil();
-    journeyDuration = "$minutes min";
-  }
-
-  void _setDistance(int metre) {
-    int km = (metre / 1000).ceil();
-    journeyDistance = "$km km";
-  }
-
-  void _setDirection(List<Steps> steps) {
-    if (steps.isNotEmpty) {
-      _actual = steps[0];
-      steps.removeAt(0);
-      directionManager.directions = steps;
-    } else {
-      _actual = null;
-      directionManager.directions = steps;
-    }
-  }
-
   bool extendedNavigation = false;
 
   void _toggleExtendNavigationView() {
@@ -65,12 +41,21 @@ class _DirectionsState extends State<Directions> {
         applicationBloc.currentRoute.stream.listen((direction) {
       setState(() {
         directionManager.directions = direction.legs.steps;
-        _setDuration(direction.legs.duration);
-        _setDistance(direction.legs.distance);
+        directionManager.setDuration(direction.legs.duration);
+        directionManager.setDistance(direction.legs.distance);
+        print(direction.legs.steps); 
       });
     });
 
-    _setDirection(directionManager.createDummyDirections());
+    // TODO: TEMPORARY SETUP USING APPLICATION API - TO BE REMOVED WHEN ROUTEPLANNING LINKS WITH NAVIGATION
+    findRoute(); 
+  }
+  
+  void findRoute() async {
+    await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
+    directionManager.directions = applicationBloc.route.legs.steps;
+    directionManager.setDuration(applicationBloc.route.legs.duration);
+    directionManager.setDistance(applicationBloc.route.legs.distance);
   }
 
   @override
@@ -97,7 +82,7 @@ class _DirectionsState extends State<Directions> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CurrentDirection(currentDirection: _actual!), 
+                CurrentDirection(currentDirection: directionManager.directions[0]), 
                 !extendedNavigation
                     ? const Spacer()
                     : directionManager.directions.isNotEmpty

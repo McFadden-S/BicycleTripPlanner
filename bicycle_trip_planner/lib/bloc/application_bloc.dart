@@ -15,6 +15,7 @@ class ApplicationBloc with ChangeNotifier {
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
   
+  Rou.Route? route; // TODO: Potential refactor on route here
   List<Station> stations = List.empty(); 
   List<PlaceSearch> searchResults = List.empty();
 
@@ -56,8 +57,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   findRoute(String origin, String destination) async {
-    currentRoute
-        .add(await _directionsService.getRoutes(origin, destination));
+    route = await _directionsService.getRoutes(origin, destination); 
+    currentRoute.add(route!);
     notifyListeners();
   }
 
