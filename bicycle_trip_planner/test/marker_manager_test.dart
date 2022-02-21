@@ -31,19 +31,19 @@ void main(){
     marker.getMarkers().clear();
   });
 
-  // test('ensure marker is added for user location', (){
-  //   final marker = MarkerManager();
-  //   Position point = Position(longitude: 51.511448, latitude: -0.116414, timestamp: timestamp, accuracy: accuracy, altitude: altitude, heading: heading, speed: speed, speedAccuracy: speedAccuracy);
-  //   expect(marker.getMarkers().length,0);
-  //   marker.setUserMarker(point);
-  //   expect(marker.getMarkers().length,0);
-  //   marker.getMarkers().clear();
-  // });
-  //
-  // test('ensure marker for station is correct', (){
-  //   final marker = MarkerManager();
-  //   Station station = Station(id: 1, name: 'Holborn Station', lat: 0.0, long: 0.0, bikes: 10, emptyDocks: 2, totalDocks: 8);
-  //   expect(marker.getStationMarker(station), Marker(markerId: MarkerId("Holborn Station"), infoWindow: InfoWindow(title: 'Holborn Station')));
-  // });
+  test('ensure marker is added for user location', (){
+    final marker = MarkerManager();
+    Position point = Position(longitude: 51.511448, latitude: -0.116414, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
+    expect(marker.getMarkers().length,0);
+    marker.setUserMarker(point);
+    expect(marker.getMarkers().length,1);
+    marker.getMarkers().clear();
+  });
+
+  test('ensure marker for station is correct', (){
+    final marker = MarkerManager();
+    Station station = Station(id: 1, name: 'Holborn Station', lat: 0.0, long: 0.0, bikes: 10, emptyDocks: 2, totalDocks: 8);
+    expect(marker.getStationMarker(station).markerId, MarkerId("Holborn Station"));
+  });
 
 }
