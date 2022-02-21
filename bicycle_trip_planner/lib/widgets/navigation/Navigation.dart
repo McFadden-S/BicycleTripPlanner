@@ -15,7 +15,7 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   
-  bool mapZoomed = false;
+  bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager(); 
 
   void _toggleMapZoomInOut() {
