@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'setUp.dart';
+
 
 void main() {
   setUpAll(() async {
@@ -70,4 +72,13 @@ void main() {
 
     expect(walkOrCycleButton, findsOneWidget);
   });
+
+  testWidgets("Navigation has Map Widget", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(MapWidget);
+
+    expect(walkOrCycleButton, findsOneWidget);
+  });
+
 }
