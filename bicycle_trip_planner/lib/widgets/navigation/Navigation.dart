@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
@@ -60,14 +61,7 @@ class _NavigationState extends State<Navigation> {
                           const BorderSide(color: Color(0xFF8B0000), width: 1),
                       borderRadius: BorderRadius.circular(9.0),
                     ),
-                    child: Container(
-                        padding: const EdgeInsets.all(5.0),
-                        child: const Text(
-                          "12 : 02",
-                          style: TextStyle(
-                            color: Color(0xFF8B0000),
-                          ),
-                        )),
+                    child: Countdown()
                   )
                 ]),
                 const Spacer(flex: 50),
