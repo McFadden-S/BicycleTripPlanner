@@ -1,59 +1,35 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/home/Home.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
+
+import 'setUp.dart';
 
 
-//@GenerateMocks([http.Client])
 void main() {
-
   setUpAll(() async {
 
     HttpOverrides.global = null;
   });
 
   testWidgets("Navigation has cancel button", (WidgetTester tester) async {
-    //await tester.runAsync(() async {
-      //await tester.pumpAndSettle(const Duration(seconds: 5));
-      await tester.pumpWidget(
-        MultiProvider(
-          providers: [
-            ListenableProvider(create: (context) => ApplicationBloc()),
-          ],
-          builder: (context, child) {
-            return MaterialApp(home: Navigation());
-          },
-        ),
-       );
+    await pumpWidget(tester, Navigation());
 
-      final cancelButton = find.widgetWithIcon(CircleButton, Icons.cancel_outlined);
+    final cancelButton = find.widgetWithIcon(CircleButton, Icons.cancel_outlined);
 
-      expect(cancelButton, findsOneWidget);
-    //});
-    //await tester.pumpWidget(MaterialApp(home: Navigation()));
-    //final client = MockClient();
+    expect(cancelButton, findsOneWidget);
   });
 
   testWidgets("Navigation has zoom in/out button", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ListenableProvider(create: (context) => ApplicationBloc()),
-        ],
-        builder: (context, child) {
-          return MaterialApp(home: Navigation());
-        },
-      ),
-    );
+    await pumpWidget(tester, Navigation());
+
 
     final zoomOutButton = find.widgetWithIcon(CircleButton, Icons.zoom_out_map);
     final zoomInButton = find.widgetWithIcon(CircleButton, Icons.fullscreen_exit);
@@ -68,54 +44,17 @@ void main() {
     expect(zoomInButton, findsOneWidget);
   });
 
-
   testWidgets("Navigation has current location button", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ListenableProvider(create: (context) => ApplicationBloc()),
-        ],
-        builder: (context, child) {
-          return MaterialApp(home: Navigation());
-        },
-      ),
-    );
+    await pumpWidget(tester, Navigation());
+
 
     final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_on);
 
     expect(currentLocation, findsOneWidget);
   });
 
-  testWidgets("Navigation has DistanceETACard", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ListenableProvider(create: (context) => ApplicationBloc()),
-        ],
-        builder: (context, child) {
-          return MaterialApp(home: Navigation());
-        },
-      ),
-    );
-
-    //final distanceETACard = find.widgetWithIcon(DistanceETACard, Icons.timer);
-    final distanceETACard = find.byType(DistanceETACard);
-
-    expect(distanceETACard, findsOneWidget);
-  });
-
-
   testWidgets("Navigation has Directions", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ListenableProvider(create: (context) => ApplicationBloc()),
-        ],
-        builder: (context, child) {
-          return MaterialApp(home: Navigation());
-        },
-      ),
-    );
+    await pumpWidget(tester, Navigation());
 
     final directions = find.byType(Directions);
 
@@ -123,20 +62,35 @@ void main() {
   });
 
   testWidgets("Navigation has DistanceETACard", (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ListenableProvider(create: (context) => ApplicationBloc()),
-        ],
-        builder: (context, child) {
-          return MaterialApp(home: Navigation());
-        },
-      ),
-    );
+    await pumpWidget(tester, Navigation());
 
-    //final distanceETACard = find.widgetWithIcon(DistanceETACard, Icons.timer);
     final distanceETACard = find.byType(DistanceETACard);
 
     expect(distanceETACard, findsOneWidget);
   });
+  
+  testWidgets("Navigation has Walk or Cycle button", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(WalkOrCycleToggle);
+
+    expect(walkOrCycleButton, findsOneWidget);
+  });
+
+  testWidgets("Navigation has Map Widget", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(MapWidget);
+
+    expect(walkOrCycleButton, findsOneWidget);
+  });
+
+  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(Countdown);
+
+    expect(walkOrCycleButton, findsOneWidget);
+  });
 }
+

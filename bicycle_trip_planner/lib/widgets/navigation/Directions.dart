@@ -87,30 +87,31 @@ class _DirectionsState extends State<Directions> {
       child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () => _toggleExtendNavigationView(),
-          // TODO: Change hardcoded design
           child: SizedBox(
             height: !extendedNavigation
-                ? 110
+                ? MediaQuery.of(context).size.height * 0.15
                 : directionManager.directions.length < 3
-                    ? (directionManager.directions.length) * 70 + 110
-                    : 330,
+                    ? (directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
+                    + (MediaQuery.of(context).size.height * 0.15)
+                    : MediaQuery.of(context).size.height * 0.5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CurrentDirection(currentDirection: _actual!), 
                 !extendedNavigation
                     ? const Spacer()
-                    : const Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                        child: Divider(thickness: 0.7),
-                      ),
-                  // TODO: Change hardcoded design
+                    : directionManager.directions.isNotEmpty
+                      ? const Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          child: Divider(thickness: 0.7),
+                        )
+                      : const Spacer(),
                 extendedNavigation
                     ? SizedBox(
                         height: directionManager.directions.length < 3
-                            ? (directionManager.directions.length) * 70
-                            : 220,
+                            ? (directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
+                            : MediaQuery.of(context).size.height * 0.30,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           itemCount: directionManager.directions.length,

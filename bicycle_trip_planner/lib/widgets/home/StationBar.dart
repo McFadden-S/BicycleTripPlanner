@@ -21,7 +21,7 @@ class _StationBarState extends State<StationBar> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            padding: const EdgeInsets.fromLTRB(15, 10, 15, 0),
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
@@ -69,7 +69,7 @@ class _StationBarState extends State<StationBar> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(15, 0, 15, 20),
+      padding: const EdgeInsets.only(bottom: 20.0),
       decoration: const BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
@@ -80,39 +80,41 @@ class _StationBarState extends State<StationBar> {
           child: Column(
             children: [
               Expanded(
-                  child: Row(
-                    children: [
-                      const Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => showExpandedList(applicationBloc.stations),
-                        icon: const Icon(Icons.menu),
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Row(
+                      children: [
+                        const Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
+                        const Spacer(),
+                        IconButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () => stationsPageViewController.jumpTo(0),
+                          icon: const Icon(Icons.first_page),
+                        ),
+                        IconButton(
+                          onPressed: () => showExpandedList(applicationBloc.stations),
+                          icon: const Icon(Icons.menu),
+                        ),
+                      ],
+                    ),
                   )
               ),
               SizedBox(
-                height: 110,
+                height: 120,
                 child: Row(
                   children: [
-
                     Flexible(
-                        child: ListView.builder(
-                            controller: stationsPageViewController,
-                            physics: const PageScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: applicationBloc.stations.length,
-                            itemBuilder: (BuildContext context, int index) =>
-                                StationCard(index: index)
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ListView.builder(
+                              controller: stationsPageViewController,
+                              // physics: const PageScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              itemCount: applicationBloc.stations.length,
+                              itemBuilder: (BuildContext context, int index) =>
+                                  StationCard(index: index)
+                          ),
                         ),
-                    ),
-                    SizedBox(
-                      width: 30.0,
-                      child: IconButton(
-                        padding: const EdgeInsets.all(0),
-                        onPressed: () => stationsPageViewController.jumpTo(0),
-                        icon: const Icon(Icons.first_page),
-                      ),
                     ),
                   ],
                 ),

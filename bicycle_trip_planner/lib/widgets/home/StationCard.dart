@@ -77,8 +77,7 @@ class _StationCardState extends State<StationCard> {
     return InkWell(
       onTap: () => stationClicked(widget.index),
       child: SizedBox(
-          width: 250,
-          height: 110,
+          width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
             child:
               Container(
@@ -94,18 +93,10 @@ class _StationCardState extends State<StationCard> {
                           child: Text(
                               applicationBloc.stations[widget.index].name,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 18.0)
+                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
                           ),
                         ),
                         const Spacer(flex: 1),
-                        Expanded(
-                          flex: 5,
-                          child: Text(
-                              "${distance.toStringAsFixed(1)}mi",
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12.0)
-                          ),
-                        ),
                       ],
                     ),
                     const Divider(),
@@ -130,6 +121,14 @@ class _StationCardState extends State<StationCard> {
                         Text(
                           "\t\t${applicationBloc.stations[widget.index].totalDocks.toString()} free docks",
                           style: TextStyle(fontSize: 15.0),
+                        ),
+                        Spacer(),
+                        Container(
+                          child: Text(
+                              "${distance.toStringAsFixed(1)}mi",
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 12.0, color: Colors.blueAccent)
+                          ),
                         ),
                       ],
                     ),
