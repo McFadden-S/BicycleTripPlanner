@@ -12,32 +12,32 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(
-      ChangeNotifierProvider(
-          create: (context) => ApplicationBloc(),
-          child: const MyApp()
-      )
-  );
+  // TODO: Ensure firebase initialization only occurs once
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }catch(e){};
+
+  runApp(ChangeNotifierProvider(
+      create: (context) => ApplicationBloc(), child: const MyApp()));
 }
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        initialRoute: '/',
-        routes: <String, WidgetBuilder>{
-          '/': (context) => const NavigateWindow(),
-          '/login': (context) => const LoginHomeScreen(),
-          '/loading': (context) => const Loading(),
-          '/home': (context) => const Home(),
-          '/navigation': (context) => const Navigation(),
-          '/routePlanning': (context) => const RoutePlanning(),
-        },
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (context) => const NavigateWindow(),
+        '/login': (context) => const LoginHomeScreen(),
+        '/loading': (context) => const Loading(),
+        '/home': (context) => const Home(),
+        '/navigation': (context) => const Navigation(),
+        '/routePlanning': (context) => const RoutePlanning(),
+      },
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: const Color(0xFF0C9CEE),
@@ -54,29 +54,25 @@ class MyApp extends StatelessWidget{
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black54,
-          elevation: 3,
-          splashColor: Colors.transparent,
-          extendedPadding: EdgeInsets.all(10)
-        ),
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black54,
+            elevation: 3,
+            splashColor: Colors.transparent,
+            extendedPadding: EdgeInsets.all(10)),
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(width: 0.5, color: Color(0xff969393))
-          ),
+              side: BorderSide(width: 0.5, color: Color(0xff969393))),
           elevation: 3,
         ),
-
         fontFamily: 'Outfit',
         textTheme: const TextTheme(
           headline6: TextStyle(fontSize: 36.0),
           button: TextStyle(fontSize: 18.0),
         ),
       ),
-        );
+    );
   }
-
 }
 
 class NavigateWindow extends StatefulWidget {
@@ -101,7 +97,7 @@ class _NavigateWindowState extends State<NavigateWindow> {
                 child: const Text("Loading"),
                 onPressed: () => {Navigator.pushNamed(context, '/loading')}),
             TextButton(
-                child:  const Text("Home"),
+                child: const Text("Home"),
                 onPressed: () => {Navigator.pushNamed(context, '/home')}),
             TextButton(
                 child: const Text("Navigation"),
