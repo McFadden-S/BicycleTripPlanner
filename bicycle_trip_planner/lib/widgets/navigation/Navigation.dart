@@ -39,7 +39,7 @@ class _NavigationState extends State<Navigation> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Directions(),
+                Directions(directionManager: directionManager,),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   CircleButton(iconIn: Icons.location_on, onButtonClicked: (){}, buttonColor: Colors.white, iconColor: Colors.black54), 
