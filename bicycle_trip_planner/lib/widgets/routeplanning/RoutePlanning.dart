@@ -10,6 +10,7 @@ import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);
 
+
   @override
   _RoutePlanningState createState() => _RoutePlanningState();
 }
@@ -18,12 +19,13 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   final TextEditingController startSearchController = TextEditingController();
   final TextEditingController destinationSearchController = TextEditingController();
+  List<int> groupSizeOptions = <int>[1,2,3,4,5,6,7,8,9,10];
+  int? groupSizeValue = 1;
 
   @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
-    int groupSizeValue = 1;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -53,7 +55,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   Padding(
                     padding: const EdgeInsets.only(right: 5.0, top: 10.0),
                     child: Container(
-                      padding: const EdgeInsets.only(right: 2.0, left: 5.0),
+                      padding: const EdgeInsets.only(left: 3.0, right: 7.0),
                       decoration: const BoxDecoration(
                           color: const Color.fromRGBO(12, 156, 238, 1.0),
                           borderRadius: BorderRadius.all(Radius.circular(30.0)),
@@ -61,22 +63,31 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: DropdownButton<int>(
+                          alignment: AlignmentDirectional.center,
                           isDense: true,
                           value: groupSizeValue,
                           icon: const Icon(Icons.group, color: Colors.white),
                           iconSize: 30,
                           elevation: 16,
-                          style: const TextStyle(color: Colors.white, fontSize: 18),
-                          onChanged: (int? newValue) {
-                            setState(() {
-                              groupSizeValue = newValue!;
-                            });
+                          style: const TextStyle(color: Colors.black45, fontSize: 18),
+                          menuMaxHeight: 200,
+                          onChanged: (int? newValue) => onGroupSizeChanged(newValue!),
+                          selectedItemBuilder: (BuildContext context) {
+                            return groupSizeOptions.map((int value) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                                child: Text(
+                                  groupSizeValue.toString(),
+                                  style: const TextStyle(color: Colors.white),
+                                ),
+                              );
+                            }).toList();
                           },
-                          items: <int>[1, 2, 3, 4, 6, 7, 8, 9, 10]
-                              .map<DropdownMenuItem<int>>((int value) {
+                          items: groupSizeOptions.map<DropdownMenuItem<int>>((int value) {
                             return DropdownMenuItem<int>(
                               value: value,
                               child: Text(value.toString()),
+                              onTap: () => {print("menu item clicked")},
                             );
                           }).toList(),
                         ),
@@ -105,5 +116,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
         ),
       ),
     );
+  }
+
+  void onGroupSizeChanged(int newValue) {
+    print("menu option changed form $groupSizeValue to: $newValue");
+    setState(() {
+      groupSizeValue = newValue;
+    });
   }
 }
