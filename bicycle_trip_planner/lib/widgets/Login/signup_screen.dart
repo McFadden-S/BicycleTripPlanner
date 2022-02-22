@@ -13,7 +13,6 @@ class SignUpScreen extends StatefulWidget {
   _SignUpScreen createState() => _SignUpScreen();
 }
 
-
 class _SignUpScreen extends State<SignUpScreen> {
   final _auth = FirebaseAuth.instance;
   late String email;

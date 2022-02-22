@@ -15,6 +15,15 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
+    Future<void> _showSnackBar(String m) async {
+      final snackBar = SnackBar(
+        content: Text(m),
+        duration: const Duration(seconds: 3),
+        backgroundColor: Colors.blue,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
     final _auth = FirebaseAuth.instance;
     late String email;
     late String password;
@@ -57,15 +66,19 @@ class LoginScreen extends StatelessWidget {
               RoundedButton(
                 text: "Login",
                 press: () async {
-                  final user = await _auth.signInWithEmailAndPassword(
-                      email: email, password: password);
-                  if (user != null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) {
-                        return WelcomeScreen();
-                      }),
-                    );
+                  try {
+                    final user = await _auth.signInWithEmailAndPassword(
+                        email: email, password: password);
+                    if (user != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return WelcomeScreen();
+                        }),
+                      );
+                    }
+                  } catch (e) {
+                    _showSnackBar(e.toString());
                   }
                 },
               ),
@@ -105,6 +118,7 @@ class LoginScreen extends StatelessWidget {
         ),
     );
   }
+
 }
 
 

@@ -17,6 +17,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Background(
           child: Column(
@@ -64,6 +65,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
         ),
     );
   }
+
   Future resetPassword() async{
     try{
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
@@ -71,11 +73,14 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
     }catch(e){
       _showSnackBar(e.toString());
     }
-
   }
 
   Future<void> _showSnackBar(String m)async {
-    final snackBar = SnackBar(content: Text(m), duration: const Duration(seconds: 3),backgroundColor: Colors.blue,);
+    final snackBar = SnackBar(
+      content: Text(m),
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.blue,
+    );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
