@@ -19,7 +19,7 @@ class CameraManager{
 
   CameraManager({
     required this.googleMapController,
-    required this.locationManager
+    required this.locationManager,
   });
 
   //********** Setup/Teardown **********
