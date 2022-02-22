@@ -32,12 +32,14 @@ void main() {
   testWidgets('Directions expand after tap', (WidgetTester tester) async {
     await pumpWidget(tester, Directions());
 
-    final directions = find.byType(DirectionTile);
+    var directions = find.byType(ListView);
 
     expect(directions, findsNothing);
 
     await tester.tap(find.byIcon(Icons.expand_more));
     await tester.pump();
+
+    directions = find.byType(ListView);
 
     expect(directions, findsWidgets);
   });

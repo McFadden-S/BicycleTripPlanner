@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/DirectionTile.dart';
 import 'package:flutter/material.dart';
@@ -23,37 +24,14 @@ class _DirectionsState extends State<Directions> {
   final DirectionManager directionManager = DirectionManager();
   late StreamSubscription directionSubscription;
 
-  Steps? _actual; // TODO: Temporary placeholders. Actual steps should be passed in
-  late String journeyDuration;
-  late String journeyDistance;
-
-  void _setDuration(int seconds) {
-    int minutes = (seconds / 60).ceil();
-    journeyDuration = "$minutes min";
-  }
-
-  void _setDistance(int metre) {
-    int km = (metre / 1000).ceil();
-    journeyDistance = "$km km";
-  }
-
-  void _setDirection(List<Steps> steps) {
-    if (steps.isNotEmpty) {
-      _actual = steps[0];
-      steps.removeAt(0);
-      directionManager.directions = steps;
-    } else {
-      _actual = null;
-      directionManager.directions = steps;
-    }
-  }
-
   bool extendedNavigation = false;
 
   void _toggleExtendNavigationView() {
     setState(() => {extendedNavigation = !extendedNavigation});
   }
 
+  // TODO: Potentially move this up to Navigation.dart, other widgets also need to listen to
+  // directionManager. (Or make DirectionManager a singleton)
   @override
   void initState() {
     super.initState();
@@ -64,13 +42,25 @@ class _DirectionsState extends State<Directions> {
     directionSubscription =
         applicationBloc.currentRoute.stream.listen((direction) {
       setState(() {
+        directionManager.currentDirection = direction.legs.steps.removeAt(0);
         directionManager.directions = direction.legs.steps;
-        _setDuration(direction.legs.duration);
-        _setDistance(direction.legs.distance);
+        directionManager.setDuration(direction.legs.duration);
+        directionManager.setDistance(direction.legs.distance);
       });
     });
 
-    _setDirection(directionManager.createDummyDirections());
+    // TODO: TEMPORARY SETUP USING APPLICATION API - TO BE REMOVED WHEN ROUTEPLANNING LINKS WITH NAVIGATION
+      findRoute();
+  }
+  
+  void findRoute() async {
+    await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
+    setState((){
+      directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
+      directionManager.directions = applicationBloc.route.legs.steps;
+      directionManager.setDuration(applicationBloc.route.legs.duration);
+      directionManager.setDistance(applicationBloc.route.legs.distance);
+    });
   }
 
   @override
@@ -89,29 +79,27 @@ class _DirectionsState extends State<Directions> {
           onTap: () => _toggleExtendNavigationView(),
           child: SizedBox(
             height: !extendedNavigation
-                ? MediaQuery.of(context).size.height * 0.15
+                ? MediaQuery.of(context).size.height * 0.16
                 : directionManager.directions.length < 3
                     ? (directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
-                    + (MediaQuery.of(context).size.height * 0.15)
+                    + (MediaQuery.of(context).size.height * 0.16)
                     : MediaQuery.of(context).size.height * 0.5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CurrentDirection(currentDirection: _actual!), 
-                !extendedNavigation
-                    ? const Spacer()
-                    : directionManager.directions.isNotEmpty
-                      ? const Padding(
+                CurrentDirection(currentDirection: directionManager.currentDirection),
+                if(!extendedNavigation) const Spacer() else
+                    if(directionManager.directions.isNotEmpty)
+                      const Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                           child: Divider(thickness: 0.7),
-                        )
-                      : const Spacer(),
+                        ), 
                 extendedNavigation
                     ? SizedBox(
                         height: directionManager.directions.length < 3
                             ? (directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
-                            : MediaQuery.of(context).size.height * 0.30,
+                            : MediaQuery.of(context).size.height * 0.3,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           itemCount: directionManager.directions.length,
