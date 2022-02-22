@@ -11,7 +11,7 @@ class MarkerManager {
 
   final Set<Marker> _markers = <Marker>{};
 
-  int _markerIdCounter = 1;
+  // int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
 
@@ -35,13 +35,17 @@ class MarkerManager {
 
   //TODO Fix marker duplication bug but setting marker id
   void setMarker(LatLng point) {
-    _markerIdCounter++;
+    // _markerIdCounter++;
 
     _markers.add(Marker(
-      markerId: MarkerId('marker_$_markerIdCounter'),
+      markerId: MarkerId('marker_Search'),//$_markerIdCounter'),
       position: point,
     ));
   }
+
+  /* TODO Create setMarker() functions for the different types of markers
+       i.e marker_Origin, marker_Destination, marker_Intermediate_1, etc.
+  */
 
   void setPlaceMarker(Place place) {
     final double lat = place.geometry.location.lat;
