@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
@@ -22,7 +23,6 @@ class _DirectionsState extends State<Directions> {
   late final applicationBloc;
 
   final DirectionManager directionManager = DirectionManager();
-  late StreamSubscription directionSubscription;
 
   bool extendedNavigation = false;
 
@@ -30,8 +30,6 @@ class _DirectionsState extends State<Directions> {
     setState(() => {extendedNavigation = !extendedNavigation});
   }
 
-  // TODO: Potentially move this up to Navigation.dart, other widgets also need to listen to
-  // directionManager. (Or make DirectionManager a singleton)
   @override
   void initState() {
     super.initState();
@@ -39,36 +37,12 @@ class _DirectionsState extends State<Directions> {
     applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
 
-    directionSubscription =
-        applicationBloc.currentRoute.stream.listen((direction) {
-      setState(() {
-        directionManager.currentDirection = direction.legs.steps.removeAt(0);
-        directionManager.directions = direction.legs.steps;
-        directionManager.setDuration(direction.legs.duration);
-        directionManager.setDistance(direction.legs.distance);
-      });
-    });
-
-    // TODO: TEMPORARY SETUP USING APPLICATION API - TO BE REMOVED WHEN ROUTEPLANNING LINKS WITH NAVIGATION
-      findRoute();
-  }
-  
-  void findRoute() async {
-    await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
-    setState((){
-      directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
-      directionManager.directions = applicationBloc.route.legs.steps;
-      directionManager.setDuration(applicationBloc.route.legs.duration);
-      directionManager.setDistance(applicationBloc.route.legs.distance);
-    });
-  }
-
-  @override
-  void dispose() {
-
-    directionSubscription.cancel();
-
-    super.dispose();
+    var currentRoute = applicationBloc.route; 
+    
+    directionManager.currentDirection = currentRoute.legs.steps.removeAt(0); 
+    directionManager.directions = currentRoute.legs.steps;
+    directionManager.setDuration(currentRoute.legs.duration);
+    directionManager.setDistance(currentRoute.legs.distance);
   }
 
   @override
