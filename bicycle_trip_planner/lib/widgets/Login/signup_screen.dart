@@ -68,8 +68,15 @@ class _SignUpScreen extends State<SignUpScreen> {
                 text: "Sign Up",
                 press: () async {
                   try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(
-                        email: email, password: password);
+                    if (password==confirmPassword){
+                      final newUser = await _auth.createUserWithEmailAndPassword(
+                        email: email,
+                        password: password,
+                      );
+                    }
+                    else{
+                      _showSnackBar("passwords-do-not-match");
+                    }
                   } catch (e) {
                     _showSnackBar(e.toString());
                   }
@@ -92,7 +99,10 @@ class _SignUpScreen extends State<SignUpScreen> {
       message="Email address entered is invalid";
     } else if (message.contains("weak-password")){
       message="Password must contain at least 6 characters";
-    } else {
+    } else if (message.contains("passwords-do-not-match")) {
+      message="Passwords do not match";
+    }
+    else {
       message="Error. Please try again";
     }
     final snackBar = SnackBar(
