@@ -38,7 +38,6 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 ),
                 flex: 1,
               ),
-
               Flexible(
                 child: Text(
                   "Please enter your email to reset password",
@@ -48,7 +47,6 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 ),
                 flex: 2,
               ),
-
               RoundedInputField(
                 hintText: "Email",
                 onChanged: (value) {

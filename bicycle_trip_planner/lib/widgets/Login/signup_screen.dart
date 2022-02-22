@@ -21,11 +21,10 @@ class _SignUpScreen extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
     return Scaffold(
         body: Background(
-
           child: Column(
-
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(

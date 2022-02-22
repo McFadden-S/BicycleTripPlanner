@@ -15,9 +15,18 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
-    Future<void> _showSnackBar(String m) async {
+    Future<void> _showSnackBar(String message) async {
+      if (message.contains("user-not-found")) {
+        message="User not found. Please try again";
+      } else if (message.contains("wrong-password")){
+        message="Incorrect password. Please try again";
+      } else if (message.contains("unknown")){
+        message="One of the fields is empty. Please try again";
+      } else {
+        message="Error. Please try again";
+      }
       final snackBar = SnackBar(
-        content: Text(m),
+        content: Text(message),
         duration: const Duration(seconds: 3),
         backgroundColor: Colors.blue,
       );
@@ -56,7 +65,6 @@ class LoginScreen extends StatelessWidget {
                 ),
                 flex: 2,
               ),
-
               RoundedPasswordField(
                   text: "Password",
                   onChanged: (value) {
@@ -118,7 +126,4 @@ class LoginScreen extends StatelessWidget {
         ),
     );
   }
-
 }
-
-
