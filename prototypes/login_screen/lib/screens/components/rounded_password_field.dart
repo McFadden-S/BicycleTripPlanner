@@ -17,6 +17,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
   Widget build(BuildContext context) {
     return TextFieldContainter(
       child: TextField(
+        key: const ValueKey("passwordField"),
         obscureText: _isHidden,
         onChanged: widget.onChanged,
         decoration: InputDecoration(
@@ -26,6 +27,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
             color: kPrimaryColor,
           ),
           suffix: InkWell(
+            key: const ValueKey("passwordButton"),
             onTap: _togglePasswordView,
             child: Icon(
               _isHidden

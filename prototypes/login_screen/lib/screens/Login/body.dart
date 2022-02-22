@@ -47,6 +47,7 @@ class Body extends StatelessWidget {
             },
           ),
           RoundedPasswordField(
+              key: ValueKey("test"),
               text: "Password",
               onChanged: (value) {
                 password = value;
