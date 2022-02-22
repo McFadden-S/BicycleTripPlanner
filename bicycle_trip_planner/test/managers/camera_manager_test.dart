@@ -9,22 +9,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 void main(){
-  final LocationManager locationManager = LocationManager();
-  bool isInitPos = true;
-  CameraManager? cameraManager;
-  GoogleMap(
-    initialCameraPosition: CameraManager.initialCameraPosition,
-      onMapCreated: (controller) {
-        cameraManager = CameraManager(
-            googleMapController: controller,
-            locationManager: locationManager
-        );
-        cameraManager?.init();
-      },
-      onCameraMove: (value) {
-        isInitPos = false;
-      },
-  );
+//   final LocationManager locationManager = LocationManager();
+//   bool isInitPos = true;
+//   CameraManager? cameraManager;
+//   GoogleMap(
+//     initialCameraPosition: CameraManager.initialCameraPosition,
+//       onMapCreated: (controller) {
+//         cameraManager = CameraManager(
+//             googleMapController: controller,
+//             locationManager: locationManager
+//         );
+//         cameraManager?.init();
+//       },
+//       onCameraMove: (value) {
+//         isInitPos = false;
+//       },
+//   );
 
 
   // test('check if view place will move the camera position', (){
