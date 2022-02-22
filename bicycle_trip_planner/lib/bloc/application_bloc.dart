@@ -104,8 +104,11 @@ class ApplicationBloc with ChangeNotifier {
     return selectedScreen;
   }
 
-  void setSelectedScreen(String screenName) {
-    selectedScreen = screens[screenName] ?? HomeWidgets();
+  void setSelectedScreen(String screenName, {String selectedStartStation = ""}) {
+    if (selectedStartStation == "")
+      selectedScreen = screens[screenName] ?? HomeWidgets();
+    else
+      selectedScreen = RoutePlanning(selectedStation: selectedStartStation);
     notifyListeners();
   }
 

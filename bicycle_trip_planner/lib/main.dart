@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
-        '/routePlanning': (context) => const RoutePlanning(),
+        '/routePlanning': (context) => RoutePlanning(),
       },
       theme: ThemeData(
         brightness: Brightness.light,

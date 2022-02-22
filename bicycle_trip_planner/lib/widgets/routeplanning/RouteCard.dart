@@ -8,8 +8,8 @@ import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
-
-  const RouteCard({Key? key}) : super(key: key);
+  String? selectedStation;
+  RouteCard({Key? key, this.selectedStation}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -17,7 +17,7 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  final TextEditingController startSearchController = TextEditingController();
+  TextEditingController startSearchController = TextEditingController();
   final TextEditingController destinationSearchController = TextEditingController();
   final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
 
@@ -41,6 +41,12 @@ class _RouteCardState extends State<RouteCard> {
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
+    if(widget.selectedStation != null) {
+      routeManager.setStart(widget.selectedStation!);
+      startSearchController.text = widget.selectedStation!;
+      widget.selectedStation = null;
+    }
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(

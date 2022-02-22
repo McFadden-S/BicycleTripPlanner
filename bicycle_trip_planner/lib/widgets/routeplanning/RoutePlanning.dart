@@ -7,7 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 
 class RoutePlanning extends StatefulWidget {
-  const RoutePlanning({Key? key}) : super(key: key);
+  String? selectedStation;
+  RoutePlanning({Key? key, this.selectedStation}) : super(key: key);
 
 
   @override
@@ -19,6 +20,18 @@ class _RoutePlanningState extends State<RoutePlanning> {
   List<int> groupSizeOptions = <int>[1,2,3,4,5,6,7,8,9,10];
   int? groupSizeValue = 1;
 
+  RouteCard _buildRouteCard() {
+    RouteCard routeCard;
+    if(widget.selectedStation != null) {
+      routeCard = RouteCard(selectedStation: widget.selectedStation!);
+      widget.selectedStation = null;
+    }
+    else {
+      routeCard = RouteCard();
+    }
+    return routeCard;
+  }
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -29,7 +42,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 const Spacer(),
                 Stack(
-                    children: [RouteCard()]
+                    children: [_buildRouteCard()]
                 ),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
