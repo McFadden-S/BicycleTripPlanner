@@ -52,7 +52,7 @@ class ApplicationBloc with ChangeNotifier {
   setupStations() async{
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations);
+    _markerManager.setStationMarkers(stations, this);
     updateStations();
     notifyListeners();
   }
