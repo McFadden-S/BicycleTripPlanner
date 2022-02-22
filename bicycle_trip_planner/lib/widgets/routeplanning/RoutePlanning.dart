@@ -51,7 +51,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 ]),
                 const Spacer(),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  //TODO: an empty function is being passed here for now
                   Padding(
                     padding: const EdgeInsets.only(right: 5.0, top: 10.0),
                     child: Container(
@@ -63,7 +62,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: DropdownButton<int>(
-                          alignment: AlignmentDirectional.center,
                           isDense: true,
                           value: groupSizeValue,
                           icon: const Icon(Icons.group, color: Colors.white),
@@ -87,7 +85,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             return DropdownMenuItem<int>(
                               value: value,
                               child: Text(value.toString()),
-                              onTap: () => {print("menu item clicked")},
                             );
                           }).toList(),
                         ),
@@ -117,7 +114,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
       ),
     );
   }
-
+   // TODO: remove print statement after linking the button correctly
   void onGroupSizeChanged(int newValue) {
     print("menu option changed form $groupSizeValue to: $newValue");
     setState(() {
