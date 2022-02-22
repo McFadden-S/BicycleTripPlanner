@@ -4,15 +4,25 @@ import 'package:flutter/material.dart';
 
 class DirectionManager{
   
-  // TODO: Change these distance and duration to late when possible
+  //********** Fields **********
+
   bool isCycling = false; 
   String duration = "No data";
   String distance = "No data";
   List<Steps> directions = <Steps>[];
   Steps currentDirection = Steps(instruction: "", distance: 0, duration: 0);
 
-  // TODO: IMPLEMENT SINGLETON DESIGN
-  DirectionManager();
+  //********** Singleton **********
+
+  static final DirectionManager _directionManager = DirectionManager._internal(); 
+
+  factory DirectionManager(){return _directionManager;} 
+
+  DirectionManager._internal(); 
+
+  //********** Private **********
+
+  //********** Public *********
 
   void setDuration(int seconds) {
     int minutes = (seconds / 60).ceil();
@@ -36,7 +46,6 @@ class DirectionManager{
     return Icon(icon, color: buttonPrimaryColor, size: 60); 
   }
 
-  // TODO: Keep until actual data is passed into Nav
   List<Steps> createDummyDirections() {
     List<Steps> steps = [];
     steps.add(Steps(
@@ -51,11 +60,32 @@ class DirectionManager{
       instruction: "Turn left", distance: 150, duration: 16));
     return steps; 
   }
-  
-  // TODO: Remove the first direction from the list and return it
+
   Steps popDirection() {
     directions.removeAt(0);
     return directions.first; 
   }
 
+  void clearDuration(){
+    duration = "No data";
+  }
+
+  void clearDistance(){
+    distance = "No data";
+  }
+
+  void clearDirections(){
+    directions.clear();
+  }
+
+  void clearCurrentDirection(){
+    currentDirection = Steps(instruction: "", distance: 0, duration: 0);
+  }
+
+  void clear(){
+    clearDuration(); 
+    clearDistance(); 
+    clearCurrentDirection();
+    clearDirections(); 
+  }
 }

@@ -1,9 +1,10 @@
-import 'dart:ui';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -16,6 +17,7 @@ class MarkerManager {
   int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
+  BitmapDescriptor? userMarkerIcon; 
 
   //********** Singleton **********
 
@@ -48,6 +50,18 @@ class MarkerManager {
     }
   }
 
+  void _initUserMarkerIcon(double radius) async {
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+    final Paint paint = Paint()..color = Colors.blue;
+    canvas.drawCircle(Offset(radius, radius), radius, paint);
+    int diamater = (radius * 2).ceil();  
+    final img = await pictureRecorder.endRecording().toImage(diamater, diamater);
+    final data = await img.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List markerIcon = data!.buffer.asUint8List();
+    userMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
+  }
+
   @visibleForTesting
   void setMarker(LatLng point, String markerID) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
@@ -75,19 +89,23 @@ class MarkerManager {
     setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
   }
 
-  //TODO Refactor to use setMarker to set the marker
-  // Same as set marker with hardcoded ID and other variables
   void setUserMarker(Position point) {
+
+    if(userMarkerIcon == null){
+      _initUserMarkerIcon(25); 
+    }
+
     LatLng latlng = LatLng(point.latitude, point.longitude);
-    _markers.add(Marker(
+    Marker userMarker = Marker(
+      icon: userMarkerIcon!,
       markerId: const MarkerId('user'),
       position: latlng,
-      rotation: point.heading,
       draggable: false,
       zIndex: 2,
       flat: true,
       anchor: const Offset(0.5, 0.5),
-    ));
+    );
+    _markers.add(userMarker);
   }
 
   void setStationMarkers(List<Station> stations){
@@ -101,5 +119,4 @@ class MarkerManager {
       ));
     }
   }
-
 }

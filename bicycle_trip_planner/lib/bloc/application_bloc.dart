@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -33,6 +34,7 @@ class ApplicationBloc with ChangeNotifier {
 
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
+  StreamController<LatLng> currentLocation = StreamController<LatLng>.broadcast();
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -87,9 +89,15 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  viewCurrentLocation() async {
+    Locator _locator = Locator();
+    currentLocation.add(await _locator.locate());
+    notifyListeners();
+  }
+
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
     route = await _directionsService.getRoutes(origin, destination, intermediates);
-    currentRoute.add(route!);
+    currentRoute.add(route!); 
     notifyListeners();
   }
 
@@ -108,5 +116,4 @@ class ApplicationBloc with ChangeNotifier {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
   }
-
 }

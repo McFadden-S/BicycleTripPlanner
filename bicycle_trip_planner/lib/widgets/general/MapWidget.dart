@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
@@ -27,6 +26,7 @@ class _MapWidgetState extends State<MapWidget> {
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
+  late StreamSubscription curLocationSubscription;
 
   //********** Markers **********
 
@@ -88,10 +88,16 @@ class _MapWidgetState extends State<MapWidget> {
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
             .listen((Position position) {
-          setState(() {
-            markerManager.setUserMarker(position);
-          });
+            setState(() {
+              markerManager.setUserMarker(position);
+            });
         });
+
+    curLocationSubscription = applicationBloc.currentLocation.stream.listen((event) {
+      setState(() {
+        cameraManager?.viewUser();
+      });
+    });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
@@ -139,7 +145,6 @@ class _MapWidgetState extends State<MapWidget> {
       onMapCreated: (controller) {
         cameraManager = CameraManager(
             googleMapController: controller,
-            locationManager: locationManager
         );
         cameraManager?.init();
       }

@@ -33,6 +33,8 @@ class RouteManager{
 
   bool ifDestinationSet(){return _destination != "";}
 
+  bool ifIntermediatesSet(){return _intermediates.isNotEmpty;} 
+
   void setStart(String start){
     _start = start;
     _changed = true;
@@ -52,7 +54,7 @@ class RouteManager{
   }
 
   void setIntermediate(String intermediate, int id){
-    if(_intermediates.length <= id && _intermediates.isNotEmpty){
+    if(_intermediates.length >= id && _intermediates.isNotEmpty){
       _intermediates[id-1] = intermediate;
     } else{
       _intermediates.add(intermediate);
