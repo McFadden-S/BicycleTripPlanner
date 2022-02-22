@@ -81,9 +81,22 @@ class _SignUpScreen extends State<SignUpScreen> {
         ),
     );
   }
-  Future<void> _showSnackBar(String m) async {
+  Future<void> _showSnackBar(String message) async {
+    if (message.contains("wrong-password")){
+      message="Incorrect password. Please try again";
+    } else if (message.contains("unknown")){
+      message="One of the fields is empty. Please try again";
+    } else if (message.contains("email-already-in-use")){
+      message="Email address was already used by another account";
+    } else if (message.contains("invalid-email")){
+      message="Email address entered is invalid";
+    } else if (message.contains("weak-password")){
+      message="Password must contain at least 6 characters";
+    } else {
+      message="Error. Please try again";
+    }
     final snackBar = SnackBar(
-      content: Text(m),
+      content: Text(message),
       duration: const Duration(seconds: 3),
       backgroundColor: Colors.blue,
     );
