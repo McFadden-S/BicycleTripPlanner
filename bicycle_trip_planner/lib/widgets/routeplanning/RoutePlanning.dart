@@ -90,7 +90,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       iconIn: Icons.directions_bike,
                       buttonColor: Colors.green,
                       onButtonClicked: () {
-                        if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){
+                        if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');
                         }
                         else{

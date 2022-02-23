@@ -23,7 +23,6 @@ class _DirectionsState extends State<Directions> {
   late final applicationBloc;
 
   final DirectionManager directionManager = DirectionManager();
-  late StreamSubscription directionSubscription;
 
   bool extendedNavigation = false;
 
@@ -44,12 +43,6 @@ class _DirectionsState extends State<Directions> {
     directionManager.directions = currentRoute.legs.steps;
     directionManager.setDuration(currentRoute.legs.duration);
     directionManager.setDistance(currentRoute.legs.distance);
-  }
-
-  @override
-  void dispose() {
-    directionSubscription.cancel();
-    super.dispose();
   }
 
   @override

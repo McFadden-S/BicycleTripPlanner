@@ -33,6 +33,8 @@ class RouteManager{
 
   bool ifDestinationSet(){return _destination != "";}
 
+  bool ifIntermediatesSet(){return _intermediates.isNotEmpty;} 
+
   void setStart(String start){
     _start = start;
     _changed = true;

@@ -40,4 +40,8 @@ class PolylineManager{
     ));
   }
 
+  void clearPolyline(){
+    _polylines.clear();
+  }
+
 }
