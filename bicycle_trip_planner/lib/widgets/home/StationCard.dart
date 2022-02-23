@@ -33,7 +33,7 @@ class _StationCardState extends State<StationCard> {
 
     // Obtain initial distances from current position (for quicker loading)
     Station station = applicationBloc.stations[widget.index];
-    LatLng stationPos = LatLng(station.lat, station.long);
+    LatLng stationPos = LatLng(station.lat, station.lng);
 
     locationManager.distanceTo(stationPos).then((distance) => {
      setState(() {this.distance = distance;}) 

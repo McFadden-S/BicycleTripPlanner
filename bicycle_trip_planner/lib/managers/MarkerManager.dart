@@ -15,8 +15,6 @@ class MarkerManager {
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
 
-  final List<Station> _stations = List.empty();
-
   //********** Singleton **********
 
   static final MarkerManager _markerManager = MarkerManager._internal();
@@ -66,7 +64,7 @@ class MarkerManager {
 
   //TODO Refactor to use setMarker to set the marker
   Marker getStationMarker(Station station) {
-    LatLng pos = LatLng(station.lat, station.long);
+    LatLng pos = LatLng(station.lat, station.lng);
     Marker marker = Marker(
       markerId: MarkerId(station.name),
       infoWindow: InfoWindow(title: station.name),
