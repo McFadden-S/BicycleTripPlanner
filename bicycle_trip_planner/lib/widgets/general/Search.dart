@@ -1,15 +1,24 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
+
   final String labelTextIn;
   final TextEditingController searchController;
+
+  final SearchType searchType;
+  final intermediateIndex;
 
   const Search({
     Key? key,
     required this.labelTextIn,
-    required this.searchController
+    required this.searchController,
+    required this.searchType,
+    this.intermediateIndex = 0
   }) : super(key: key);
 
   @override
@@ -19,6 +28,8 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
 
   bool isSearching = false;
+
+  MarkerManager markerManager = MarkerManager();
 
   hideSearch() {
     isSearching = false;
@@ -57,10 +68,11 @@ class _SearchState extends State<Search> {
                         ),
                       ),
                       onTap: () {
-                        widget.searchController.text = applicationBloc
-                            .searchResults[index].description;
-                        applicationBloc.setSelectedLocation(applicationBloc
-                            .searchResults[index].placeId);
+                        widget.searchController.text =
+                            applicationBloc.searchResults[index].description;
+                        applicationBloc.setSelectedLocation(
+                            applicationBloc.searchResults[index].placeId,
+                            widget.searchType, widget.intermediateIndex);
                         hideSearch();
                       },
                     );
@@ -99,6 +111,7 @@ class _SearchState extends State<Search> {
                   onPressed: () {
                     setState(() {
                       widget.searchController.clear();
+                      applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
                     }
                     );
                     hideSearch();

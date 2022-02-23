@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -19,12 +20,10 @@ class ApplicationBloc with ChangeNotifier {
   final _stationsService = StationsService();
   
   Rou.Route? route; // TODO: Potential refactor on route here
-  //List<Station> stations = List.empty();
   List<PlaceSearch> searchResults = List.empty();
 
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
-  StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -63,14 +62,24 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId) async {
-    selectedLocation.add(await _placesService.getPlace(placeId));
+  setSelectedLocation(String placeId, SearchType searchType, [int intermediateIndex = 0]) async {
+    Place selected = await _placesService.getPlace(placeId);
+
+    selectedLocation.add(selected);
+    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+
     searchResults.clear();
     notifyListeners();
   }
 
-  findRoute(String origin, String destination) async {
-    route = await _directionsService.getRoutes(origin, destination); 
+  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
+    _markerManager.clearMarker(searchType, intermediateIndex);
+
+    notifyListeners();
+  }
+
+  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+    route = await _directionsService.getRoutes(origin, destination, intermediates);
     currentRoute.add(route!);
     notifyListeners();
   }

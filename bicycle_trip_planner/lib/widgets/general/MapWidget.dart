@@ -68,7 +68,6 @@ class _MapWidgetState extends State<MapWidget> {
         applicationBloc.selectedLocation.stream.listen((place) {
           setState(() {
             cameraManager?.viewPlace(place);
-            markerManager.setPlaceMarker(place);
           });
         });
 
@@ -128,7 +127,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return GoogleMap(
       mapType: MapType.normal,

@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -16,7 +17,7 @@ void main(){
 
   test('ensure marker is added when requested', (){
     expect(markerManager.getMarkers().length,0);
-    markerManager.setMarker(LatLng(51.511448, -0.116414));
+    markerManager.setMarker(const LatLng(51.511448, -0.116414), "test");
     expect(markerManager.getMarkers().length,1);
     markerManager.getMarkers().clear();
   });
@@ -26,7 +27,7 @@ void main(){
     Geometry geometry = Geometry(location: location);
     Place place = Place(geometry: geometry, name: 'Bush House');
     expect(markerManager.getMarkers().length,0);
-    markerManager.setPlaceMarker(place);
+    markerManager.setPlaceMarker(place, SearchType.start);
     expect(markerManager.getMarkers().length,1);
     markerManager.getMarkers().clear();
   });
