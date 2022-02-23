@@ -1,9 +1,16 @@
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
 class IntermediateSearchList extends StatefulWidget {
 
-  const IntermediateSearchList({Key? key}) : super(key: key);
+  final List<TextEditingController> intermediateSearchControllers;
+
+  const IntermediateSearchList({
+    Key? key,
+    required this.intermediateSearchControllers
+  }) : super(key: key);
 
   @override
   _IntermediateSearchListState createState() => _IntermediateSearchListState();
@@ -11,33 +18,39 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
+  RouteManager routeManager = RouteManager();
+
   List<Widget> stopsList = [];
-  List<TextEditingController> stopsControllers = [];
 
   bool isShowingIntermediate = false;
 
-  void addStopWidget() {
+  void _addStopWidget() {
     setState(() {
       final TextEditingController searchController = TextEditingController();
 
-      stopsControllers.add(searchController);
+      widget.intermediateSearchControllers.add(searchController);
       stopsList.add(
           ListTile(
             title:
               Search(
-                  labelTextIn: "Stop ${stopsControllers.length}",
-                  searchController: searchController),
+                  labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
+                  searchController: searchController,
+                  searchType: SearchType.intermediate,
+                  intermediateID: stopsList.length + 1,
+              ),
               trailing: IconButton(
+                key: Key("Remove ${widget.intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
-                      int indexPressed = stopsControllers.indexOf(searchController);
+                      int indexPressed = widget.intermediateSearchControllers.indexOf(searchController);
 
-                      for(int i = indexPressed; i < stopsControllers.length - 1; i++){
-                        stopsControllers[i].text = stopsControllers[i+1].text;
+                      for(int i = indexPressed; i < widget.intermediateSearchControllers.length - 1; i++){
+                        widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
                       }
 
+                      routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
-                      stopsControllers.removeLast();
+                      widget.intermediateSearchControllers.removeLast();
                     });
                   },
                   icon: const Icon(
@@ -55,6 +68,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   @override
   Widget build(BuildContext context) {
+
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -69,7 +83,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () => {addStopWidget()},
+                onPressed: () => {_addStopWidget()},
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(

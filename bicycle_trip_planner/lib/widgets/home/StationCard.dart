@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,35 +20,11 @@ class StationCard extends StatefulWidget {
 }
 
 class _StationCardState extends State<StationCard> {
+
   late StreamSubscription locatorSubscription;
+
   final LocationManager locationManager = LocationManager();
-
-  double distance = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final ApplicationBloc applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-
-    // Obtain initial distances from current position (for quicker loading)
-    Station station = applicationBloc.stations[widget.index];
-    LatLng stationPos = LatLng(station.lat, station.long);
-
-    locationManager.distanceTo(stationPos).then((distance) => {
-     setState(() {this.distance = distance;}) 
-    });
-
-    locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
-            .listen((Position position) {
-      LatLng pos = LatLng(position.latitude, position.longitude);
-      setState(() {
-        distance = locationManager.distanceFromTo(pos, stationPos);
-      });
-    });
-  }
+  final StationManager stationManager = StationManager();
 
   @override
   void setState(fn) {
@@ -57,25 +34,10 @@ class _StationCardState extends State<StationCard> {
   }
 
   @override
-  void dispose() {
-    try {
-      final ApplicationBloc applicationBloc =
-          Provider.of<ApplicationBloc>(context, listen: false);
-      applicationBloc.dispose();
-    } catch (e) {}
-    ;
-    locatorSubscription.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      onTap: () => stationClicked(widget.index),
+      onTap: () => stationClicked(widget.index, applicationBloc),
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
@@ -91,9 +53,9 @@ class _StationCardState extends State<StationCard> {
                         Expanded(
                           flex: 25,
                           child: Text(
-                              applicationBloc.stations[widget.index].name,
+                              stationManager.getStationByIndex(widget.index).name,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
+                              style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
                           ),
                         ),
                         const Spacer(flex: 1),
@@ -107,8 +69,8 @@ class _StationCardState extends State<StationCard> {
                           size: 20.0,
                         ),
                         Text(
-                          "\t\t${applicationBloc.stations[widget.index].bikes.toString()} bikes available",
-                          style: TextStyle(fontSize: 15.0),
+                          "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
+                          style: const TextStyle(fontSize: 15.0),
                         ),
                       ],
                     ),
@@ -119,15 +81,15 @@ class _StationCardState extends State<StationCard> {
                           size: 20.0,
                         ),
                         Text(
-                          "\t\t${applicationBloc.stations[widget.index].totalDocks.toString()} free docks",
-                          style: TextStyle(fontSize: 15.0),
+                          "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
+                          style: const TextStyle(fontSize: 15.0),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                           child: Text(
-                              "${distance.toStringAsFixed(1)}mi",
+                              "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}mi",
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12.0, color: Colors.blueAccent)
+                              style: const TextStyle(fontSize: 12.0, color: Colors.blueAccent)
                           ),
                         ),
                       ],
@@ -141,6 +103,6 @@ class _StationCardState extends State<StationCard> {
   }
 }
 
-void stationClicked(int index) {
-  print("Station of index $index was tapped");
+void stationClicked(int index, ApplicationBloc appBloc) {
+  appBloc.setSelectedScreen('routePlanning');
 }

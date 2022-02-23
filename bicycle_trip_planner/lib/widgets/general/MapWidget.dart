@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -21,14 +22,11 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
 
-  late final applicationBloc;
-
   //********** Providers **********
 
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
-  late StreamSubscription stationSubscription;
 
   //********** Markers **********
 
@@ -50,6 +48,10 @@ class _MapWidgetState extends State<MapWidget> {
 
   final LocationManager locationManager = LocationManager();
 
+  //********** Stations ***********
+
+  final StationManager stationManager = StationManager();
+
   //********** Widget **********
 
   @override
@@ -60,13 +62,12 @@ class _MapWidgetState extends State<MapWidget> {
     LocationPermission perm;
     locationManager.requestPermission().then((permission) => perm = permission);
 
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     locationSubscription =
         applicationBloc.selectedLocation.stream.listen((place) {
           setState(() {
             cameraManager?.viewPlace(place);
-            markerManager.setPlaceMarker(place);
           });
         });
 
@@ -82,14 +83,7 @@ class _MapWidgetState extends State<MapWidget> {
           });
         });
 
-    stationSubscription =
-        applicationBloc.allStations.stream.listen((stations){
-          setState((){
-            for(Station station in stations){
-                _markers.add(markerManager.getStationMarker(station));
-            }
-          });
-        });
+    applicationBloc.setupStations();
 
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
@@ -110,6 +104,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     try{
+      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
     }
     catch(e){}; 
@@ -117,8 +112,7 @@ class _MapWidgetState extends State<MapWidget> {
     if(cameraManager != null) {cameraManager?.dispose();} 
     locationSubscription.cancel();
     directionSubscription.cancel();
-    locatorSubscription.cancel(); 
-    stationSubscription.cancel();
+    locatorSubscription.cancel();
 
     super.dispose();
   }
@@ -132,6 +126,9 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return GoogleMap(
       mapType: MapType.normal,
       markers: _markers,

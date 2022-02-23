@@ -4,11 +4,25 @@ import 'package:flutter/material.dart';
 
 class DirectionManager{
   
+  // TODO: Change these distance and duration to late when possible
   bool isCycling = false; 
+  String duration = "No data";
+  String distance = "No data";
   List<Steps> directions = <Steps>[];
+  Steps currentDirection = Steps(instruction: "", distance: 0, duration: 0);
 
-  // TODO: DirectManager should take/obtain directions/steps
+  // TODO: IMPLEMENT SINGLETON DESIGN
   DirectionManager();
+
+  void setDuration(int seconds) {
+    int minutes = (seconds / 60).ceil();
+    duration = "$minutes min";
+  }
+
+  void setDistance(int metre) {
+    int km = (metre / 1000).ceil();
+    distance = "$km km";
+  }
 
   Icon directionIcon(String direction) {
     late IconData icon; 
@@ -40,6 +54,7 @@ class DirectionManager{
   
   // TODO: Remove the first direction from the list and return it
   Steps popDirection() {
+    directions.removeAt(0);
     return directions.first; 
   }
 
