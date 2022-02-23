@@ -26,4 +26,14 @@ void main(){
     expect(directionManager.currentDirection.distance, 0);
   });
 
+  test('test calculation conversion for duration is correct', (){
+    directionManager.setDuration(60);
+    expect(directionManager.duration, '1 min');
+  });
+
+  test('test calculation conversion for distance is correct', (){
+    directionManager.setDistance(1000);
+    expect(directionManager.distance, '1 km');
+  });
+
 }
