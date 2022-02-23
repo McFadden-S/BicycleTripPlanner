@@ -72,6 +72,12 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
+    _markerManager.clearMarker(searchType, intermediateIndex);
+
+    notifyListeners();
+  }
+
   findRoute(String origin, String destination) async {
     route = await _directionsService.getRoutes(origin, destination); 
     currentRoute.add(route!);

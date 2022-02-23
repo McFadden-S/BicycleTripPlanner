@@ -41,13 +41,18 @@ class MarkerManager {
     return marker.markerId != falseMarker;
   }
 
+  void _removeMarker(String markerID){
+    if(_markerExists(markerID)){
+      _markers.remove(_markers.firstWhere((marker) =>
+      marker.markerId == MarkerId(markerID)));
+    }
+  }
+
   @visibleForTesting
   void setMarker(LatLng point, String markerID) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
-    if(_markerExists(markerID)){
-      _markers.remove(_markers.firstWhere((marker) =>
-        marker.markerId == MarkerId(markerID)));
-    }
+    _removeMarker(markerID);
+
     _markers.add(Marker(
       markerId: MarkerId(markerID),
       position: point,
@@ -58,6 +63,10 @@ class MarkerManager {
 
   Set<Marker> getMarkers(){
     return _markers;
+  }
+
+  void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
+    _removeMarker(_generateMarkerID(searchType, intermediateIndex));
   }
 
   void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {

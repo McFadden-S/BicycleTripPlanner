@@ -127,7 +127,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   Widget build(BuildContext context) {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return GoogleMap(
       mapType: MapType.normal,

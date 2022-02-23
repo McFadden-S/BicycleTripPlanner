@@ -1,6 +1,8 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:provider/provider.dart';
 
 class IntermediateSearchList extends StatefulWidget {
 
@@ -17,7 +19,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void addStopWidget() {
+  void _addStopWidget() {
     setState(() {
       final TextEditingController searchController = TextEditingController();
 
@@ -29,6 +31,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   labelTextIn: "Stop ${stopsControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
+                  intermediateIndex: stopsList.length + 1,
               ),
               trailing: IconButton(
                 key: Key("Remove ${stopsControllers.length}"),
@@ -59,6 +62,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   @override
   Widget build(BuildContext context) {
+
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -73,7 +77,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () => {addStopWidget()},
+                onPressed: () => {_addStopWidget()},
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
