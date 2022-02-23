@@ -24,6 +24,13 @@ class _RoutePlanningState extends State<RoutePlanning> {
   List<int> groupSizeOptions = <int>[1,2,3,4,5,6,7,8,9,10];
   int? groupSizeValue = 1;
 
+  List<String> getIntermediateSearchText(){
+    if(intermediateSearchControllers.isNotEmpty){
+      return intermediateSearchControllers.map((controller) => controller.text).toList();
+    }
+    return <String>[];
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -105,7 +112,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       onButtonClicked: () async {
                         applicationBloc.findRoute(
                             startSearchController.text,
-                            destinationSearchController.text
+                            destinationSearchController.text,
+                            getIntermediateSearchText()
                         );
                       }
                   )

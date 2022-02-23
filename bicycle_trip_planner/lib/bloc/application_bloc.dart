@@ -78,8 +78,8 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  findRoute(String origin, String destination) async {
-    route = await _directionsService.getRoutes(origin, destination); 
+  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+    route = await _directionsService.getRoutes(origin, destination, intermediates);
     currentRoute.add(route!);
     notifyListeners();
   }
