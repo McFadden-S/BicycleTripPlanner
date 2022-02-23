@@ -59,6 +59,8 @@ class StationManager {
     }
 
     await setStationDistances();
+
+    _stations.sort((stationA, stationB) => stationA.distanceTo.compareTo(stationB.distanceTo));
   }
 
   //TODO Refactor so that no longer have to maintain distances list
