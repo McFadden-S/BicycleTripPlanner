@@ -19,6 +19,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   final TextEditingController startSearchController = TextEditingController();
   final TextEditingController destinationSearchController = TextEditingController();
+  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
 
   List<int> groupSizeOptions = <int>[1,2,3,4,5,6,7,8,9,10];
   int? groupSizeValue = 1;
@@ -41,6 +42,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     children: [RouteCard(
                       startSearchController: startSearchController,
                       destinationSearchController: destinationSearchController,
+                      intermediateSearchControllers: intermediateSearchControllers,
                     ),]
                 ),
                 const Spacer(),

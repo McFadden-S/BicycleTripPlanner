@@ -28,7 +28,7 @@ class MarkerManager {
   //********** Private **********
 
   String _generateMarkerID(SearchType searchType, [int intermediateIndex = 0]){
-    if(intermediateIndex == 0){
+    if(intermediateIndex != 0){
       return searchType.toString() + intermediateIndex.toString();
     }
     return searchType.toString();

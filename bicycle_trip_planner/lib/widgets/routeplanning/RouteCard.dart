@@ -8,11 +8,13 @@ class RouteCard extends StatefulWidget {
 
   final TextEditingController startSearchController;
   final TextEditingController destinationSearchController;
+  final List<TextEditingController> intermediateSearchControllers;
 
   const RouteCard({
     Key? key,
     required this.startSearchController,
-    required this.destinationSearchController
+    required this.destinationSearchController,
+    required this.intermediateSearchControllers
   }) : super(key: key);
 
   @override
@@ -56,7 +58,9 @@ class _RouteCardState extends State<RouteCard> {
                               searchController: widget.startSearchController,
                               searchType: SearchType.start,
                           ),
-                          IntermediateSearchList(),
+                          IntermediateSearchList(
+                            intermediateSearchControllers: widget.intermediateSearchControllers,
+                          ),
                           Search(
                             labelTextIn: "Destination",
                             searchController: widget.destinationSearchController,
