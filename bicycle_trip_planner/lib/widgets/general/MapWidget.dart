@@ -68,7 +68,6 @@ class _MapWidgetState extends State<MapWidget> {
         applicationBloc.selectedLocation.stream.listen((place) {
           setState(() {
             cameraManager?.viewPlace(place);
-            markerManager.setPlaceMarker(place);
           });
         });
 

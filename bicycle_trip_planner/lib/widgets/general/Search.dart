@@ -32,13 +32,6 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  String getSearchName(){
-    if(widget.intermediateIndex == 0){
-      return widget.searchType.toString() + widget.intermediateIndex;
-    }
-    return widget.searchType.toString();
-  }
-
    @override
   Widget build(BuildContext context) {
 
@@ -71,10 +64,11 @@ class _SearchState extends State<Search> {
                         ),
                       ),
                       onTap: () {
-                        widget.searchController.text = applicationBloc
-                            .searchResults[index].description;
-                        applicationBloc.setSelectedLocation(applicationBloc
-                            .searchResults[index].placeId);
+                        widget.searchController.text =
+                            applicationBloc.searchResults[index].description;
+                        applicationBloc.setSelectedLocation(
+                            applicationBloc.searchResults[index].placeId,
+                            widget.searchType, widget.intermediateIndex);
                         hideSearch();
                       },
                     );
