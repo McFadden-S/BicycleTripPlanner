@@ -22,8 +22,6 @@ class MapWidget extends StatefulWidget {
 
 class _MapWidgetState extends State<MapWidget> {
 
-  late final applicationBloc;
-
   //********** Providers **********
 
   late StreamSubscription locationSubscription;
@@ -64,7 +62,7 @@ class _MapWidgetState extends State<MapWidget> {
     LocationPermission perm;
     locationManager.requestPermission().then((permission) => perm = permission);
 
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     locationSubscription =
         applicationBloc.selectedLocation.stream.listen((place) {
@@ -107,6 +105,7 @@ class _MapWidgetState extends State<MapWidget> {
   @override
   void dispose() {
     try{
+      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
     }
     catch(e){}; 
@@ -128,6 +127,9 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
     return GoogleMap(
       mapType: MapType.normal,
       markers: _markers,
