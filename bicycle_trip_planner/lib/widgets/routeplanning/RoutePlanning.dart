@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +22,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
   @override
   Widget build(BuildContext context) {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
-
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
+    return SafeArea(
         child: Stack(
           children: [
-            MapWidget(),
             Column(
               children: [
                 const Spacer(),
@@ -103,8 +97,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             ),
           ],
         ),
-      ),
-    );
+      );
   }
    // TODO: remove print statement after linking the button correctly
   void onGroupSizeChanged(int newValue) {

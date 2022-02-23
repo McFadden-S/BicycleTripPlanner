@@ -1,5 +1,4 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
@@ -15,13 +14,13 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
           MapWidget(),
-          HomeWidgets()
+          applicationBloc.getSelectedScreen()
         ],
       ),
     );

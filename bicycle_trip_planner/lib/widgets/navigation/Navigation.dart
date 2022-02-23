@@ -1,7 +1,6 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -25,11 +24,9 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    return SafeArea(
           child: Stack(
         children: [
-          MapWidget(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
             // TODO: Potential abstraction of the column?
@@ -78,7 +75,6 @@ class _NavigationState extends State<Navigation> {
             ),
           )
         ],
-      )),
-    );
+      ));
   }
 }

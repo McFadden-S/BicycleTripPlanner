@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -18,6 +21,12 @@ class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
+  Widget selectedScreen = HomeWidgets();
+  final screens = <String, Widget>{
+    'home': HomeWidgets(),
+    'navigation': Navigation(),
+    'routePlanning': RoutePlanning(),
+  };
   
   Rou.Route? route; // TODO: Potential refactor on route here
   List<PlaceSearch> searchResults = List.empty();
@@ -90,4 +99,14 @@ class ApplicationBloc with ChangeNotifier {
     selectedLocation.close();
     super.dispose();
   }
+
+  Widget getSelectedScreen() {
+    return selectedScreen;
+  }
+
+  void setSelectedScreen(String screenName) {
+    selectedScreen = screens[screenName] ?? HomeWidgets();
+    notifyListeners();
+  }
+
 }
