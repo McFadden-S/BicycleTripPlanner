@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class CameraManager{
 
   static const initialCameraPosition = CameraPosition(
-    target: LatLng(37.773972, -122.431297),
+    target: LatLng(51.509865, -0.118092),
     zoom: 12.5,
   );
 
