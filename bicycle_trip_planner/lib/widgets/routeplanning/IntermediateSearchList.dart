@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
@@ -17,6 +18,8 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
+  RouteManager routeManager = RouteManager();
+
   List<Widget> stopsList = [];
 
   bool isShowingIntermediate = false;
@@ -33,7 +36,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
-                  intermediateIndex: stopsList.length + 1,
+                  intermediateID: stopsList.length + 1,
               ),
               trailing: IconButton(
                 key: Key("Remove ${widget.intermediateSearchControllers.length}"),
@@ -45,6 +48,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                         widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
                       }
 
+                      routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
                       widget.intermediateSearchControllers.removeLast();
                     });
