@@ -36,4 +36,18 @@ void main(){
     expect(directionManager.distance, '1 km');
   });
 
+  test('ensure that dummy directions are created', (){
+    expect(directionManager.createDummyDirections().length, 5);
+  });
+
+  test('ensure that first direction and be removed and return next direction', (){
+    directionManager.directions = directionManager.createDummyDirections();
+    expect(directionManager.directions.length, 5);
+    final currentDirection = directionManager.directions[1];
+    expect(directionManager.popDirection().instruction, currentDirection.instruction);
+    expect(directionManager.directions.length, 4);
+  });
+
+
+
 }
