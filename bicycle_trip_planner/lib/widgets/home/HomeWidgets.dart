@@ -19,10 +19,35 @@ class _HomeWidgetsState extends State<HomeWidgets> {
       bottom: false,
       child: Stack(
         children: [
-          Search(
-            labelTextIn: 'Search',
-            searchController: searchController,
-            searchType: SearchType.end,
+          Align(
+            alignment: FractionalOffset.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Search(
+                      labelTextIn: 'Search',
+                      searchController: searchController,
+                      searchType: SearchType.end,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){Navigator.pushNamed(context, '/login');},
+                    child: Container(
+                        width: 55.0,
+                        height: 55.0,
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: AssetImage('assets/signup_image.png'),
+                            )
+                        )),
+                  )
+                ],
+              ),
+            ),
           ),
 
           const Align(

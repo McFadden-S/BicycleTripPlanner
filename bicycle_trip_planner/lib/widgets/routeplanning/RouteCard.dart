@@ -73,18 +73,24 @@ class _RouteCardState extends State<RouteCard> {
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Search(
-                              labelTextIn: "Starting Point",
-                              searchController: startSearchController,
-                              searchType: SearchType.start,
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Search(
+                                labelTextIn: "Starting Point",
+                                searchController: startSearchController,
+                                searchType: SearchType.start,
+                            ),
                           ),
                           IntermediateSearchList(
                             intermediateSearchControllers: intermediateSearchControllers,
                           ),
-                          Search(
-                            labelTextIn: "Destination",
-                            searchController: destinationSearchController,
-                            searchType: SearchType.end,
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Search(
+                              labelTextIn: "Destination",
+                              searchController: destinationSearchController,
+                              searchType: SearchType.end,
+                            ),
                           ),
                             // const Icon(Icons.expand_more),
                         ],
