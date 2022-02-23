@@ -9,29 +9,12 @@ import 'package:bicycle_trip_planner/widgets/Login//components/rounded_button.da
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_input_field.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'components/error_snackbar.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
-    Future<void> _showSnackBar(String message) async {
-      if (message.contains("user-not-found")) {
-        message="User not found. Please try again";
-      } else if (message.contains("wrong-password")){
-        message="Incorrect password. Please try again";
-      } else if (message.contains("unknown")){
-        message="One of the fields is empty. Please try again";
-      } else {
-        message="Error. Please try again";
-      }
-      final snackBar = SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-        backgroundColor: Colors.blue,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }
 
     final _auth = FirebaseAuth.instance;
     late String email;
@@ -86,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                       );
                     }
                   } catch (e) {
-                    _showSnackBar(e.toString());
+                    ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }
                 },
               ),

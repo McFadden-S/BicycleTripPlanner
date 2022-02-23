@@ -4,6 +4,7 @@ import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dar
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'components/error_snackbar.dart';
 import 'constants.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -75,10 +76,11 @@ class _SignUpScreen extends State<SignUpScreen> {
                       );
                     }
                     else{
-                      _showSnackBar("passwords-do-not-match");
+                      ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
                     }
                   } catch (e) {
-                    _showSnackBar(e.toString());
+                    //_showSnackBar(e.toString());
+                    ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }
                 },
               ),
@@ -88,30 +90,4 @@ class _SignUpScreen extends State<SignUpScreen> {
         ),
     );
   }
-  Future<void> _showSnackBar(String message) async {
-    if (message.contains("wrong-password")){
-      message="Incorrect password. Please try again";
-    } else if (message.contains("unknown")){
-      message="One of the fields is empty. Please try again";
-    } else if (message.contains("email-already-in-use")){
-      message="Email address was already used by another account";
-    } else if (message.contains("invalid-email")){
-      message="Email address entered is invalid";
-    } else if (message.contains("weak-password")){
-      message="Password must contain at least 6 characters";
-    } else if (message.contains("passwords-do-not-match")) {
-      message="Passwords do not match";
-    }
-    else {
-      message="Error. Please try again";
-    }
-    final snackBar = SnackBar(
-      content: Text(message),
-      duration: const Duration(seconds: 3),
-      backgroundColor: Colors.blue,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
 }
-
-
