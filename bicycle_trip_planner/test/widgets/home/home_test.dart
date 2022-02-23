@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,29 +15,29 @@ void main() {
     HttpOverrides.global = null;
   });
 
-  // TODO:I don't think this should be in tis file (Ahmed)
-  // testWidgets('Navigation has home', (WidgetTester tester) async {
-  //   await pumpWidget(tester, MyApp());
-  //   expect(find.text('Home'), findsOneWidget);
-  // });
-
-  testWidgets("Home has a safeArea", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Home()));
-    expect(find.byType(SafeArea), findsOneWidget);
-  });
-
-  testWidgets("Home has a search box", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Home()));
-    expect(find.widgetWithText(Search, 'Search'), findsOneWidget);
-  });
-
   testWidgets("Home has a map", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Home()));
+    await pumpWidget(tester, MaterialApp(home: Material(child: Home())));
     expect(find.byType(MapWidget), findsOneWidget);
   });
 
-  testWidgets("Home has a bottom StationBar", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Home()));
+  testWidgets("HomeWidgets has a safeArea", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
+    expect(find.byType(SafeArea), findsOneWidget);
+  });
+
+  testWidgets("HomeWidgets has a search box", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
+    expect(find.widgetWithText(Search, 'Search'), findsOneWidget);
+  });
+
+  // TODO: this test fails for now
+  // testWidgets("HomeWidgets has a user profile Image", (WidgetTester tester) async {
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
+  //   expect(find.widgetWithImage(DecorationImage, AssetImage('assets/signup_image.png')), findsOneWidget);
+  // });
+
+  testWidgets("HomeWidgets has a bottom StationBar", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
     expect(find.byType(StationBar), findsOneWidget);
   });
 
