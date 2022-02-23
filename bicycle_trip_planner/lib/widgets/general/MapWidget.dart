@@ -27,6 +27,7 @@ class _MapWidgetState extends State<MapWidget> {
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
+  late StreamSubscription curLocationSubscription;
 
   //********** Markers **********
 
@@ -92,6 +93,12 @@ class _MapWidgetState extends State<MapWidget> {
             markerManager.setUserMarker(position);
           });
         });
+
+    curLocationSubscription = applicationBloc.currentLocation.stream.listen((event) {
+      setState(() {
+        cameraManager?.viewUser();
+      });
+    });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
