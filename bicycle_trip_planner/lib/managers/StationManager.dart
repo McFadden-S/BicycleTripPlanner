@@ -25,6 +25,17 @@ class StationManager {
 
   //********** Private **********
 
+  List<Station> _getOrderedToFromStationList(LatLng pos){
+    List<Station> nearPos = List.castFrom(_stations);
+
+    nearPos.sort((stationA, stationB) =>
+        _locationManager.distanceFromTo(LatLng(stationA.lat, stationA.lng), pos)
+            .compareTo(
+            _locationManager.distanceFromTo(LatLng(stationB.lat, stationB.lng), pos)));
+
+    return nearPos;
+  }
+
   //********** Public **********
 
   int getNumberOfStations(){
@@ -44,6 +55,15 @@ class StationManager {
       station.name == stationName, orElse: Station.stationNotFound);
   }
 
+  Station getPickupStationNear(LatLng pos, [int groupSize = 1]){
+    List<Station> orderedStations = _getOrderedToFromStationList(pos);
+    return orderedStations.firstWhere((station) => station.bikes >= groupSize, orElse: Station.stationNotFound);
+  }
+
+  Station getDropoffStationNear(LatLng pos, [int groupSize = 1]){
+    List<Station> orderedStations = _getOrderedToFromStationList(pos);
+    return orderedStations.firstWhere((station) => station.emptyDocks >= groupSize, orElse: Station.stationNotFound);
+  }
 
   //TODO Refactor so that no longer have to maintain distances list
   Future<void> setStations(List<Station> stations) async {
