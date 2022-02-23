@@ -21,7 +21,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   @override
   Widget build(BuildContext context) {
-
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     return SafeArea(
         child: Stack(
           children: [
@@ -89,7 +89,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       iconIn: Icons.directions_bike,
                       buttonColor: Colors.green,
                       onButtonClicked: () {
-                        //TODO Implement for transition
+                        applicationBloc.setSelectedScreen('navigation');
                       }
                   )
                 ]),
