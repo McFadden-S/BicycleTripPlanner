@@ -23,33 +23,44 @@ class _HomeWidgetsState extends State<HomeWidgets> {
             alignment: FractionalOffset.topCenter,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: Search(
-                      labelTextIn: 'Search',
-                      searchController: searchController,
-                      searchType: SearchType.end,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Search(
+                          labelTextIn: 'Search',
+                          searchController: searchController,
+                          searchType: SearchType.end,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, '/login'),
+                        child: Container(
+                            width: 55.0,
+                            height: 55.0,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: AssetImage('assets/signup_image.png'),
+                                )
+                            )),
+                      )
+                    ],
+                  ),
+                  SizedBox(height: 10.0),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: FloatingActionButton(
+                      onPressed: (){},
+                      child: Icon(Icons.location_searching_rounded),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: (){Navigator.pushNamed(context, '/login');},
-                    child: Container(
-                        width: 55.0,
-                        height: 55.0,
-                        decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage('assets/signup_image.png'),
-                            )
-                        )),
-                  )
                 ],
               ),
             ),
           ),
-
           const Align(
               alignment: FractionalOffset.bottomCenter,
               child: StationBar()
