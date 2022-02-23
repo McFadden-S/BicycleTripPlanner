@@ -11,14 +11,21 @@ import 'package:bicycle_trip_planner/widgets/Login//components/rounded_password_
 import 'package:firebase_auth/firebase_auth.dart';
 import 'components/error_snackbar.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late String email;
+  late String password;
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
     final _auth = FirebaseAuth.instance;
-    late String email;
-    late String password;
+
     return Scaffold(
         body: Background(
           child: Column(
