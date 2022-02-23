@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ class StationBar extends StatefulWidget {
 class _StationBarState extends State<StationBar> {
 
   PageController stationsPageViewController = PageController();
+
+  StationManager stationManager = StationManager();
 
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
@@ -92,7 +95,7 @@ class _StationBarState extends State<StationBar> {
                           icon: const Icon(Icons.first_page),
                         ),
                         IconButton(
-                          onPressed: () => showExpandedList(applicationBloc.stations),
+                          onPressed: () => showExpandedList(stationManager.getStations()),
                           icon: const Icon(Icons.menu),
                         ),
                       ],
@@ -110,7 +113,7 @@ class _StationBarState extends State<StationBar> {
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: applicationBloc.stations.length,
+                              itemCount: stationManager.getNumberOfStations(),
                               itemBuilder: (BuildContext context, int index) =>
                                   StationCard(index: index)
                           ),

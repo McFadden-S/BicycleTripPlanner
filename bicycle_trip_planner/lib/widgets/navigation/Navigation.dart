@@ -33,7 +33,7 @@ class _NavigationState extends State<Navigation> {
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
             // TODO: Potential abstraction of the column?
-            // Routeplanning also has 2 buttons at the side (can make a reusable widget of sorts)
+            // TODO: Routeplanning also has 2 buttons at the side (can make a reusable widget of sorts)
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisSize: MainAxisSize.max,
