@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -11,14 +12,14 @@ class Search extends StatefulWidget {
   final TextEditingController searchController;
 
   final SearchType searchType;
-  final intermediateIndex;
+  final intermediateID;
 
   const Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
     required this.searchType,
-    this.intermediateIndex = 0
+    this.intermediateID = 0
   }) : super(key: key);
 
   @override
@@ -29,11 +30,40 @@ class _SearchState extends State<Search> {
 
   bool isSearching = false;
 
+  RouteManager routeManager = RouteManager();
   MarkerManager markerManager = MarkerManager();
 
   hideSearch() {
     isSearching = false;
     FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  setSearch(String search){
+    switch (widget.searchType){
+      case SearchType.start:
+        routeManager.setStart(search);
+        break;
+      case SearchType.end:
+        routeManager.setDestination(search);
+        break;
+      case SearchType.intermediate:
+        routeManager.setIntermediate(search, widget.intermediateID);
+        break;
+    }
+  }
+
+  clearSearch(){
+    switch (widget.searchType){
+      case SearchType.start:
+        routeManager.clearStart();
+        break;
+      case SearchType.end:
+        routeManager.clearDestination();
+        break;
+      case SearchType.intermediate:
+        routeManager.removeIntermediate(widget.intermediateID);
+        break;
+    }
   }
 
    @override
@@ -72,7 +102,10 @@ class _SearchState extends State<Search> {
                             applicationBloc.searchResults[index].description;
                         applicationBloc.setSelectedLocation(
                             applicationBloc.searchResults[index].placeId,
-                            widget.searchType, widget.intermediateIndex);
+                            widget.searchType, widget.intermediateID);
+
+                        setSearch(widget.searchController.text);
+
                         hideSearch();
                       },
                     );
@@ -111,7 +144,8 @@ class _SearchState extends State<Search> {
                   onPressed: () {
                     setState(() {
                       widget.searchController.clear();
-                      applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
+                      clearSearch();
+                      applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateID);
                     }
                     );
                     hideSearch();

@@ -28,7 +28,7 @@ class ApplicationBloc with ChangeNotifier {
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
 
-  late Timer _stationTimer; 
+  late Timer _stationTimer;
 
   cancelStationTimer(){
     _stationTimer.cancel(); 
