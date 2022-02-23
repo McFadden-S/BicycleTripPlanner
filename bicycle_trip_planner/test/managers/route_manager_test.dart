@@ -46,8 +46,16 @@ void main(){
     expect(routeManager.ifDestinationSet(), false);
   });
 
-  test('ensure that intermediaries can be set when requested', (){
+  test('ensure that intermediaries can be set when requested with valid id', (){
+    expect(routeManager.getIntermediates().length, 0);
+    routeManager.setIntermediate("Bush House", 1);
+    expect(routeManager.getIntermediates().length, 1);
+  });
 
+  test('ensure that intermediaries cannot be set when requested with invalid id', (){
+    expect(routeManager.getIntermediates().length, 1);
+    routeManager.setIntermediate("Bush House", 1);
+    expect(routeManager.getIntermediates().length, 1);
   });
 
 }

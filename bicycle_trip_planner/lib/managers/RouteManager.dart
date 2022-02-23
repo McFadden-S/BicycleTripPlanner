@@ -52,7 +52,7 @@ class RouteManager{
   }
 
   void setIntermediate(String intermediate, int id){
-    if(_intermediates.length <= id && _intermediates.isNotEmpty){
+    if(_intermediates.length >= id && _intermediates.isNotEmpty){
       _intermediates[id-1] = intermediate;
     } else{
       _intermediates.add(intermediate);
