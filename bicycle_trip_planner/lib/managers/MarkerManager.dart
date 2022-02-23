@@ -43,6 +43,7 @@ class MarkerManager {
 
   @visibleForTesting
   void setMarker(LatLng point, String markerID) {
+    //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
     if(_markerExists(markerID)){
       _markers.remove(_markers.firstWhere((marker) =>
         marker.markerId == MarkerId(markerID)));
