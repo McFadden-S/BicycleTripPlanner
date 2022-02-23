@@ -1,11 +1,12 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
+import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -25,11 +26,10 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    return SafeArea(
           child: Stack(
         children: [
-          MapWidget(),
           Padding(
             padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
             // TODO: Potential abstraction of the column?
@@ -71,14 +71,18 @@ class _NavigationState extends State<Navigation> {
                     const Spacer(flex: 1),
                     WalkOrCycleToggle(directionManager: directionManager), 
                     const Spacer(flex: 10),
-                    CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){}, buttonColor: Colors.red),
+                    CircleButton(iconIn: Icons.cancel_outlined, onButtonClicked: (){ endRoute(applicationBloc);}, buttonColor: Colors.red),
                   ],
                 ),
               ],
             ),
           )
         ],
-      )),
-    );
+      ));
+  }
+
+  // TODO: The map needs to be cleared from start, end markers and the polyline
+  void endRoute(ApplicationBloc appBloc) {
+    appBloc.setSelectedScreen('home');
   }
 }

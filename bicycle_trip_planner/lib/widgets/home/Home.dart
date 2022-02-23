@@ -1,10 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
-
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
@@ -15,26 +11,19 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  
+
   @override
   Widget build(BuildContext context) {
-
-    final TextEditingController searchController = TextEditingController();
-
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
-      body: SafeArea(
-          child: Stack(
-            children: [
-              MapWidget(),
-              Search(
-                  labelTextIn: 'Search',
-                  searchController: searchController,
-                  searchType: SearchType.end,
-              ),
-            ],
-          )
+      resizeToAvoidBottomInset: false,
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          MapWidget(),
+          applicationBloc.getSelectedScreen()
+        ],
       ),
-      bottomNavigationBar: StationBar(),
     );
   }
 }

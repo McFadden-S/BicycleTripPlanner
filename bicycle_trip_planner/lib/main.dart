@@ -31,10 +31,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (context) => const NavigateWindow(),
+        // '/': (context) => const NavigateWindow(),
         '/login': (context) => const LoginHomeScreen(),
         '/loading': (context) => const Loading(),
-        '/home': (context) => const Home(),
+        '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => const RoutePlanning(),
       },
