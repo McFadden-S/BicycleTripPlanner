@@ -1,4 +1,4 @@
-enum SearchTypes{
+enum SearchType{
   start,
   end,
   intermediate

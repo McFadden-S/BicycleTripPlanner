@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
@@ -21,7 +22,11 @@ class _HomeState extends State<Home> {
           child: Stack(
             children: [
               MapWidget(),
-              Search(labelTextIn: 'Search', searchController: searchController),
+              Search(
+                  labelTextIn: 'Search',
+                  searchController: searchController,
+                  searchType: SearchType.end,
+              ),
             ],
           )
       ),

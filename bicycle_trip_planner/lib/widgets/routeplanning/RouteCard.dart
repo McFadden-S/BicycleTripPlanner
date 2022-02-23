@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -53,11 +54,13 @@ class _RouteCardState extends State<RouteCard> {
                           Search(
                               labelTextIn: "Starting Point",
                               searchController: widget.startSearchController,
+                              searchType: SearchType.start,
                           ),
                           IntermediateSearchList(),
                           Search(
                             labelTextIn: "Destination",
                             searchController: widget.destinationSearchController,
+                            searchType: SearchType.end,
                           ),
                             // const Icon(Icons.expand_more),
                         ],

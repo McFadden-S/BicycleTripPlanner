@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
@@ -26,7 +27,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
             title:
               Search(
                   labelTextIn: "Stop ${stopsControllers.length}",
-                  searchController: searchController),
+                  searchController: searchController,
+                  searchType: SearchType.intermediate,
+              ),
               trailing: IconButton(
                 key: Key("Remove ${stopsControllers.length}"),
                   onPressed: (){

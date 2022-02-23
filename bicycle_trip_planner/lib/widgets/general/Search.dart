@@ -1,15 +1,22 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
+
   final String labelTextIn;
   final TextEditingController searchController;
+
+  final SearchType searchType;
+  final intermediateIndex;
 
   const Search({
     Key? key,
     required this.labelTextIn,
-    required this.searchController
+    required this.searchController,
+    required this.searchType,
+    this.intermediateIndex = 0
   }) : super(key: key);
 
   @override
@@ -23,6 +30,13 @@ class _SearchState extends State<Search> {
   hideSearch() {
     isSearching = false;
     FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  String getSearchName(){
+    if(widget.intermediateIndex == 0){
+      return widget.searchType.toString() + widget.intermediateIndex;
+    }
+    return widget.searchType.toString();
   }
 
    @override
