@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
@@ -27,6 +28,7 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return SafeArea(
           child: Stack(
         children: [
@@ -48,7 +50,9 @@ class _NavigationState extends State<Navigation> {
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   CircleButton(
                     iconIn: mapZoomed ? Icons.zoom_out_map: Icons.fullscreen_exit, 
-                    onButtonClicked: (){_toggleMapZoomInOut();},
+                    onButtonClicked: (){
+                      _toggleMapZoomInOut();
+                    },
                     buttonColor: Colors.white,
                     iconColor: Colors.black54,
                   ),

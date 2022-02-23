@@ -11,16 +11,23 @@ class CameraManager{
   );
 
   late GoogleMapController googleMapController;
-  final LocationManager locationManager;
+  final LocationManager locationManager = LocationManager();
 
   late LatLng _routeOriginCamera;
   late LatLng _routeBoundsSW;
   late LatLng _routeBoundsNE;
 
-  CameraManager({
-    required this.googleMapController,
-    required this.locationManager,
-  });
+  //********** Singleton **********
+
+  static final CameraManager _cameraManager = CameraManager._internal(); 
+  static CameraManager get instance => _cameraManager;
+
+  factory CameraManager({required GoogleMapController googleMapController}){
+    _cameraManager.googleMapController = googleMapController;
+    return _cameraManager;
+  } 
+
+  CameraManager._internal(); 
 
   //********** Setup/Teardown **********
 
