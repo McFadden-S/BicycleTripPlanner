@@ -29,7 +29,6 @@ class _MapWidgetState extends State<MapWidget> {
   late StreamSubscription locationSubscription;
   late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
-  late StreamSubscription stationSubscription;
 
   //********** Markers **********
 
@@ -87,14 +86,7 @@ class _MapWidgetState extends State<MapWidget> {
           });
         });
 
-    stationSubscription =
-        applicationBloc.allStations.stream.listen((stations){
-          setState((){
-            for(Station station in stations){
-                _markers.add(markerManager.getStationMarker(station));
-            }
-          });
-        });
+    applicationBloc.setupStations();
 
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
@@ -122,8 +114,7 @@ class _MapWidgetState extends State<MapWidget> {
     if(cameraManager != null) {cameraManager?.dispose();} 
     locationSubscription.cancel();
     directionSubscription.cancel();
-    locatorSubscription.cancel(); 
-    stationSubscription.cancel();
+    locatorSubscription.cancel();
 
     super.dispose();
   }

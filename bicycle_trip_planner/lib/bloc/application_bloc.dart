@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
   
@@ -25,6 +27,7 @@ class ApplicationBloc with ChangeNotifier {
   StreamController<List<Station>> allStations = StreamController<List<Station>>.broadcast();
 
   final StationManager _stationManager = StationManager();
+  final MarkerManager _markerManager = MarkerManager();
 
   late Timer _stationTimer; 
 
@@ -36,6 +39,14 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer = Timer.periodic(duration, (timer){
       updateStations(); 
     });  
+  }
+
+  setupStations() async{
+    List<Station> stations = await _stationsService.getStations();
+    _stationManager.setStations(stations);
+    _markerManager.setStationMarkers(stations);
+    updateStations();
+    notifyListeners();
   }
 
   updateStations() async {

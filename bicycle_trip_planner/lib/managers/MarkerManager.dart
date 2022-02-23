@@ -62,18 +62,16 @@ class MarkerManager {
     ));
   }
 
-  //TODO Refactor to use setMarker to set the marker
-  Marker getStationMarker(Station station) {
-    LatLng pos = LatLng(station.lat, station.lng);
-    Marker marker = Marker(
-      markerId: MarkerId(station.name),
-      infoWindow: InfoWindow(title: station.name),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      position: pos,
-    );
-    return marker;
+  void setStationMarkers(List<Station> stations){
+    for(var station in stations){
+      LatLng pos = LatLng(station.lat, station.lng);
+      _markers.add(Marker(
+        markerId: MarkerId(station.name),
+        infoWindow: InfoWindow(title: station.name),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        position: pos,
+      ));
+    }
   }
-
-
 
 }
