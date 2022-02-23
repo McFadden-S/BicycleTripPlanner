@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,8 +20,11 @@ class StationCard extends StatefulWidget {
 }
 
 class _StationCardState extends State<StationCard> {
+
   late StreamSubscription locatorSubscription;
+
   final LocationManager locationManager = LocationManager();
+  final StationManager stationManager = StationManager();
 
   double distance = 0;
 
@@ -32,7 +36,7 @@ class _StationCardState extends State<StationCard> {
         Provider.of<ApplicationBloc>(context, listen: false);
 
     // Obtain initial distances from current position (for quicker loading)
-    Station station = applicationBloc.stations[widget.index];
+    Station station = stationManager.getStationByIndex(widget.index);
     LatLng stationPos = LatLng(station.lat, station.lng);
 
     locationManager.distanceTo(stationPos).then((distance) => {
@@ -91,9 +95,9 @@ class _StationCardState extends State<StationCard> {
                         Expanded(
                           flex: 25,
                           child: Text(
-                              applicationBloc.stations[widget.index].name,
+                              stationManager.getStationByIndex(widget.index).name,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
+                              style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
                           ),
                         ),
                         const Spacer(flex: 1),
@@ -107,8 +111,8 @@ class _StationCardState extends State<StationCard> {
                           size: 20.0,
                         ),
                         Text(
-                          "\t\t${applicationBloc.stations[widget.index].bikes.toString()} bikes available",
-                          style: TextStyle(fontSize: 15.0),
+                          "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
+                          style: const TextStyle(fontSize: 15.0),
                         ),
                       ],
                     ),
@@ -119,15 +123,15 @@ class _StationCardState extends State<StationCard> {
                           size: 20.0,
                         ),
                         Text(
-                          "\t\t${applicationBloc.stations[widget.index].totalDocks.toString()} free docks",
-                          style: TextStyle(fontSize: 15.0),
+                          "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
+                          style: const TextStyle(fontSize: 15.0),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Container(
                           child: Text(
                               "${distance.toStringAsFixed(1)}mi",
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 12.0, color: Colors.blueAccent)
+                              style: const TextStyle(fontSize: 12.0, color: Colors.blueAccent)
                           ),
                         ),
                       ],

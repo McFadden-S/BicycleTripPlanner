@@ -9,7 +9,7 @@ class StationManager {
 
   List<Station> _stations = <Station>[];
 
-  LocationManager _locationManager = LocationManager();
+  final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
 
@@ -23,17 +23,29 @@ class StationManager {
 
   //********** Public **********
 
+  int getNumberOfStations(){
+    return _stations.length;
+  }
+
   List<Station> getStations(){
     return _stations;
   }
 
-  Station getStation(String stationName){
+  Station getStationByIndex(int stationIndex){
+    return _stations[stationIndex];
+  }
+
+  Station getStationByName(String stationName){
     return _stations.singleWhere((station) =>
       station.name == stationName, orElse: Station.stationNotFound);
   }
 
   Future<void> setStations(List<Station> stations) async {
     _stations = stations;
+    setStationDistances();
+  }
+
+  Future<void> setStationDistances() async {
     for (var station in _stations) {
       station.distanceTo = await _locationManager.distanceTo(LatLng(station.lat, station.lng));
     }
