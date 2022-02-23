@@ -26,50 +26,11 @@ class _StationCardState extends State<StationCard> {
   final LocationManager locationManager = LocationManager();
   final StationManager stationManager = StationManager();
 
-  double distance = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final ApplicationBloc applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-
-    // Obtain initial distances from current position (for quicker loading)
-    Station station = stationManager.getStationByIndex(widget.index);
-    LatLng stationPos = LatLng(station.lat, station.lng);
-
-    locationManager.distanceTo(stationPos).then((distance) => {
-     setState(() {this.distance = distance;}) 
-    });
-
-    locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
-            .listen((Position position) {
-      LatLng pos = LatLng(position.latitude, position.longitude);
-      setState(() {
-        distance = locationManager.distanceFromTo(pos, stationPos);
-      });
-    });
-  }
-
   @override
   void setState(fn) {
     try {
       super.setState(fn);
     } catch (e) {};
-  }
-
-  @override
-  void dispose() {
-    try {
-      final ApplicationBloc applicationBloc =
-          Provider.of<ApplicationBloc>(context, listen: false);
-      applicationBloc.dispose();
-    } catch (e) {}
-    ;
-    locatorSubscription.cancel();
-    super.dispose();
   }
 
   @override
@@ -129,7 +90,7 @@ class _StationCardState extends State<StationCard> {
                         const Spacer(),
                         Container(
                           child: Text(
-                              "${distance.toStringAsFixed(1)}mi",
+                              "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}mi",
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 12.0, color: Colors.blueAccent)
                           ),
