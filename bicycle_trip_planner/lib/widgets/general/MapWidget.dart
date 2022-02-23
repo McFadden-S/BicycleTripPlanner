@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
@@ -88,9 +87,9 @@ class _MapWidgetState extends State<MapWidget> {
     locatorSubscription =
         Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
             .listen((Position position) {
-          setState(() {
-            markerManager.setUserMarker(position);
-          });
+            setState(() {
+              markerManager.setUserMarker(position);
+            });
         });
 
     // Get the initial update for the markers
