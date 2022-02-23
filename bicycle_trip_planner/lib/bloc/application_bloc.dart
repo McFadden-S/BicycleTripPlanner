@@ -40,7 +40,6 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
-    print("Notifying Listeners");
     notifyListeners(); 
   }
 
