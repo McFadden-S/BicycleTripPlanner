@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 class DirectionManager{
   
+  //********** Fields **********
+
   // TODO: Change these distance and duration to late when possible
   bool isCycling = false; 
   String duration = "No data";
@@ -11,8 +13,17 @@ class DirectionManager{
   List<Steps> directions = <Steps>[];
   Steps currentDirection = Steps(instruction: "", distance: 0, duration: 0);
 
-  // TODO: IMPLEMENT SINGLETON DESIGN
-  DirectionManager();
+  //********** Singleton **********
+
+  static final DirectionManager _directionManager = DirectionManager._internal(); 
+
+  factory DirectionManager(){return _directionManager;} 
+
+  DirectionManager._internal(); 
+
+  //********** Private **********
+
+  //********** Public *********
 
   void setDuration(int seconds) {
     int minutes = (seconds / 60).ceil();
