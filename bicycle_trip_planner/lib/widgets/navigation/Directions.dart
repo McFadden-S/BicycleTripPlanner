@@ -48,19 +48,6 @@ class _DirectionsState extends State<Directions> {
         directionManager.setDistance(direction.legs.distance);
       });
     });
-
-    // TODO: TEMPORARY SETUP USING APPLICATION API - TO BE REMOVED WHEN ROUTEPLANNING LINKS WITH NAVIGATION
-      findRoute();
-  }
-  
-  void findRoute() async {
-    await applicationBloc.findRoute("Bush House, Aldwych, London, UK", "Waterloo Station, London, UK");
-    setState((){
-      directionManager.currentDirection = applicationBloc.route.legs.steps.removeAt(0);
-      directionManager.directions = applicationBloc.route.legs.steps;
-      directionManager.setDuration(applicationBloc.route.legs.duration);
-      directionManager.setDistance(applicationBloc.route.legs.distance);
-    });
   }
 
   @override

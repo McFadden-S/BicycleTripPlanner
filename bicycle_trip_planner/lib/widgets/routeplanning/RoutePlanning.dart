@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
@@ -89,7 +90,14 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       iconIn: Icons.directions_bike,
                       buttonColor: Colors.green,
                       onButtonClicked: () {
-                        applicationBloc.setSelectedScreen('navigation');
+                        if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){
+                          applicationBloc.setSelectedScreen('navigation');
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("Start and Destination have not been set!"),
+                          ));
+                        }
                       }
                   )
                 ]),
