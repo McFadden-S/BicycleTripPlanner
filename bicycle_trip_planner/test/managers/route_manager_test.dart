@@ -52,10 +52,15 @@ void main(){
     expect(routeManager.getIntermediates().length, 1);
   });
 
-  test('ensure that intermediaries cannot be set when requested with invalid id', (){
+  test('ensure that number of intermediaries do not changed when existing id is changed', (){
     expect(routeManager.getIntermediates().length, 1);
     routeManager.setIntermediate("Bush House", 1);
     expect(routeManager.getIntermediates().length, 1);
+  });
+
+  test('ensure can remove intermediary using id', (){
+    routeManager.removeIntermediate(1);
+    expect(routeManager.getIntermediates().length, 0);
   });
 
 }
