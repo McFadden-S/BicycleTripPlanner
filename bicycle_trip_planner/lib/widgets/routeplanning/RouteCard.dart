@@ -43,10 +43,12 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    applicationBloc.viewCurrentLocation();
+    applicationBloc.setCurrentLocation();
 
     applicationBloc.currentLocation.stream.listen((event) { startSearchController.text = event.name;});
     applicationBloc.selectedLocation.stream.listen((event) { destinationSearchController.text = event.name;});
+    routeManager.setStart(startSearchController.text);
+    routeManager.setDestination(destinationSearchController.text); 
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(

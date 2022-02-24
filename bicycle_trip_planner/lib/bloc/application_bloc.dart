@@ -89,7 +89,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  viewCurrentLocation() async {
+  setCurrentLocation() async {
     Locator _locator = Locator();
     LatLng latLng = await _locator.locate();
     currentLocation.add(await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude));

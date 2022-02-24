@@ -93,12 +93,6 @@ class _MapWidgetState extends State<MapWidget> {
             });
         });
 
-    curLocationSubscription = applicationBloc.currentLocation.stream.listen((event) {
-      setState(() {
-        cameraManager?.viewUser();
-      });
-    });
-
     // Get the initial update for the markers
     applicationBloc.updateStations();
 
