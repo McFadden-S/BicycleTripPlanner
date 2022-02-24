@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'managers/TimeManager.dart';
+
 const kPrimaryColor = Color(0xFF0C9CEE);
 const buttonPrimaryColor = Color(0xFF0C9CEE);
 const buttonSecondaryColor = Colors.white;
@@ -26,3 +28,5 @@ const buttonTextStyle = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.bold,
 );
+
+CurrentTime _time = CurrentTime();

@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/TimeManager.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
@@ -18,6 +20,8 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
+
+  final _time = CurrentTime();
   
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();

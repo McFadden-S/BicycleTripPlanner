@@ -4,8 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../constants.dart';
+import 'TimeManager.dart';
 
 class CameraManager{
+
+  final _time = CurrentTime();
 
   static const initialCameraPosition = CameraPosition(
     target: LatLng(51.509865, -0.118092),
@@ -34,6 +37,7 @@ class CameraManager{
   //********** Setup/Teardown **********
 
   void init(){
+    _time.isPM();
     rootBundle.loadString(dayMapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
