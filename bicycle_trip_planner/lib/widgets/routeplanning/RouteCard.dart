@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -41,6 +42,11 @@ class _RouteCardState extends State<RouteCard> {
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
+    applicationBloc.viewCurrentLocation();
+
+    applicationBloc.currentLocation.stream.listen((event) { startSearchController.text = event.name;});
+    applicationBloc.selectedLocation.stream.listen((event) { destinationSearchController.text = event.name;});
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(

@@ -34,7 +34,7 @@ class ApplicationBloc with ChangeNotifier {
 
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
-  StreamController<LatLng> currentLocation = StreamController<LatLng>.broadcast();
+  StreamController<Place> currentLocation = StreamController<Place>.broadcast();
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -91,7 +91,8 @@ class ApplicationBloc with ChangeNotifier {
 
   viewCurrentLocation() async {
     Locator _locator = Locator();
-    currentLocation.add(await _locator.locate());
+    LatLng latLng = await _locator.locate();
+    currentLocation.add(await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude));
     notifyListeners();
   }
 
