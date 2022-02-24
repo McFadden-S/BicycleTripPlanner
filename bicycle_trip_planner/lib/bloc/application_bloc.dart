@@ -1,5 +1,9 @@
 import 'dart:async';
+import 'dart:collection';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
@@ -22,7 +26,7 @@ class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
-  Widget? previousScreen;
+  Queue<String> prevScreens = Queue();
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -39,6 +43,7 @@ class ApplicationBloc with ChangeNotifier {
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
+  final DirectionManager _directionManager = DirectionManager();
 
   late Timer _stationTimer;
 
@@ -118,12 +123,33 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void setPreviousScreen(String screenName) {
-    previousScreen = screens[screenName]!;
-    notifyListeners();
+  void pushPrevScreen(String screenName) {
+    prevScreens.addFirst(screenName);
   }
 
   void goBack() {
+    if(prevScreens.isNotEmpty){
+      endRoute();
+      selectedScreen = screens[prevScreens.removeFirst()]!;
+      notifyListeners();
+    }
+  }
 
+  void endRoute() {
+    RouteManager routeManager = RouteManager();
+    _directionManager.clear();
+    PolylineManager().clearPolyline();
+    _markerManager.clearMarker(SearchType.start);
+    _markerManager.clearMarker(SearchType.end);
+    if(routeManager.ifIntermediatesSet()){
+      int index = routeManager.getIntermediates().length;
+      for(int i = 1; i <= index; i++){
+        MarkerManager().clearMarker(SearchType.intermediate, i);
+        routeManager.removeIntermediate(i);
+      }
+    }
+    routeManager.clearStart();
+    routeManager.clearDestination();
+    notifyListeners();
   }
 }

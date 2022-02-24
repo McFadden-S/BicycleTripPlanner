@@ -22,7 +22,7 @@ class _HomeState extends State<Home> {
         fit: StackFit.expand,
         children: [
           MapWidget(),
-          applicationBloc.previousScreen == null ? Column(
+          applicationBloc.prevScreens.isNotEmpty ? Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(
