@@ -91,7 +91,7 @@ class _MapWidgetState extends State<MapWidget> {
     }));
 
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
             .listen((Position position) {
             setState(() {
               markerManager.setUserMarker(LatLng(position.latitude, position.longitude));

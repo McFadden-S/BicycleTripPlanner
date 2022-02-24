@@ -44,7 +44,7 @@ class _NavigationState extends State<Navigation> {
 
     // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE 
     locatorSubscription =
-      Geolocator.getPositionStream(locationSettings: LocationManager().locationSettings)
+      Geolocator.getPositionStream(locationSettings: LocationManager().locationSettings())
           .listen((Position position) {
           setState(() {
             CameraManager.instance.viewUser(); 
