@@ -97,7 +97,7 @@ class MarkerManager {
 
     LatLng latlng = LatLng(point.latitude, point.longitude);
     Marker userMarker = Marker(
-      icon: userMarkerIcon!,
+      icon: userMarkerIcon ?? BitmapDescriptor.defaultMarker,
       markerId: const MarkerId('user'),
       position: latlng,
       draggable: false,
