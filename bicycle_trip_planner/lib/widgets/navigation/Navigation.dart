@@ -99,7 +99,10 @@ class _NavigationState extends State<Navigation> {
       int index = RouteManager().getIntermediates().length;
       for(int i = 1; i <= index; i++){
         MarkerManager().clearMarker(SearchType.intermediate, i);
+        RouteManager().removeIntermediate(i);
       }
     }
+    RouteManager().clearStart(); 
+    RouteManager().clearDestination(); 
   }
 }
