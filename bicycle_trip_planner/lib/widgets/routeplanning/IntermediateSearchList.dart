@@ -3,6 +3,8 @@ import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
+import '../../constants.dart';
+
 class IntermediateSearchList extends StatefulWidget {
 
   final List<TextEditingController> intermediateSearchControllers;
@@ -80,16 +82,16 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   style: TextStyle(
                     fontFamily: 'Outfit',
                     fontSize: 16.0,
-                    color: Colors.white,
+                    color: primaryTextColor,
                   ),
                 ),
                 onPressed: () => {_addStopWidget()},
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
+                  backgroundColor: MaterialStateProperty.all<Color>(buttonPrimaryColor),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        side: const BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
+                        side: const BorderSide(color: buttonPrimaryColor)
                     ),
                   ),
                 ),

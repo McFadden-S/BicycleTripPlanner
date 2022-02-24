@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 
+import '../../constants.dart';
+
 class RoutePlanning extends StatefulWidget {
   String? selectedStation;
   RoutePlanning({Key? key, this.selectedStation}) : super(key: key);
@@ -58,7 +60,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   child: Container(
                     padding: const EdgeInsets.only(left: 3.0, right: 7.0),
                     decoration: const BoxDecoration(
-                      color: const Color.fromRGBO(12, 156, 238, 1.0),
+                      color: buttonPrimaryColor,
                       borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     ),
                     child: Padding(
@@ -66,11 +68,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       child: DropdownButton<int>(
                         isDense: true,
                         value: groupSizeValue,
-                        icon: const Icon(Icons.group, color: Colors.white),
+                        icon: const Icon(Icons.group, color: primaryIconColor),
                         iconSize: 30,
                         elevation: 16,
                         style: const TextStyle(
-                            color: Colors.black45, fontSize: 18),
+                            color: secondaryTextColor, fontSize: 18),
                         menuMaxHeight: 200,
                         onChanged: (int? newValue) =>
                             onGroupSizeChanged(newValue!),
@@ -81,7 +83,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   const EdgeInsets.symmetric(horizontal: 5.0),
                               child: Text(
                                 groupSizeValue.toString(),
-                                style: const TextStyle(color: Colors.white),
+                                style: const TextStyle(color: primaryTextColor),
                               ),
                             );
                           }).toList();
@@ -105,7 +107,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   const Spacer(flex: 10),
                   RoundedRectangleButton(
                       iconIn: Icons.directions_bike,
-                      buttonColor: Colors.green,
+                      buttonColor: goButtonColor,
                       onButtonClicked: () {
                         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');

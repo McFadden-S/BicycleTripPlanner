@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
@@ -75,7 +76,7 @@ class _SearchState extends State<Search> {
       children: [
         if (applicationBloc.ifSearchResult() && isSearching)
           Card(
-            color: Colors.white,
+            color: cardColor,
             child: Container(
               // padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               child: ListView.separated(
@@ -126,16 +127,16 @@ class _SearchState extends State<Search> {
             onTap: (){isSearching = true;},
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
-              hintStyle: const TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
-              fillColor: Colors.white,
+              hintStyle: const TextStyle(color: secondaryTextColor),
+              fillColor: cardColor,
               filled: true,
               enabledBorder: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+                borderSide: BorderSide(width: 0.5, color: cardOutlineColor),
               ),
               border: const OutlineInputBorder(
                 borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+                borderSide: BorderSide(width: 0.5, color: cardOutlineColor),
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),

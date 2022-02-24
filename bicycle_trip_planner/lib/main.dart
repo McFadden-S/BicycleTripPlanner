@@ -40,13 +40,13 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: const Color(0xFF0C9CEE),
+        primaryColor: buttonPrimaryColor,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             textStyle: buttonTextStyle,
             padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-            primary: const Color(0xFF0C9CEE),
-            shadowColor: Colors.grey,
+            primary: buttonPrimaryColor,
+            shadowColor: boxShadow,
             elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(13.0),
@@ -54,15 +54,15 @@ class MyApp extends StatelessWidget {
           ),
         ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black54,
+            backgroundColor: buttonSecondaryColor,
+            foregroundColor: secondaryTextColor,
             elevation: 3,
             splashColor: Colors.transparent,
             extendedPadding: EdgeInsets.all(10)),
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(width: 0.5, color: Color(0xff969393))),
+              side: BorderSide(width: 0.5, color: cardOutlineColor)),
           elevation: 3,
         ),
         fontFamily: 'Outfit',

@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -61,8 +62,8 @@ class _NavigationState extends State<Navigation> {
                   onButtonClicked: () {
                     _toggleMapZoomInOut();
                   },
-                  buttonColor: Colors.white,
-                  iconColor: Colors.black54,
+                  buttonColor: buttonSecondaryColor,
+                  iconColor: secondaryIconColor,
                 ),
               ]),
               const Spacer(),

@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:flutter/material.dart';
 
 class DistanceETACard extends StatefulWidget {
@@ -14,6 +15,7 @@ class _StationCardState extends State<DistanceETACard> {
   Widget build(BuildContext context) {
 
     return Card(
+      color: cardColor,
       elevation: 5,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(13)),

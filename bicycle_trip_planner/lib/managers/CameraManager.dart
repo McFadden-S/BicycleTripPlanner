@@ -3,6 +3,8 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../constants.dart';
+
 class CameraManager{
 
   static const initialCameraPosition = CameraPosition(
@@ -32,7 +34,7 @@ class CameraManager{
   //********** Setup/Teardown **********
 
   void init(){
-    rootBundle.loadString('assets/map_style.txt').then((style) {
+    rootBundle.loadString(dayMapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
   }

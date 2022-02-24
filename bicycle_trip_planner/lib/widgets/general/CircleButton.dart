@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants.dart';
+
 class CircleButton extends StatefulWidget {
 
   final IconData iconIn;
@@ -10,8 +12,8 @@ class CircleButton extends StatefulWidget {
   const CircleButton({ Key? key, 
     required this.iconIn, 
     required this.onButtonClicked, 
-    this.buttonColor = const Color.fromRGBO(12, 156, 238, 1.0), 
-    this.iconColor = const Color.fromRGBO(255, 255, 255, 1.0),
+    this.buttonColor = buttonPrimaryColor,
+    this.iconColor = primaryIconColor,
   }) : super(key: key);
 
   @override

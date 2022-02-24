@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
@@ -26,7 +27,7 @@ class _StationBarState extends State<StationBar> {
           return Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
             decoration: const BoxDecoration(
-                color: Colors.white,
+                color: cardColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
             ),
             child: Column(
@@ -74,7 +75,7 @@ class _StationBarState extends State<StationBar> {
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: const BoxDecoration(
-          color: Colors.white,
+          color: cardColor,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
           boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
       ),
