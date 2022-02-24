@@ -14,10 +14,9 @@ class HomeWidgets extends StatefulWidget {
 }
 
 class _HomeWidgetsState extends State<HomeWidgets> {
-
   @override
   Widget build(BuildContext context) {
-    // final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     final TextEditingController searchController = TextEditingController();
 
     return SafeArea(
@@ -49,8 +48,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
                                   image: AssetImage('assets/signup_image.png'),
-                                )
-                            )),
+                                ))),
                       )
                     ],
                   ),
@@ -63,10 +61,19 @@ class _HomeWidgetsState extends State<HomeWidgets> {
               ),
             ),
           ),
-          const Align(
-              alignment: FractionalOffset.bottomCenter,
-              child: StationBar()
+          Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 280, 15, 0),
+              child: FloatingActionButton(
+                child: Icon(Icons.route_outlined),
+                onPressed: () =>
+                    applicationBloc.setSelectedScreen('routePlanning'),
+              ),
+            ),
           ),
+          const Align(
+              alignment: FractionalOffset.bottomCenter, child: StationBar()),
         ],
       ),
     );
