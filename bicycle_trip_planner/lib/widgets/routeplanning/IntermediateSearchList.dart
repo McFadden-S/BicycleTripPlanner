@@ -1,7 +1,9 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:provider/provider.dart';
 
 class IntermediateSearchList extends StatefulWidget {
 
@@ -24,7 +26,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget() {
+  void _addStopWidget(ApplicationBloc applicationBloc) {
     setState(() {
       final TextEditingController searchController = TextEditingController();
 
@@ -48,6 +50,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                         widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
                       }
 
+                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed + 1);
                       routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
                       widget.intermediateSearchControllers.removeLast();
@@ -68,7 +71,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   @override
   Widget build(BuildContext context) {
-
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -83,7 +86,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: Colors.white,
                   ),
                 ),
-                onPressed: () => {_addStopWidget()},
+                onPressed: () => {_addStopWidget(applicationBloc)},
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
