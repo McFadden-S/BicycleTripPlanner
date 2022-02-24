@@ -18,17 +18,18 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
-  
+
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
+  Widget? previousScreen;
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
     'navigation': Navigation(),
     'routePlanning': RoutePlanning(),
   };
-  
+
   Rou.Route? route; // TODO: Potential refactor on route here
   List<PlaceSearch> searchResults = List.empty();
 
@@ -42,13 +43,13 @@ class ApplicationBloc with ChangeNotifier {
   late Timer _stationTimer;
 
   cancelStationTimer(){
-    _stationTimer.cancel(); 
+    _stationTimer.cancel();
   }
 
   updateStationsPeriodically(Duration duration){
     _stationTimer = Timer.periodic(duration, (timer){
-      updateStations(); 
-    });  
+      updateStations();
+    });
   }
 
   setupStations() async{
@@ -61,7 +62,7 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
-    notifyListeners(); 
+    notifyListeners();
   }
 
   bool ifSearchResult(){
@@ -97,7 +98,7 @@ class ApplicationBloc with ChangeNotifier {
 
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
     route = await _directionsService.getRoutes(origin, destination, intermediates);
-    currentRoute.add(route!); 
+    currentRoute.add(route!);
     notifyListeners();
   }
 
@@ -115,5 +116,14 @@ class ApplicationBloc with ChangeNotifier {
   void setSelectedScreen(String screenName) {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
+  }
+
+  void setPreviousScreen(String screenName) {
+    previousScreen = screens[screenName]!;
+    notifyListeners();
+  }
+
+  void goBack() {
+
   }
 }
