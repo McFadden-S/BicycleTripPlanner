@@ -145,7 +145,6 @@ class _MapWidgetState extends State<MapWidget> {
       onMapCreated: (controller) {
         cameraManager = CameraManager(
             googleMapController: controller,
-            locationManager: locationManager
         );
         cameraManager?.init();
       }

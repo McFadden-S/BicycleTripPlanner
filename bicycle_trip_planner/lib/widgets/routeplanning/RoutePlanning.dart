@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
@@ -79,25 +80,32 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         }).toList(),
                       ),
                     ),
-                  ),
-                )
-              ]),
-              const Spacer(flex: 50),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                const DistanceETACard(),
-                const Spacer(flex: 10),
-                RoundedRectangleButton(
-                    iconIn: Icons.directions_bike,
-                    buttonColor: Colors.green,
-                    onButtonClicked: () {
-                      applicationBloc.setSelectedScreen('navigation');
-                    })
-              ]),
-            ],
-          ),
-        ],
-      ),
-    );
+                  )
+                ]),
+                const Spacer(flex: 50),
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  const DistanceETACard(),
+                  const Spacer(flex: 10),
+                  RoundedRectangleButton(
+                      iconIn: Icons.directions_bike,
+                      buttonColor: Colors.green,
+                      onButtonClicked: () {
+                        if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
+                          applicationBloc.setSelectedScreen('navigation');
+                        }
+                        else{
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            content: Text("Start and Destination have not been set!"),
+                          ));
+                        }
+                      }
+                  )
+                ]),
+              ],
+            ),
+          ],
+        ),
+      );
   }
 
   // TODO: remove print statement after linking the button correctly

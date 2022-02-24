@@ -116,5 +116,4 @@ class ApplicationBloc with ChangeNotifier {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
   }
-
 }
