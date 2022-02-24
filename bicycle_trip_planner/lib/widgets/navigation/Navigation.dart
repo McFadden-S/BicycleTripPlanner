@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -12,6 +15,7 @@ import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
@@ -24,9 +28,31 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager();
+  late StreamSubscription locatorSubscription; 
 
   void _toggleMapZoomInOut() {
     setState(() => {mapZoomed = !mapZoomed});
+  }
+
+  @override
+  void initState(){
+
+    super.initState();
+
+    // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE
+    locatorSubscription =
+      Geolocator.getPositionStream(locationSettings: LocationManager().locationSettings)
+          .listen((Position position) {
+          setState(() {
+            CameraManager.instance.viewUser(); 
+          });
+      });
+  }
+
+  @override
+  void dispose(){
+    locatorSubscription.cancel();
+    super.dispose(); 
   }
 
   @override

@@ -10,7 +10,7 @@ class LocationManager{
   // ignore: prefer_const_constructors
   final LocationSettings locationSettings = LocationSettings(
     accuracy: LocationAccuracy.best, // How accurate the location is
-    distanceFilter: 25, // The distance needed to travel until the next update (0 means it will always update)
+    distanceFilter: 0, // The distance needed to travel until the next update (0 means it will always update)
   );
 
   // This is specifying the Locator class in locator.dart
