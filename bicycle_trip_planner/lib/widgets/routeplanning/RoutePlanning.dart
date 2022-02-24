@@ -37,7 +37,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 )
               ]),
               const Spacer(),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 5.0, top: 10.0),
                   child: Container(
@@ -81,7 +83,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       ),
                     ),
                   )
-                ]),
+                ),
+                ]
+                ),
                 const Spacer(flex: 50),
                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                   const DistanceETACard(),
