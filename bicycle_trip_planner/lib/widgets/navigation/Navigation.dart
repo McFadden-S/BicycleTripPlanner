@@ -34,38 +34,6 @@ class _NavigationState extends State<Navigation> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return SafeArea(
-// <<<<<<< HEAD
-//           child: Stack(
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-//             // TODO: Potential abstraction of the column?
-//             // TODO: Routeplanning also has 2 buttons at the side (can make a reusable widget of sorts)
-//             child: Column(
-//               crossAxisAlignment: CrossAxisAlignment.stretch,
-//               mainAxisSize: MainAxisSize.max,
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               children: [
-//                 Directions(directionManager: directionManager,),
-//                 const Spacer(),
-//                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-//                   CircleButton(iconIn: Icons.location_on, onButtonClicked: (){}, buttonColor: Colors.white, iconColor: Colors.black54),
-//                 ]),
-//                 const Spacer(),
-//                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-//                   CircleButton(
-//                     iconIn: mapZoomed ? Icons.zoom_out_map: Icons.fullscreen_exit,
-//                     onButtonClicked: (){
-//                       _toggleMapZoomInOut();
-//                     },
-//                     buttonColor: Colors.white,
-//                     iconColor: Colors.black54,
-//                   ),
-//                 ]),
-//                 const Spacer(),
-//                 Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-//                   Card(
-// =======
         child: Stack(
       children: [
         Padding(
@@ -100,7 +68,6 @@ class _NavigationState extends State<Navigation> {
               const Spacer(),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Card(
-//>>>>>>> development
                     shape: RoundedRectangleBorder(
                       side:
                           const BorderSide(color: Color(0xFF8B0000), width: 1),
