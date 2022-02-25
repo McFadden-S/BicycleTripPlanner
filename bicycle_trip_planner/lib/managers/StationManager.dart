@@ -16,6 +16,9 @@ class StationManager {
   // Maximum filter distance to a station in miles  
   double _maxFilterDistance = 1; 
 
+  // Maximum number of stations on the page
+  int _stationsPerPage = 10; 
+
   final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
@@ -41,6 +44,10 @@ class StationManager {
 
   //********** Public **********
 
+  int getNumberOfStationsPerPage(){
+    return _stationsPerPage; 
+  }
+
   int getNumberOfStations(){
     return _stations.length;
   }
@@ -58,6 +65,15 @@ class StationManager {
       station.name == stationName, orElse: Station.stationNotFound);
   }
 
+  List<Station> getClosestStationsNear(LatLng pos) {
+    List<Station> orderedStations = _getOrderedToFromStationList(pos);
+    List<Station> closestStations = orderedStations.where((station) => !isStationTooFar(pos, station)).toList(); 
+    if(closestStations.length <= _stationsPerPage){
+      return closestStations; 
+    }
+    return closestStations.take(10).toList(); 
+  }
+
   Station getPickupStationNear(LatLng pos, [int groupSize = 1]){
     List<Station> orderedStations = _getOrderedToFromStationList(pos);
     return orderedStations.firstWhere((station) => station.bikes >= groupSize, orElse: Station.stationNotFound);
@@ -72,11 +88,15 @@ class StationManager {
     if(station.isStationNotFound()){return false;}
     LatLng stationPos = LatLng(station.lat, station.lng);
     double distance = _locationManager.distanceFromTo(pos, stationPos);
-    return _maxFilterDistance >= distance; 
+    return distance >= _maxFilterDistance; 
   } 
 
   void setMaxFilterDistance(double distance){
     _maxFilterDistance = distance;
+  }
+
+  void setMaxNumberOfStationMarkers(int noOfStations){
+    _stationsPerPage = noOfStations;
   }
 
   //TODO Refactor so that no longer have to maintain distances list
@@ -89,12 +109,12 @@ class StationManager {
     //Sets stations with intermediate distance values while waiting for new
     //values to be calculated async
     for(int i = 0; i<_stations.length; i++){
-      _stations[i].distanceTo = _stationDistances[i];
+      _stations[i].distanceToUser = _stationDistances[i];
     }
 
     await setStationDistances();
 
-    _stations.sort((stationA, stationB) => stationA.distanceTo.compareTo(stationB.distanceTo));
+    _stations.sort((stationA, stationB) => stationA.distanceToUser.compareTo(stationB.distanceToUser));
   }
 
   //TODO Refactor so that no longer have to maintain distances list
@@ -106,8 +126,8 @@ class StationManager {
     // }
 
     for(int i = 0; i < _stations.length; i++){
-      _stations[i].distanceTo = _locationManager.distanceFromTo(currentPos, LatLng(_stations[i].lat, _stations[i].lng));
-      _stationDistances[i] = _stations[i].distanceTo;
+      _stations[i].distanceToUser = _locationManager.distanceFromTo(currentPos, LatLng(_stations[i].lat, _stations[i].lng));
+      _stationDistances[i] = _stations[i].distanceToUser;
     }
   }
 

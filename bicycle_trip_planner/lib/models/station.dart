@@ -9,7 +9,7 @@ class Station{
   int bikes; 
   int emptyDocks; 
   int totalDocks;
-  double distanceTo;
+  double distanceToUser;
 
   Station({required this.id,
            required this.name, 
@@ -18,7 +18,7 @@ class Station{
            required this.bikes, 
            required this.emptyDocks, 
            required this.totalDocks,
-           this.distanceTo = 0.0});
+           this.distanceToUser = 0.0});
 
   Station.stationNotFound({
     this.id = 0,
@@ -28,7 +28,7 @@ class Station{
     this.bikes = 0,
     this.emptyDocks = 0,
     this.totalDocks = 0,
-    this.distanceTo = 0.0
+    this.distanceToUser = 0.0
   });
 
   factory Station.fromXml(XmlElement element) {

@@ -112,7 +112,7 @@ class _StationBarState extends State<StationBar> {
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: stationManager.getNumberOfStations(),
+                              itemCount: stationManager.getNumberOfStationsPerPage(),
                               itemBuilder: (BuildContext context, int index) =>
                                   StationCard(index: index)
                           ),

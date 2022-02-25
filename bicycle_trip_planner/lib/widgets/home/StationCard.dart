@@ -31,7 +31,9 @@ class _StationCardState extends State<StationCard> {
 
   @override
   Widget build(BuildContext context) {
+
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
     return InkWell(
       onTap: () => stationClicked(widget.index, applicationBloc),
       child: SizedBox(
@@ -83,7 +85,7 @@ class _StationCardState extends State<StationCard> {
                         const Spacer(),
                         Container(
                           child: Text(
-                              "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}mi",
+                              "${stationManager.getStationByIndex(widget.index).distanceToUser.toStringAsFixed(1)}mi",
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 12.0, color: Colors.blueAccent)
                           ),
