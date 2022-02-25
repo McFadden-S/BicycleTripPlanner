@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
@@ -19,9 +24,34 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager();
+  late StreamSubscription locatorSubscription; 
 
   void _toggleMapZoomInOut() {
     setState(() => {mapZoomed = !mapZoomed});
+  }
+
+  @override
+  void initState(){
+
+    super.initState();
+    
+    // Move to the user when navigation starts
+    CameraManager.instance.viewUser(); 
+
+    // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE 
+    locatorSubscription =
+      Geolocator.getPositionStream(locationSettings: LocationManager().locationSettings())
+          .listen((Position position) {
+          setState(() {
+            CameraManager.instance.viewUser(); 
+          });
+      });
+  }
+
+  @override
+  void dispose(){
+    locatorSubscription.cancel();
+    super.dispose(); 
   }
 
   @override
@@ -45,7 +75,7 @@ class _NavigationState extends State<Navigation> {
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                  child: CurLocationButton(),
+                  child: CurrentLocationButton(),
                 ),
               ]),
               const Spacer(),

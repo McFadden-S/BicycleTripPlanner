@@ -35,7 +35,7 @@ class _DirectionsState extends State<Directions> {
 
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    Rou.Route currentRoute = applicationBloc.route;
+    Rou.Route currentRoute = directionManager.route;
 
     directionManager.currentDirection = currentRoute.legs.first.steps.removeAt(0);
 
@@ -46,9 +46,9 @@ class _DirectionsState extends State<Directions> {
       duration += currentRoute.legs[i].duration;
       distance += currentRoute.legs[i].distance;
     }
-
     directionManager.setDuration(duration);
     directionManager.setDistance(distance);
+
   }
 
   @override

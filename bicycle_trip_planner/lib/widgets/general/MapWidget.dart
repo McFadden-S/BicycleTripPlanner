@@ -23,10 +23,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   //********** Providers **********
 
-  late StreamSubscription locationSubscription;
-  late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
-  late StreamSubscription curLocationSubscription;
 
   //********** Markers **********
 
@@ -64,41 +61,20 @@ class _MapWidgetState extends State<MapWidget> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    locationSubscription =
-        applicationBloc.selectedLocation.stream.listen((place) {
-          setState(() {
-            cameraManager?.viewPlace(place);
-          });
-        });
-
-    directionSubscription =
-        applicationBloc.currentRoute.stream.listen((direction) {
-          setState(() {
-            cameraManager?.goToPlace(
-                //TODO Temporary fix, needs to be changed so that the first leg's direction is not the only one shown
-                direction.legs.first.startLocation.lat,
-                direction.legs.first.startLocation.lng,
-                direction.bounds.northeast,
-                direction.bounds.southwest);
-            polylineManager.setPolyline(direction.polyline.points);
-          });
-        });
-
     applicationBloc.setupStations();
 
+    // Initialise the marker with his current position
+    locationManager.locate().then((pos) => setState((){
+      markerManager.setUserMarker(pos);
+    }));
+
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
             .listen((Position position) {
             setState(() {
-              markerManager.setUserMarker(position);
+              markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
             });
         });
-
-    curLocationSubscription = applicationBloc.currentLocation.stream.listen((event) {
-      setState(() {
-        cameraManager?.viewUser();
-      });
-    });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
@@ -116,9 +92,7 @@ class _MapWidgetState extends State<MapWidget> {
     }
     catch(e){}; 
 
-    if(cameraManager != null) {cameraManager?.dispose();} 
-    locationSubscription.cancel();
-    directionSubscription.cancel();
+    if(cameraManager != null) {cameraManager?.dispose();}
     locatorSubscription.cancel();
 
     super.dispose();
