@@ -32,13 +32,13 @@ class CameraManager{
     return _cameraManager;
   } 
 
-  CameraManager._internal(); 
+  CameraManager._internal();
 
   //********** Setup/Teardown **********
 
   void init(){
     _time.isPM();
-    rootBundle.loadString(dayMapStyle).then((style) {
+    rootBundle.loadString(ThemeStyle.mapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
   }

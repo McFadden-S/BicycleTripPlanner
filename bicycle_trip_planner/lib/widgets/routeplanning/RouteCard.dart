@@ -59,20 +59,20 @@ class _RouteCardState extends State<RouteCard> {
     }
 
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                offset: Offset(0,10),
-                color: boxShadow,
+                offset: const Offset(0,10),
+                color: ThemeStyle.boxShadow,
                 blurRadius: 30.0,
               ),
             ],
           ),
           child: Card(
-            color: cardColor,
+            color: ThemeStyle.cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
-              side: const BorderSide(color: boxShadow, width: 1.0),
+              side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
             child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,

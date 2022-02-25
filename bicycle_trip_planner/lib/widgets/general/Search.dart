@@ -76,7 +76,7 @@ class _SearchState extends State<Search> {
       children: [
         if (applicationBloc.ifSearchResult() && isSearching)
           Card(
-            color: cardColor,
+            color: ThemeStyle.cardColor,
             child: Container(
               // padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               child: ListView.separated(
@@ -127,16 +127,16 @@ class _SearchState extends State<Search> {
             onTap: (){isSearching = true;},
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
-              hintStyle: const TextStyle(color: secondaryTextColor),
-              fillColor: cardColor,
+              hintStyle: TextStyle(color: ThemeStyle.secondaryTextColor),
+              fillColor: ThemeStyle.cardColor,
               filled: true,
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: cardOutlineColor),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: cardOutlineColor),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),

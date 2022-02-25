@@ -22,7 +22,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(buttonSecondaryColor)),
+        backgroundColor: MaterialStateProperty.all(ThemeStyle.buttonSecondaryColor)),
         child: Row(
         children: [
           Icon(

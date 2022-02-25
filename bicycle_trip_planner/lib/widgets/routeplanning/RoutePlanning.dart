@@ -59,20 +59,20 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   padding: const EdgeInsets.only(right: 5.0, top: 10.0),
                   child: Container(
                     padding: const EdgeInsets.only(left: 3.0, right: 7.0),
-                    decoration: const BoxDecoration(
-                      color: buttonPrimaryColor,
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    decoration: BoxDecoration(
+                      color: ThemeStyle.buttonPrimaryColor,
+                      borderRadius: const BorderRadius.all(Radius.circular(30.0)),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: DropdownButton<int>(
                         isDense: true,
                         value: groupSizeValue,
-                        icon: const Icon(Icons.group, color: primaryIconColor),
+                        icon: Icon(Icons.group, color: ThemeStyle.primaryIconColor),
                         iconSize: 30,
                         elevation: 16,
-                        style: const TextStyle(
-                            color: secondaryTextColor, fontSize: 18),
+                        style: TextStyle(
+                            color: ThemeStyle.secondaryTextColor, fontSize: 18),
                         menuMaxHeight: 200,
                         onChanged: (int? newValue) =>
                             onGroupSizeChanged(newValue!),
@@ -83,7 +83,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   const EdgeInsets.symmetric(horizontal: 5.0),
                               child: Text(
                                 groupSizeValue.toString(),
-                                style: const TextStyle(color: primaryTextColor),
+                                style: TextStyle(color: ThemeStyle.primaryTextColor),
                               ),
                             );
                           }).toList();
@@ -107,7 +107,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   const Spacer(flex: 10),
                   RoundedRectangleButton(
                       iconIn: Icons.directions_bike,
-                      buttonColor: goButtonColor,
+                      buttonColor: ThemeStyle.goButtonColor,
                       onButtonClicked: () {
                         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');

@@ -15,7 +15,7 @@ class _StationCardState extends State<DistanceETACard> {
   Widget build(BuildContext context) {
 
     return Card(
-      color: cardColor,
+      color: ThemeStyle.cardColor,
       elevation: 5,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(13)),

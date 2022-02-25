@@ -6,14 +6,14 @@ class CircleButton extends StatefulWidget {
 
   final IconData iconIn;
   final VoidCallback onButtonClicked;
-  final Color buttonColor; 
-  final Color iconColor; 
+  Color? buttonColor = ThemeStyle.buttonPrimaryColor;
+  Color? iconColor = ThemeStyle.primaryIconColor;
 
-  const CircleButton({ Key? key, 
+  CircleButton({ Key? key,
     required this.iconIn, 
     required this.onButtonClicked, 
-    this.buttonColor = buttonPrimaryColor,
-    this.iconColor = primaryIconColor,
+    this.buttonColor,
+    this.iconColor,
   }) : super(key: key);
 
   @override

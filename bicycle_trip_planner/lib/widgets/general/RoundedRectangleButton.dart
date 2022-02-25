@@ -23,7 +23,7 @@ class _StationCardState extends State<RoundedRectangleButton> {
       onPressed: widget.onButtonClicked,
       child: Icon(
           widget.iconIn,
-          color: primaryIconColor,
+          color: ThemeStyle.primaryIconColor,
       ),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(

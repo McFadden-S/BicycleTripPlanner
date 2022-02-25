@@ -43,7 +43,7 @@ class DirectionManager{
     direction.toLowerCase().contains('head') ? icon = Icons.arrow_upward :
     direction.toLowerCase().contains('roundabout') ? icon = Icons.data_usage_outlined:
     icon = Icons.circle;  
-    return Icon(icon, color: buttonPrimaryColor, size: 60); 
+    return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
   List<Steps> createDummyDirections() {

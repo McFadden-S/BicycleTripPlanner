@@ -62,8 +62,8 @@ class _NavigationState extends State<Navigation> {
                   onButtonClicked: () {
                     _toggleMapZoomInOut();
                   },
-                  buttonColor: buttonSecondaryColor,
-                  iconColor: secondaryIconColor,
+                  buttonColor: ThemeStyle.buttonSecondaryColor,
+                  iconColor: ThemeStyle.secondaryIconColor,
                 ),
               ]),
               const Spacer(),
