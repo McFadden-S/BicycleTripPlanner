@@ -1,10 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
-import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
@@ -85,7 +80,7 @@ class _NavigationState extends State<Navigation> {
                   CircleButton(
                       iconIn: Icons.cancel_outlined,
                       onButtonClicked: () {
-                        endRoute(applicationBloc);
+                        applicationBloc.endRoute();
                       },
                       buttonColor: Colors.red),
                 ],
@@ -95,22 +90,5 @@ class _NavigationState extends State<Navigation> {
         )
       ],
     ));
-  }
-
-  void endRoute(ApplicationBloc appBloc) {
-    appBloc.setSelectedScreen('home');
-    directionManager.clear(); 
-    PolylineManager().clearPolyline();
-    MarkerManager().clearMarker(SearchType.start);
-    MarkerManager().clearMarker(SearchType.end);
-    if(RouteManager().ifIntermediatesSet()){
-      int index = RouteManager().getIntermediates().length;
-      for(int i = 1; i <= index; i++){
-        MarkerManager().clearMarker(SearchType.intermediate, i);
-        RouteManager().removeIntermediate(i);
-      }
-    }
-    RouteManager().clearStart(); 
-    RouteManager().clearDestination(); 
   }
 }

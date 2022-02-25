@@ -8,8 +8,7 @@ import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
-  String? selectedStation;
-  RouteCard({Key? key, this.selectedStation}) : super(key: key);
+  const RouteCard({Key? key}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -42,11 +41,8 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    if(widget.selectedStation != null) {
-      routeManager.setStart(widget.selectedStation!);
-      startSearchController.text = widget.selectedStation!;
-      widget.selectedStation = null;
-    }
+    applicationBloc.selectedStation.stream.listen((event) { startSearchController.text = event.name;});
+    routeManager.setStart(startSearchController.text);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(

@@ -117,7 +117,10 @@ class MarkerManager {
         infoWindow: InfoWindow(title: station.name),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         position: pos,
-        onTap: (){appBloc.setSelectedScreen('routePlanning', selectedStartStation: station.name);},
+        onTap: (){
+          appBloc.searchSelectedStation(station);
+          appBloc.setSelectedScreen('routePlanning');
+          appBloc.pushPrevScreen('home');},
       ));
     }
   }
