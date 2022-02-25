@@ -40,6 +40,7 @@ class ApplicationBloc with ChangeNotifier {
   StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
   StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
   StreamController<Place> currentLocation = StreamController<Place>.broadcast();
+  StreamController<Place> selectedStation = StreamController<Place>.broadcast();
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -60,7 +61,7 @@ class ApplicationBloc with ChangeNotifier {
   setupStations() async{
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations);
+    _markerManager.setStationMarkers(stations, this);
     updateStations();
     notifyListeners();
   }
@@ -76,6 +77,11 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
+    notifyListeners();
+  }
+
+  searchSelectedStation(Station station) async {
+    selectedStation.add(await _placesService.getPlaceFromCoordinates(station.lat, station.lng));
     notifyListeners();
   }
 
