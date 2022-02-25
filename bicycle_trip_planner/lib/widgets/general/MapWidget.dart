@@ -75,8 +75,9 @@ class _MapWidgetState extends State<MapWidget> {
         applicationBloc.currentRoute.stream.listen((direction) {
           setState(() {
             cameraManager?.goToPlace(
-                direction.legs.startLocation.lat,
-                direction.legs.startLocation.lng,
+                //TODO Temporary fix, needs to be changed so that the first leg's direction is not the only one shown
+                direction.legs.first.startLocation.lat,
+                direction.legs.first.startLocation.lng,
                 direction.bounds.northeast,
                 direction.bounds.southwest);
             polylineManager.setPolyline(direction.polyline.points);

@@ -19,7 +19,6 @@ class Directions extends StatefulWidget {
 }
 
 class _DirectionsState extends State<Directions> {
-
   late final applicationBloc;
 
   final DirectionManager directionManager = DirectionManager();
@@ -34,15 +33,24 @@ class _DirectionsState extends State<Directions> {
   void initState() {
     super.initState();
 
-    applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    var currentRoute = applicationBloc.route; 
-    
-    directionManager.currentDirection = currentRoute.legs.steps.removeAt(0); 
-    directionManager.directions = currentRoute.legs.steps;
-    directionManager.setDuration(currentRoute.legs.duration);
-    directionManager.setDistance(currentRoute.legs.distance);
+    var currentRoute = applicationBloc.route;
+
+    directionManager.currentDirection = currentRoute.legs.first.steps.removeAt(0);
+
+    // print("Current direction ${directionManager.currentDirection.instruction}");
+
+    int duration = 0;
+    int distance = 0;
+    for(var i =0; i < currentRoute.legs.length; i++){
+      directionManager.directions += currentRoute.legs[i].steps;
+      duration = currentRoute.legs[i].duration;
+      distance = currentRoute.legs[i].distance;
+    }
+
+    directionManager.setDuration(duration);
+    directionManager.setDistance(distance);
   }
 
   @override
@@ -55,30 +63,36 @@ class _DirectionsState extends State<Directions> {
             height: !extendedNavigation
                 ? MediaQuery.of(context).size.height * 0.16
                 : directionManager.directions.length < 3
-                    ? (directionManager.directions.length * MediaQuery.of(context).size.height * 0.1)
-                    + (MediaQuery.of(context).size.height * 0.16)
+                    ? (directionManager.directions.length *
+                            MediaQuery.of(context).size.height *
+                            0.1) +
+                        (MediaQuery.of(context).size.height * 0.16)
                     : MediaQuery.of(context).size.height * 0.5,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CurrentDirection(currentDirection: directionManager.currentDirection),
-                if(!extendedNavigation) const Spacer() else
-                    if(directionManager.directions.isNotEmpty)
-                      const Padding(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                          child: Divider(thickness: 0.7),
-                        ), 
+                CurrentDirection(
+                    currentDirection: directionManager.currentDirection),
+                if (!extendedNavigation)
+                  const Spacer()
+                else if (directionManager.directions.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    child: Divider(thickness: 0.7),
+                  ),
                 extendedNavigation
                     ? SizedBox(
                         height: directionManager.directions.length < 3
-                            ? (directionManager.directions.length) * (MediaQuery.of(context).size.height * 0.08)
+                            ? (directionManager.directions.length) *
+                                (MediaQuery.of(context).size.height * 0.08)
                             : MediaQuery.of(context).size.height * 0.3,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                           itemCount: directionManager.directions.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return DirectionTile(index: index, directionManager: directionManager);
+                            return DirectionTile(
+                                index: index,
+                                directionManager: directionManager);
                           },
                           separatorBuilder: (context, index) {
                             return const Divider();
