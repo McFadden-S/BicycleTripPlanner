@@ -18,8 +18,8 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  TextEditingController startSearchController = TextEditingController();
-  TextEditingController endSearchController = TextEditingController();
+  final TextEditingController startSearchController = TextEditingController();
+  final TextEditingController endSearchController = TextEditingController();
 
   final RouteManager routeManager = RouteManager();
   final PolylineManager polylineManager = PolylineManager();

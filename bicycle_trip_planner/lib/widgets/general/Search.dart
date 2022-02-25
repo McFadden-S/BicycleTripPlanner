@@ -54,9 +54,8 @@ class _SearchState extends State<Search> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if(!isSearching && routeManager.ifChanged()){
+    if(!isSearching){
       widget.searchController.text = getText();
-      routeManager.clearChanged();
     }
 
     return Stack(
