@@ -50,8 +50,7 @@ class _RouteCardState extends State<RouteCard> {
     applicationBloc.currentLocation.stream.listen((event) { if (startSearchController.text.isEmpty) startSearchController.text = event.name;});
 
     routeManager.setStart(startSearchController.text);
-    routeManager.setStart(startSearchController.text);
-    routeManager.setDestination(destinationSearchController.text);
+    if (destinationSearchController.text.isNotEmpty) routeManager.setDestination(destinationSearchController.text);
 
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
