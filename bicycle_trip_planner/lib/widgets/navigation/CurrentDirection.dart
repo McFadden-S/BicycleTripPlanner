@@ -20,30 +20,27 @@ class _CurrentDirectionState extends State<CurrentDirection> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const Spacer(flex: 1),
-          directionManager.directionIcon(widget.currentDirection.instruction),
-          Flexible(
-            flex: 15,
-            child: Html(
-              data: widget.currentDirection.instruction,
-            )
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: 150),
+        child: SingleChildScrollView(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Spacer(flex: 1),
+              directionManager.directionIcon(widget.currentDirection.instruction),
+              Flexible(
+                flex: 15,
+                child: Html(
+                  data: widget.currentDirection.instruction,
+                )
+              ),
+              const Spacer(flex: 1),
+              Text("${widget.currentDirection.distance} m"),
+                  // : const Spacer(),
+              const Spacer(flex: 1),
+            ],
           ),
-              // : const Padding(
-              //     padding: EdgeInsets.all(10.0),
-              //     child: Text(
-              //       "No given directions",
-              //       textAlign: TextAlign.center,
-              //       style: TextStyle(fontSize: 30),
-              //     ),
-              //   ),
-          const Spacer(flex: 1),
-          Text("${widget.currentDirection.distance} m"),
-              // : const Spacer(),
-          const Spacer(flex: 1),
-        ],
+        ),
       ),
     );
   }

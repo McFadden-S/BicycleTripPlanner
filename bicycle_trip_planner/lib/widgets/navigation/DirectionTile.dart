@@ -15,13 +15,15 @@ class DirectionTile extends StatefulWidget {
 class _DirectionTileState extends State<DirectionTile> {
   @override
   Widget build(BuildContext context) {
-     return ListTile(
-      leading: widget.directionManager.directionIcon(
-          widget.directionManager.directions[widget.index].instruction),
-      trailing:
-          Text("${widget.directionManager.directions[widget.index].distance} m"),
-      title: Html(
-        data: widget.directionManager.directions[widget.index].instruction,
-    ));
+     return Expanded(
+       child: ListTile(
+        leading: widget.directionManager.directionIcon(
+            widget.directionManager.directions[widget.index].instruction),
+        trailing:
+            Text("${widget.directionManager.directions[widget.index].distance} m"),
+        title: Html(
+          data: widget.directionManager.directions[widget.index].instruction,
+    )),
+     );
   }
 }
