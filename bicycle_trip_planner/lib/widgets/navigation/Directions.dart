@@ -37,7 +37,8 @@ class _DirectionsState extends State<Directions> {
     applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
 
-    var currentRoute = applicationBloc.route; 
+    // TODO: Just let directionManager handle the route initialisation, no need for initState here
+    var currentRoute = directionManager.route; 
     
     directionManager.currentDirection = currentRoute.legs.steps.removeAt(0); 
     directionManager.directions = currentRoute.legs.steps;
