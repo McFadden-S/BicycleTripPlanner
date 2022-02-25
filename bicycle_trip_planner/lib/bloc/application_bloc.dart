@@ -37,7 +37,7 @@ class ApplicationBloc with ChangeNotifier {
     'routePlanning': RoutePlanning(),
   };
 
-  List<PlaceSearch> searchResults = List.empty();
+  List<PlaceSearch> searchResults = [];
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
