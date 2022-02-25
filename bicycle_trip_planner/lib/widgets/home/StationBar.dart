@@ -15,7 +15,6 @@ class StationBar extends StatefulWidget {
 class _StationBarState extends State<StationBar> {
 
   PageController stationsPageViewController = PageController();
-
   StationManager stationManager = StationManager();
 
   void showExpandedList(List<Station> stations) {

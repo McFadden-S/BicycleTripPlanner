@@ -42,4 +42,8 @@ class Station{
       totalDocks: int.parse(element.findElements("nbDocks").first.text),
     );
   }
+
+  bool isStationNotFound(){
+    return id == 0 && name == "Station Not Found";
+  }
 }

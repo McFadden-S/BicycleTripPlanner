@@ -13,6 +13,9 @@ class StationManager {
   //TODO updated but new distance values arent calculated
   List<double> _stationDistances = <double>[];
 
+  // Maximum filter distance to a station in miles  
+  double _maxFilterDistance = 1; 
+
   final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
@@ -63,6 +66,17 @@ class StationManager {
   Station getDropoffStationNear(LatLng pos, [int groupSize = 1]){
     List<Station> orderedStations = _getOrderedToFromStationList(pos);
     return orderedStations.firstWhere((station) => station.emptyDocks >= groupSize, orElse: Station.stationNotFound);
+  }
+
+  bool isStationTooFar(LatLng pos, Station station){
+    if(station.isStationNotFound()){return false;}
+    LatLng stationPos = LatLng(station.lat, station.lng);
+    double distance = _locationManager.distanceFromTo(pos, stationPos);
+    return _maxFilterDistance >= distance; 
+  } 
+
+  void setMaxFilterDistance(double distance){
+    _maxFilterDistance = distance;
   }
 
   //TODO Refactor so that no longer have to maintain distances list
