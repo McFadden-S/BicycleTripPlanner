@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -111,7 +112,7 @@ class MarkerManager {
     _markers.add(userMarker);
   }
 
-  void setStationMarkers(List<Station> stations){
+  void setStationMarkers(List<Station> stations, ApplicationBloc appBloc){
     for(var station in stations){
       LatLng pos = LatLng(station.lat, station.lng);
       _markers.add(Marker(
@@ -119,6 +120,10 @@ class MarkerManager {
         infoWindow: InfoWindow(title: station.name),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         position: pos,
+        onTap: (){
+          appBloc.searchSelectedStation(station);
+          appBloc.setSelectedScreen('routePlanning');
+          appBloc.pushPrevScreen('home');},
       ));
     }
   }
