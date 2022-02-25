@@ -4,7 +4,13 @@ import 'package:flutter/rendering.dart';
 import 'managers/TimeManager.dart';
 
 class ThemeStyle {
-  CurrentTime _time = CurrentTime();
+  //static final ThemeStyle _themeStyle = ThemeStyle._internal();
+
+  //factory ThemeStyle() {return _themeStyle;}
+
+  //ThemeStyle._internal();
+
+  final CurrentTime _time = CurrentTime();
 
   static Color kPrimaryColor = Color(0xFF0C9CEE);
   static Color buttonPrimaryColor = Color(0xFF0C9CEE);
@@ -31,7 +37,7 @@ class ThemeStyle {
     fontWeight: FontWeight.bold,
   );
 
-  ColorTheme(){
+  ThemeStyle(){
     if (_time.isPM()) {
       kPrimaryColor = Color(0xFF0C9CEE);
       buttonPrimaryColor = Color(0xFF0C9CEE);
@@ -57,6 +63,8 @@ class ThemeStyle {
         fontSize: 18,
         fontWeight: FontWeight.bold,
       );
+
+      print('Styl tejto mapy by mal byt: $mapStyle');
     }
   }
 

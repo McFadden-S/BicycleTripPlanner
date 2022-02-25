@@ -21,8 +21,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
 
-  final _time = CurrentTime();
-  
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
