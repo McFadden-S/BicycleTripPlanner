@@ -17,10 +17,6 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  TextEditingController startSearchController = TextEditingController();
-  final TextEditingController destinationSearchController = TextEditingController();
-  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
-
   final RouteManager routeManager = RouteManager();
 
   bool isShowingIntermediate = false;
@@ -30,25 +26,10 @@ class _RouteCardState extends State<RouteCard> {
 
   }
 
-  List<String> getIntermediateSearchText(){
-    if(intermediateSearchControllers.isNotEmpty){
-      return intermediateSearchControllers.map((controller) => controller.text).toList();
-    }
-    return <String>[];
-  }
-
   @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    applicationBloc.currentLocation.stream.listen((event) { startSearchController.text = event.name;});
-    applicationBloc.selectedLocation.stream.listen((event) { destinationSearchController.text = event.name;});
-
-    routeManager.setStart(startSearchController.text);
-    routeManager.setDestination(destinationSearchController.text); 
-    applicationBloc.selectedStation.stream.listen((event) { startSearchController.text = event.name;});
-    routeManager.setStart(startSearchController.text);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(
@@ -56,8 +37,14 @@ class _RouteCardState extends State<RouteCard> {
           routeManager.getDestination(),
           routeManager.getIntermediates()
       );
+
       routeManager.clearChanged();
     }
+
+    if(!routeManager.ifStartSet()){
+      applicationBloc.setSelectedCurrentLocation(SearchType.start);
+    }
+
 
         return Container(
           decoration: const BoxDecoration(
@@ -85,18 +72,16 @@ class _RouteCardState extends State<RouteCard> {
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                                 labelTextIn: "Starting Point",
-                                searchController: startSearchController,
+                                searchController: TextEditingController(),
                                 searchType: SearchType.start,
                             ),
                           ),
-                          IntermediateSearchList(
-                            intermediateSearchControllers: intermediateSearchControllers,
-                          ),
+                          IntermediateSearchList(),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                               labelTextIn: "Destination",
-                              searchController: destinationSearchController,
+                              searchController: TextEditingController(),
                               searchType: SearchType.end,
                             ),
                           ),

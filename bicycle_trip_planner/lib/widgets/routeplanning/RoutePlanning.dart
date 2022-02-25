@@ -2,7 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -32,7 +32,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                  child: CurLocationButton(),
+                  child: CurrentLocationButton(),
                 )
               ]),
               const Spacer(),

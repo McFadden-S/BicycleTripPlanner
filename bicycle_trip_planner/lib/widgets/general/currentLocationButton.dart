@@ -3,17 +3,17 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CurLocationButton extends StatefulWidget {
+class CurrentLocationButton extends StatefulWidget {
 
-  const CurLocationButton({
+  const CurrentLocationButton({
     Key? key,
   }) : super(key: key);
 
   @override
-  _CurLocationButtonState createState() => _CurLocationButtonState();
+  _CurrentLocationButtonState createState() => _CurrentLocationButtonState();
 }
 
-class _CurLocationButtonState extends State<CurLocationButton> {
+class _CurrentLocationButtonState extends State<CurrentLocationButton> {
 
    @override
   Widget build(BuildContext context) {

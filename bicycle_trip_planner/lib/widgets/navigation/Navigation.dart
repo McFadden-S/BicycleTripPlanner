@@ -6,7 +6,7 @@ import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,7 @@ class _NavigationState extends State<Navigation> {
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                  child: CurLocationButton(),
+                  child: CurrentLocationButton(),
                 ),
               ]),
               const Spacer(),

@@ -23,10 +23,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   //********** Providers **********
 
-  late StreamSubscription locationSubscription;
-  late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
-  late StreamSubscription curLocationSubscription;
 
   //********** Markers **********
 
@@ -64,25 +61,6 @@ class _MapWidgetState extends State<MapWidget> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    locationSubscription =
-        applicationBloc.selectedLocation.stream.listen((place) {
-          setState(() {
-            cameraManager?.viewPlace(place);
-          });
-        });
-
-    directionSubscription =
-        applicationBloc.currentRoute.stream.listen((direction) {
-          setState(() {
-            cameraManager?.goToPlace(
-                direction.legs.startLocation.lat,
-                direction.legs.startLocation.lng,
-                direction.bounds.northeast,
-                direction.bounds.southwest);
-            polylineManager.setPolyline(direction.polyline.points);
-          });
-        });
-
     applicationBloc.setupStations();
 
     // Initialise the marker with his current position
@@ -114,9 +92,7 @@ class _MapWidgetState extends State<MapWidget> {
     }
     catch(e){}; 
 
-    if(cameraManager != null) {cameraManager?.dispose();} 
-    locationSubscription.cancel();
-    directionSubscription.cancel();
+    if(cameraManager != null) {cameraManager?.dispose();}
     locatorSubscription.cancel();
 
     super.dispose();
