@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_fiel
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'components/error_snackbar.dart';
-import 'constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);

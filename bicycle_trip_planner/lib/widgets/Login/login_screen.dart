@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/forgot_password_screen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/background.dart';
 import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';

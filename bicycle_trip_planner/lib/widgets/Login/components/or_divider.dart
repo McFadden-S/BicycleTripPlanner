@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 
 class OrDivider extends StatelessWidget {
   @override
