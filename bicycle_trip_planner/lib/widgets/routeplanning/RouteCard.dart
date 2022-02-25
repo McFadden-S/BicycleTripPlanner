@@ -17,6 +17,9 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
+  TextEditingController startSearchController = TextEditingController();
+  TextEditingController endSearchController = TextEditingController();
+
   final RouteManager routeManager = RouteManager();
 
   bool isShowingIntermediate = false;
@@ -72,7 +75,7 @@ class _RouteCardState extends State<RouteCard> {
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                                 labelTextIn: "Starting Point",
-                                searchController: TextEditingController(),
+                                searchController: startSearchController,
                                 searchType: SearchType.start,
                             ),
                           ),
@@ -81,7 +84,7 @@ class _RouteCardState extends State<RouteCard> {
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                               labelTextIn: "Destination",
-                              searchController: TextEditingController(),
+                              searchController: endSearchController,
                               searchType: SearchType.end,
                             ),
                           ),
