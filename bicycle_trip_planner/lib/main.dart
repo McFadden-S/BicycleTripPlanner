@@ -29,14 +29,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
         '/login': (context) => const LoginHomeScreen(),
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
-        '/routePlanning': (context) => const RoutePlanning(),
+        '/routePlanning': (context) => RoutePlanning(),
       },
       theme: ThemeData(
         brightness: Brightness.light,

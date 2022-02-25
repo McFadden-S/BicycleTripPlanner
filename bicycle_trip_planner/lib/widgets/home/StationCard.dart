@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:bicycle_trip_planner/models/locator.dart' as Locater;
 import 'package:provider/provider.dart';
 
 class StationCard extends StatefulWidget {
@@ -37,7 +36,7 @@ class _StationCardState extends State<StationCard> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      onTap: () => stationClicked(widget.index, applicationBloc),
+      onTap: () => stationClicked(widget.index, applicationBloc, stationManager.getStationByIndex(widget.index)),
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
@@ -103,6 +102,8 @@ class _StationCardState extends State<StationCard> {
   }
 }
 
-void stationClicked(int index, ApplicationBloc appBloc) {
+void stationClicked(int index, ApplicationBloc appBloc, Station station) {
+  appBloc.searchSelectedStation(station);
   appBloc.setSelectedScreen('routePlanning');
+  appBloc.pushPrevScreen('home');
 }
