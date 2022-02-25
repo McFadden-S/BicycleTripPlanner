@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +22,7 @@ class _RouteCardState extends State<RouteCard> {
   TextEditingController endSearchController = TextEditingController();
 
   final RouteManager routeManager = RouteManager();
+  final PolylineManager polylineManager = PolylineManager();
 
   bool isShowingIntermediate = false;
 
@@ -34,9 +36,6 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    applicationBloc.selectedStation.stream.listen((event) { startSearchController.text = event.name;});
-    routeManager.setStart(startSearchController.text);
-
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(
           routeManager.getStart(),
@@ -44,6 +43,9 @@ class _RouteCardState extends State<RouteCard> {
           routeManager.getIntermediates()
       );
 
+      routeManager.clearChanged();
+    } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       routeManager.clearChanged();
     }
 
