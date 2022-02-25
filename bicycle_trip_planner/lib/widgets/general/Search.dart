@@ -19,7 +19,7 @@ class Search extends StatefulWidget {
     required this.labelTextIn,
     required this.searchController,
     required this.searchType,
-    this.intermediateID = 0
+    this.intermediateID = 0,
   }) : super(key: key);
 
   @override
@@ -103,7 +103,7 @@ class _SearchState extends State<Search> {
                           widget.searchType, widget.intermediateID);
 
                       setSearch(widget.searchController.text);
-
+                      applicationBloc.setSelectedScreen('routePlanning');
                       hideSearch();
                     },
                   );
