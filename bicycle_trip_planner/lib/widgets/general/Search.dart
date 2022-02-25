@@ -56,6 +56,7 @@ class _SearchState extends State<Search> {
 
     if(!isSearching && routeManager.ifChanged()){
       widget.searchController.text = getText();
+      routeManager.clearChanged();
     }
 
     return Stack(
