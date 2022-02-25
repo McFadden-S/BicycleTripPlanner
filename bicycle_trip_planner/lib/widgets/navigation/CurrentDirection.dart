@@ -27,7 +27,13 @@ class _CurrentDirectionState extends State<CurrentDirection> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               const Spacer(flex: 1),
-              directionManager.directionIcon(widget.currentDirection.instruction),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  directionManager.directionIcon(widget.currentDirection.instruction),
+                ],
+              ),
               Flexible(
                 flex: 15,
                 child: Html(
