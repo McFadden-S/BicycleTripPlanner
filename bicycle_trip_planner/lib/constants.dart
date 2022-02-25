@@ -27,7 +27,7 @@ class ThemeStyle {
       secondaryIconColor = Color(0xFF484848);
       cardOutlineColor = Color(0xFF969393);
 
-      stationMarkerColor = 150;
+      stationMarkerColor = 130;
 
       mapStyle = 'assets/night_map_style.txt';
 
