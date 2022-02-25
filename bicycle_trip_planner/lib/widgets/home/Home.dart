@@ -22,7 +22,8 @@ class _HomeState extends State<Home> {
         fit: StackFit.expand,
         children: [
           MapWidget(),
-          applicationBloc.prevScreens.isNotEmpty ? Column(
+          applicationBloc.prevScreens.isNotEmpty && applicationBloc.showBackButton
+              ? Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Row(

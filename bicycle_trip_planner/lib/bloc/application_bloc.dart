@@ -29,6 +29,7 @@ class ApplicationBloc with ChangeNotifier {
   final _stationsService = StationsService();
 
   Queue<String> prevScreens = Queue();
+  bool showBackButton = true;
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -151,6 +152,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void endRoute(){
+    selectedScreen = screens['routePlanning']!;
+    showBackButton = true;
     _routeManager.endRoute();
     notifyListeners();
   }

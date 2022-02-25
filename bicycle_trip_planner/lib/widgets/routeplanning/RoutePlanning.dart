@@ -95,7 +95,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       onButtonClicked: () {
                         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');
-                          applicationBloc.pushPrevScreen('routePlanning');
+                          applicationBloc.showBackButton = false;
                         }
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
