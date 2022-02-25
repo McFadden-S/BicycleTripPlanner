@@ -35,7 +35,7 @@ void main(){
   test('ensure marker is added for user location', (){
     Position point = Position(longitude: 51.511448, latitude: -0.116414, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
     expect(markerManager.getMarkers().length,0);
-    markerManager.setUserMarker(point);
+    markerManager.setUserMarker(LatLng(point.latitude, point.longitude));
     expect(markerManager.getMarkers().length,1);
     markerManager.getMarkers().clear();
   });

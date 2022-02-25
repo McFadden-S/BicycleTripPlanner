@@ -6,13 +6,6 @@ class LocationManager{
 
   //********** Fields **********
 
-  // Defines how the location should be fine-tuned
-  // ignore: prefer_const_constructors
-  final LocationSettings locationSettings = LocationSettings(
-    accuracy: LocationAccuracy.best, // How accurate the location is
-    distanceFilter: 25, // The distance needed to travel until the next update (0 means it will always update)
-  );
-
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
 
@@ -42,6 +35,13 @@ class LocationManager{
 
   double distanceFromTo(LatLng posFrom, LatLng posTo){
     return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
+  }
+
+  LocationSettings locationSettings([int distanceFilter = 0]){
+    return LocationSettings(
+      accuracy: LocationAccuracy.best, // How accurate the location is
+      distanceFilter: distanceFilter, // The distance needed to travel until the next update (0 means it will always update)
+    );
   }
 
   //********** private *********
