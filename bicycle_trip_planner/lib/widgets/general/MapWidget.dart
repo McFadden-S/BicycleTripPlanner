@@ -85,11 +85,16 @@ class _MapWidgetState extends State<MapWidget> {
 
     applicationBloc.setupStations();
 
+    // Initialise the marker with his current position
+    locationManager.locate().then((pos) => setState((){
+      markerManager.setUserMarker(pos);
+    }));
+
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
             .listen((Position position) {
             setState(() {
-              markerManager.setUserMarker(position);
+              markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
             });
         });
 

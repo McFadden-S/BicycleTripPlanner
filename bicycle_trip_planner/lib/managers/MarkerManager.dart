@@ -50,7 +50,7 @@ class MarkerManager {
     }
   }
 
-  void _initUserMarkerIcon(double radius) async {
+  Future<void> _initUserMarkerIcon(double radius) async {
     final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint()..color = Colors.blue;
@@ -89,17 +89,20 @@ class MarkerManager {
     setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
   }
 
-  void setUserMarker(Position point) {
+  Future<void> setUserMarker(LatLng point) async {
 
-    if(userMarkerIcon == null){
-      _initUserMarkerIcon(25); 
-    }
+    // Wait for this to load
+    if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
 
-    LatLng latlng = LatLng(point.latitude, point.longitude);
+    String userID = 'user';
+
+    _removeMarker(userID);
+
     Marker userMarker = Marker(
-      icon: userMarkerIcon ?? BitmapDescriptor.defaultMarker,
-      markerId: const MarkerId('user'),
-      position: latlng,
+      icon: userMarkerIcon!,
+      markerId: MarkerId(userID),
+      position: point,
+
       draggable: false,
       zIndex: 2,
       flat: true,
