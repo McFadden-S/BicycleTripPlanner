@@ -6,7 +6,6 @@ import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);
@@ -96,6 +95,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       onButtonClicked: () {
                         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');
+                          applicationBloc.pushPrevScreen('routePlanning');
                         }
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

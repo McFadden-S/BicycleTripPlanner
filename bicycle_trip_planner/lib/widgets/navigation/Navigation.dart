@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -114,7 +113,7 @@ class _NavigationState extends State<Navigation> {
                   CircleButton(
                       iconIn: Icons.cancel_outlined,
                       onButtonClicked: () {
-                        endRoute(applicationBloc);
+                        applicationBloc.endRoute();
                       },
                       buttonColor: Colors.red),
                 ],
@@ -124,19 +123,5 @@ class _NavigationState extends State<Navigation> {
         )
       ],
     ));
-  }
-
-  void endRoute(ApplicationBloc appBloc) {
-    appBloc.setSelectedScreen('home');
-    directionManager.clear(); 
-    PolylineManager().clearPolyline();
-    MarkerManager().clearMarker(SearchType.start);
-    MarkerManager().clearMarker(SearchType.end);
-    if(RouteManager().ifIntermediatesSet()){
-      int index = RouteManager().getIntermediates().length;
-      for(int i = 1; i <= index; i++){
-        MarkerManager().clearMarker(SearchType.intermediate, i);
-      }
-    }
   }
 }

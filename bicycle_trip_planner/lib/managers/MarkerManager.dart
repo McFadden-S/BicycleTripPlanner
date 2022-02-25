@@ -102,6 +102,7 @@ class MarkerManager {
       icon: userMarkerIcon!,
       markerId: MarkerId(userID),
       position: point,
+
       draggable: false,
       zIndex: 2,
       flat: true,
