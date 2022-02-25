@@ -35,18 +35,16 @@ class _DirectionsState extends State<Directions> {
 
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    var currentRoute = applicationBloc.route;
+    Rou.Route currentRoute = applicationBloc.route;
 
     directionManager.currentDirection = currentRoute.legs.first.steps.removeAt(0);
-
-    // print("Current direction ${directionManager.currentDirection.instruction}");
 
     int duration = 0;
     int distance = 0;
     for(var i =0; i < currentRoute.legs.length; i++){
       directionManager.directions += currentRoute.legs[i].steps;
-      duration = currentRoute.legs[i].duration;
-      distance = currentRoute.legs[i].distance;
+      duration += currentRoute.legs[i].duration;
+      distance += currentRoute.legs[i].distance;
     }
 
     directionManager.setDuration(duration);
