@@ -40,10 +40,10 @@ void main(){
     markerManager.getMarkers().clear();
   });
 
-  test('ensure marker for station is correct', (){
+  /*test('ensure marker for station is correct', (){
     List<Station> station = <Station>[Station(id: 1, name: 'Holborn Station', lat: 0.0, lng: 0.0, bikes: 10, emptyDocks: 2, totalDocks: 8)];
     markerManager.setStationMarkers(station);
     expect(markerManager.getMarkers().first.markerId, MarkerId("Holborn Station"));
-  });
+  });*/
 
 }

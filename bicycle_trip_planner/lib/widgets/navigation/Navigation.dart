@@ -39,14 +39,14 @@ class _NavigationState extends State<Navigation> {
     super.initState();
     
     // Move to the user when navigation starts
-    CameraManager.instance.viewUser(); 
+    //CameraManager.instance.viewUser();
 
     // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE 
     locatorSubscription =
       Geolocator.getPositionStream(locationSettings: LocationManager().locationSettings())
           .listen((Position position) {
           setState(() {
-            CameraManager.instance.viewUser(); 
+            //CameraManager.instance.viewUser();
           });
       });
   }
