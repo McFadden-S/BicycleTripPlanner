@@ -93,10 +93,14 @@ class MarkerManager {
 
     // Wait for this to load
     if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
-    
+
+    String userID = 'user';
+
+    _removeMarker(userID);
+
     Marker userMarker = Marker(
       icon: userMarkerIcon!,
-      markerId: const MarkerId('user'),
+      markerId: MarkerId(userID),
       position: point,
       draggable: false,
       zIndex: 2,
