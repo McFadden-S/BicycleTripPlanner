@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:http/http.dart' as http;
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/place_search.dart';

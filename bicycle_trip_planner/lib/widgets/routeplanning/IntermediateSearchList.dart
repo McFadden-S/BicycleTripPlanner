@@ -7,11 +7,8 @@ import 'package:provider/provider.dart';
 
 class IntermediateSearchList extends StatefulWidget {
 
-  final List<TextEditingController> intermediateSearchControllers;
-
   const IntermediateSearchList({
     Key? key,
-    required this.intermediateSearchControllers
   }) : super(key: key);
 
   @override
@@ -19,6 +16,8 @@ class IntermediateSearchList extends StatefulWidget {
 }
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
+
+  List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
 
@@ -30,30 +29,30 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     setState(() {
       final TextEditingController searchController = TextEditingController();
 
-      widget.intermediateSearchControllers.add(searchController);
+      intermediateSearchControllers.add(searchController);
       stopsList.add(
           ListTile(
             title:
               Search(
-                  labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
+                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
-                  intermediateID: stopsList.length + 1,
+                  intermediateIndex: stopsList.length,
               ),
               trailing: IconButton(
-                key: Key("Remove ${widget.intermediateSearchControllers.length}"),
+                key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
-                      int indexPressed = widget.intermediateSearchControllers.indexOf(searchController);
+                      int indexPressed = intermediateSearchControllers.indexOf(searchController);
 
-                      for(int i = indexPressed; i < widget.intermediateSearchControllers.length - 1; i++){
-                        widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
+                      for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
+                        intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
                       }
 
-                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed + 1);
+                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed);
                       routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
-                      widget.intermediateSearchControllers.removeLast();
+                      intermediateSearchControllers.removeLast();
                     });
                   },
                   icon: const Icon(

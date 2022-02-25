@@ -1,11 +1,13 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as R;
 
 class DirectionManager{
   
   //********** Fields **********
 
+  late R.Route route;
   bool isCycling = false; 
   String duration = "No data";
   String distance = "No data";
@@ -23,6 +25,10 @@ class DirectionManager{
   //********** Private **********
 
   //********** Public *********
+
+  void setRoute(R.Route route){
+    this.route = route;
+  }
 
   void setDuration(int seconds) {
     int minutes = (seconds / 60).ceil();

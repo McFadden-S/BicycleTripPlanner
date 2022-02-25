@@ -12,14 +12,14 @@ class Search extends StatefulWidget {
   final TextEditingController searchController;
 
   final SearchType searchType;
-  final intermediateID;
+  final int intermediateIndex;
 
   const Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
     required this.searchType,
-    this.intermediateID = 0
+    this.intermediateIndex = 0,
   }) : super(key: key);
 
   @override
@@ -38,31 +38,14 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  setSearch(String search){
+  getText(){
     switch (widget.searchType){
       case SearchType.start:
-        routeManager.setStart(search);
-        break;
+        return routeManager.getStart();
       case SearchType.end:
-        routeManager.setDestination(search);
-        break;
+        return routeManager.getDestination();
       case SearchType.intermediate:
-        routeManager.setIntermediate(search, widget.intermediateID);
-        break;
-    }
-  }
-
-  clearSearch(){
-    switch (widget.searchType){
-      case SearchType.start:
-        routeManager.clearStart();
-        break;
-      case SearchType.end:
-        routeManager.clearDestination();
-        break;
-      case SearchType.intermediate:
-        routeManager.removeIntermediate(widget.intermediateID);
-        break;
+        return routeManager.getIntermediate(widget.intermediateIndex);
     }
   }
 
@@ -70,6 +53,10 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
+    if(!isSearching){
+      widget.searchController.text = getText();
+    }
 
     return Stack(
       children: [
@@ -96,13 +83,15 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
-                      widget.searchController.text =
-                          applicationBloc.searchResults[index].description;
                       applicationBloc.setSelectedLocation(
                           applicationBloc.searchResults[index].placeId,
-                          widget.searchType, widget.intermediateID);
+                          applicationBloc.searchResults[index].description,
+                          widget.searchType, widget.intermediateIndex);
 
-                      setSearch(widget.searchController.text);
+                      //TODO Potential Side effect
+                      //TODO Used in home -> routeplanning
+                      //TODO should be changed to appropriate scope
+                      applicationBloc.setSelectedScreen('routePlanning');
 
                       hideSearch();
                     },
@@ -112,15 +101,15 @@ class _SearchState extends State<Search> {
             ),
           ),
         Container(
-          padding: EdgeInsets.fromLTRB(4, 4, 4, 0),
+          padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
           child: TextField(
             controller: widget.searchController,
             onChanged: (input) {
-              if(input=="")
+              if(input=="") {
                 hideSearch();
-
-              else
+              } else {
                 isSearching = true;
+              }
               applicationBloc.searchPlaces(input);
               },
             onTap: (){isSearching = true;},
@@ -141,9 +130,7 @@ class _SearchState extends State<Search> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() {
-                    widget.searchController.clear();
-                    clearSearch();
-                    applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateID);
+                    applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
                   }
                   );
                   hideSearch();

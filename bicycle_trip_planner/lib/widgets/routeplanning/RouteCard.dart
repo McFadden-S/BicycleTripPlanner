@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -16,10 +17,6 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  TextEditingController startSearchController = TextEditingController();
-  final TextEditingController destinationSearchController = TextEditingController();
-  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
-
   final RouteManager routeManager = RouteManager();
 
   bool isShowingIntermediate = false;
@@ -27,13 +24,6 @@ class _RouteCardState extends State<RouteCard> {
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
 
-  }
-
-  List<String> getIntermediateSearchText(){
-    if(intermediateSearchControllers.isNotEmpty){
-      return intermediateSearchControllers.map((controller) => controller.text).toList();
-    }
-    return <String>[];
   }
 
   @override
@@ -50,8 +40,14 @@ class _RouteCardState extends State<RouteCard> {
           routeManager.getDestination(),
           routeManager.getIntermediates()
       );
+
       routeManager.clearChanged();
     }
+
+    //TODO Find way to get current location faster
+    // if(!routeManager.ifStartSet()){
+    //   applicationBloc.setSelectedCurrentLocation(SearchType.start);
+    // }
 
         return Container(
           decoration: const BoxDecoration(
@@ -79,18 +75,16 @@ class _RouteCardState extends State<RouteCard> {
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                                 labelTextIn: "Starting Point",
-                                searchController: startSearchController,
+                                searchController: TextEditingController(),
                                 searchType: SearchType.start,
                             ),
                           ),
-                          IntermediateSearchList(
-                            intermediateSearchControllers: intermediateSearchControllers,
-                          ),
+                          IntermediateSearchList(),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                               labelTextIn: "Destination",
-                              searchController: destinationSearchController,
+                              searchController: TextEditingController(),
                               searchType: SearchType.end,
                             ),
                           ),
