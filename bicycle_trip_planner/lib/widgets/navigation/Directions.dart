@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
@@ -48,6 +49,7 @@ class _DirectionsState extends State<Directions> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: ThemeStyle.cardColor,
       child: InkWell(
           splashColor: Colors.blue.withAlpha(30),
           onTap: () => _toggleExtendNavigationView(),

@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +24,7 @@ class _CurLocationButtonState extends State<CurLocationButton> {
       onPressed: (){
         applicationBloc.viewCurrentLocation();
       },
-      child: Icon(Icons.location_searching_rounded),
+      child: Icon(Icons.location_searching_rounded, color: ThemeStyle.secondaryIconColor,),
     );
   }
 }

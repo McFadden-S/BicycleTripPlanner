@@ -11,6 +11,7 @@ import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
+  ThemeStyle();
   WidgetsFlutterBinding.ensureInitialized();
   // TODO: Ensure firebase initialization only occurs once
   try {

@@ -13,8 +13,6 @@ class CurrentTime {
   }
 
   bool isPM() {
-    print('Prave teraz je hodin: $currentTime');
-    print((currentTime < 6) || (currentTime > 16));
     return ((currentTime < 6) || (currentTime > 16));
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -41,6 +42,7 @@ class _StationCardState extends State<StationCard> {
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
+            color: ThemeStyle.cardColor,
             child:
               Container(
                 padding: const EdgeInsets.all(10),
