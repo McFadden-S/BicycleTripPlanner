@@ -115,14 +115,10 @@ class MarkerManager {
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: _setStationMarkerColor(station),//BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
         position: pos,
         onTap: (){appBloc.setSelectedScreen('routePlanning', selectedStartStation: station.name);},
       ));
     }
-  }
-
-  BitmapDescriptor _setStationMarkerColor(Station station) {
-    return BitmapDescriptor.defaultMarkerWithHue(station.calculateStationAvailability()+50);
   }
 }

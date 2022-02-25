@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'managers/TimeManager.dart';
 
@@ -26,6 +27,8 @@ class ThemeStyle {
       secondaryIconColor = Color(0xFF484848);
       cardOutlineColor = Color(0xFF969393);
 
+      stationMarkerColor = 150;
+
       mapStyle = 'assets/night_map_style.txt';
 
       buttonTextStyle = const TextStyle(
@@ -51,6 +54,8 @@ class ThemeStyle {
       primaryIconColor = Colors.white;
       secondaryIconColor = Colors.black54;
       cardOutlineColor = Color(0xff969393);
+
+      stationMarkerColor = BitmapDescriptor.hueGreen;
 
       mapStyle = 'assets/map_style.txt';
 
@@ -81,6 +86,8 @@ class ThemeStyle {
   static late Color primaryIconColor;
   static late Color secondaryIconColor;
   static late Color cardOutlineColor;
+
+  static late double stationMarkerColor;
 
   static late String mapStyle;
 
