@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -140,8 +139,8 @@ class ApplicationBloc with ChangeNotifier {
     Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
 
     _cameraManager.goToPlace(
-        route.legs.startLocation.lat,
-        route.legs.startLocation.lng,
+        route.legs.first.startLocation.lat,
+        route.legs.first.startLocation.lng,
         route.bounds.northeast,
         route.bounds.southwest);
 
