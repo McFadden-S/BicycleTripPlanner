@@ -111,6 +111,7 @@ class _NavigationState extends State<Navigation> {
                       iconIn: Icons.cancel_outlined,
                       onButtonClicked: () {
                         applicationBloc.endRoute();
+                        applicationBloc.setSelectedScreen('home'); 
                       },
                       buttonColor: Colors.red),
                 ],
