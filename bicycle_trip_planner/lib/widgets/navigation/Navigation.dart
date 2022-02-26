@@ -60,47 +60,45 @@ class _NavigationState extends State<Navigation> {
     return SafeArea(
       child: Stack(
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-                child: Column(
+          Padding(
+            padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+            child: Column(
+              children: [
+                Directions(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Directions(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Column(
-                          children: [
-                            CircleButton(
-                                iconIn: Icons.location_searching,
-                                onButtonClicked: () => CameraManager.instance.viewUser()),
-                            SizedBox(height: 10),
-                            CircleButton(
-                              iconIn: mapZoomed
-                                  ? Icons.zoom_out_map
-                                  : Icons.fullscreen_exit,
-                              onButtonClicked: () {
-                                _toggleMapZoomInOut();
-                              },
-                            ),
-                            SizedBox(height: 10),
-                            Card(
-                                shape: RoundedRectangleBorder(
-                                  side: const BorderSide(
-                                      color: Color(0xFF8B0000), width: 1),
-                                  borderRadius: BorderRadius.circular(9.0),
-                                ),
-                                child: Countdown(duration: directionManager.duration)),
-                          ],
-                        ),
-                      ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Column(
+                        children: [
+                          CircleButton(
+                              iconIn: Icons.location_searching,
+                              onButtonClicked: () => CameraManager.instance.viewUser()),
+                          SizedBox(height: 10),
+                          CircleButton(
+                            iconIn: mapZoomed
+                                ? Icons.zoom_out_map
+                                : Icons.fullscreen_exit,
+                            onButtonClicked: () {
+                              _toggleMapZoomInOut();
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          Card(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                    color: Color(0xFF8B0000), width: 1),
+                                borderRadius: BorderRadius.circular(9.0),
+                              ),
+                              child: Countdown(duration: directionManager.duration)),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Align(
               alignment: Alignment.bottomCenter,
@@ -139,38 +137,48 @@ class _NavigationState extends State<Navigation> {
                     Visibility(
                       visible: bottomSheetShown,
                       child: Container(
-                        margin:
-                        EdgeInsets.only(bottom: 25.0, right: 15, left: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const DistanceETACard(),
-                            WalkOrCycleToggle(directionManager: directionManager),
-                            TextButton(
-                                onPressed: () => applicationBloc.endRoute(),
-                                child: Text("End",
-                                    style: TextStyle(color: Colors.white)),
-                                style: ButtonStyle(
-                                    padding:
-                                    MaterialStateProperty.all<EdgeInsets>(
-                                        EdgeInsets.all(15)),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(18.0),
-                                            side: BorderSide(color: Colors.red))),
-                                    backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.red)))
-                            // CircleButton(
-                            //     iconIn: Icons.cancel_outlined,
-                            //     onButtonClicked: () {
-                            //       applicationBloc.endRoute();
-                            //     },
-                            //     buttonColor: Colors.red
-                            // ),
-                          ],
+                        // color: Colors.green,
+                        child: LimitedBox(
+                          maxHeight: MediaQuery.of(context).size.height * 0.1,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Expanded(flex: 1,child: const DistanceETACard()),
+                              Expanded(
+                                flex: 1,
+                                child: Column(
+                                  children: [
+                                    WalkOrCycleToggle(directionManager: directionManager),
+                                    TextButton(
+                                        onPressed: () => applicationBloc.endRoute(),
+                                        child: Text("End",
+                                            style: TextStyle(color: Colors.white)),
+                                        style: ButtonStyle(
+                                            padding:
+                                            MaterialStateProperty.all<EdgeInsets>(
+                                                EdgeInsets.all(15)),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.circular(18.0),
+                                                    side: BorderSide(color: Colors.red))),
+                                            backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.red))),
+                                  ],
+                                ),
+                              )
+                              // CircleButton(
+                              //     iconIn: Icons.cancel_outlined,
+                              //     onButtonClicked: () {
+                              //       applicationBloc.endRoute();
+                              //     },
+                              //     buttonColor: Colors.red
+                              // ),
+                            ],
+                          ),
                         ),
                       ),
                     ),

@@ -48,72 +48,67 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    return LimitedBox(
-      maxHeight: extendedNavigation
-          ? MediaQuery.of(context).size.height * 0.5
-          : MediaQuery.of(context).size.height * 0.2,
-      child: InkWell(
-        splashColor: Colors.blue.withAlpha(30),
-        onTap: () => _toggleExtendNavigationView(),
-        child: ClipRect(
-          child: Column(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.0),
-                      topRight: Radius.circular(10.0)),
-                ),
-                child: CurrentDirection(
-                    currentDirection: directionManager.currentDirection),
+    return InkWell(
+      splashColor: Colors.blue.withAlpha(30),
+      onTap: () => _toggleExtendNavigationView(),
+      child: ClipRect(
+        child: Column(
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10.0),
+                    topRight: Radius.circular(10.0)),
               ),
-              Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0)),
-                ),
-                child: Column(
-                  children: [
-                    (!extendedNavigation) ||
-                        (directionManager.directions.isNotEmpty)
-                        ? Divider()
-                        : const SizedBox.shrink(),
-                    extendedNavigation
-                        ? LimitedBox(
-                      maxHeight:
-                      MediaQuery.of(context).size.height * 0.25,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        color: Colors.grey[100],
-                        child: ListView.separated(
-                          itemCount: directionManager.directions.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return DirectionTile(
-                                index: index,
-                                directionManager: directionManager);
-                          },
-                          separatorBuilder: (context, index) {
-                            return const Divider();
-                          },
+              child: CurrentDirection(
+                  currentDirection: directionManager.currentDirection),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0)),
+              ),
+                  child: Column(
+                    children: [
+                      (!extendedNavigation) ||
+                          (directionManager.directions.isNotEmpty)
+                          ? Divider()
+                          : const SizedBox.shrink(),
+                      extendedNavigation
+                          ? LimitedBox(
+                        maxHeight:
+                        MediaQuery.of(context).size.height * 0.25,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          color: Colors.grey[100],
+                          child: ListView.separated(
+                            itemCount: directionManager.directions.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return DirectionTile(
+                                  index: index,
+                                  directionManager: directionManager);
+                            },
+                            separatorBuilder: (context, index) {
+                              return const Divider();
+                            },
+                          ),
                         ),
-                      ),
-                    )
-                        : Align(
-                        alignment: Alignment.bottomCenter,
-                        child: const Icon(Icons.expand_more)),
-                    extendedNavigation
-                        ? Align(
-                        alignment: Alignment.bottomCenter,
-                        child: const Icon(Icons.expand_less))
-                        : const SizedBox.shrink(),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                      )
+                          : Align(
+                          alignment: Alignment.bottomCenter,
+                          child: const Icon(Icons.expand_more)),
+                      extendedNavigation
+                          ? Align(
+                          alignment: Alignment.bottomCenter,
+                          child: const Icon(Icons.expand_less))
+                          : const SizedBox.shrink(),
+                    ],
+                  ),
+            ),
+          ],
         ),
       ),
     );

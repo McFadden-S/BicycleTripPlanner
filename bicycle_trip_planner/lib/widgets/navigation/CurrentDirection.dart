@@ -22,28 +22,38 @@ class _CurrentDirectionState extends State<CurrentDirection> {
       margin: const EdgeInsets.only(top: 10),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.1
+            maxHeight: MediaQuery.of(context).size.height * 0.15
         ),
         child: SingleChildScrollView(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Spacer(flex: 1),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  directionManager.directionIcon(widget.currentDirection.instruction),
-                ],
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: directionManager.directionIcon(widget.currentDirection.instruction),
               ),
               Flexible(
                 flex: 15,
                 child: Html(
+                  style: {
+                    "body": Style(fontSize: FontSize(15.0),
+                    padding: EdgeInsets.all(5))
+                  },
                     data: widget.currentDirection.instruction
                 )
               ),
-              const Spacer(flex: 1),
-              Text("${widget.currentDirection.distance} m"),
+              Container(
+                  margin: EdgeInsets.only(top: 30),
+                  child: Text(
+                      "${widget.currentDirection.distance} m",
+                       style: TextStyle(
+                            fontSize: 20.0,
+                           fontWeight: FontWeight.bold
+                       ),
+
+                  )),
                   // : const Spacer(),
               const Spacer(flex: 1),
             ],
