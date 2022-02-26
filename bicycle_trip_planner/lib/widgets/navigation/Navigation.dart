@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -21,7 +22,6 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool bottomSheetShown = true;
   bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager();
   late StreamSubscription locatorSubscription;
@@ -100,91 +100,84 @@ class _NavigationState extends State<Navigation> {
               ],
             ),
           ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20.0),
-                      topRight: Radius.circular(20.0)),
-                ),
-                height: bottomSheetShown
-                    ? MediaQuery.of(context).size.height * 0.15
-                    : MediaQuery.of(context).size.height * 0.05,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      child: Align(
-                          alignment: Alignment.topLeft,
-                          child: IconButton(
-                            alignment: Alignment.topCenter,
-                            icon: bottomSheetShown
-                                ? Icon(Icons.keyboard_arrow_down)
-                                : Icon(Icons.keyboard_arrow_up),
-                            tooltip: 'Shrink',
-                            onPressed: () {
-                              print("icon pressed ******");
-                              setState(() {
-                                bottomSheetShown = !bottomSheetShown;
-                              });
-                            },
-                          )),
-                    ),
-                    Visibility(
-                      visible: bottomSheetShown,
-                      child: Container(
-                        // color: Colors.green,
-                        child: LimitedBox(
-                          maxHeight: MediaQuery.of(context).size.height * 0.1,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(flex: 1,child: const DistanceETACard()),
-                              Expanded(
-                                flex: 1,
-                                child: Column(
+          CustomBottomSheet(
+              widgetIn: Row(
+                children: [
+                  Expanded(child: DistanceETACard()),
+                  Expanded(
+                    child: Column(
+                      children: [
+                          Expanded(child: ElevatedButton(
+                              onPressed: () => applicationBloc.endRoute(),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    WalkOrCycleToggle(directionManager: directionManager),
-                                    TextButton(
-                                        onPressed: () => applicationBloc.endRoute(),
-                                        child: Text("End",
-                                            style: TextStyle(color: Colors.white)),
-                                        style: ButtonStyle(
-                                            padding:
-                                            MaterialStateProperty.all<EdgeInsets>(
-                                                EdgeInsets.all(15)),
-                                            shape: MaterialStateProperty.all<
-                                                RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.circular(18.0),
-                                                    side: BorderSide(color: Colors.red))),
-                                            backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.red))),
+                                    Text("End",
+                                        style: TextStyle(color: Colors.white)),
                                   ],
                                 ),
-                              )
-                              // CircleButton(
-                              //     iconIn: Icons.cancel_outlined,
-                              //     onButtonClicked: () {
-                              //       applicationBloc.endRoute();
-                              //     },
-                              //     buttonColor: Colors.red
-                              // ),
-                            ],
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red))),
                           ),
-                        ),
-                      ),
+                          Expanded(child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: WalkOrCycleToggle(directionManager: directionManager),
+                          )),
+
+                      ],
                     ),
-                  ],
-                ),
-              )),
+                  ),
+                ],
+              ),
+          ),
+          // Container(
+          //   // color: Colors.green,
+          //   child: LimitedBox(
+          //     maxHeight: MediaQuery.of(context).size.height * 0.1,
+          //     child: Row(
+          //       mainAxisSize: MainAxisSize.max,
+          //       // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //       children: [
+          //         Expanded(flex: 1,child: const DistanceETACard()),
+          //         Expanded(
+          //           flex: 1,
+          //           child: Column(
+          //             children: [
+          //               WalkOrCycleToggle(directionManager: directionManager),
+          //               TextButton(
+          //                   onPressed: () => applicationBloc.endRoute(),
+          //                   child: Text("End",
+          //                       style: TextStyle(color: Colors.white)),
+          //                   style: ButtonStyle(
+          //                       padding:
+          //                       MaterialStateProperty.all<EdgeInsets>(
+          //                           EdgeInsets.all(15)),
+          //                       shape: MaterialStateProperty.all<
+          //                           RoundedRectangleBorder>(
+          //                           RoundedRectangleBorder(
+          //                               borderRadius:
+          //                               BorderRadius.circular(18.0),
+          //                               side: BorderSide(color: Colors.red))),
+          //                       backgroundColor:
+          //                       MaterialStateProperty.all<Color>(
+          //                           Colors.red))),
+          //             ],
+          //           ),
+          //         )
+          //         // CircleButton(
+          //         //     iconIn: Icons.cancel_outlined,
+          //         //     onButtonClicked: () {
+          //         //       applicationBloc.endRoute();
+          //         //     },
+          //         //     buttonColor: Colors.red
+          //         // ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

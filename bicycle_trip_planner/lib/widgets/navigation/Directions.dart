@@ -99,11 +99,11 @@ class _DirectionsState extends State<Directions> {
                       )
                           : Align(
                           alignment: Alignment.bottomCenter,
-                          child: const Icon(Icons.expand_more)),
+                          child: const Icon(Icons.keyboard_arrow_down)),
                       extendedNavigation
                           ? Align(
                           alignment: Alignment.bottomCenter,
-                          child: const Icon(Icons.expand_less))
+                          child: const Icon(Icons.keyboard_arrow_up))
                           : const SizedBox.shrink(),
                     ],
                   ),
