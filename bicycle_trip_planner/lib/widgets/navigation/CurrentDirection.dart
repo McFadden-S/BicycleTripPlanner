@@ -21,7 +21,9 @@ class _CurrentDirectionState extends State<CurrentDirection> {
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 150),
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.1
+        ),
         child: SingleChildScrollView(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -37,7 +39,7 @@ class _CurrentDirectionState extends State<CurrentDirection> {
               Flexible(
                 flex: 15,
                 child: Html(
-                  data: widget.currentDirection.instruction,
+                    data: widget.currentDirection.instruction
                 )
               ),
               const Spacer(flex: 1),

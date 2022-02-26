@@ -52,7 +52,6 @@ class _DirectionsState extends State<Directions> {
       maxHeight: extendedNavigation
           ? MediaQuery.of(context).size.height * 0.5
           : MediaQuery.of(context).size.height * 0.2,
-
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () => _toggleExtendNavigationView(),

@@ -35,7 +35,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   child: CurrentLocationButton(),
                 )
               ]),
-              const Spacer(),
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
