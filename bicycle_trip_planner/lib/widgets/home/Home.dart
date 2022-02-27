@@ -25,7 +25,7 @@ class _HomeState extends State<Home> {
           Align(
             alignment: Alignment.topCenter,
             child: Container(
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.grey.withOpacity(0.4),
               child: SizedBox(height: topPaddingHeight, width: MediaQuery.of(context).size.width)
             ),
           ),
