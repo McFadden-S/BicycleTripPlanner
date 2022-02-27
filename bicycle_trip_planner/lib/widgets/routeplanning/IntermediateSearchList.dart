@@ -1,17 +1,16 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants.dart';
 
 class IntermediateSearchList extends StatefulWidget {
 
-  final List<TextEditingController> intermediateSearchControllers;
-
   const IntermediateSearchList({
     Key? key,
-    required this.intermediateSearchControllers
   }) : super(key: key);
 
   @override
@@ -20,39 +19,42 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
+  List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
+
   RouteManager routeManager = RouteManager();
 
   List<Widget> stopsList = [];
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget() {
+  void _addStopWidget(ApplicationBloc applicationBloc) {
     setState(() {
       final TextEditingController searchController = TextEditingController();
 
-      widget.intermediateSearchControllers.add(searchController);
+      intermediateSearchControllers.add(searchController);
       stopsList.add(
           ListTile(
             title:
               Search(
-                  labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
+                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
-                  intermediateID: stopsList.length + 1,
+                  intermediateIndex: stopsList.length,
               ),
               trailing: IconButton(
-                key: Key("Remove ${widget.intermediateSearchControllers.length}"),
+                key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
-                      int indexPressed = widget.intermediateSearchControllers.indexOf(searchController);
+                      int indexPressed = intermediateSearchControllers.indexOf(searchController);
 
-                      for(int i = indexPressed; i < widget.intermediateSearchControllers.length - 1; i++){
-                        widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
+                      for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
+                        intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
                       }
 
+                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed);
                       routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
-                      widget.intermediateSearchControllers.removeLast();
+                      intermediateSearchControllers.removeLast();
                     });
                   },
                   icon: const Icon(
@@ -70,7 +72,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   @override
   Widget build(BuildContext context) {
-
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -85,7 +87,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: ThemeStyle.primaryTextColor,
                   ),
                 ),
-                onPressed: () => {_addStopWidget()},
+                onPressed: () => {_addStopWidget(applicationBloc)},
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(ThemeStyle.buttonPrimaryColor),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(

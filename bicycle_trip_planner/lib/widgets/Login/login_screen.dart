@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/forgot_password_screen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/background.dart';
 import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
@@ -29,7 +29,7 @@ class LoginScreen extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: mainFontColor,
+                  color: ThemeStyle.mainFontColor,
                 ),
               ),
               Flexible(
@@ -96,7 +96,7 @@ class LoginScreen extends StatelessWidget {
                 child: Text(
                   "Reset Password",
                   style: TextStyle(
-                    color: secondaryFontColor,
+                    color: ThemeStyle.secondaryFontColor,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
                   ),

@@ -30,11 +30,13 @@ class _StationCardState extends State<CircleButton> {
       child: Icon(
           widget.iconIn,
           color: widget.iconColor,
+        size: 30,
       ),
       style: ElevatedButton.styleFrom(
         shape: const CircleBorder(),
         padding: const EdgeInsets.all(10),
         primary: widget.buttonColor,
+        fixedSize: Size(50, 50),
       ),
     );
   }

@@ -2,17 +2,15 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 
 import '../../constants.dart';
 
 class RoutePlanning extends StatefulWidget {
-  String? selectedStation;
-  RoutePlanning({Key? key, this.selectedStation}) : super(key: key);
+  const RoutePlanning({Key? key}) : super(key: key);
 
   @override
   _RoutePlanningState createState() => _RoutePlanningState();
@@ -21,18 +19,6 @@ class RoutePlanning extends StatefulWidget {
 class _RoutePlanningState extends State<RoutePlanning> {
   List<int> groupSizeOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   int? groupSizeValue = 1;
-
-  RouteCard _buildRouteCard() {
-    RouteCard routeCard;
-    if(widget.selectedStation != null) {
-      routeCard = RouteCard(selectedStation: widget.selectedStation!);
-      widget.selectedStation = null;
-    }
-    else {
-      routeCard = RouteCard();
-    }
-    return routeCard;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +29,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
           Column(
             children: [
               const Spacer(),
-              Stack(children: [_buildRouteCard()]),
+              Stack(children: [RouteCard()]),
               const Spacer(),
               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                  child: CurLocationButton(),
+                  child: CurrentLocationButton(),
                 )
               ]),
               const Spacer(),
@@ -111,6 +97,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       onButtonClicked: () {
                         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){ 
                           applicationBloc.setSelectedScreen('navigation');
+                          applicationBloc.pushPrevScreen('routePlanning');
                         }
                         else{
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

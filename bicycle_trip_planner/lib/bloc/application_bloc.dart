@@ -1,9 +1,12 @@
 import 'dart:async';
-import 'package:bicycle_trip_planner/constants.dart';
+import 'dart:collection';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/managers/TimeManager.dart';
-import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -24,33 +27,35 @@ class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
+
+  Queue<String> prevScreens = Queue();
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
     'navigation': Navigation(),
     'routePlanning': RoutePlanning(),
   };
-  
-  Rou.Route? route; // TODO: Potential refactor on route here
-  List<PlaceSearch> searchResults = List.empty();
 
-  StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
-  StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
-  StreamController<LatLng> currentLocation = StreamController<LatLng>.broadcast();
+  List<PlaceSearch> searchResults = [];
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
+  final PolylineManager _polylineManager = PolylineManager();
+  final DirectionManager _directionManager = DirectionManager();
+  final RouteManager _routeManager = RouteManager();
+  final LocationManager _locationManager = LocationManager();
+  final CameraManager _cameraManager = CameraManager.instance;
 
   late Timer _stationTimer;
 
   cancelStationTimer(){
-    _stationTimer.cancel(); 
+    _stationTimer.cancel();
   }
 
   updateStationsPeriodically(Duration duration){
     _stationTimer = Timer.periodic(duration, (timer){
-      updateStations(); 
-    });  
+      updateStations();
+    });
   }
 
   setupStations() async{
@@ -63,7 +68,7 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
-    notifyListeners(); 
+    notifyListeners();
   }
 
   bool ifSearchResult(){
@@ -75,11 +80,38 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId, SearchType searchType, [int intermediateIndex = 0]) async {
+  searchSelectedStation(Station station) async {
+    Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
+    setSelectedLocation(place.placeId, place.name, SearchType.start);
+
+    notifyListeners();
+  }
+
+  setSelectedCurrentLocation(SearchType searchType) async {
+    LatLng latLng = await _locationManager.locate();
+    Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+    setSelectedLocation(place.placeId, place.name, searchType);
+
+    notifyListeners();
+  }
+
+  setSelectedLocation(String placeId, String placeDescription, SearchType searchType, [int intermediateIndex = 0]) async {
     Place selected = await _placesService.getPlace(placeId);
 
-    selectedLocation.add(selected);
+    _cameraManager.viewPlace(selected);
     _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+
+    switch (searchType){
+      case SearchType.start:
+        _routeManager.setStart(placeDescription);
+        break;
+      case SearchType.end:
+        _routeManager.setDestination(placeDescription);
+        break;
+      case SearchType.intermediate:
+        _routeManager.setIntermediate(placeDescription, intermediateIndex);
+        break;
+    }
 
     searchResults.clear();
     notifyListeners();
@@ -88,37 +120,62 @@ class ApplicationBloc with ChangeNotifier {
   clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
     _markerManager.clearMarker(searchType, intermediateIndex);
 
-    notifyListeners();
-  }
+    switch (searchType){
+      case SearchType.start:
+        _routeManager.clearStart();
+        break;
+      case SearchType.end:
+        _routeManager.clearDestination();
+        break;
+      case SearchType.intermediate:
+        _routeManager.removeIntermediate(intermediateIndex);
+        break;
+    }
 
-  viewCurrentLocation() async {
-    Locator _locator = Locator();
-    currentLocation.add(await _locator.locate());
     notifyListeners();
   }
 
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
-    route = await _directionsService.getRoutes(origin, destination, intermediates);
-    currentRoute.add(route!); 
+    Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
+
+    _cameraManager.goToPlace(
+        route.legs.first.startLocation.lat,
+        route.legs.first.startLocation.lng,
+        route.bounds.northeast,
+        route.bounds.southwest);
+
+    _polylineManager.setPolyline(route.polyline.points);
+
+    _directionManager.setRoute(route);
     notifyListeners();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    selectedLocation.close();
-    super.dispose();
+  void endRoute(){
+    _routeManager.endRoute();
+    notifyListeners();
   }
+
+  // ********** Screen Management **********
 
   Widget getSelectedScreen() {
     return selectedScreen;
   }
 
-  void setSelectedScreen(String screenName, {String selectedStartStation = ""}) {
-    if (selectedStartStation == "")
-      selectedScreen = screens[screenName] ?? HomeWidgets();
-    else
-      selectedScreen = RoutePlanning(selectedStation: selectedStartStation);
+  void setSelectedScreen(String screenName) {
+    selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
   }
+
+  void pushPrevScreen(String screenName) {
+    prevScreens.addFirst(screenName);
+  }
+
+  void goBack() {
+    if(prevScreens.isNotEmpty){
+      endRoute();
+      selectedScreen = screens[prevScreens.removeFirst()]!;
+      notifyListeners();
+    }
+  }
+
 }

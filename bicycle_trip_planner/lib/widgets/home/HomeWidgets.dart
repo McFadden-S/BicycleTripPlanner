@@ -1,6 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
-import 'package:bicycle_trip_planner/widgets/general/curLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
@@ -18,7 +18,6 @@ class _HomeWidgetsState extends State<HomeWidgets> {
   @override
   Widget build(BuildContext context) {
     // final applicationBloc = Provider.of<ApplicationBloc>(context);
-    final TextEditingController searchController = TextEditingController();
 
     return SafeArea(
       bottom: false,
@@ -35,7 +34,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       Expanded(
                         child: Search(
                           labelTextIn: 'Search',
-                          searchController: searchController,
+                          searchController: TextEditingController(),
                           searchType: SearchType.end,
                         ),
                       ),
@@ -57,7 +56,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                   SizedBox(height: 10.0),
                   Align(
                     alignment: Alignment.centerRight,
-                    child: CurLocationButton(),
+                    child: CurrentLocationButton(),
                   ),
                 ],
               ),

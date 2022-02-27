@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatefulWidget {
@@ -23,7 +23,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
           hintText: widget.text,
           icon: Icon(
             Icons.lock,
-            color: kPrimaryColor,
+            color: ThemeStyle.kPrimaryColor,
           ),
           suffix: InkWell(
             onTap: _togglePasswordView,
@@ -31,7 +31,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
               _isHidden
                   ? Icons.visibility
                   : Icons.visibility_off,
-              color: kPrimaryColor,
+              color: ThemeStyle.kPrimaryColor,
             ),
           ),
           border: InputBorder.none,

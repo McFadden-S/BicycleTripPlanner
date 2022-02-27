@@ -1,7 +1,9 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -9,8 +11,7 @@ import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
-  String? selectedStation;
-  RouteCard({Key? key, this.selectedStation}) : super(key: key);
+  const RouteCard({Key? key}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -18,11 +19,11 @@ class RouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RouteCard> {
 
-  TextEditingController startSearchController = TextEditingController();
-  final TextEditingController destinationSearchController = TextEditingController();
-  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
+  final TextEditingController startSearchController = TextEditingController();
+  final TextEditingController endSearchController = TextEditingController();
 
   final RouteManager routeManager = RouteManager();
+  final PolylineManager polylineManager = PolylineManager();
 
   bool isShowingIntermediate = false;
 
@@ -31,23 +32,10 @@ class _RouteCardState extends State<RouteCard> {
 
   }
 
-  List<String> getIntermediateSearchText(){
-    if(intermediateSearchControllers.isNotEmpty){
-      return intermediateSearchControllers.map((controller) => controller.text).toList();
-    }
-    return <String>[];
-  }
-
   @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    if(widget.selectedStation != null) {
-      routeManager.setStart(widget.selectedStation!);
-      startSearchController.text = widget.selectedStation!;
-      widget.selectedStation = null;
-    }
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       applicationBloc.findRoute(
@@ -55,8 +43,17 @@ class _RouteCardState extends State<RouteCard> {
           routeManager.getDestination(),
           routeManager.getIntermediates()
       );
+
+      routeManager.clearChanged();
+    } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       routeManager.clearChanged();
     }
+
+    //TODO Find way to get current location faster
+    // if(!routeManager.ifStartSet()){
+    //   applicationBloc.setSelectedCurrentLocation(SearchType.start);
+    // }
 
         return Container(
           decoration: BoxDecoration(
@@ -88,14 +85,12 @@ class _RouteCardState extends State<RouteCard> {
                                 searchType: SearchType.start,
                             ),
                           ),
-                          IntermediateSearchList(
-                            intermediateSearchControllers: intermediateSearchControllers,
-                          ),
+                          IntermediateSearchList(),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Search(
                               labelTextIn: "Destination",
-                              searchController: destinationSearchController,
+                              searchController: endSearchController,
                               searchType: SearchType.end,
                             ),
                           ),
