@@ -1,7 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
@@ -115,7 +114,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     if (RouteManager().ifStartSet() &&
                                         RouteManager().ifDestinationSet()) {
                                       applicationBloc.setSelectedScreen('navigation');
-                                      applicationBloc.showBackButton = false;
+                                      Wakelock.enable();
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(

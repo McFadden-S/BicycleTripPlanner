@@ -21,6 +21,7 @@ import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wakelock/wakelock.dart';
 
 class ApplicationBloc with ChangeNotifier {
 
@@ -29,7 +30,6 @@ class ApplicationBloc with ChangeNotifier {
   final _stationsService = StationsService();
 
   Queue<String> prevScreens = Queue();
-  bool showBackButton = true;
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -152,8 +152,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void endRoute(){
-    selectedScreen = screens['routePlanning']!;
-    showBackButton = true;
+    Wakelock.disable();
+    selectedScreen = screens['home']!;
     _routeManager.endRoute();
     notifyListeners();
   }
