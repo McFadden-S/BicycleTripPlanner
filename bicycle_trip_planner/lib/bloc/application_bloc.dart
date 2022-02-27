@@ -110,6 +110,7 @@ class ApplicationBloc with ChangeNotifier {
         break;
       case SearchType.intermediate:
         _routeManager.setIntermediate(placeDescription, intermediateIndex);
+        print(placeDescription);
         break;
     }
 

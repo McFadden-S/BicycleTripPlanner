@@ -131,8 +131,10 @@ class _SearchState extends State<Search> {
                 onPressed: () {
                   setState(() {
                     applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
+                          print(widget.searchController.text);
+                          print(widget.intermediateIndex);
                   }
-                  );
+                );
                   hideSearch();
                 },
               ),

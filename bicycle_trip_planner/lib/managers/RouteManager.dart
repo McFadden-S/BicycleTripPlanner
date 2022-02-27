@@ -38,7 +38,7 @@ class RouteManager{
   List<String> getIntermediates(){return _intermediates;}
 
   String getIntermediate(int index){
-    if(_intermediates.length >= index && _intermediates.isNotEmpty){
+    if(_intermediates.length > index && _intermediates.isNotEmpty){
       return _intermediates[index];
     }
     return "";
@@ -73,7 +73,8 @@ class RouteManager{
   }
 
   void setIntermediate(String intermediate, int index){
-    if(_intermediates.length >= index && _intermediates.isNotEmpty){
+    print("Set Intermediate index: ${index.toString()}"); 
+    if(_intermediates.length > index && _intermediates.isNotEmpty){
       _intermediates[index] = intermediate;
     } else{
       _intermediates.add(intermediate);
@@ -82,10 +83,11 @@ class RouteManager{
   }
 
   void removeIntermediate(int index){
-    if(_intermediates.length <= index && _intermediates.isNotEmpty){
+    print("Remove Intermediate index: ${index.toString()}"); 
+    if(_intermediates.length > index && _intermediates.isNotEmpty){
       _intermediates.removeAt(index);
       _markerManager.clearMarker(SearchType.intermediate, index);
-    }
+    }else{print("Wasn't removed");}
     _changed = true;
   }
 

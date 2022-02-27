@@ -27,30 +27,35 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   void _addStopWidget(ApplicationBloc applicationBloc) {
     setState(() {
-      final TextEditingController searchController = TextEditingController();
+
+      TextEditingController searchController = TextEditingController();
 
       intermediateSearchControllers.add(searchController);
-      stopsList.add(
-          ListTile(
-            title:
-              Search(
+      Search search = Search(
                   labelTextIn: "Stop ${intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
                   intermediateIndex: stopsList.length,
-              ),
+              );
+
+      stopsList.add(
+          ListTile(
+            title:
+              search,
               trailing: IconButton(
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
                       int indexPressed = intermediateSearchControllers.indexOf(searchController);
+                      print("Index Pressed ${indexPressed.toString()}"); 
+                      print("Search index ${search.intermediateIndex.toString()}");
+                      print(intermediateSearchControllers.length);
 
                       for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
                         intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
                       }
 
                       applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed);
-                      routeManager.removeIntermediate(indexPressed+1);
                       stopsList.removeLast();
                       intermediateSearchControllers.removeLast();
                     });

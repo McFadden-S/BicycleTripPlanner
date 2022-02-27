@@ -37,6 +37,7 @@ class _RouteCardState extends State<RouteCard> {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       applicationBloc.findRoute(
           routeManager.getStart(),
           routeManager.getDestination(),
