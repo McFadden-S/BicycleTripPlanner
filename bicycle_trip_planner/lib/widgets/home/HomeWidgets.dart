@@ -38,13 +38,15 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       GestureDetector(
                         onTap: () => Navigator.pushNamed(context, '/login'),
                         child: Container(
-                            width: 55.0,
-                            height: 55.0,
+                          margin: EdgeInsets.only(top: 5),
+                            width: 60.0,
+                            height: 60.0,
                             decoration: const BoxDecoration(
+                                color: Colors.white,
                                 shape: BoxShape.circle,
                                 image: DecorationImage(
                                   fit: BoxFit.fill,
-                                  image: AssetImage('assets/signup_image.png'),
+                                  image: AssetImage('assets/profile.png'),
                                 )
                             )),
                       )
