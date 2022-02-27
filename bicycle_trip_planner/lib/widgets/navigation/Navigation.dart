@@ -110,8 +110,11 @@ class _NavigationState extends State<Navigation> {
                   CircleButton(
                       iconIn: Icons.cancel_outlined,
                       onButtonClicked: () {
-                        applicationBloc.endRoute();
-                        applicationBloc.setSelectedScreen('home'); 
+                        setState((){
+                          applicationBloc.endRoute();
+                          applicationBloc.setSelectedScreen('home'); 
+                        });
+
                       },
                       buttonColor: Colors.red),
                 ],

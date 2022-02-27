@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
@@ -45,6 +46,7 @@ class ApplicationBloc with ChangeNotifier {
   final RouteManager _routeManager = RouteManager();
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
+  final IntermediateManager _intermediateManager = IntermediateManager(); 
 
   late Timer _stationTimer;
 

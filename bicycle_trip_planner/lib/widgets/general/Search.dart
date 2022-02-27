@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
@@ -29,9 +30,11 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
 
   bool isSearching = false;
+  int searchIndex = 0;  //TODO: Potential refactor of separating intermediateSearches...
 
   RouteManager routeManager = RouteManager();
   MarkerManager markerManager = MarkerManager();
+  IntermediateManager intermediateManager = IntermediateManager();
 
   hideSearch() {
     isSearching = false;
@@ -45,14 +48,38 @@ class _SearchState extends State<Search> {
       case SearchType.end:
         return routeManager.getDestination();
       case SearchType.intermediate:
-        return routeManager.getIntermediate(widget.intermediateIndex);
+        return routeManager.getIntermediate(searchIndex);
     }
+  }
+
+  @override 
+  void initState(){
+    super.initState();
+    if(widget.searchType == SearchType.intermediate){
+      intermediateManager.intermediateSearches.add(widget);
+      //TODO:  Put these as a separate method
+      searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
+      intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
+      routeManager.setIntermediate("", widget.intermediateIndex); 
+    }
+    print(widget.intermediateIndex); 
+  }
+
+  @override 
+  void dispose(){
+    super.dispose(); 
+    print(widget.intermediateIndex); 
   }
 
    @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
+    if(widget.searchType == SearchType.intermediate){
+      searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
+      intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
+    }
 
     if(!isSearching){
       widget.searchController.text = getText();

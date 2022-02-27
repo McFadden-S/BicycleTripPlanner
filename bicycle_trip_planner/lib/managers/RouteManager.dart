@@ -1,7 +1,9 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
 class RouteManager{
 
@@ -10,11 +12,13 @@ class RouteManager{
   final DirectionManager _directionManager = DirectionManager();
   final MarkerManager _markerManager = MarkerManager();
   final PolylineManager _polylineManager = PolylineManager();
+  final IntermediateManager _intermediateManager = IntermediateManager();
 
 
   String _start = "";
   String _destination = "";
 
+  int _intermediateID = 0; 
   final List<String> _intermediates = <String>[];
 
   bool _changed = false;
@@ -44,6 +48,8 @@ class RouteManager{
     return "";
   }
 
+  int getNextIntermediateID(){return ++_intermediateID;}
+
   bool ifChanged(){return _changed;}
 
   bool ifStartSet(){return _start != "";}
@@ -72,8 +78,10 @@ class RouteManager{
     _markerManager.clearMarker(SearchType.end);
   }
 
-  void setIntermediate(String intermediate, int index){
-    print("Set Intermediate index: ${index.toString()}"); 
+  void setIntermediate(String intermediate, int id){
+    print("Set id: ${id.toString()}"); 
+    int index = _intermediateManager.idToIntermediateIndex[id]!;
+    print("index of this id: ${index}"); 
     if(_intermediates.length > index && _intermediates.isNotEmpty){
       _intermediates[index] = intermediate;
     } else{
@@ -82,18 +90,21 @@ class RouteManager{
     _changed = true;
   }
 
-  void removeIntermediate(int index){
-    print("Remove Intermediate index: ${index.toString()}"); 
+  void removeIntermediate(int id){
+    print("Remove id: ${id.toString()}"); 
+    int index = _intermediateManager.idToIntermediateIndex[id]!;
     if(_intermediates.length > index && _intermediates.isNotEmpty){
       _intermediates.removeAt(index);
-      _markerManager.clearMarker(SearchType.intermediate, index);
+      print("index of this id: ${index}"); 
+      _intermediateManager.idToIntermediateIndex.remove(id);
+      _intermediateManager.intermediateSearches.removeAt(index); 
     }else{print("Wasn't removed");}
     _changed = true;
   }
 
   void clearIntermediates(){
-    for(int i = _intermediates.length-1; i >= 0; i--){
-      removeIntermediate(i);
+    for(Search intermediateSearch in _intermediateManager.intermediateSearches){
+      removeIntermediate(intermediateSearch.intermediateIndex); 
     }
   }
 
@@ -102,6 +113,7 @@ class RouteManager{
   }
 
   void endRoute() {
+    _intermediateManager.clear(); 
     _directionManager.clear();
     _polylineManager.clearPolyline();
 

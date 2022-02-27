@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
+  IntermediateManager intermediateManager = IntermediateManager();
 
   List<Widget> stopsList = [];
 
@@ -35,7 +37,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   labelTextIn: "Stop ${intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
-                  intermediateIndex: stopsList.length,
+                  intermediateIndex: routeManager.getNextIntermediateID(),
               );
 
       stopsList.add(
@@ -46,18 +48,18 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
-                      int indexPressed = intermediateSearchControllers.indexOf(searchController);
+                      int indexPressed = intermediateSearchControllers.indexOf(searchController); 
                       print("Index Pressed ${indexPressed.toString()}"); 
-                      print("Search index ${search.intermediateIndex.toString()}");
+                      print("Search id ${search.intermediateIndex.toString()}");
                       print(intermediateSearchControllers.length);
 
                       for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
                         intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
                       }
 
-                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed);
-                      stopsList.removeLast();
-                      intermediateSearchControllers.removeLast();
+                      applicationBloc.clearSelectedLocation(SearchType.intermediate, search.intermediateIndex); 
+                      stopsList.removeAt(indexPressed);
+                      intermediateSearchControllers.removeAt(indexPressed);
                     });
                   },
                   icon: const Icon(
