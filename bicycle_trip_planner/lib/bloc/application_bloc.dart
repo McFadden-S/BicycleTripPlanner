@@ -173,12 +173,4 @@ class ApplicationBloc with ChangeNotifier {
     prevScreens.addFirst(screenName);
   }
 
-  void goBack() {
-    if(prevScreens.isNotEmpty){
-      endRoute();
-      selectedScreen = screens[prevScreens.removeFirst()]!;
-      notifyListeners();
-    }
-  }
-
 }

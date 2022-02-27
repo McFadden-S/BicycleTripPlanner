@@ -15,7 +15,7 @@ class _StationCardState extends State<CustomBottomSheet> {
   @override
   Widget build(BuildContext context) {
 
-    return  Align(
+    return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
           decoration: const BoxDecoration(

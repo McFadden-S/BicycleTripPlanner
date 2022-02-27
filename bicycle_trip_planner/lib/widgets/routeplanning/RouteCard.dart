@@ -54,52 +54,44 @@ class _RouteCardState extends State<RouteCard> {
     //   applicationBloc.setSelectedCurrentLocation(SearchType.start);
     // }
 
-        return LimitedBox(
-          maxHeight: MediaQuery.of(context).size.height * 0.5,
-          child: Container(
-            decoration: const BoxDecoration(
-              boxShadow: [
-                BoxShadow(
-                  offset: Offset(0,10),
-                  color: Colors.black45,
-                  blurRadius: 30.0,
-                ),
-              ],
-            ),
-            child: Card(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                side: const BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+        return Container(
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                offset: Offset(0,10),
+                color: Colors.black45,
+                blurRadius: 30.0,
               ),
-              child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Search(
-                                  labelTextIn: "Starting Point",
-                                  searchController: startSearchController,
-                                  searchType: SearchType.start,
-                              ),
-                            ),
-                            IntermediateSearchList(),
-                            Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Search(
-                                labelTextIn: "Destination",
-                                searchController: endSearchController,
-                                searchType: SearchType.end,
-                              ),
-                            ),
-                              // const Icon(Icons.expand_more),
-                          ],
-                        ),
-                      ],
-                    ),
+            ],
+          ),
+          child: Card(
+            color: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+              side: const BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                      labelTextIn: "Starting Point",
+                      searchController: startSearchController,
+                      searchType: SearchType.start,
+                  ),
+                ),
+                IntermediateSearchList(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                    labelTextIn: "Destination",
+                    searchController: endSearchController,
+                    searchType: SearchType.end,
+                  ),
+                ),
+                  // const Icon(Icons.expand_more),
+              ],
             ),
           ),
         );

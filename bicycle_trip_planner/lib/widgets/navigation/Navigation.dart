@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -58,6 +59,7 @@ class _NavigationState extends State<Navigation> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return SafeArea(
+      bottom: false,
       child: Stack(
         children: [
           Padding(
@@ -72,9 +74,7 @@ class _NavigationState extends State<Navigation> {
                       padding: const EdgeInsets.only(top: 10),
                       child: Column(
                         children: [
-                          CircleButton(
-                              iconIn: Icons.location_searching,
-                              onButtonClicked: () => CameraManager.instance.viewUser()),
+                          CurrentLocationButton(),
                           SizedBox(height: 10),
                           CircleButton(
                             iconIn: mapZoomed
@@ -101,36 +101,39 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
           CustomBottomSheet(
-              widgetIn: Row(
-                children: [
-                  Expanded(child: DistanceETACard()),
-                  Expanded(
-                    child: Column(
-                      children: [
-                          Expanded(child: ElevatedButton(
-                              onPressed: () => applicationBloc.endRoute(),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("End",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
+              widgetIn: Container(
+                margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
+                child: Row(
+                  children: [
+                    Expanded(child: DistanceETACard()),
+                    Expanded(
+                      child: Column(
+                        children: [
+                            Expanded(child: ElevatedButton(
+                                onPressed: () => applicationBloc.endRoute(),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("End",
+                                          style: TextStyle(color: Colors.white)),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Colors.red))),
-                          ),
-                          Expanded(child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: WalkOrCycleToggle(directionManager: directionManager),
-                          )),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red))),
+                            ),
+                            Expanded(child: Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: WalkOrCycleToggle(directionManager: directionManager),
+                            )),
 
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
           ),
         ],

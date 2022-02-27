@@ -26,6 +26,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
               child: Column(
                 children: [
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Search(
@@ -49,18 +50,29 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       )
                     ],
                   ),
-                  SizedBox(height: 10.0),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: CurrentLocationButton(),
-                  ),
                 ],
               ),
             ),
           ),
-          const Align(
+           Align(
               alignment: FractionalOffset.bottomCenter,
-              child: StationBar()
+              child: Wrap(
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                              margin: EdgeInsets.only(bottom: 20),
+                              child: CurrentLocationButton()),
+                        ],
+                      ),
+                    ],
+                  ),
+                  StationBar(),
+                ],
+              )
           ),
         ],
       ),
