@@ -10,7 +10,7 @@ class ThemeStyle {
   static CurrentTime _time = CurrentTime();
 
   factory ThemeStyle() {
-    if (_time.isPM()) {
+    if (_time.isDark()) {
       kPrimaryColor = Color(0xFF00008B);
       buttonPrimaryColor = Color(0xFF00008B);
       buttonSecondaryColor = Color(0xFFDCDCDC);

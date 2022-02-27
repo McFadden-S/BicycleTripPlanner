@@ -37,7 +37,6 @@ class CameraManager{
   //********** Setup/Teardown **********
 
   void init(){
-    _time.isPM();
     rootBundle.loadString(ThemeStyle.mapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });

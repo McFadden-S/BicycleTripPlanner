@@ -1,6 +1,8 @@
+import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
 class CurrentTime {
-  int currentTime = DateTime.now().hour;
+  DateTime currentTime = DateTime.now();
+  int currentHour = DateTime.now().hour;
 
   static final CurrentTime _currentTime = CurrentTime._internal();
 
@@ -9,11 +11,13 @@ class CurrentTime {
   CurrentTime._internal();
 
   int getCurrentHour() {
-    return currentTime;
+    return currentHour;
   }
 
-  bool isPM() {
-    return ((currentTime < 6) || (currentTime > 16));
+  bool isDark() {
+    var sunset = getSunriseSunset(	51.509865, -0.118092, 0, currentTime).sunset;
+    var sunrise = getSunriseSunset(	51.509865, -0.118092, 0, currentTime).sunrise;
+    return ((currentTime.isAfter(sunset)) || (currentTime.isBefore(sunrise)));
   }
 
 }
