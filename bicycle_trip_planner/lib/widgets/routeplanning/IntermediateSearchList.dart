@@ -33,6 +33,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           ListTile(
             title:
               Search(
+                  key: Key("Stop ${widget.intermediateSearchControllers.length}"),
                   labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
                   searchController: searchController,
                   searchType: SearchType.intermediate,
@@ -97,9 +98,33 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               if(isShowingIntermediate)
                 LimitedBox(
                   maxHeight: MediaQuery.of(context).size.height * 0.2,
-                  child: ListView(
+                  child: ReorderableListView(
+                    onReorder: (int start, int current) {
+                      // dragging from top to bottom
+                      if (start < current) {
+                        int end = current - 1;
+                        Widget startItem = stopsList[start];
+                        int i = 0;
+                        int local = start;
+                        do {
+                          stopsList[local] = stopsList[++local];
+                          i++;
+                        } while (i < end - start);
+                        stopsList[end] = startItem;
+                      }
+                      // dragging from bottom to top
+                      else if (start > current) {
+                        Widget startItem = stopsList[start];
+                        for (int i = start; i > current; i--) {
+                          stopsList[i] = stopsList[i - 1];
+                        }
+                        stopsList[current] = startItem;
+                      }
+                      setState(() {});
+                    },
                     shrinkWrap: true,
-                    children: stopsList.toList(growable: true),
+                    // children: stopsList.toList(growable: true),
+                    children: stopsList
                   ),
                 ),
               const Icon(Icons.expand_more),
