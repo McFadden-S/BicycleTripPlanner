@@ -101,7 +101,7 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
           CustomBottomSheet(
-              widgetIn: Container(
+              child: Container(
                 margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
                 child: Row(
                   children: [

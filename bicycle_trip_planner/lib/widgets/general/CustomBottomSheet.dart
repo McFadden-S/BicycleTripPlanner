@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomBottomSheet extends StatefulWidget {
-  final Widget widgetIn;
+  final Widget child;
 
-  const CustomBottomSheet({ Key? key, required this.widgetIn}) : super(key: key);
+  const CustomBottomSheet({ Key? key, required this.child}) : super(key: key);
 
   @override
   _StationCardState createState() => _StationCardState();
@@ -58,7 +58,7 @@ class _StationCardState extends State<CustomBottomSheet> {
                 child: Visibility(
                   visible: isExpanded,
                   child: IntrinsicHeight(
-                      child: widget.widgetIn,
+                      child: widget.child,
                   ),
                 ),
               ),

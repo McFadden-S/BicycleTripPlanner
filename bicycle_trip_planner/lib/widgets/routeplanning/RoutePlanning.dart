@@ -1,8 +1,10 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
@@ -40,15 +42,18 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           CurrentLocationButton(),
                           SizedBox(height: 10),
                           Container(
-                            padding: const EdgeInsets.only(left: 3.0, right: 7.0),
+                            padding:
+                                const EdgeInsets.only(left: 3.0, right: 7.0),
                             decoration: const BoxDecoration(
                               color: const Color.fromRGBO(12, 156, 238, 1.0),
-                              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30.0)),
                             ),
                             child: DropdownButton<int>(
                               isDense: true,
                               value: groupSizeValue,
-                              icon: const Icon(Icons.group, color: Colors.white),
+                              icon:
+                                  const Icon(Icons.group, color: Colors.white),
                               iconSize: 30,
                               elevation: 16,
                               style: const TextStyle(
@@ -59,11 +64,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               selectedItemBuilder: (BuildContext context) {
                                 return groupSizeOptions.map((int value) {
                                   return Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0),
                                     child: Text(
                                       groupSizeValue.toString(),
-                                      style: const TextStyle(color: Colors.white),
+                                      style:
+                                          const TextStyle(color: Colors.white),
                                     ),
                                   );
                                 }).toList();
@@ -87,28 +93,41 @@ class _RoutePlanningState extends State<RoutePlanning> {
               ],
             ),
           ),
-
-                // const Spacer(flex: 50),
-                // Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                //   const DistanceETACard(),
-                //   const Spacer(flex: 10),
-                //   RoundedRectangleButton(
-                //       iconIn: Icons.directions_bike,
-                //       buttonColor: Colors.green,
-                //       onButtonClicked: () {
-                //         if(RouteManager().ifStartSet() && RouteManager().ifDestinationSet()){
-                //           applicationBloc.setSelectedScreen('navigation');
-                //           applicationBloc.showBackButton = false;
-                //         }
-                //         else{
-                //           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                //             content: Text("Start and Destination have not been set!"),
-                //           ));
-                //         }
-                //       }
-                //   )
-                // ]),
-
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                         Wrap(
+                           children: [
+                             const DistanceETACard(),
+                           ],
+                         ),
+                         const Spacer(flex: 2),
+                         Expanded(
+                           flex: 1,
+                           child: RoundedRectangleButton(
+                                  iconIn: Icons.directions_bike,
+                                  buttonColor: Colors.green,
+                                  onButtonClicked: () {
+                                    if (RouteManager().ifStartSet() &&
+                                        RouteManager().ifDestinationSet()) {
+                                      applicationBloc.setSelectedScreen('navigation');
+                                      applicationBloc.showBackButton = false;
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content:
+                                            Text("Start and Destination have not been set!"),
+                                      ));
+                                    }
+                    }),
+                         )
+              ]),
+            ),
+          ),
         ],
       ),
     );

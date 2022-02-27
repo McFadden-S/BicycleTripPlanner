@@ -14,6 +14,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    double topPaddingHeight = MediaQuery.of(context).padding.top;
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -21,9 +22,17 @@ class _HomeState extends State<Home> {
         fit: StackFit.expand,
         children: [
           MapWidget(),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              color: Colors.white.withOpacity(0.4),
+              child: SizedBox(height: topPaddingHeight, width: MediaQuery.of(context).size.width)
+            ),
+          ),
           applicationBloc.getSelectedScreen()
         ],
       ),
     );
   }
 }
+
