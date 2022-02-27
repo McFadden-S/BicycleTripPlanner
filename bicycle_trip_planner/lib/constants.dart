@@ -38,58 +38,34 @@ class ThemeStyle {
         fontWeight: FontWeight.bold,
       );
     }
-    else {
-      kPrimaryColor = Color(0xFF0C9CEE);
-      buttonPrimaryColor = Color(0xFF0C9CEE);
-      buttonSecondaryColor = Colors.white;
-      kPrimaryLightColor = Color(0xFFBBDEFB);
-      mainFontColor = Color(0xFF1C1C1C);
-      secondaryFontColor = Color(0xFF605D5D);
-
-      primaryTextColor = Colors.white;
-      secondaryTextColor = Colors.black45;
-      boxShadow = Colors.black45;
-      cardColor = Colors.white;
-      goButtonColor = Colors.green;
-      primaryIconColor = Colors.white;
-      secondaryIconColor = Colors.black54;
-      cardOutlineColor = Color(0xff969393);
-
-      stationMarkerColor = BitmapDescriptor.hueGreen;
-
-      mapStyle = 'assets/map_style.txt';
-
-      buttonTextStyle = const TextStyle(
-        color: Color(0xFFFFFFFF),
-        fontFamily: 'Outfit',
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      );
-    }
-
     return _themeStyle;}
 
   ThemeStyle._internal();
 
-  static late Color kPrimaryColor;
-  static late Color buttonPrimaryColor;
-  static late Color buttonSecondaryColor;
-  static late Color kPrimaryLightColor;
-  static late Color mainFontColor;
-  static late Color secondaryFontColor;
+  static Color kPrimaryColor = Color(0xFF0C9CEE);
+  static Color buttonPrimaryColor = Color(0xFF0C9CEE);
+  static Color buttonSecondaryColor = Colors.white;
+  static Color kPrimaryLightColor = Color(0xFFBBDEFB);
+  static Color mainFontColor = Color(0xFF1C1C1C);
+  static Color secondaryFontColor = Color(0xFF605D5D);
 
-  static late Color primaryTextColor;
-  static late Color secondaryTextColor;
-  static late Color boxShadow;
-  static late Color cardColor;
-  static late Color goButtonColor;
-  static late Color primaryIconColor;
-  static late Color secondaryIconColor;
-  static late Color cardOutlineColor;
+  static Color primaryTextColor = Colors.white;
+  static Color secondaryTextColor = Colors.black45;
+  static Color boxShadow = Colors.black45;
+  static Color cardColor = Colors.white;
+  static Color goButtonColor = Colors.green;
+  static Color primaryIconColor = Colors.white;
+  static Color secondaryIconColor = Colors.black54;
+  static Color cardOutlineColor = Color(0xff969393);
 
-  static late double stationMarkerColor;
+  static double stationMarkerColor = BitmapDescriptor.hueGreen;
 
-  static late String mapStyle;
+  static String mapStyle = 'assets/map_style.txt';
 
-  static late TextStyle buttonTextStyle;
+  static TextStyle buttonTextStyle = const TextStyle(
+  color: Color(0xFFFFFFFF),
+  fontFamily: 'Outfit',
+  fontSize: 18,
+  fontWeight: FontWeight.bold,
+  );
 }
