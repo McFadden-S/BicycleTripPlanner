@@ -103,8 +103,9 @@ class RouteManager{
   }
 
   void clearIntermediates(){
-    for(Search intermediateSearch in _intermediateManager.intermediateSearches){
-      removeIntermediate(intermediateSearch.intermediateIndex); 
+    for(int i=_intermediateManager.intermediateSearches.length - 1; i >= 0; i--){
+      _markerManager.clearMarker(SearchType.intermediate, _intermediateManager.intermediateSearches[i].intermediateIndex);
+      removeIntermediate(_intermediateManager.intermediateSearches[i].intermediateIndex); 
     }
   }
 
@@ -113,13 +114,14 @@ class RouteManager{
   }
 
   void endRoute() {
-    _intermediateManager.clear(); 
     _directionManager.clear();
     _polylineManager.clearPolyline();
 
     clearIntermediates();
     clearStart();
     clearDestination();
+
+    _intermediateManager.clear(); 
   }
 
 }
