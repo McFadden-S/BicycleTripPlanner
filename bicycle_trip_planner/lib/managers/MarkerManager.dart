@@ -80,10 +80,16 @@ class MarkerManager {
     return _markers;
   }
 
+  void removeMarker(String markerID){
+    _removeMarker(markerID); 
+  }
+
+  // TODO: Refactor this method 
   void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
     _removeMarker(_generateMarkerID(searchType, intermediateIndex));
   }
 
+  // TODO: Refactor and remove method if possible
   void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {
     final double lat = place.geometry.location.lat;
     final double lng = place.geometry.location.lng;

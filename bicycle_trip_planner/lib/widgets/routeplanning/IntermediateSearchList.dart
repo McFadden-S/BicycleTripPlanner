@@ -36,8 +36,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
       Search search = Search(
                   labelTextIn: "Stop ${intermediateSearchControllers.length}",
                   searchController: searchController,
-                  searchType: SearchType.intermediate,
-                  intermediateIndex: routeManager.getNextIntermediateID(),
               );
 
       stopsList.add(
@@ -49,15 +47,13 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   onPressed: (){
                     setState(() {
                       int indexPressed = intermediateSearchControllers.indexOf(searchController); 
-                      print("Index Pressed ${indexPressed.toString()}"); 
-                      print("Search id ${search.intermediateIndex.toString()}");
                       print(intermediateSearchControllers.length);
 
                       for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
                         intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
                       }
 
-                      applicationBloc.clearSelectedLocation(SearchType.intermediate, search.intermediateIndex); 
+                      //applicationBloc.clearSelectedLocation(SearchType.intermediate, search.intermediateIndex); 
                       stopsList.removeAt(indexPressed);
                       intermediateSearchControllers.removeAt(indexPressed);
                     });

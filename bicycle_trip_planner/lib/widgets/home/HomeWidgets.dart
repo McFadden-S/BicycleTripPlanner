@@ -33,9 +33,8 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                     children: [
                       Expanded(
                         child: Search(
-                          labelTextIn: 'Search',
+                          labelTextIn: 'Destination', //TODO: Temporary change from Search
                           searchController: TextEditingController(),
-                          searchType: SearchType.end,
                         ),
                       ),
                       GestureDetector(

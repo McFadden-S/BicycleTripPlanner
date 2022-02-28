@@ -34,17 +34,30 @@ class _RouteCardState extends State<RouteCard> {
   @override
   Widget build(BuildContext context) {
 
+    Search destination = Search(
+      labelTextIn: "Destination",
+      searchController: endSearchController,
+    );
+
+    Search start = Search(
+        labelTextIn: "Starting Point",
+        searchController: startSearchController,
+    );
+
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      if(!routeManager.ifPathwayInitialized()){
+        routeManager.initPathway(start, destination); 
+      }
       polylineManager.clearPolyline();
       applicationBloc.findRoute(
           routeManager.getStart(),
           routeManager.getDestination(),
-          routeManager.getIntermediates()
+          routeManager.getWaypoints()
       );
-
       routeManager.clearChanged();
+
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       routeManager.clearChanged();
@@ -79,20 +92,12 @@ class _RouteCardState extends State<RouteCard> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                                labelTextIn: "Starting Point",
-                                searchController: startSearchController,
-                                searchType: SearchType.start,
-                            ),
+                            child: start,
                           ),
                           IntermediateSearchList(),
                           Padding(
                             padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                              labelTextIn: "Destination",
-                              searchController: endSearchController,
-                              searchType: SearchType.end,
-                            ),
+                            child: destination,
                           ),
                             // const Icon(Icons.expand_more),
                         ],

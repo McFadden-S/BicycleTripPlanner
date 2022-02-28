@@ -11,17 +11,17 @@ class Search extends StatefulWidget {
 
   final String labelTextIn;
   final TextEditingController searchController;
+  final int _UID = RouteManager().generateUID();
 
-  final SearchType searchType;
-  final int intermediateIndex;
-
-  const Search({
+  Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
-    required this.searchType,
-    this.intermediateIndex = 0,
-  }) : super(key: key);
+  }): super(key: key);
+
+  String getText(){
+    return searchController.text; 
+  }
 
   @override
   _SearchState createState() => _SearchState();
@@ -41,49 +41,44 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  getText(){
-    switch (widget.searchType){
-      case SearchType.start:
-        return routeManager.getStart();
-      case SearchType.end:
-        return routeManager.getDestination();
-      case SearchType.intermediate:
-        return routeManager.getIntermediate(searchIndex);
-    }
-  }
+  // getText(){
+  //   switch (widget.searchType){
+  //     case SearchType.start:
+  //       return routeManager.getStart();
+  //     case SearchType.end:
+  //       return routeManager.getDestination();
+  //     case SearchType.intermediate:
+  //       return routeManager.getIntermediate(searchIndex);
+  //   }
+  // }
 
-  @override 
-  void initState(){
-    super.initState();
-    if(widget.searchType == SearchType.intermediate){
-      intermediateManager.intermediateSearches.add(widget);
-      //TODO:  Put these as a separate method
-      searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
-      intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
-      routeManager.setIntermediate("", widget.intermediateIndex); 
-    }
-    print(widget.intermediateIndex); 
-  }
+  // @override 
+  // void initState(){
+  //   super.initState();
+  //   if(widget.searchType == SearchType.intermediate){
+  //     intermediateManager.intermediateSearches.add(widget);
+  //     //TODO:  Put these as a separate method
+  //     searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
+  //     intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
+  //     routeManager.setIntermediate("", widget.intermediateIndex); 
+  //   }
+  //   print(widget.intermediateIndex); 
+  // }
 
-  @override 
-  void dispose(){
-    super.dispose(); 
-    print(widget.intermediateIndex); 
-  }
 
    @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if(widget.searchType == SearchType.intermediate){
-      searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
-      intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
-    }
+    // if(widget.searchType == SearchType.intermediate){
+    //   searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
+    //   intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
+    // }
 
-    if(!isSearching){
-      widget.searchController.text = getText();
-    }
+    // if(!isSearching){
+    //    widget.searchController.text = getText();
+    // }
 
     return Stack(
       children: [
@@ -110,10 +105,26 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
-                      applicationBloc.setSelectedLocation(
-                          applicationBloc.searchResults[index].placeId,
-                          applicationBloc.searchResults[index].description,
-                          widget.searchType, widget.intermediateIndex);
+                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget._UID); 
+                      if(!routeManager.ifPathwayInitialized()){
+                        if (widget.labelTextIn.contains("Start")){
+                          routeManager.setStart(applicationBloc.searchResults[index].description); 
+                        }
+                        else if(widget.labelTextIn.contains("Destination")){
+                          routeManager.setDestination(applicationBloc.searchResults[index].description);
+                          if (!routeManager.ifStartSet()){
+                            applicationBloc.setSelectedCurrentLocation(SearchType.start); 
+                          }
+                        }
+                      }
+
+                      if(routeManager.ifPathwayInitialized()){
+                        routeManager.pathway.addStop(widget); 
+                      }
+
+                          // applicationBloc.searchResults[index].placeId,
+                          // applicationBloc.searchResults[index].description,
+                          // widget.searchType, widget.intermediateIndex);
 
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
@@ -157,9 +168,10 @@ class _SearchState extends State<Search> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() {
-                    applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
-                          print(widget.searchController.text);
-                          print(widget.intermediateIndex);
+                    applicationBloc.clearLocationMarker(widget._UID);
+                    // widget.searchType, widget.intermediateIndex);
+                    //       print(widget.searchController.text);
+                    //       print(widget.intermediateIndex);
                   }
                 );
                   hideSearch();

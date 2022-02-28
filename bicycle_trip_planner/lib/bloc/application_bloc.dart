@@ -120,6 +120,24 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  setLocationMarker(String placeID, int UID) async {
+    
+    Place selected = await _placesService.getPlace(placeID);
+    LatLng placeLatLng = selected.getLatLng();
+    String markerID = 'Marker_$UID';
+    _cameraManager.viewPlace(selected);
+    _markerManager.setMarker(placeLatLng ,markerID);
+    //_markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+    notifyListeners();
+  }
+
+  clearLocationMarker(int UID) {
+    String markerID = 'Marker_$UID';
+    _markerManager.removeMarker(markerID);
+    //_markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+    notifyListeners();
+  }
+
   clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
     _markerManager.clearMarker(searchType, intermediateIndex);
 
@@ -139,6 +157,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+    print(origin);
+    print(destination);
     Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
 
     _cameraManager.goToPlace(

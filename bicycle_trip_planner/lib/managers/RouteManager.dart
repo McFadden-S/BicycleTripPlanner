@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
@@ -18,9 +19,11 @@ class RouteManager{
   String _start = "";
   String _destination = "";
 
-  int _intermediateID = 0; 
+  static int _currentUID = 0; 
   final List<String> _intermediates = <String>[];
+  late Pathway pathway; 
 
+  bool _pathwayInitialised = false; 
   bool _changed = false;
 
   //********** Singleton **********
@@ -35,20 +38,19 @@ class RouteManager{
 
   //********** Public **********
 
-  String getStart(){return _start;}
+  String getStart(){return pathway.getStart().getText();}
 
-  String getDestination(){return _destination;}
+  String getDestination() => pathway.getDestination().getText();
 
-  List<String> getIntermediates(){return _intermediates;}
-
-  String getIntermediate(int index){
-    if(_intermediates.length > index && _intermediates.isNotEmpty){
-      return _intermediates[index];
-    }
-    return "";
+  List<String> getWaypoints() {
+    return pathway
+      .getWaypoints()
+      .map((waypoint) => waypoint.getText()).toList();
   }
 
-  int getNextIntermediateID(){return ++_intermediateID;}
+  String getStop(int index) => pathway.getStop(index).getText();
+
+  int generateUID(){return ++_currentUID;}
 
   bool ifChanged(){return _changed;}
 
@@ -56,7 +58,14 @@ class RouteManager{
 
   bool ifDestinationSet(){return _destination != "";}
 
-  bool ifIntermediatesSet(){return _intermediates.isNotEmpty;} 
+  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;} 
+
+  bool ifPathwayInitialized() => _pathwayInitialised;
+
+  void initPathway(Search start, Search end){
+    pathway = Pathway(start: start, destination: end); 
+    _pathwayInitialised = true; 
+  }
 
   void setStart(String start){
     _start = start;
@@ -102,12 +111,14 @@ class RouteManager{
     _changed = true;
   }
 
-  void clearIntermediates(){
-    for(int i=_intermediateManager.intermediateSearches.length - 1; i >= 0; i--){
-      _markerManager.clearMarker(SearchType.intermediate, _intermediateManager.intermediateSearches[i].intermediateIndex);
-      removeIntermediate(_intermediateManager.intermediateSearches[i].intermediateIndex); 
-    }
-  }
+  // void clearIntermediates(){
+  //   for(int i=_intermediateManager.intermediateSearches.length - 1; i >= 0; i--){
+  //     _markerManager.clearMarker(SearchType.intermediate, _intermediateManager.intermediateSearches[i].intermediateIndex);
+  //     removeIntermediate(_intermediateManager.intermediateSearches[i].intermediateIndex); 
+  //   }
+  // }
+
+  //TODO: Clear stops
 
   void clearChanged(){
     _changed = false;
@@ -117,11 +128,12 @@ class RouteManager{
     _directionManager.clear();
     _polylineManager.clearPolyline();
 
-    clearIntermediates();
+    //clearIntermediates();
     clearStart();
     clearDestination();
 
     _intermediateManager.clear(); 
   }
+
 
 }
