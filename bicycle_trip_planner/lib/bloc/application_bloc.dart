@@ -48,6 +48,14 @@ class ApplicationBloc with ChangeNotifier {
 
   late Timer _stationTimer;
 
+  late Place _currentLocation;
+
+  ApplicationBloc() {
+    fetchCurrentLocation();
+    updateStationsPeriodically(Duration(seconds: 30));
+  }
+
+
   cancelStationTimer(){
     _stationTimer.cancel();
   }
@@ -55,6 +63,12 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically(Duration duration){
     _stationTimer = Timer.periodic(duration, (timer){
       updateStations();
+    });
+  }
+
+  updateCurrentLocationPeriodically(Duration duration) {
+    Timer.periodic(duration, (timer){
+      _currentLocation = fetchCurrentLocation();
     });
   }
 
@@ -87,10 +101,13 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedCurrentLocation(SearchType searchType) async {
+  fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
-    Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-    setSelectedLocation(place.placeId, place.name, searchType);
+    _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+  }
+
+  setSelectedCurrentLocation(SearchType searchType) async {
+    setSelectedLocation(_currentLocation.placeId, _currentLocation.name, searchType);
 
     notifyListeners();
   }

@@ -50,9 +50,9 @@ class _RouteCardState extends State<RouteCard> {
     }
 
     //TODO Find way to get current location faster
-    // if(!routeManager.ifStartSet()){
-    //   applicationBloc.setSelectedCurrentLocation(SearchType.start);
-    // }
+    if(!routeManager.ifStartSet()){
+       applicationBloc.setSelectedCurrentLocation(SearchType.start);
+    }
 
         return Container(
           decoration: const BoxDecoration(
