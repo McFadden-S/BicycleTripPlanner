@@ -13,7 +13,7 @@ class _LoadingState extends State<Loading> {
 
   void setUpMap() async {
     await MapWidget();
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.of(context).pop();
   }
 
   @override
