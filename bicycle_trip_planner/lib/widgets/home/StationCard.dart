@@ -37,7 +37,10 @@ class _StationCardState extends State<StationCard> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      onTap: () => stationClicked(widget.index, applicationBloc, stationManager.getStationByIndex(widget.index)),
+      onTap: () {
+        Navigator.of(context).maybePop();
+        stationClicked(applicationBloc, stationManager.getStationByIndex(widget.index));
+      },
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
@@ -106,7 +109,7 @@ class _StationCardState extends State<StationCard> {
   }
 }
 
-void stationClicked(int index, ApplicationBloc appBloc, Station station) {
+void stationClicked(ApplicationBloc appBloc, Station station) {
   appBloc.searchSelectedStation(station);
   appBloc.setSelectedScreen('routePlanning');
   appBloc.pushPrevScreen('home');

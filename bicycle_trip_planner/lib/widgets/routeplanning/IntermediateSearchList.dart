@@ -1,6 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
@@ -28,34 +28,30 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   bool isShowingIntermediate = false;
 
   void _addStopWidget(ApplicationBloc applicationBloc) {
-    setState(() {
-      final TextEditingController searchController = TextEditingController();
 
+    setState(() {
+      TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
+      Stop waypoint = routeManager.addWaypoint(""); 
+
       stopsList.add(
           ListTile(
             title:
               Search(
-                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
+                  labelTextIn: "Stop",
                   searchController: searchController,
-                  searchType: SearchType.intermediate,
-                  intermediateIndex: stopsList.length,
+                  uid: waypoint.getUID()
               ),
               trailing: IconButton(
                 color: ThemeStyle.secondaryIconColor,
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
-                      int indexPressed = intermediateSearchControllers.indexOf(searchController);
-
-                      for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
-                        intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
-                      }
-
-                      applicationBloc.clearSelectedLocation(SearchType.intermediate, indexPressed);
-                      routeManager.removeIntermediate(indexPressed+1);
-                      stopsList.removeLast();
-                      intermediateSearchControllers.removeLast();
+                      int indexPressed = intermediateSearchControllers.indexOf(searchController); 
+                      applicationBloc.clearLocationMarker(waypoint.getUID());
+                      applicationBloc.clearSelectedLocation(waypoint.getUID());
+                      stopsList.removeAt(indexPressed);
+                      intermediateSearchControllers.removeAt(indexPressed);
                     });
                   },
                   icon: Icon(

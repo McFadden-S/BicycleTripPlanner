@@ -111,7 +111,10 @@ class _NavigationState extends State<Navigation> {
                       child: Column(
                         children: [
                             Expanded(child: ElevatedButton(
-                                onPressed: () => applicationBloc.endRoute(),
+                                onPressed: (){ 
+                                  applicationBloc.endRoute();
+                                  applicationBloc.setSelectedScreen('home');
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: Row(

@@ -2,8 +2,6 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -29,7 +27,6 @@ class _RouteCardState extends State<RouteCard> {
 
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
-
   }
 
   @override
@@ -38,13 +35,14 @@ class _RouteCardState extends State<RouteCard> {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       applicationBloc.findRoute(
-          routeManager.getStart(),
-          routeManager.getDestination(),
-          routeManager.getIntermediates()
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList()
       );
-
       routeManager.clearChanged();
+
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       routeManager.clearChanged();
@@ -79,7 +77,7 @@ class _RouteCardState extends State<RouteCard> {
                   child: Search(
                       labelTextIn: "Starting Point",
                       searchController: startSearchController,
-                      searchType: SearchType.start,
+                      uid: routeManager.getStart().getUID(),
                   ),
                 ),
                 IntermediateSearchList(),
@@ -88,7 +86,7 @@ class _RouteCardState extends State<RouteCard> {
                   child: Search(
                     labelTextIn: "Destination",
                     searchController: endSearchController,
-                    searchType: SearchType.end,
+                    uid: routeManager.getDestination().getUID(),
                   ),
                 ),
                   // const Icon(Icons.expand_more),

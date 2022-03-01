@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
@@ -12,6 +13,8 @@ class HomeWidgets extends StatefulWidget {
 }
 
 class _HomeWidgetsState extends State<HomeWidgets> {
+
+  final RouteManager routeManager = RouteManager(); 
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +35,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         child: Search(
                           labelTextIn: 'Search',
                           searchController: TextEditingController(),
-                          searchType: SearchType.end,
+                          uid: routeManager.getDestination().getUID(),
                         ),
                       ),
                       GestureDetector(
