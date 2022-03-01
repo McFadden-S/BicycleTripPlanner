@@ -87,7 +87,7 @@ class ApplicationBloc with ChangeNotifier {
     // Check if station.name and place.name is different (ideally should be placeSearch.description)
     print(station.name); 
     print(place.name); 
-    setSelectedLocation(place.name, _routeManager.getDestination().getUID()); 
+    setSelectedLocation(place.name, _routeManager.getStart().getUID()); 
     notifyListeners();
   }
 
