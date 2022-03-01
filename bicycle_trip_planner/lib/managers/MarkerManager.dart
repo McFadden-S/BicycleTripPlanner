@@ -89,11 +89,6 @@ class MarkerManager {
     _removeMarker(markerID); 
   }
 
-  // TODO: Refactor this method 
-  // void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
-  //   _removeMarker(_generateMarkerID(searchType, intermediateIndex));
-  // }
-
   void clearMarker(int uid){
     _removeMarker(_generateMarkerID(uid));
   }
@@ -103,13 +98,6 @@ class MarkerManager {
     final double lng = place.geometry.location.lng;
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
-
-  // TODO: Refactor and remove method if possible
-  // void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {
-  //   final double lat = place.geometry.location.lat;
-  //   final double lng = place.geometry.location.lng;
-  //   setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
-  // }
 
   Future<void> setUserMarker(LatLng point) async {
 
@@ -143,7 +131,6 @@ class MarkerManager {
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);
-          appBloc.setSelected
           appBloc.setSelectedScreen('routePlanning');
           appBloc.pushPrevScreen('home');},
       ));
