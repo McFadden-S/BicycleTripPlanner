@@ -80,8 +80,7 @@ class _SearchState extends State<Search> {
                       applicationBloc
                           .searchResults[index].description,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                      ),
+                      style: TextStyle(color: ThemeStyle.secondaryTextColor),
                     ),
                     onTap: () {
                       applicationBloc.setSelectedLocation(
@@ -104,6 +103,7 @@ class _SearchState extends State<Search> {
         Container(
           padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
           child: TextField(
+            style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
               if(input=="") {

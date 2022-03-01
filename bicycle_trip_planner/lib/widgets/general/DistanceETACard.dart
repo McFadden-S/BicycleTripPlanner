@@ -23,11 +23,11 @@ class _StationCardState extends State<DistanceETACard> {
         padding: const EdgeInsets.all(5.0),
         child: Row(
           children: [
-            Column(children: const [
-              Icon(Icons.access_time_outlined),
-              Text("[ETA]")
+            Column(children: [
+              Icon(Icons.access_time_outlined, color: ThemeStyle.secondaryIconColor),
+              Text("[ETA]", style: TextStyle(color: ThemeStyle.secondaryTextColor),)
             ]),
-          const Text("3.5 miles")
+            Text("3.5 miles", style: TextStyle(color: ThemeStyle.secondaryTextColor))
           ],
         ),
       )

@@ -17,7 +17,8 @@ class CurrentTime {
   bool isDark() {
     var sunset = getSunriseSunset(	51.509865, -0.118092, 0, currentTime).sunset;
     var sunrise = getSunriseSunset(	51.509865, -0.118092, 0, currentTime).sunrise;
-    return ((currentTime.isAfter(sunset)) || (currentTime.isBefore(sunrise)));
+    //return ((currentTime.isAfter(sunset)) || (currentTime.isBefore(sunrise)));
+    return true;
   }
 
 }

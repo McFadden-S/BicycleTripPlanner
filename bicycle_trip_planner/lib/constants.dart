@@ -17,17 +17,18 @@ class ThemeStyle {
       kPrimaryLightColor = Color(0xFFBBDEFB);
       mainFontColor = Color(0xFF1C1C1C);
       secondaryFontColor = Color(0xFF605D5D);
+      stationShadow = Color(0xFF395B64);
 
       primaryTextColor = Colors.white;
-      secondaryTextColor = Colors.black45;
+      secondaryTextColor = Color(0xFFF5F2E7);//Colors.white;//Colors.black45;
       boxShadow = Colors.black54;
-      cardColor = Color(0xFFDCDCDC);
+      cardColor = Color(0xFF2C3333);//Color(0xFFDCDCDC);
       goButtonColor = Color(0xFF228B22);
       primaryIconColor = Colors.white;
-      secondaryIconColor = Color(0xFF484848);
+      secondaryIconColor = Colors.white;//Color(0xFF484848);
       cardOutlineColor = Color(0xFF969393);
 
-      stationMarkerColor = 130;
+      stationMarkerColor = 120;
 
       mapStyle = 'assets/night_map_style.txt';
 
@@ -48,6 +49,7 @@ class ThemeStyle {
   static Color kPrimaryLightColor = Color(0xFFBBDEFB);
   static Color mainFontColor = Color(0xFF1C1C1C);
   static Color secondaryFontColor = Color(0xFF605D5D);
+  static Color stationShadow = Colors.grey;
 
   static Color primaryTextColor = Colors.white;
   static Color secondaryTextColor = Colors.black45;

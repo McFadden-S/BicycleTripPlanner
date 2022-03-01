@@ -102,10 +102,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           Container(
                             padding:
                                 const EdgeInsets.only(left: 3.0, right: 7.0),
-                            decoration: const BoxDecoration(
-                              color: const Color.fromRGBO(12, 156, 238, 1.0),
+                            decoration: BoxDecoration(
+                              color: ThemeStyle.buttonPrimaryColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
+                                  const BorderRadius.all(Radius.circular(30.0)),
                             ),
                             child: DropdownButton<int>(
                               isDense: true,
