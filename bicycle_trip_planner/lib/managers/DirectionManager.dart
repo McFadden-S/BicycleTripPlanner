@@ -123,7 +123,7 @@ class DirectionManager{
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
-    setCurrentRoute(_bikingRoute);
+    setCurrentRoute(_startWalkingRoute);
   }
 
   void setCurrentRoute(R.Route route){
@@ -152,6 +152,14 @@ class DirectionManager{
 
   void toggleCycling() {
     _isCycling = !_isCycling;
+
+    if(_isCycling){
+      setCurrentRoute(_bikingRoute);
+    }else {
+      //TODO handle whether to display start or end walking route
+      setCurrentRoute(_endWalkingRoute);
+    }
+
   }
 
   //********** Clearing **********
