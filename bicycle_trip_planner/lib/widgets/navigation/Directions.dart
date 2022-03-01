@@ -56,8 +56,8 @@ class _DirectionsState extends State<Directions> {
         child: Column(
           children: [
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: ThemeStyle.cardColor,//Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0)),
@@ -66,8 +66,8 @@ class _DirectionsState extends State<Directions> {
                   currentDirection: directionManager.currentDirection),
             ),
             Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: ThemeStyle.cardColor,//Colors.white,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0)),
@@ -84,7 +84,7 @@ class _DirectionsState extends State<Directions> {
                         MediaQuery.of(context).size.height * 0.25,
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
-                          color: Colors.grey[100],
+                          color: ThemeStyle.directionTileColor,
                           child: ListView.separated(
                             itemCount: directionManager.directions.length,
                             itemBuilder: (BuildContext context, int index) {
@@ -100,11 +100,11 @@ class _DirectionsState extends State<Directions> {
                       )
                           : Align(
                           alignment: Alignment.bottomCenter,
-                          child: const Icon(Icons.keyboard_arrow_down)),
+                          child: Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)),
                       extendedNavigation
                           ? Align(
                           alignment: Alignment.bottomCenter,
-                          child: const Icon(Icons.keyboard_arrow_up))
+                          child: Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor))
                           : const SizedBox.shrink(),
                     ],
                   ),

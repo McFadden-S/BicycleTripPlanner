@@ -18,6 +18,7 @@ class ThemeStyle {
       mainFontColor = Color(0xFF1C1C1C);
       secondaryFontColor = Color(0xFF605D5D);
       stationShadow = Color(0xFF395B64);
+      directionTileColor = Color(0xFF2F3737);
 
       primaryTextColor = Colors.white;
       secondaryTextColor = Color(0xFFF5F2E7);//Colors.white;//Colors.black45;
@@ -50,9 +51,10 @@ class ThemeStyle {
   static Color mainFontColor = Color(0xFF1C1C1C);
   static Color secondaryFontColor = Color(0xFF605D5D);
   static Color stationShadow = Colors.grey;
+  static Color? directionTileColor = Colors.grey[100];
 
   static Color primaryTextColor = Colors.white;
-  static Color secondaryTextColor = Colors.black45;
+  static Color secondaryTextColor = Colors.black;
   static Color boxShadow = Colors.black45;
   static Color cardColor = Colors.white;
   static Color goButtonColor = Colors.green;

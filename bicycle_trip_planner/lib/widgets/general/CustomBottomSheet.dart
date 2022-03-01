@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants.dart';
+
 class CustomBottomSheet extends StatefulWidget {
   final Widget child;
 
@@ -18,9 +20,9 @@ class _StationCardState extends State<CustomBottomSheet> {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
+          decoration: BoxDecoration(
+            color: ThemeStyle.cardColor,
+            borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20.0),
                 topRight: Radius.circular(20.0)),
           ),
@@ -43,8 +45,8 @@ class _StationCardState extends State<CustomBottomSheet> {
                       constraints: BoxConstraints(),
                       alignment: Alignment.topCenter,
                       icon: isExpanded
-                          ? Icon(Icons.keyboard_arrow_down)
-                          : Icon(Icons.keyboard_arrow_up),
+                          ? Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)
+                          : Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor),
                       tooltip: 'Shrink',
                       onPressed: () {
                         setState(() {

@@ -94,11 +94,11 @@ class _StationBarState extends State<StationBar> {
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => stationsPageViewController.jumpTo(0),
-                          icon: const Icon(Icons.first_page),
+                          icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
                           onPressed: () => showExpandedList(stationManager.getStations()),
-                          icon: const Icon(Icons.menu),
+                          icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
                     ),

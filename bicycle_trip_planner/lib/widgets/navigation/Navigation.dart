@@ -60,37 +60,6 @@ class _NavigationState extends State<Navigation> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return SafeArea(
-// <<<<<<< HEAD
-//         child: Stack(
-//       children: [
-//         Padding(
-//           padding: const EdgeInsets.fromLTRB(8, 10, 8, 8),
-//           // TODO: Potential abstraction of the column?
-//           // TODO: Routeplanning also has 2 button at the side (can make a reusable widget of sorts)
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             mainAxisSize: MainAxisSize.max,
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               Directions(),
-//               const Spacer(),
-//               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-//                 Padding(
-//                   padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-//                   child: CurrentLocationButton(),
-//                 ),
-//               ]),
-//               const Spacer(),
-//               Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-//                 CircleButton(
-//                   iconIn:
-//                       mapZoomed ? Icons.zoom_out_map : Icons.fullscreen_exit,
-//                   onButtonClicked: () {
-//                     _toggleMapZoomInOut();
-//                   },
-//                   buttonColor: ThemeStyle.buttonSecondaryColor,
-//                   iconColor: ThemeStyle.secondaryIconColor,
-// =======
       bottom: false,
       child: Stack(
         children: [
@@ -128,7 +97,6 @@ class _NavigationState extends State<Navigation> {
                       ),
                     ),
                   ],
-//>>>>>>> development
                 ),
               ],
             ),

@@ -42,6 +42,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   intermediateIndex: stopsList.length,
               ),
               trailing: IconButton(
+                color: ThemeStyle.secondaryIconColor,
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
@@ -57,8 +58,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                       intermediateSearchControllers.removeLast();
                     });
                   },
-                  icon: const Icon(
-                      Icons.remove_circle_outline))
+                  icon: Icon(
+                      Icons.remove_circle_outline,
+                      color: ThemeStyle.secondaryIconColor,))
           )
       );
 
@@ -106,7 +108,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     children: stopsList.toList(growable: true),
                   ),
                 ),
-              const Icon(Icons.expand_more),
+              Icon(Icons.expand_more, color: ThemeStyle.secondaryIconColor),
             ]
         )
     );
