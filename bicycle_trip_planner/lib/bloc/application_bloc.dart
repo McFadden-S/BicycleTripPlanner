@@ -136,27 +136,30 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
-    Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
+  findRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
 
-    _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
-        route.bounds.northeast,
-        route.bounds.southwest);
+    Location startStationLocation = (await _placesService.getPlace(origin)).geometry.location;
+    Location endStationLocation = (await _placesService.getPlace(destination)).geometry.location;
 
-    _polylineManager.setPolyline(route.polyline.points);
+    Station startStation = _stationManager.getPickupStationNear(LatLng(startStationLocation.lat, startStationLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(LatLng(endStationLocation.lat, endStationLocation.lng), groupSize);
 
-    _directionManager.setRoute(route);
+    String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
+
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates);
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
   }
 
   void endRoute(){
     _routeManager.endRoute();
+    _directionManager.clear();
     notifyListeners();
   }
-
-
 
 
   // ********** Screen Management **********
@@ -180,68 +183,6 @@ class ApplicationBloc with ChangeNotifier {
       selectedScreen = screens[prevScreens.removeFirst()]!;
       notifyListeners();
     }
-  }
-
-  void createWalkingRouteToFirstStationFromCurrentLocation() async {
-    LatLng currentPosition = await _locationManager.locate();
-    List<Station> stations = _stationManager.getStations();
-    Station? closestStation;
-    var groupSize = 1;  //default is 1 but the user will be able to change this later on
-
-    //find closest station with enough bikes for the user's group
-    for (Station station in stations) {
-      if (station.bikes.toInt() >= groupSize) {
-        if (_locationManager.distanceFromTo(currentPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(currentPosition, LatLng(closestStation!.lat, closestStation!.lng)));
-        closestStation = station;
-      }
-    }
-
-    if (closestStation == null) {
-      print('no stations with enough bikes');
-      //handle this case
-    }
-
-    //create walking route from starting (current) location to the first bike station
-    _directionManager.isWalking = true;
-    _routeManager.setStart(currentPosition.toString());
-    _routeManager.setDestination(closestStation.toString());
-
-  }
-
-  void createRouteBetweenStations(Station startStation, Station endStation) {
-    List<Station> stations = _stationManager.getStations();
-  }
-
-  void createWalkingRouteToDestinationFromFinalBikeStation(Location destination) async {
-    LatLng destinationPosition = LatLng(destination.lat, destination.lng);
-    List<Station> stations = _stationManager.getStations();
-    Station? closestStation;
-    var groupSize = 1;  //default is 1 but the user will be able to change this later on
-
-    //find closest station with enough bikes for the user's group
-    for (Station station in stations) {
-      if (station.bikes.toInt() >= groupSize) {
-        if (_locationManager.distanceFromTo(destinationPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(destinationPosition, LatLng(closestStation!.lat, closestStation!.lng)));
-        closestStation = station;
-      }
-    }
-
-    if (closestStation == null) {
-      print('no stations with enough bikes');
-      //handle this case
-    }
-
-    //create walking route from station to destination
-    _directionManager.isWalking = true;
-    _routeManager.setStart(closestStation.toString());
-    _routeManager.setDestination(destination.toString());
-
-  }
-
-  void createRoute() {
-    createWalkingRouteToFirstStationFromCurrentLocation();
-    createRouteBetweenStations(startStation, endStation);
-    createWalkingRouteToDestinationFromFinalBikeStation(destination);
   }
 
 }

@@ -100,7 +100,6 @@ class RouteManager{
   }
 
   void endRoute() {
-    _directionManager.clear();
     _polylineManager.clearPolyline();
 
     clearIntermediates();

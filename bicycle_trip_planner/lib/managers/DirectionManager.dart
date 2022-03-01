@@ -1,4 +1,6 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
@@ -7,9 +9,12 @@ class DirectionManager{
   
   //********** Fields **********
 
-  late R.Route startWalkingRoute;
-  late R.Route _bikingRoute;
-  late R.Route endWalkingRoute;
+  final CameraManager _cameraManager = CameraManager.instance;
+  final PolylineManager _polylineManager = PolylineManager();
+
+  R.Route _startWalkingRoute = R.Route.routeNotFound();
+  R.Route _bikingRoute = R.Route.routeNotFound();
+  R.Route _endWalkingRoute = R.Route.routeNotFound();
 
   bool _isCycling = false;
 
@@ -18,7 +23,7 @@ class DirectionManager{
 
   List<Steps> _directions = <Steps>[];
 
-  Steps _currentDirection = Steps(instruction: "", distance: 0, duration: 0);
+  Steps _currentDirection = Steps.stepsNotFound();
 
   //********** Singleton **********
 
@@ -113,9 +118,15 @@ class DirectionManager{
     _distance = "$km km";
   }
 
-  void setRoute(R.Route route){
-    _bikingRoute = route;
+  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk){
+    _startWalkingRoute = startWalk;
+    _bikingRoute = bike;
+    _endWalkingRoute = endWalk;
 
+    setCurrentRoute(_bikingRoute);
+  }
+
+  void setCurrentRoute(R.Route route){
     _currentDirection = route.legs.first.steps.removeAt(0);
 
     int duration = 0;
@@ -129,6 +140,14 @@ class DirectionManager{
 
     setDuration(duration);
     setDistance(distance);
+
+    _cameraManager.goToPlace(
+        route.legs.first.startLocation.lat,
+        route.legs.first.startLocation.lng,
+        route.bounds.northeast,
+        route.bounds.southwest);
+
+    _polylineManager.setPolyline(route.polyline.points);
   }
 
   void toggleCycling() {
@@ -138,10 +157,14 @@ class DirectionManager{
   //********** Clearing **********
 
   void clear(){
+    _polylineManager.clearPolyline();
+
     clearDuration(); 
     clearDistance(); 
     clearCurrentDirection();
-    clearDirections(); 
+    clearDirections();
+
+    clearRoutes();
   }
 
   void clearDuration(){
@@ -157,6 +180,13 @@ class DirectionManager{
   }
 
   void clearCurrentDirection(){
-    _currentDirection = Steps(instruction: "", distance: 0, duration: 0);
+    _currentDirection = Steps.stepsNotFound();
   }
+
+  void clearRoutes(){
+    _startWalkingRoute = R.Route.routeNotFound();
+    _bikingRoute = R.Route.routeNotFound();
+    _endWalkingRoute = R.Route.routeNotFound();
+  }
+
 }
