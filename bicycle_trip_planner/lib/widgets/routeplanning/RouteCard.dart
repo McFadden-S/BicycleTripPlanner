@@ -31,6 +31,19 @@ class _RouteCardState extends State<RouteCard> {
 
   }
 
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => setCurrentLocation(context));
+  }
+
+  setCurrentLocation(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    if(!routeManager.ifStartSet() && routeManager.ifDestinationSet()){
+      applicationBloc.setSelectedCurrentLocation(SearchType.start);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -47,11 +60,6 @@ class _RouteCardState extends State<RouteCard> {
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       routeManager.clearChanged();
-    }
-
-    //TODO Find way to get current location faster
-    if(!routeManager.ifStartSet()){
-       applicationBloc.setSelectedCurrentLocation(SearchType.start);
     }
 
         return Container(
