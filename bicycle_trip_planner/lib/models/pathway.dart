@@ -43,6 +43,8 @@ class Pathway{
 
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
 
+  List<Stop> getStops() => _stops; 
+
   // Search getStop(int index){
   //   return stops[index]; 
   // }

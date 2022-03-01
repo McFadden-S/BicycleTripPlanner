@@ -1,10 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
@@ -30,7 +27,6 @@ class _SearchState extends State<Search> {
 
   RouteManager routeManager = RouteManager();
   MarkerManager markerManager = MarkerManager();
-  IntermediateManager intermediateManager = IntermediateManager();
 
   hideSearch() {
     isSearching = false;
@@ -105,6 +101,13 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
+                      // TODO: This will create a marker that cannot be removed IF it's the home page one. 
+                      // Possible solution: we don't move to routeplanning when search is tapped   
+                      // Pass in an argument that holds this search as a placeholder in routemanager so we 
+                      // Have access to it and to pass onto destination OR have home search take a unique id/
+                      // Make a search type enum of search and route (search enum = has unique id only for marker
+                      // No need for any getText for this search) (route enum = behaves as it does currently i.e.
+                      // will have a unique id for marker + WILL also getText for this search)~
                       applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
                       if(widget.uid != -1){
                         applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);

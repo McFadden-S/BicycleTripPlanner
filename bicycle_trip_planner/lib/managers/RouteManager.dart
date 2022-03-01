@@ -1,21 +1,16 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 
 class RouteManager{
 
   //********** Fields **********
 
   final DirectionManager _directionManager = DirectionManager();
-  final MarkerManager _markerManager = MarkerManager();
   final PolylineManager _polylineManager = PolylineManager();
-  final IntermediateManager _intermediateManager = IntermediateManager();
-
+  final MarkerManager _markerManager = MarkerManager();
 
   //String _start = "";
   //String _destination = "";
@@ -138,6 +133,21 @@ class RouteManager{
     _changed = true;
   }
 
+  void removeWaypoints(){
+    List<int> uids = _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
+    for(int id in uids){
+      removeStop(id); 
+    }
+  }
+
+  void clearRouteMarkers(){
+    List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
+    for(int id in uids){
+      _markerManager.clearMarker(id);
+    }
+     
+  }
+
   // void setStart(String start){
   //   _start = start;
   //   _changed = true;
@@ -189,7 +199,6 @@ class RouteManager{
   //   }
   // }
 
-  //TODO: Clear stops
 
   void clearChanged(){
     _changed = false;
@@ -198,12 +207,11 @@ class RouteManager{
   void endRoute() {
     _directionManager.clear();
     _polylineManager.clearPolyline();
+    clearRouteMarkers(); 
 
-    //clearIntermediates();
+    removeWaypoints();
     clearStart();
     clearDestination();
-
-    //_intermediateManager.clear(); 
   }
 
 

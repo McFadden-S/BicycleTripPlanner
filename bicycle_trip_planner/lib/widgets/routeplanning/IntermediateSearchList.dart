@@ -1,7 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
@@ -22,7 +20,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
-  IntermediateManager intermediateManager = IntermediateManager();
 
   List<Widget> stopsList = [];
 
@@ -39,7 +36,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           ListTile(
             title:
               Search(
-                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
+                  labelTextIn: "Stop",
                   searchController: searchController,
                   uid: waypoint.getUID()
               ),
@@ -48,12 +45,10 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   onPressed: (){
                     setState(() {
                       int indexPressed = intermediateSearchControllers.indexOf(searchController); 
-
-                      //TODO: REMOVE
-
-                      //applicationBloc.clearSelectedLocation(SearchType.intermediate, search.intermediateIndex); 
-                      //stopsList.removeAt(indexPressed);
-                      //intermediateSearchControllers.removeAt(indexPressed);
+                      applicationBloc.clearLocationMarker(waypoint.getUID());
+                      applicationBloc.clearSelectedLocation(waypoint.getUID());
+                      stopsList.removeAt(indexPressed);
+                      intermediateSearchControllers.removeAt(indexPressed);
                     });
                   },
                   icon: const Icon(
