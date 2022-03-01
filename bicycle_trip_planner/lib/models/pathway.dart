@@ -2,21 +2,10 @@ import 'package:bicycle_trip_planner/models/stop.dart';
 
 class Pathway{
 
-  //final List<Search> stops = []; 
   Stop _start = Stop(); 
   Stop _destination = Stop(); 
   final List<Stop> _stops = [];
   int size = 0;
-  //late Search _start;
-  //late Search _destination; 
-
-  // Pathway({required Search start, required Search destination}){
-  //   _start = start;
-  //   _destination = destination;
-  //   addStop(start); 
-  //   addStop(destination); 
-  //   size = 2; 
-  // }
 
   // NOTE: TODO ADD EDGE CASE (Pathway MUST have 2 stops at least)
   Pathway(){ 
@@ -26,16 +15,10 @@ class Pathway{
     _updatePointers(); 
   }
 
-  //Search getStart() { return _start;}
   Stop getStart() => _start;
 
-  //Search getDestination() { return stops.last;}
   Stop getDestination() => _destination;
 
-  // List<Search> getWaypoints(){
-  //   print(size); 
-  //   return stops.sublist(1, size - 1); 
-  // }
   Stop getStop(int id){
     if(id == -1){return Stop();} 
     return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
@@ -44,10 +27,6 @@ class Pathway{
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
 
   List<Stop> getStops() => _stops; 
-
-  // Search getStop(int index){
-  //   return stops[index]; 
-  // }
 
   void _updatePointers(){
     _updateStart();
@@ -63,7 +42,6 @@ class Pathway{
   }
 
   void addStop(Stop stop){
-    print(stop.getUID()); 
     _stops.add(stop); 
     size = size + 1; 
     _updateDestination(); 
@@ -114,41 +92,4 @@ class Pathway{
     Stop stop = getStop(id);
     stop.setStop(newStop);
   }
-
-  // void addStop(Search search){
-  //   stops.add(search); 
-  //   size = size + 1;   
-  //   print(size);
-  //   _updateDestination(); 
-  // }
-
-  // void removeStop(Search search){
-  //   if(size > 2){
-  //     stops.remove(search); 
-  //     size = size - 1; 
-  //     _updatePointers();
-  //   }
-  // }
-
-  // void moveStop(int currentStopIndex, int newStopIndex){
-  //   Search search = stops[currentStopIndex];
-  //   if(currentStopIndex < newStopIndex){
-  //     stops.insert(newStopIndex, search);
-  //     stops.removeAt(currentStopIndex); 
-  //   }
-  //   else if(currentStopIndex > newStopIndex){
-  //     stops.removeAt(currentStopIndex);
-  //     stops.insert(newStopIndex, search);
-  //   }
-  //   _updatePointers();
-  // }
-
-  // void swapStops(int stop1Index, int stop2Index){
-  //   Search temp = stops[stop1Index];
-  //   stops[stop1Index] = stops[stop2Index];
-  //   stops[stop2Index] = temp; 
-  //   _updatePointers(); 
-  // }
-
-
 }

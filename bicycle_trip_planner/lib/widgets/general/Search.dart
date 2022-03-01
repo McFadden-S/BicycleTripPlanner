@@ -37,40 +37,10 @@ class _SearchState extends State<Search> {
     return routeManager.getStop(widget.uid).getStop(); 
   }
 
-  // getText(){
-  //   switch (widget.searchType){
-  //     case SearchType.start:
-  //       return routeManager.getStart();
-  //     case SearchType.end:
-  //       return routeManager.getDestination();
-  //     case SearchType.intermediate:
-  //       return routeManager.getIntermediate(searchIndex);
-  //   }
-  // }
-
-  // @override 
-  // void initState(){
-  //   super.initState();
-  //   if(widget.searchType == SearchType.intermediate){
-  //     intermediateManager.intermediateSearches.add(widget);
-  //     //TODO:  Put these as a separate method
-  //     searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
-  //     intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
-  //     routeManager.setIntermediate("", widget.intermediateIndex); 
-  //   }
-  //   print(widget.intermediateIndex); 
-  // }
-
-
    @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
-
-    // if(widget.searchType == SearchType.intermediate){
-    //   searchIndex = intermediateManager.intermediateSearches.indexOf(widget);
-    //   intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
-    // }
 
     if(!isSearching){
         widget.searchController.text = getText();
@@ -112,30 +82,10 @@ class _SearchState extends State<Search> {
                       if(widget.uid != -1){
                         applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
                       }
-                      // if(!routeManager.ifPathwayInitialized()){
-                      //   if (widget.labelTextIn.contains("Start")){
-                      //     routeManager.setStart(applicationBloc.searchResults[index].description); 
-                      //   }
-                      //   else if(widget.labelTextIn.contains("Destination")){
-                      //     routeManager.setDestination(applicationBloc.searchResults[index].description);
-                      //     if (!routeManager.ifStartSet()){
-                      //       applicationBloc.setSelectedCurrentLocation(SearchType.start); 
-                      //     }
-                      //   }
-                      // }
-
-                      // if(routeManager.ifPathwayInitialized()){
-                      //   routeManager.pathway.addStop(widget); 
-                      // }
-
-                          // applicationBloc.searchResults[index].placeId,
-                          // applicationBloc.searchResults[index].description,
-                          // widget.searchType, widget.intermediateIndex);
 
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
                       //TODO should be changed to appropriate scope
-                      //TODO Remove this and instead make a button to change screen 
                       applicationBloc.setSelectedScreen('routePlanning');
 
                       hideSearch();
@@ -179,10 +129,6 @@ class _SearchState extends State<Search> {
                     if(widget.uid != -1){
                       applicationBloc.clearSelectedLocation(widget.uid);
                     }
-                    //applicationBloc.clearLocationMarker(widget._UID);
-                    // widget.searchType, widget.intermediateIndex);
-                    //       print(widget.searchController.text);
-                    //       print(widget.intermediateIndex);
                   }
                 );
                   hideSearch();

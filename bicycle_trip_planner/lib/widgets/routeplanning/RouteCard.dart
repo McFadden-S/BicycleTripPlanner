@@ -32,9 +32,6 @@ class _RouteCardState extends State<RouteCard> {
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    print("StartID ${routeManager.getStart().getUID()}"); 
-    print("EndID ${routeManager.getDestination().getUID()}"); 
-    print(routeManager.getStart() == routeManager.getDestination());
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       polylineManager.clearPolyline();

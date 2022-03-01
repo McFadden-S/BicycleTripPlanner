@@ -144,61 +144,8 @@ class RouteManager{
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for(int id in uids){
       _markerManager.clearMarker(id);
-    }
-     
+    }  
   }
-
-  // void setStart(String start){
-  //   _start = start;
-  //   _changed = true;
-  // }
-
-  // void clearStart(){
-  //   setStart("");
-  //   _markerManager.clearMarker(SearchType.start);
-  // }
-
-  // void setDestination(String destination){
-  //   _destination = destination;
-  //   _changed = true;
-  // }
-
-  // void clearDestination(){
-  //   setDestination("");
-  //   _markerManager.clearMarker(SearchType.end);
-  // }
-
-  // void setIntermediate(String intermediate, int id){
-  //   print("Set id: ${id.toString()}"); 
-  //   int index = _intermediateManager.idToIntermediateIndex[id]!;
-  //   print("index of this id: ${index}"); 
-  //   if(_intermediates.length > index && _intermediates.isNotEmpty){
-  //     _intermediates[index] = intermediate;
-  //   } else{
-  //     _intermediates.add(intermediate);
-  //   }
-  //   _changed = true;
-  // }
-
-  // void removeIntermediate(int id){
-  //   print("Remove id: ${id.toString()}"); 
-  //   int index = _intermediateManager.idToIntermediateIndex[id]!;
-  //   if(_intermediates.length > index && _intermediates.isNotEmpty){
-  //     _intermediates.removeAt(index);
-  //     print("index of this id: ${index}"); 
-  //     _intermediateManager.idToIntermediateIndex.remove(id);
-  //     _intermediateManager.intermediateSearches.removeAt(index); 
-  //   }else{print("Wasn't removed");}
-  //   _changed = true;
-  // }
-
-  // void clearIntermediates(){
-  //   for(int i=_intermediateManager.intermediateSearches.length - 1; i >= 0; i--){
-  //     _markerManager.clearMarker(SearchType.intermediate, _intermediateManager.intermediateSearches[i].intermediateIndex);
-  //     removeIntermediate(_intermediateManager.intermediateSearches[i].intermediateIndex); 
-  //   }
-  // }
-
 
   void clearChanged(){
     _changed = false;

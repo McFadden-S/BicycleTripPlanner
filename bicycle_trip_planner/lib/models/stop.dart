@@ -5,9 +5,7 @@ class Stop{
   String _stop;
   final int _uid = IDManager().generateUID(); 
 
-  Stop([this._stop = ""]){
-    print("Generated $_uid"); 
-  } 
+  Stop([this._stop = ""]);
 
   String getStop() => _stop; 
 
