@@ -1,7 +1,8 @@
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
+import 'CircleButton.dart';
 
 class CurrentLocationButton extends StatefulWidget {
 
@@ -15,14 +16,11 @@ class CurrentLocationButton extends StatefulWidget {
 
 class _CurrentLocationButtonState extends State<CurrentLocationButton> {
 
-   @override
+  @override
   Widget build(BuildContext context) {
 
-    return FloatingActionButton(
-      onPressed: (){
-        CameraManager.instance.viewUser();
-      },
-      child: Icon(Icons.location_searching_rounded),
-    );
+    return CircleButton(
+        iconIn: Icons.location_searching,
+        onButtonClicked: () => CameraManager.instance.viewUser());
   }
 }

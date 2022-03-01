@@ -1,29 +1,33 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 
 class RouteManager{
 
   //********** Fields **********
 
   final DirectionManager _directionManager = DirectionManager();
-  final MarkerManager _markerManager = MarkerManager();
   final PolylineManager _polylineManager = PolylineManager();
+  final MarkerManager _markerManager = MarkerManager();
 
+  //String _start = "";
+  //String _destination = "";
 
-  String _start = "";
-  String _destination = "";
-
-  final List<String> _intermediates = <String>[];
+  //final List<String> _intermediates = <String>[];
+  final Pathway _pathway = Pathway();
 
   bool _changed = false;
+  // bool _optimised = false;
 
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
 
-  factory RouteManager() {return _routeManager;}
+  factory RouteManager() {
+    return _routeManager;
+  }
 
   RouteManager._internal();
 
@@ -31,68 +35,116 @@ class RouteManager{
 
   //********** Public **********
 
-  String getStart(){return _start;}
+  //String getStart(){return pathway.getStart().getText();}
+  Stop getStart(){
+    return _pathway.getStart();
+  } 
 
-  String getDestination(){return _destination;}
-
-  List<String> getIntermediates(){return _intermediates;}
-
-  String getIntermediate(int index){
-    if(_intermediates.length >= index && _intermediates.isNotEmpty){
-      return _intermediates[index];
-    }
-    return "";
+  //String getDestination() => pathway.getDestination().getText();
+  Stop getDestination(){
+    return _pathway.getDestination();
   }
+
+  List<Stop> getWaypoints() {
+    return _pathway.getWaypoints();
+  }
+
+  Stop getStop(int id) => _pathway.getStop(id);
 
   bool ifChanged(){return _changed;}
 
-  bool ifStartSet(){return _start != "";}
+  bool ifStartSet(){return _pathway.getStart().getStop() != "";}
 
-  bool ifDestinationSet(){return _destination != "";}
+  bool ifDestinationSet(){return _pathway.getDestination().getStop() != "";}
 
-  bool ifIntermediatesSet(){return _intermediates.isNotEmpty;} 
+  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;} 
 
-  void setStart(String start){
-    _start = start;
+  void changeStart(String start){
+    _pathway.changeStart(start);
     _changed = true;
   }
 
-  void clearStart(){
-    setStart("");
-    _markerManager.clearMarker(SearchType.start);
+  void changeDestination(String destination){
+    _pathway.changeDestination(destination);
+    _changed = true;
   }
 
-  void setDestination(String destination){
-    _destination = destination;
+  void changeWaypoint(int id, String waypoint){
+    _pathway.changeStop(id, waypoint); 
+    _changed = true;
+  }
+
+  void changeStop(int id, String stop){
+    _pathway.changeStop(id, stop);
+    _changed = true; 
+  }
+
+  void swapStops(int stop1ID, int stop2ID){
+    _pathway.swapStops(stop1ID, stop2ID);
+    _changed = true; 
+  }
+
+  // Overrides the old destination
+  void addDestination(String destination){
+    Stop destinationStop = Stop(destination); 
+    _pathway.addStop(destinationStop); 
+    _changed = true; 
+  }
+
+  // Overrides the new stop
+  void addStart(String start){
+    Stop startStop = Stop(start); 
+    _pathway.addStop(startStop); 
+    _pathway.moveStop(startStop.getUID(), 0); 
+    _changed = true; 
+  }
+
+  // Adds a new waypoint at the end (before destination)
+  Stop addWaypoint(String waypoint){
+    Stop destination = getDestination(); 
+    Stop waypointStop = Stop(waypoint); 
+    _pathway.addStop(waypointStop); 
+    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    //Adding a new waypoint with empty string implies no change
+    if(waypoint != ""){
+      _changed = true; 
+    }
+    return waypointStop;
+  }
+
+  void clearStart(){
+    _pathway.changeStart("");
     _changed = true;
   }
 
   void clearDestination(){
-    setDestination("");
-    _markerManager.clearMarker(SearchType.end);
-  }
-
-  void setIntermediate(String intermediate, int index){
-    if(_intermediates.length >= index && _intermediates.isNotEmpty){
-      _intermediates[index] = intermediate;
-    } else{
-      _intermediates.add(intermediate);
-    }
+    _pathway.changeDestination("");
     _changed = true;
   }
 
-  void removeIntermediate(int index){
-    if(_intermediates.length <= index && _intermediates.isNotEmpty){
-      _intermediates.removeAt(index);
-      _markerManager.clearMarker(SearchType.intermediate, index);
-    }
+  // Clears a waypoint (doesn't remove)
+  void clearStop(int id){
+    _pathway.changeStop(id, "");
     _changed = true;
   }
 
-  void clearIntermediates(){
-    for(int i = _intermediates.length-1; i >= 0; i--){
-      removeIntermediate(i);
+  void removeStop(int id){
+    _pathway.removeStop(id);
+    _changed = true;
+  }
+
+  void removeWaypoints(){
+    List<int> uids = _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
+    for(int id in uids){
+      removeStop(id); 
     }
+  }
+
+  void clearRouteMarkers(){
+    List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
+    for(int id in uids){
+      _markerManager.clearMarker(id);
+    }  
   }
 
   void clearChanged(){
@@ -101,10 +153,12 @@ class RouteManager{
 
   void endRoute() {
     _polylineManager.clearPolyline();
+    clearRouteMarkers(); 
 
-    clearIntermediates();
+    removeWaypoints();
     clearStart();
     clearDestination();
   }
+
 
 }

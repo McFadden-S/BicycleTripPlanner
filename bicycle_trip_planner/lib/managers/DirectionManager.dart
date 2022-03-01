@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
 
 class DirectionManager{
-  
+
   //********** Fields **********
 
   final CameraManager _cameraManager = CameraManager.instance;
@@ -27,11 +27,11 @@ class DirectionManager{
 
   //********** Singleton **********
 
-  static final DirectionManager _directionManager = DirectionManager._internal(); 
+  static final DirectionManager _directionManager = DirectionManager._internal();
 
-  factory DirectionManager(){return _directionManager;} 
+  factory DirectionManager(){return _directionManager;}
 
-  DirectionManager._internal(); 
+  DirectionManager._internal();
 
   //********** Private **********
 
@@ -88,7 +88,7 @@ class DirectionManager{
     direction.toLowerCase().contains('head') ? icon = Icons.arrow_upward :
     direction.toLowerCase().contains('roundabout') ? icon = Icons.data_usage_outlined:
     icon = Icons.circle;
-    return Icon(icon, color: buttonPrimaryColor, size: 60);
+    return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
   List<Steps> createDummyDirections() {
@@ -167,8 +167,8 @@ class DirectionManager{
   void clear(){
     _polylineManager.clearPolyline();
 
-    clearDuration(); 
-    clearDistance(); 
+    clearDuration();
+    clearDistance();
     clearCurrentDirection();
     clearDirections();
 

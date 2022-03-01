@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -13,7 +14,7 @@ class _LoadingState extends State<Loading> {
 
   void setUpMap() async {
     await MapWidget();
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.of(context).pop();
   }
 
   @override

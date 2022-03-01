@@ -1,8 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -28,7 +27,6 @@ class _RouteCardState extends State<RouteCard> {
 
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
-
   }
 
   @override
@@ -37,13 +35,14 @@ class _RouteCardState extends State<RouteCard> {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       applicationBloc.findRoute(
-          routeManager.getStart(),
-          routeManager.getDestination(),
-          routeManager.getIntermediates()
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList()
       );
-
       routeManager.clearChanged();
+
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       routeManager.clearChanged();
@@ -55,49 +54,44 @@ class _RouteCardState extends State<RouteCard> {
     // }
 
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                offset: Offset(0,10),
-                color: Colors.black45,
+                offset: const Offset(0,10),
+                color: ThemeStyle.boxShadow,
                 blurRadius: 30.0,
               ),
             ],
           ),
           child: Card(
-            color: Colors.white,
+            color: ThemeStyle.cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
-              side: const BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+              side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
             child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                                labelTextIn: "Starting Point",
-                                searchController: startSearchController,
-                                searchType: SearchType.start,
-                            ),
-                          ),
-                          IntermediateSearchList(),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                              labelTextIn: "Destination",
-                              searchController: endSearchController,
-                              searchType: SearchType.end,
-                            ),
-                          ),
-                            // const Icon(Icons.expand_more),
-                        ],
-                      ),
-                    ],
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                      labelTextIn: "Starting Point",
+                      searchController: startSearchController,
+                      uid: routeManager.getStart().getUID(),
                   ),
+                ),
+                IntermediateSearchList(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                    labelTextIn: "Destination",
+                    searchController: endSearchController,
+                    uid: routeManager.getDestination().getUID(),
+                  ),
+                ),
+                  // const Icon(Icons.expand_more),
+              ],
+            ),
           ),
         );
   }

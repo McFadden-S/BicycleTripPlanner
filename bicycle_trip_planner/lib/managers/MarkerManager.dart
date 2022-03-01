@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -30,11 +31,16 @@ class MarkerManager {
 
   //********** Private **********
 
-  String _generateMarkerID(SearchType searchType, [int intermediateIndex = 0]){
-    if(intermediateIndex != 0){
-      return searchType.toString() + intermediateIndex.toString();
-    }
-    return searchType.toString();
+  // String _generateMarkerID(SearchType searchType, [int intermediateIndex = 0]){
+  //   if(intermediateIndex != 0){
+  //     return searchType.toString() + intermediateIndex.toString();
+  //   }
+  //   return searchType.toString();
+  // }
+
+  String _generateMarkerID(int id, [String name = ""]){
+    if(name != ""){return "Marker_$name";}
+    return "Marker_$id"; 
   }
 
   bool _markerExists(String markerID){
@@ -80,14 +86,18 @@ class MarkerManager {
     return _markers;
   }
 
-  void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
-    _removeMarker(_generateMarkerID(searchType, intermediateIndex));
+  void removeMarker(String markerID){
+    _removeMarker(markerID); 
   }
 
-  void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {
+  void clearMarker(int uid){
+    _removeMarker(_generateMarkerID(uid));
+  }
+
+  void setPlaceMarker(Place place, [int uid = -1]) {
     final double lat = place.geometry.location.lat;
     final double lng = place.geometry.location.lng;
-    setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
+    setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
   Future<void> setUserMarker(LatLng point) async {
@@ -118,7 +128,7 @@ class MarkerManager {
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        icon: BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);
