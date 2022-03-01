@@ -1,26 +1,21 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
 
   final String labelTextIn;
   final TextEditingController searchController;
+  int uid; 
 
-  final SearchType searchType;
-  final int intermediateIndex;
-
-  const Search({
+  Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
-    required this.searchType,
-    this.intermediateIndex = 0,
-  }) : super(key: key);
+    this.uid = -1
+  }): super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -38,15 +33,8 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  getText(){
-    switch (widget.searchType){
-      case SearchType.start:
-        return routeManager.getStart();
-      case SearchType.end:
-        return routeManager.getDestination();
-      case SearchType.intermediate:
-        return routeManager.getIntermediate(widget.intermediateIndex);
-    }
+  String getText(){
+    return routeManager.getStop(widget.uid).getStop(); 
   }
 
    @override
@@ -55,7 +43,7 @@ class _SearchState extends State<Search> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if(!isSearching){
-      widget.searchController.text = getText();
+        widget.searchController.text = getText();
     }
 
     return Stack(
@@ -83,10 +71,17 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
-                      applicationBloc.setSelectedLocation(
-                          applicationBloc.searchResults[index].placeId,
-                          applicationBloc.searchResults[index].description,
-                          widget.searchType, widget.intermediateIndex);
+                      // TODO: This will create a marker that cannot be removed IF it's the home page one. 
+                      // Possible solution: we don't move to routeplanning when search is tapped   
+                      // Pass in an argument that holds this search as a placeholder in routemanager so we 
+                      // Have access to it and to pass onto destination OR have home search take a unique id/
+                      // Make a search type enum of search and route (search enum = has unique id only for marker
+                      // No need for any getText for this search) (route enum = behaves as it does currently i.e.
+                      // will have a unique id for marker + WILL also getText for this search)~
+                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
+                      if(widget.uid != -1){
+                        applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
+                      }
 
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
@@ -130,9 +125,12 @@ class _SearchState extends State<Search> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() {
-                    applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
+                    applicationBloc.clearLocationMarker(widget.uid); 
+                    if(widget.uid != -1){
+                      applicationBloc.clearSelectedLocation(widget.uid);
+                    }
                   }
-                  );
+                );
                   hideSearch();
                 },
               ),

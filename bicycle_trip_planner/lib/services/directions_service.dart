@@ -6,8 +6,6 @@ class DirectionsService {
   Future<Route> getRoutes(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
-    // NOTE: Directions for waypoints potentially result in partway directions 
-    // Google recommends to use 'via' when querying url to avoid directions stopping at the waypoint. 
     var waypoints = _generateWaypoints(intermediates);
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination$waypoints&mode=bicycling&key=$key';

@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/models/geometry.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Place {
   final Geometry geometry;
@@ -13,5 +14,10 @@ class Place {
         name: parsedJson['formatted_address'],
         placeId: parsedJson['place_id'],
     );
+  }
+
+  // TODO: Make getLatLng for geometry 
+  LatLng getLatLng(){
+    return LatLng(geometry.location.lat, geometry.location.lng);
   }
 }

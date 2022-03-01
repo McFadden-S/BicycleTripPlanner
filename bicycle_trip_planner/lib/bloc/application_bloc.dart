@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -83,57 +82,49 @@ class ApplicationBloc with ChangeNotifier {
 
   searchSelectedStation(Station station) async {
     Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setSelectedLocation(place.placeId, place.name, SearchType.start);
-
+    setLocationMarker(place.placeId); 
+    // Currently will always set station as a destination
+    // Check if station.name and place.name is different (ideally should be placeSearch.description)
+    print(station.name); 
+    print(place.name); 
+    setSelectedLocation(place.name, _routeManager.getDestination().getUID()); 
     notifyListeners();
   }
 
-  setSelectedCurrentLocation(SearchType searchType) async {
+  setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-    setSelectedLocation(place.placeId, place.name, searchType);
-
+     // Currently will always set station as a start
+    setLocationMarker(place.placeId);
+    setSelectedLocation(place.name, _routeManager.getStart().getUID()); 
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId, String placeDescription, SearchType searchType, [int intermediateIndex = 0]) async {
-    Place selected = await _placesService.getPlace(placeId);
-
+  setLocationMarker(String placeID, [int uid = -1]) async {
+    Place selected = await _placesService.getPlace(placeID);
     _cameraManager.viewPlace(selected);
-    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
-
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.setStart(placeDescription);
-        break;
-      case SearchType.end:
-        _routeManager.setDestination(placeDescription);
-        break;
-      case SearchType.intermediate:
-        _routeManager.setIntermediate(placeDescription, intermediateIndex);
-        break;
-    }
-
-    searchResults.clear();
+    _markerManager.setPlaceMarker(selected, uid);
     notifyListeners();
   }
 
-  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
-    _markerManager.clearMarker(searchType, intermediateIndex);
+  setSelectedLocation(String stop, int uid) {
+    _routeManager.changeStop(uid, stop);
+    notifyListeners(); 
+  }
 
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.clearStart();
-        break;
-      case SearchType.end:
-        _routeManager.clearDestination();
-        break;
-      case SearchType.intermediate:
-        _routeManager.removeIntermediate(intermediateIndex);
-        break;
-    }
-
+  clearLocationMarker(int uid) {
+    _markerManager.clearMarker(uid);
     notifyListeners();
+  }
+
+  clearSelectedLocation(int uid){
+    _routeManager.clearStop(uid); 
+    notifyListeners();
+  }
+
+  removeSelectedLocation(int uid){
+    _routeManager.removeStop(uid);
+    notifyListeners(); 
   }
 
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
