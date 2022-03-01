@@ -19,17 +19,8 @@ class _CurrentLocationButtonState extends State<CurrentLocationButton> {
   @override
   Widget build(BuildContext context) {
 
-// <<<<<<< HEAD
-//     return FloatingActionButton(
-//       onPressed: (){
-//         CameraManager.instance.viewUser();
-//       },
-//       child: Icon(Icons.location_searching_rounded, color: ThemeStyle.secondaryIconColor,),
-//     );
-// =======
     return CircleButton(
         iconIn: Icons.location_searching,
         onButtonClicked: () => CameraManager.instance.viewUser());
-//>>>>>>> development
   }
 }

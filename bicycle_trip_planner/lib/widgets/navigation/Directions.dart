@@ -49,51 +49,6 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-// <<<<<<< HEAD
-//     return Card(
-//       color: ThemeStyle.cardColor,
-//       child: InkWell(
-//           splashColor: Colors.blue.withAlpha(30),
-//           onTap: () => _toggleExtendNavigationView(),
-//           child: SizedBox(
-//             height: !extendedNavigation
-//                 ? MediaQuery.of(context).size.height * 0.16
-//                 : directionManager.directions.length < 3
-//                     ? (directionManager.directions.length *
-//                             MediaQuery.of(context).size.height *
-//                             0.1) +
-//                         (MediaQuery.of(context).size.height * 0.16)
-//                     : MediaQuery.of(context).size.height * 0.5,
-//             child: Column(
-//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//               children: [
-//                 CurrentDirection(
-//                     currentDirection: directionManager.currentDirection),
-//                 if (!extendedNavigation)
-//                   const Spacer()
-//                 else if (directionManager.directions.isNotEmpty)
-//                   const Padding(
-//                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-//                     child: Divider(thickness: 0.7),
-//                   ),
-//                 extendedNavigation
-//                     ? SizedBox(
-//                         height: directionManager.directions.length < 3
-//                             ? (directionManager.directions.length) *
-//                                 (MediaQuery.of(context).size.height * 0.08)
-//                             : MediaQuery.of(context).size.height * 0.3,
-//                         child: ListView.separated(
-//                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-//                           itemCount: directionManager.directions.length,
-//                           itemBuilder: (BuildContext context, int index) {
-//                             return DirectionTile(
-//                                 index: index,
-//                                 directionManager: directionManager);
-//                           },
-//                           separatorBuilder: (context, index) {
-//                             return const Divider();
-//                           },
-// =======
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
       onTap: () => _toggleExtendNavigationView(),
@@ -141,7 +96,6 @@ class _DirectionsState extends State<Directions> {
                               return const Divider();
                             },
                           ),
-//>>>>>>> development
                         ),
                       )
                           : Align(
