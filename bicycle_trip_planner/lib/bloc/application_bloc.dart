@@ -186,7 +186,7 @@ class ApplicationBloc with ChangeNotifier {
     var groupSize = 1;  //default is 1 but the user will be able to change this later on
 
     //find closest station with enough bikes for the user's group
-    for (var station in stations) {
+    for (Station station in stations) {
       if (station.bikes.toInt() >= groupSize) {
         if (_locationManager.distanceFromTo(currentPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(currentPosition, LatLng(closestStation!.lat, closestStation!.lng)));
         closestStation = station;
@@ -205,6 +205,10 @@ class ApplicationBloc with ChangeNotifier {
 
   }
 
+  void createRouteBetweenStations(Station startStation, Station endStation) {
+    List<Station> stations = _stationManager.getStations();
+  }
+
   void createWalkingRouteToDestinationFromFinalBikeStation(Location destination) async {
     LatLng destinationPosition = LatLng(destination.lat, destination.lng);
     List<Station> stations = _stationManager.getStations();
@@ -212,7 +216,7 @@ class ApplicationBloc with ChangeNotifier {
     var groupSize = 1;  //default is 1 but the user will be able to change this later on
 
     //find closest station with enough bikes for the user's group
-    for (var station in stations) {
+    for (Station station in stations) {
       if (station.bikes.toInt() >= groupSize) {
         if (_locationManager.distanceFromTo(destinationPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(destinationPosition, LatLng(closestStation!.lat, closestStation!.lng)));
         closestStation = station;
@@ -229,6 +233,12 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager.setStart(closestStation.toString());
     _routeManager.setDestination(destination.toString());
 
+  }
+
+  void createRoute() {
+    createWalkingRouteToFirstStationFromCurrentLocation();
+    createRouteBetweenStations(startStation, endStation);
+    createWalkingRouteToDestinationFromFinalBikeStation(destination);
   }
 
 }
