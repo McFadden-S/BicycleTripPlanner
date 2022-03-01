@@ -72,33 +72,28 @@ class _RouteCardState extends State<RouteCard> {
               side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
             child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                                labelTextIn: "Starting Point",
-                                searchController: startSearchController,
-                                searchType: SearchType.start,
-                            ),
-                          ),
-                          IntermediateSearchList(),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                              labelTextIn: "Destination",
-                              searchController: endSearchController,
-                              searchType: SearchType.end,
-                            ),
-                          ),
-                            // const Icon(Icons.expand_more),
-                        ],
-                      ),
-                    ],
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                      labelTextIn: "Starting Point",
+                      searchController: startSearchController,
+                      searchType: SearchType.start,
                   ),
+                ),
+                IntermediateSearchList(),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Search(
+                    labelTextIn: "Destination",
+                    searchController: endSearchController,
+                    searchType: SearchType.end,
+                  ),
+                ),
+                  // const Icon(Icons.expand_more),
+              ],
+            ),
           ),
         );
   }

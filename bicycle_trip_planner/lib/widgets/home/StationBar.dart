@@ -21,6 +21,7 @@ class _StationBarState extends State<StationBar> {
 
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
+        enableDrag: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {

@@ -24,7 +24,7 @@ class _StationCardState extends State<DistanceETACard> {
         child: Row(
           children: [
             Column(children: const [
-              Icon(Icons.timer),
+              Icon(Icons.access_time_outlined),
               Text("[ETA]")
             ]),
           const Text("3.5 miles")

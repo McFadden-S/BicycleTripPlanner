@@ -99,6 +99,15 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   },
                   icon: FaIcon(FontAwesomeIcons.google),
                 ),
+                SizedBox(height: 10),
+                IconButton(
+                  icon: const BackButtonIcon(),
+                  color: Colors.black,
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  onPressed: () {
+                    // TODO: go back to home
+                  },
+                ),
               ],
             ),
           ),

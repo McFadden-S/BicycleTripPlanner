@@ -24,6 +24,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(ThemeStyle.buttonSecondaryColor)),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.directions_walk,
