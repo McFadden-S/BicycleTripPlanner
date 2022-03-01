@@ -8,7 +8,8 @@ class DirectionManager{
   //********** Fields **********
 
   late R.Route route;
-  bool isCycling = false; 
+  bool isCycling = false;
+  bool isWalking = false;
   String duration = "No data";
   String distance = "No data";
   List<Steps> directions = <Steps>[];
@@ -24,7 +25,7 @@ class DirectionManager{
 
   //********** Private **********
 
-  //********** Public *********
+  //********** Public **********
 
   void setRoute(R.Route route){
     this.route = route;
