@@ -17,11 +17,11 @@ class _DirectionTileState extends State<DirectionTile> {
   Widget build(BuildContext context) {
      return ListTile(
       leading: widget.directionManager.directionIcon(
-          widget.directionManager.directions[widget.index].instruction),
+          widget.directionManager.getDirection(widget.index).instruction),
       trailing:
-          Text("${widget.directionManager.directions[widget.index].distance} m"),
+          Text("${widget.directionManager.getDirection(widget.index).distance} m"),
       title: Html(
-        data: widget.directionManager.directions[widget.index].instruction,
+        data: widget.directionManager.getDirection(widget.index).instruction,
     ));
   }
 }

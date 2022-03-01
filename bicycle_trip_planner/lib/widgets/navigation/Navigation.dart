@@ -98,7 +98,7 @@ class _NavigationState extends State<Navigation> {
                           const BorderSide(color: Color(0xFF8B0000), width: 1),
                       borderRadius: BorderRadius.circular(9.0),
                     ),
-                    child: Countdown(duration: directionManager.duration))
+                    child: Countdown(duration: directionManager.getDuration()))
               ]),
               const Spacer(flex: 50),
               Row(

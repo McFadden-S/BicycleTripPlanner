@@ -30,28 +30,6 @@ class _DirectionsState extends State<Directions> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    Rou.Route currentRoute = directionManager.route;
-
-    directionManager.currentDirection = currentRoute.legs.first.steps.removeAt(0);
-
-    int duration = 0;
-    int distance = 0;
-    for(var i =0; i < currentRoute.legs.length; i++){
-      directionManager.directions += currentRoute.legs[i].steps;
-      duration += currentRoute.legs[i].duration;
-      distance += currentRoute.legs[i].distance;
-    }
-    directionManager.setDuration(duration);
-    directionManager.setDistance(distance);
-
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
@@ -60,8 +38,8 @@ class _DirectionsState extends State<Directions> {
           child: SizedBox(
             height: !extendedNavigation
                 ? MediaQuery.of(context).size.height * 0.16
-                : directionManager.directions.length < 3
-                    ? (directionManager.directions.length *
+                : directionManager.getNumberOfDirections() < 3
+                    ? (directionManager.getNumberOfDirections() *
                             MediaQuery.of(context).size.height *
                             0.1) +
                         (MediaQuery.of(context).size.height * 0.16)
@@ -70,23 +48,23 @@ class _DirectionsState extends State<Directions> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CurrentDirection(
-                    currentDirection: directionManager.currentDirection),
+                    currentDirection: directionManager.getCurrentDirection()),
                 if (!extendedNavigation)
                   const Spacer()
-                else if (directionManager.directions.isNotEmpty)
+                else if (directionManager.ifDirections())
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                     child: Divider(thickness: 0.7),
                   ),
                 extendedNavigation
                     ? SizedBox(
-                        height: directionManager.directions.length < 3
-                            ? (directionManager.directions.length) *
+                        height: directionManager.getNumberOfDirections() < 3
+                            ? (directionManager.getNumberOfDirections()) *
                                 (MediaQuery.of(context).size.height * 0.08)
                             : MediaQuery.of(context).size.height * 0.3,
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                          itemCount: directionManager.directions.length,
+                          itemCount: directionManager.getNumberOfDirections(),
                           itemBuilder: (BuildContext context, int index) {
                             return DirectionTile(
                                 index: index,

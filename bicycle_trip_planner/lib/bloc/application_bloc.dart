@@ -156,6 +156,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+
+
+
   // ********** Screen Management **********
 
   Widget getSelectedScreen() {
