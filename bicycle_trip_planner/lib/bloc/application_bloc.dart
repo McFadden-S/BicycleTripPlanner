@@ -84,77 +84,102 @@ class ApplicationBloc with ChangeNotifier {
 
   searchSelectedStation(Station station) async {
     Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setSelectedLocation(place.placeId, place.name, SearchType.start);
-
+    setLocationMarker(place.placeId); 
     notifyListeners();
   }
 
-  setSelectedCurrentLocation(SearchType searchType) async {
-    LatLng latLng = await _locationManager.locate();
-    Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-    setSelectedLocation(place.placeId, place.name, searchType);
+  // searchSelectedStation(Station station) async {
+  //   Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
+  //   setSelectedLocation(place.placeId, place.name, SearchType.start);
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
-  setSelectedLocation(String placeId, String placeDescription, SearchType searchType, [int intermediateIndex = 0]) async {
-    Place selected = await _placesService.getPlace(placeId);
+  // setSelectedCurrentLocation(SearchType searchType) async {
+  //   LatLng latLng = await _locationManager.locate();
+  //   Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+  //   setSelectedLocation(place.placeId, place.name, searchType);
 
-    _cameraManager.viewPlace(selected);
-    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+  //   notifyListeners();
+  // }
 
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.setStart(placeDescription);
-        break;
-      case SearchType.end:
-        _routeManager.setDestination(placeDescription);
-        break;
-      case SearchType.intermediate:
-        _routeManager.setIntermediate(placeDescription, intermediateIndex);
-        print(placeDescription);
-        break;
-    }
+  // setSelectedLocation(String placeId, String placeDescription, SearchType searchType, [int intermediateIndex = 0]) async {
+  //   Place selected = await _placesService.getPlace(placeId);
 
-    searchResults.clear();
-    notifyListeners();
-  }
+  //   _cameraManager.viewPlace(selected);
+  //   _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
 
-  setLocationMarker(String placeID, int UID) async {
-    
+  //   switch (searchType){
+  //     case SearchType.start:
+  //       _routeManager.setStart(placeDescription);
+  //       break;
+  //     case SearchType.end:
+  //       _routeManager.setDestination(placeDescription);
+  //       break;
+  //     case SearchType.intermediate:
+  //       _routeManager.setIntermediate(placeDescription, intermediateIndex);
+  //       print(placeDescription);
+  //       break;
+  //   }
+
+  //   searchResults.clear();
+  //   notifyListeners();
+  // }
+
+  // setLocationMarker(String placeID, int uid) async {
+  //   Place selected = await _placesService.getPlace(placeID);
+  //   LatLng placeLatLng = selected.getLatLng();
+  //   String markerID = 'Marker_$uid';
+  //   _cameraManager.viewPlace(selected);
+  //   _markerManager.setMarker(placeLatLng, markerID);
+  //   //_markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+  //   notifyListeners();
+  // }
+
+  setLocationMarker(String placeID, [int uid = -1]) async {
     Place selected = await _placesService.getPlace(placeID);
-    LatLng placeLatLng = selected.getLatLng();
-    String markerID = 'Marker_$UID';
     _cameraManager.viewPlace(selected);
-    _markerManager.setMarker(placeLatLng ,markerID);
-    //_markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+    _markerManager.setPlaceMarker(selected, uid);
     notifyListeners();
   }
 
-  clearLocationMarker(int UID) {
-    String markerID = 'Marker_$UID';
-    _markerManager.removeMarker(markerID);
-    //_markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
+  setSelectedLocation(String stop, int uid) {
+    _routeManager.changeStop(uid, stop);
+    notifyListeners(); 
+  }
+
+  clearLocationMarker(int uid) {
+    _markerManager.clearMarker(uid);
     notifyListeners();
   }
 
-  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
-    _markerManager.clearMarker(searchType, intermediateIndex);
-
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.clearStart();
-        break;
-      case SearchType.end:
-        _routeManager.clearDestination();
-        break;
-      case SearchType.intermediate:
-        _routeManager.removeIntermediate(intermediateIndex);
-        break;
-    }
-
+  clearSelectedLocation(int uid){
+    _routeManager.clearStop(uid); 
     notifyListeners();
   }
+
+  removeSelectedLocation(int uid){
+    _routeManager.removeStop(uid);
+    notifyListeners(); 
+  }
+
+  // clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
+  //   _markerManager.clearMarker(searchType, intermediateIndex);
+
+  //   switch (searchType){
+  //     case SearchType.start:
+  //       _routeManager.clearStart();
+  //       break;
+  //     case SearchType.end:
+  //       _routeManager.clearDestination();
+  //       break;
+  //     case SearchType.intermediate:
+  //       _routeManager.removeIntermediate(intermediateIndex);
+  //       break;
+  //   }
+
+  //   notifyListeners();
+  // }
 
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
     print(origin);

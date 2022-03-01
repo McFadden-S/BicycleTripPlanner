@@ -33,7 +33,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                     children: [
                       Expanded(
                         child: Search(
-                          labelTextIn: 'Destination', //TODO: Temporary change from Search
+                          labelTextIn: 'Search',
                           searchController: TextEditingController(),
                         ),
                       ),

@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/IntermediateManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
@@ -28,34 +29,31 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   bool isShowingIntermediate = false;
 
   void _addStopWidget(ApplicationBloc applicationBloc) {
+
     setState(() {
-
       TextEditingController searchController = TextEditingController();
-
       intermediateSearchControllers.add(searchController);
-      Search search = Search(
-                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
-                  searchController: searchController,
-              );
+      Stop waypoint = routeManager.addWaypoint(""); 
 
       stopsList.add(
           ListTile(
             title:
-              search,
+              Search(
+                  labelTextIn: "Stop ${intermediateSearchControllers.length}",
+                  searchController: searchController,
+                  uid: waypoint.getUID()
+              ),
               trailing: IconButton(
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
                       int indexPressed = intermediateSearchControllers.indexOf(searchController); 
-                      print(intermediateSearchControllers.length);
 
-                      for(int i = indexPressed; i < intermediateSearchControllers.length - 1; i++){
-                        intermediateSearchControllers[i].text = intermediateSearchControllers[i+1].text;
-                      }
+                      //TODO: REMOVE
 
                       //applicationBloc.clearSelectedLocation(SearchType.intermediate, search.intermediateIndex); 
-                      stopsList.removeAt(indexPressed);
-                      intermediateSearchControllers.removeAt(indexPressed);
+                      //stopsList.removeAt(indexPressed);
+                      //intermediateSearchControllers.removeAt(indexPressed);
                     });
                   },
                   icon: const Icon(

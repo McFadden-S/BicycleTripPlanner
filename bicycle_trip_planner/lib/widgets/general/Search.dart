@@ -11,17 +11,14 @@ class Search extends StatefulWidget {
 
   final String labelTextIn;
   final TextEditingController searchController;
-  final int _UID = RouteManager().generateUID();
+  int uid; 
 
   Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
+    this.uid = -1
   }): super(key: key);
-
-  String getText(){
-    return searchController.text; 
-  }
 
   @override
   _SearchState createState() => _SearchState();
@@ -30,7 +27,6 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
 
   bool isSearching = false;
-  int searchIndex = 0;  //TODO: Potential refactor of separating intermediateSearches...
 
   RouteManager routeManager = RouteManager();
   MarkerManager markerManager = MarkerManager();
@@ -39,6 +35,10 @@ class _SearchState extends State<Search> {
   hideSearch() {
     isSearching = false;
     FocusScope.of(context).requestFocus(new FocusNode());
+  }
+
+  String getText(){
+    return routeManager.getStop(widget.uid).getStop(); 
   }
 
   // getText(){
@@ -76,9 +76,9 @@ class _SearchState extends State<Search> {
     //   intermediateManager.setIDToSearch(widget.intermediateIndex, searchIndex);
     // }
 
-    // if(!isSearching){
-    //    widget.searchController.text = getText();
-    // }
+    if(!isSearching){
+        widget.searchController.text = getText();
+    }
 
     return Stack(
       children: [
@@ -105,22 +105,25 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                     onTap: () {
-                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget._UID); 
-                      if(!routeManager.ifPathwayInitialized()){
-                        if (widget.labelTextIn.contains("Start")){
-                          routeManager.setStart(applicationBloc.searchResults[index].description); 
-                        }
-                        else if(widget.labelTextIn.contains("Destination")){
-                          routeManager.setDestination(applicationBloc.searchResults[index].description);
-                          if (!routeManager.ifStartSet()){
-                            applicationBloc.setSelectedCurrentLocation(SearchType.start); 
-                          }
-                        }
+                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
+                      if(widget.uid != -1){
+                        applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
                       }
+                      // if(!routeManager.ifPathwayInitialized()){
+                      //   if (widget.labelTextIn.contains("Start")){
+                      //     routeManager.setStart(applicationBloc.searchResults[index].description); 
+                      //   }
+                      //   else if(widget.labelTextIn.contains("Destination")){
+                      //     routeManager.setDestination(applicationBloc.searchResults[index].description);
+                      //     if (!routeManager.ifStartSet()){
+                      //       applicationBloc.setSelectedCurrentLocation(SearchType.start); 
+                      //     }
+                      //   }
+                      // }
 
-                      if(routeManager.ifPathwayInitialized()){
-                        routeManager.pathway.addStop(widget); 
-                      }
+                      // if(routeManager.ifPathwayInitialized()){
+                      //   routeManager.pathway.addStop(widget); 
+                      // }
 
                           // applicationBloc.searchResults[index].placeId,
                           // applicationBloc.searchResults[index].description,
@@ -129,6 +132,7 @@ class _SearchState extends State<Search> {
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
                       //TODO should be changed to appropriate scope
+                      //TODO Remove this and instead make a button to change screen 
                       applicationBloc.setSelectedScreen('routePlanning');
 
                       hideSearch();
@@ -168,7 +172,11 @@ class _SearchState extends State<Search> {
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() {
-                    applicationBloc.clearLocationMarker(widget._UID);
+                    applicationBloc.clearLocationMarker(widget.uid); 
+                    if(widget.uid != -1){
+                      applicationBloc.clearSelectedLocation(widget.uid);
+                    }
+                    //applicationBloc.clearLocationMarker(widget._UID);
                     // widget.searchType, widget.intermediateIndex);
                     //       print(widget.searchController.text);
                     //       print(widget.intermediateIndex);
