@@ -105,7 +105,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   color: Colors.black,
                   tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   onPressed: () {
-                    // TODO: go back to home
+                    Navigator.of(context, rootNavigator: true).pop(context);
                   },
                 ),
               ],
