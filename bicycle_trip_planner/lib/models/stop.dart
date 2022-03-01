@@ -12,5 +12,4 @@ class Stop{
   int getUID() => _uid; 
 
   void setStop(String stop) => _stop = stop;  
-
 }
