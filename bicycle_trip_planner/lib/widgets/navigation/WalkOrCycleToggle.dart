@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +22,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(Colors.white)),
+        backgroundColor: MaterialStateProperty.all(ThemeStyle.buttonSecondaryColor)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
         children: [

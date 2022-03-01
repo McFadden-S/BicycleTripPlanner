@@ -9,6 +9,8 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants.dart';
+
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);
 
@@ -43,10 +45,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           Container(
                             padding:
                                 const EdgeInsets.only(left: 3.0, right: 7.0),
-                            decoration: const BoxDecoration(
-                              color: const Color.fromRGBO(12, 156, 238, 1.0),
+                            decoration: BoxDecoration(
+                              color: ThemeStyle.buttonPrimaryColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
+                                  const BorderRadius.all(Radius.circular(30.0)),
                             ),
                             child: DropdownButton<int>(
                               isDense: true,
@@ -109,7 +111,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                            flex: 1,
                            child: RoundedRectangleButton(
                                   iconIn: Icons.directions_bike,
-                                  buttonColor: Colors.green,
+                                  buttonColor: ThemeStyle.goButtonColor,
                                   onButtonClicked: () {
                                     if (RouteManager().ifStartSet() &&
                                         RouteManager().ifDestinationSet()) {

@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,7 @@ class _SearchState extends State<Search> {
       children: [
         if (applicationBloc.ifSearchResult() && isSearching)
           Card(
-            color: Colors.white,
+            color: ThemeStyle.cardColor,
             child: Container(
               // padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
               child: ListView.separated(
@@ -67,8 +68,7 @@ class _SearchState extends State<Search> {
                       applicationBloc
                           .searchResults[index].description,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                      ),
+                      style: TextStyle(color: ThemeStyle.secondaryTextColor),
                     ),
                     onTap: () {
                       // TODO: This will create a marker that cannot be removed IF it's the home page one. 
@@ -98,6 +98,7 @@ class _SearchState extends State<Search> {
         Container(
           padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
           child: TextField(
+            style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
               if(input=="") {
@@ -110,16 +111,16 @@ class _SearchState extends State<Search> {
             onTap: (){isSearching = true;},
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
-              hintStyle: const TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
-              fillColor: Colors.white,
+              hintStyle: TextStyle(color: ThemeStyle.secondaryTextColor),
+              fillColor: ThemeStyle.cardColor,
               filled: true,
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),

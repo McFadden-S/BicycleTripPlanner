@@ -23,7 +23,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
           hintText: widget.text,
           icon: Icon(
             Icons.lock,
-            color: kPrimaryColor,
+            color: ThemeStyle.kPrimaryColor,
           ),
           suffix: InkWell(
             onTap: _togglePasswordView,
@@ -31,7 +31,7 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
               _isHidden
                   ? Icons.visibility
                   : Icons.visibility_off,
-              color: kPrimaryColor,
+              color: ThemeStyle.kPrimaryColor,
             ),
           ),
           border: InputBorder.none,

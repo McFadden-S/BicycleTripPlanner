@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -127,7 +128,7 @@ class MarkerManager {
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        icon: BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);

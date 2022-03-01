@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,8 @@ class _CurrentDirectionState extends State<CurrentDirection> {
                 child: Html(
                   style: {
                     "body": Style(fontSize: FontSize(15.0),
-                    padding: EdgeInsets.all(5))
+                    padding: EdgeInsets.all(5),
+                    color: ThemeStyle.secondaryTextColor)
                   },
                     data: widget.currentDirection.instruction
                 )
@@ -50,7 +52,8 @@ class _CurrentDirectionState extends State<CurrentDirection> {
                       "${widget.currentDirection.distance} m",
                        style: TextStyle(
                             fontSize: 20.0,
-                           fontWeight: FontWeight.bold
+                           fontWeight: FontWeight.bold,
+                           color: ThemeStyle.secondaryTextColor
                        ),
 
                   )),

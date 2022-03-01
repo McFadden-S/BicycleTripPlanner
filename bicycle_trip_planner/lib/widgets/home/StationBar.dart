@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
@@ -26,8 +27,8 @@ class _StationBarState extends State<StationBar> {
         builder: (BuildContext context) {
           return Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-            decoration: const BoxDecoration(
-                color: Colors.white,
+            decoration: BoxDecoration(
+                color: ThemeStyle.cardColor,
                 borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
             ),
             child: Column(
@@ -44,9 +45,9 @@ class _StationBarState extends State<StationBar> {
                         child: Column(
                           children: [
                              Row(
-                              children: const [
-                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
-                                Spacer(),
+                              children: [
+                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
+                                const Spacer(),
                               ],
                             ),
                             const SizedBox(height: 10),
@@ -74,10 +75,10 @@ class _StationBarState extends State<StationBar> {
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
-      decoration: const BoxDecoration(
-          color: Colors.white,
+      decoration: BoxDecoration(
+          color: ThemeStyle.cardColor,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-          boxShadow: [ BoxShadow(color: Colors.grey, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
+          boxShadow: [ BoxShadow(color: ThemeStyle.stationShadow, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
       ),
       child: SizedBox(
           height: 180.0,
@@ -88,16 +89,16 @@ class _StationBarState extends State<StationBar> {
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: Row(
                       children: [
-                        const Text("Nearby Stations", style: TextStyle(fontSize: 25.0)),
+                        Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                         const Spacer(),
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => stationsPageViewController.jumpTo(0),
-                          icon: const Icon(Icons.first_page),
+                          icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
                           onPressed: () => showExpandedList(stationManager.getStations()),
-                          icon: const Icon(Icons.menu),
+                          icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
                     ),

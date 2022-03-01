@@ -30,7 +30,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: kPrimaryColor,
+          primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
         home: Scaffold(
@@ -77,7 +77,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       }),
                     );
                   },
-                  color: kPrimaryLightColor,
+                  color: ThemeStyle.kPrimaryLightColor,
                   textColor: Colors.black,
                 ),
                 OrDivider(),
