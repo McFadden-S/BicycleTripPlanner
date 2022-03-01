@@ -15,31 +15,37 @@ class Pathway{
     _updatePointers(); 
   }
 
+  //********** Getters **********
+
   Stop getStart() => _start;
 
   Stop getDestination() => _destination;
 
-  Stop getStop(int id){
-    if(id == -1){return Stop();} 
-    return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
-  }
+  Stop getStop(int id) => (id == -1) ? Stop() : _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop());
+
+  // Stop getStop(int id){
+  //   if(id == -1){return Stop();}
+  //   return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop());
+  // }
 
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
 
-  List<Stop> getStops() => _stops; 
+  List<Stop> getStops() => _stops;
+
+
+  //********** Private: Update Pointers **********
 
   void _updatePointers(){
     _updateStart();
     _updateDestination(); 
   }
 
-  void _updateStart(){
-    _start = _stops.first; 
-  }
+  void _updateStart() => _start = _stops.first;
 
-  void _updateDestination(){
-    _destination = _stops.last; 
-  }
+  void _updateDestination() => _destination = _stops.last;
+
+
+  //********** Public **********
 
   void addStop(Stop stop){
     _stops.add(stop); 

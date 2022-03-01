@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -19,6 +20,7 @@ import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class ApplicationBloc with ChangeNotifier {
 
