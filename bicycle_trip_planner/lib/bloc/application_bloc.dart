@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -176,6 +177,58 @@ class ApplicationBloc with ChangeNotifier {
       selectedScreen = screens[prevScreens.removeFirst()]!;
       notifyListeners();
     }
+  }
+
+  void createWalkingRouteToFirstStationFromCurrentLocation() async {
+    LatLng currentPosition = await _locationManager.locate();
+    List<Station> stations = _stationManager.getStations();
+    Station? closestStation;
+    var groupSize = 1;  //default is 1 but the user will be able to change this later on
+
+    //find closest station with enough bikes for the user's group
+    for (var station in stations) {
+      if (station.bikes.toInt() >= groupSize) {
+        if (_locationManager.distanceFromTo(currentPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(currentPosition, LatLng(closestStation!.lat, closestStation!.lng)));
+        closestStation = station;
+      }
+    }
+
+    if (closestStation == null) {
+      print('no stations with enough bikes');
+      //handle this case
+    }
+
+    //create walking route from starting (current) location to the first bike station
+    _directionManager.isWalking = true;
+    _routeManager.setStart(currentPosition.toString());
+    _routeManager.setDestination(closestStation.toString());
+
+  }
+
+  void createWalkingRouteToDestinationFromFinalBikeStation(Location destination) async {
+    LatLng destinationPosition = LatLng(destination.lat, destination.lng);
+    List<Station> stations = _stationManager.getStations();
+    Station? closestStation;
+    var groupSize = 1;  //default is 1 but the user will be able to change this later on
+
+    //find closest station with enough bikes for the user's group
+    for (var station in stations) {
+      if (station.bikes.toInt() >= groupSize) {
+        if (_locationManager.distanceFromTo(destinationPosition, LatLng(station.lat, station.lng)) < _locationManager.distanceFromTo(destinationPosition, LatLng(closestStation!.lat, closestStation!.lng)));
+        closestStation = station;
+      }
+    }
+
+    if (closestStation == null) {
+      print('no stations with enough bikes');
+      //handle this case
+    }
+
+    //create walking route from station to destination
+    _directionManager.isWalking = true;
+    _routeManager.setStart(closestStation.toString());
+    _routeManager.setDestination(destination.toString());
+
   }
 
 }
