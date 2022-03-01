@@ -144,7 +144,6 @@ class MarkerManager {
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);
-          appBloc.setSelected
           appBloc.setSelectedScreen('routePlanning');
           appBloc.pushPrevScreen('home');},
       ));
