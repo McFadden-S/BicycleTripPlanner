@@ -39,7 +39,8 @@ class _RouteCardState extends State<RouteCard> {
       applicationBloc.findRoute(
           routeManager.getStart().getStop(),
           routeManager.getDestination().getStop(),
-          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList()
+          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+          routeManager.getGroupSize()
       );
       routeManager.clearChanged();
 

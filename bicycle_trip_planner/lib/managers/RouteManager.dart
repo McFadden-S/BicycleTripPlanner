@@ -18,7 +18,11 @@ class RouteManager{
   //final List<String> _intermediates = <String>[];
   final Pathway _pathway = Pathway();
 
+  int _groupsize = 1;
+
   bool _changed = false;
+
+  //TODO add toggle for optimized and toggle the api call
   // bool _optimised = false;
 
   //********** Singleton **********
@@ -34,6 +38,16 @@ class RouteManager{
   //********** Private **********
 
   //********** Public **********
+
+  int getGroupSize(){
+    return _groupsize;
+  }
+
+  void setGroupSize(int size){
+    if(size > 0){
+      _groupsize = size;
+    }
+  }
 
   //String getStart(){return pathway.getStart().getText();}
   Stop getStart(){

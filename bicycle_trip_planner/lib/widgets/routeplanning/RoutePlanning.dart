@@ -22,10 +22,10 @@ class RoutePlanning extends StatefulWidget {
 
 class _RoutePlanningState extends State<RoutePlanning> {
 
+  final RouteManager _routeManager = RouteManager();
   final DirectionManager _directionManager = DirectionManager();
 
   List<int> groupSizeOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  int? groupSizeValue = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ),
                             child: DropdownButton<int>(
                               isDense: true,
-                              value: groupSizeValue,
+                              value: _routeManager.getGroupSize(),
                               icon:
                                   const Icon(Icons.group, color: Colors.white),
                               iconSize: 30,
@@ -68,14 +68,14 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   color: Colors.black45, fontSize: 18),
                               menuMaxHeight: 200,
                               onChanged: (int? newValue) =>
-                                  onGroupSizeChanged(newValue!),
+                                  _routeManager.setGroupSize(newValue!),
                               selectedItemBuilder: (BuildContext context) {
                                 return groupSizeOptions.map((int value) {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5.0),
                                     child: Text(
-                                      groupSizeValue.toString(),
+                                      _routeManager.getGroupSize().toString(),
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),
@@ -109,9 +109,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                          Wrap(
-                           children: [
-                             const DistanceETACard(),
-                           ],
+                           children: [ DistanceETACard() ],
                          ),
                          const Spacer(flex: 2),
                          Expanded(
@@ -142,11 +140,4 @@ class _RoutePlanningState extends State<RoutePlanning> {
     );
   }
 
-  // TODO: remove print statement after linking the button correctly
-  void onGroupSizeChanged(int newValue) {
-    print("menu option changed form $groupSizeValue to: $newValue");
-    setState(() {
-      groupSizeValue = newValue;
-    });
-  }
 }
