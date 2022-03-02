@@ -46,6 +46,7 @@ class RouteManager{
   void setGroupSize(int size){
     if(size > 0){
       _groupsize = size;
+      _changed = true;
     }
   }
 
