@@ -11,6 +11,13 @@ class Weather extends StatefulWidget {
 
 class _WeatherState extends State<Weather> {
 
+  @override
+  initState(){
+    super.initState();
+    fetchSearch();
+    fetchLocation();
+  }
+
   String location = 'London';
   String weather = 'clear';
   int temperature = 0;
@@ -18,8 +25,8 @@ class _WeatherState extends State<Weather> {
   String searchApiUrl = 'https://www.metaweather.com/api/location/search/?query=london';
   String locationApiUrl = 'https://www.metaweather.com/api/location/';
 
-  void fetchSearch(String city) async {
-    var searchResult = await http.get(Uri.parse(searchApiUrl + city));
+  void fetchSearch() async {
+    var searchResult = await http.get(Uri.parse(searchApiUrl));
     var result = json.decode(searchResult.body)[0];
 
     setState(() {
@@ -57,6 +64,12 @@ class _WeatherState extends State<Weather> {
             Center(
               child: Text(
                 location,
+                style: TextStyle(fontSize: 40),
+              ),
+            ),
+            Center(
+              child: Text(
+                weather,
                 style: TextStyle(fontSize: 40),
               ),
             ),
