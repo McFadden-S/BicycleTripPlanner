@@ -26,28 +26,6 @@ class _DirectionsState extends State<Directions> {
   }
 
   @override
-  void initState() {
-    super.initState();
-
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    Rou.Route currentRoute = directionManager.route;
-
-    directionManager.currentDirection = currentRoute.legs.first.steps.removeAt(0);
-
-    int duration = 0;
-    int distance = 0;
-    for(var i =0; i < currentRoute.legs.length; i++){
-      directionManager.directions += currentRoute.legs[i].steps;
-      duration += currentRoute.legs[i].duration;
-      distance += currentRoute.legs[i].distance;
-    }
-    directionManager.setDuration(duration);
-    directionManager.setDistance(distance);
-
-  }
-
-  @override
   Widget build(BuildContext context) {
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
@@ -63,7 +41,7 @@ class _DirectionsState extends State<Directions> {
                     topRight: Radius.circular(10.0)),
               ),
               child: CurrentDirection(
-                  currentDirection: directionManager.currentDirection),
+                  currentDirection: directionManager.getCurrentDirection()),
             ),
             Container(
               decoration: BoxDecoration(
@@ -75,7 +53,7 @@ class _DirectionsState extends State<Directions> {
                   child: Column(
                     children: [
                       (!extendedNavigation) ||
-                          (directionManager.directions.isNotEmpty)
+                          (directionManager.ifDirections())
                           ? Divider()
                           : const SizedBox.shrink(),
                       extendedNavigation
@@ -86,7 +64,7 @@ class _DirectionsState extends State<Directions> {
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           color: ThemeStyle.directionTileColor,
                           child: ListView.separated(
-                            itemCount: directionManager.directions.length,
+                            itemCount: directionManager.getNumberOfDirections(),
                             itemBuilder: (BuildContext context, int index) {
                               return DirectionTile(
                                   index: index,

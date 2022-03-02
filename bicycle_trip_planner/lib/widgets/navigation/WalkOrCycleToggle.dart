@@ -15,7 +15,7 @@ class WalkOrCycleToggle extends StatefulWidget {
 class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
 
   void setCycling() {
-    setState(() => {widget.directionManager.isCycling = !widget.directionManager.isCycling});
+    setState(() => {widget.directionManager.toggleCycling()});
   }
 
   @override
@@ -28,7 +28,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         children: [
           Icon(
             Icons.directions_walk,
-            color: widget.directionManager.isCycling ? Colors.black26 : Colors.red,
+            color: widget.directionManager.ifCycling() ? Colors.black26 : Colors.red,
             size: 30,
           ),
           const Text(
@@ -37,7 +37,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
           ),
           Icon(
             Icons.directions_bike,
-            color: widget.directionManager.isCycling ? Colors.red : Colors.black26,
+            color: widget.directionManager.ifCycling() ? Colors.red : Colors.black26,
             size: 30,
           ),
         ],

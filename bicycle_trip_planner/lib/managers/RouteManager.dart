@@ -18,8 +18,11 @@ class RouteManager{
   //final List<String> _intermediates = <String>[];
   final Pathway _pathway = Pathway();
 
+  int _groupsize = 1;
+
   bool _changed = false;
-  // bool _optimised = false;
+
+   bool _optimised = true;
 
   //********** Singleton **********
 
@@ -34,6 +37,26 @@ class RouteManager{
   //********** Private **********
 
   //********** Public **********
+
+  int getGroupSize(){
+    return _groupsize;
+  }
+
+  void setGroupSize(int size){
+    if(size > 0){
+      _groupsize = size;
+      _changed = true;
+    }
+  }
+
+  void toggleOptimised(){
+    _optimised = !_optimised;
+    _changed = true;
+  }
+
+  bool ifOptimised(){
+    return _optimised;
+  }
 
   //String getStart(){return pathway.getStart().getText();}
   Stop getStart(){
@@ -152,7 +175,6 @@ class RouteManager{
   }
 
   void endRoute() {
-    _directionManager.clear();
     _polylineManager.clearPolyline();
     clearRouteMarkers(); 
 
