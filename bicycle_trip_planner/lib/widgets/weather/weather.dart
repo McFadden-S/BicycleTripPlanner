@@ -42,6 +42,27 @@ class _WeatherState extends State<Weather> {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return MaterialApp(
+      home: Scaffold(
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Center(
+              child: Text(
+                  temperature.toString() + " °C",
+                style: TextStyle(fontSize: 60),
+              ),
+            ),
+            Center(
+              child: Text(
+                location,
+                style: TextStyle(fontSize: 40),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

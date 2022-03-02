@@ -8,6 +8,7 @@ import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/loading',
+      initialRoute: '/weather',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
         '/login': (context) => const LoginHomeScreen(),
@@ -38,6 +39,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
+        '/weather': (context) => Weather(),
       },
       theme: ThemeData(
         brightness: Brightness.light,
