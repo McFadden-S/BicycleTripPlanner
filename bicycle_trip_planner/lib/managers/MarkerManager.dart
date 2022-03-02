@@ -1,20 +1,24 @@
+import 'dart:async';
+import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:vector_math/vector_math.dart' as vector;
 
-class MarkerManager {
+class MarkerManager{
 
   //********** Fields **********
 
   final Set<Marker> _markers = <Marker>{};
 
+  Animation<double>? _animation;
+  final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
   int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
@@ -30,12 +34,9 @@ class MarkerManager {
 
   //********** Private **********
 
-  // String _generateMarkerID(SearchType searchType, [int intermediateIndex = 0]){
-  //   if(intermediateIndex != 0){
-  //     return searchType.toString() + intermediateIndex.toString();
-  //   }
-  //   return searchType.toString();
-  // }
+  StreamSink<Set<Marker>> get _mapMarkerSink => _mapMarkerSC.sink;
+
+  Stream<Set<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
 
   String _generateMarkerID(int id, [String name = ""]){
     if(name != ""){return "Marker_$name";}
@@ -89,11 +90,6 @@ class MarkerManager {
     _removeMarker(markerID); 
   }
 
-  // TODO: Refactor this method 
-  // void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
-  //   _removeMarker(_generateMarkerID(searchType, intermediateIndex));
-  // }
-
   void clearMarker(int uid){
     _removeMarker(_generateMarkerID(uid));
   }
@@ -104,14 +100,7 @@ class MarkerManager {
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
-  // TODO: Refactor and remove method if possible
-  // void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {
-  //   final double lat = place.geometry.location.lat;
-  //   final double lng = place.geometry.location.lng;
-  //   setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
-  // }
-
-  Future<void> setUserMarker(LatLng point) async {
+  Future<Marker> setUserMarker(LatLng point) async {
 
     // Wait for this to load
     if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
@@ -131,6 +120,80 @@ class MarkerManager {
       anchor: const Offset(0.5, 0.5),
     );
     _markers.add(userMarker);
+    return userMarker; 
+  }
+
+  animateMarker(
+    double fromLat, //Starting latitude
+    double fromLong, //Starting longitude
+    double toLat, //Ending latitude
+    double toLong, //Ending longitude
+    TickerProvider
+        provider, //Ticker provider of the widget. This is used for animation
+  ) async {
+    final double bearing =
+    getBearing(LatLng(fromLat, fromLong), LatLng(toLat, toLong));
+
+    _markers.clear();
+
+    Marker userMarker = await setUserMarker(LatLng(fromLat, fromLong));
+    //Adding initial marker to the start location.
+    _mapMarkerSink.add(_markers);
+
+    final animationController = AnimationController(
+      duration: const Duration(seconds: 10), //Animation duration of marker
+      vsync: provider, //From the widget
+    );
+
+    print(animationController); 
+
+    Tween<double> tween = Tween(begin: 0, end: 1);
+
+    print(tween); 
+
+    _animation = tween.animate(animationController)
+      ..addListener(() async {
+        //We are calculating new latitude and logitude for our marker
+        final v = _animation!.value;
+        double lng = v * toLong + (1 - v) * fromLong;
+        double lat = v * toLat + (1 - v) * fromLat;
+        LatLng newPos = LatLng(lat, lng);
+
+        //Removing old marker if present in the marker array
+        if (_markers.contains(userMarker)) _markers.remove(userMarker);
+
+        //New marker location
+      userMarker = await setUserMarker(newPos);
+
+        //Adding new marker to our list and updating the google map UI.
+        _markers.add(userMarker);
+        _mapMarkerSink.add(_markers);
+
+        // TODO: HERE TO TEST
+        CameraManager.instance.setCameraPosition(newPos);
+      });
+
+    //Starting the animation
+    animationController.repeat(reverse: true);
+  }
+
+  double getBearing(LatLng begin, LatLng end) {
+    double lat = (begin.latitude - end.latitude).abs();
+    double lng = (begin.longitude - end.longitude).abs();
+
+    if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+      return vector.degrees(atan(lng / lat));
+    } else if (begin.latitude >= end.latitude &&
+        begin.longitude < end.longitude) {
+      return (90 - vector.degrees(atan(lng / lat))) + 90;
+    } else if (begin.latitude >= end.latitude &&
+        begin.longitude >= end.longitude) {
+      return vector.degrees(atan(lng / lat)) + 180;
+    } else if (begin.latitude < end.latitude &&
+        begin.longitude >= end.longitude) {
+      return (90 - vector.degrees(atan(lng / lat))) + 270;
+    }
+    return -1;
   }
 
   void setStationMarkers(List<Station> stations, ApplicationBloc appBloc){

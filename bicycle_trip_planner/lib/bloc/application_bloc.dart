@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -86,7 +85,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedCurrentLocation(SearchType searchType) async {
+  setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
     setLocationMarker(place.placeId);
@@ -162,5 +161,4 @@ class ApplicationBloc with ChangeNotifier {
       notifyListeners();
     }
   }
-
 }
