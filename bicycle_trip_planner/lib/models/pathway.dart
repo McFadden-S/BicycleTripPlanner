@@ -47,6 +47,12 @@ class Pathway{
     _updateDestination(); 
   }
 
+  void addFirstStop(Stop stop){
+    _stops.insert(0, stop);
+    size = size + 1;
+    _updateDestination();
+  }
+
   void removeStop(int id){
     Stop stop = getStop(id); 
     _stops.remove(stop);

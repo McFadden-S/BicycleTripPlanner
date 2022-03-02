@@ -48,7 +48,17 @@ class ApplicationBloc with ChangeNotifier {
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
 
+  // TODO: Add calls to isNavigation from GUI
+  bool _isNavigating = false;
+
   late Timer _stationTimer;
+
+  late Place _currentLocation;
+
+  ApplicationBloc() {
+    fetchCurrentLocation();
+    updateStationsPeriodically(Duration(seconds: 30));
+  }
 
   cancelStationTimer(){
     _stationTimer.cancel();
@@ -66,6 +76,11 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.setStationMarkers(stations, this);
     updateStations();
     notifyListeners();
+  }
+
+  fetchCurrentLocation() async {
+    LatLng latLng = await _locationManager.locate();
+    _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
   }
 
   updateStations() async {
@@ -171,6 +186,29 @@ class ApplicationBloc with ChangeNotifier {
 
   void pushPrevScreen(String screenName) {
     prevScreens.addFirst(screenName);
+  }
+
+
+
+  updateDirectionsPeriodically(Duration duration){
+    Timer.periodic(duration, (timer){
+      if(_isNavigating) {
+        fetchCurrentLocation();
+        RouteManager().changeStart(_currentLocation.name);
+        notifyListeners();
+      } else {
+        timer.cancel();
+      }
+    });
+  }
+
+  void setNavigating(bool value) {
+    _isNavigating = value;
+    if(value == true) {
+      RouteManager().addFirsrWaypoint(RouteManager().getStart().getStop());
+      updateDirectionsPeriodically(Duration(seconds: 30));
+
+    }
   }
 
 }

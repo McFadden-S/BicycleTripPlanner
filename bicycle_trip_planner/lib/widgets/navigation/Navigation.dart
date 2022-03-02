@@ -102,6 +102,7 @@ class _NavigationState extends State<Navigation> {
                             Expanded(child: ElevatedButton(
                                 onPressed: (){
                                   applicationBloc.endRoute();
+                                  applicationBloc.setNavigating(false);
                                   applicationBloc.setSelectedScreen('home');
                                 },
                                 child: Padding(

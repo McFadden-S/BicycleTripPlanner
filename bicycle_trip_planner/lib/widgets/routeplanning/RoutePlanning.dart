@@ -128,6 +128,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   onButtonClicked: () {
                                     if (RouteManager().ifStartSet() &&
                                         RouteManager().ifDestinationSet()) {
+                                      applicationBloc.setNavigating(true);
                                       applicationBloc.setSelectedScreen('navigation');
                                       _directionManager.showStartRoute();
                                       Wakelock.enable();

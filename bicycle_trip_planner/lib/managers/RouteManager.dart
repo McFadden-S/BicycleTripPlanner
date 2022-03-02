@@ -135,6 +135,19 @@ class RouteManager{
     return waypointStop;
   }
 
+  // Adds a new waypoint at the beginning (before destination)
+  Stop addFirsrWaypoint(String waypoint){
+    Stop destination = getDestination();
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addFirstStop(waypointStop);
+    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    //Adding a new waypoint with empty string implies no change
+    if(waypoint != ""){
+      _changed = true;
+    }
+    return waypointStop;
+  }
+
   void clearStart(){
     _pathway.changeStart("");
     _changed = true;
@@ -182,6 +195,8 @@ class RouteManager{
     clearStart();
     clearDestination();
   }
+
+
 
 
 }
