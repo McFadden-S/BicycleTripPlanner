@@ -1,3 +1,5 @@
+import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:flutter/material.dart';
 
 class DistanceETACard extends StatefulWidget {
@@ -10,10 +12,13 @@ class DistanceETACard extends StatefulWidget {
 
 class _StationCardState extends State<DistanceETACard> {
 
+  final DirectionManager _directionManager = DirectionManager();
+
   @override
   Widget build(BuildContext context) {
 
     return Card(
+      color: ThemeStyle.cardColor,
       elevation: 5,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(13)),
@@ -21,11 +26,11 @@ class _StationCardState extends State<DistanceETACard> {
         padding: const EdgeInsets.all(5.0),
         child: Row(
           children: [
-            Column(children: const [
-              Icon(Icons.timer),
-              Text("[ETA]")
+            Column(children: [
+              Icon(Icons.access_time_outlined, color: ThemeStyle.secondaryIconColor),
+              Text(_directionManager.getDuration(), style: TextStyle(color: ThemeStyle.secondaryTextColor),)
             ]),
-          const Text("3.5 miles")
+            Text(_directionManager.getDistance(), style: TextStyle(color: ThemeStyle.secondaryTextColor))
           ],
         ),
       )

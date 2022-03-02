@@ -30,7 +30,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: kPrimaryColor,
+          primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
         home: Scaffold(
@@ -77,7 +77,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       }),
                     );
                   },
-                  color: kPrimaryLightColor,
+                  color: ThemeStyle.kPrimaryLightColor,
                   textColor: Colors.black,
                 ),
                 OrDivider(),
@@ -98,6 +98,15 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     provider.logout();
                   },
                   icon: FaIcon(FontAwesomeIcons.google),
+                ),
+                SizedBox(height: 10),
+                IconButton(
+                  icon: const BackButtonIcon(),
+                  color: Colors.black,
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop(context);
+                  },
                 ),
               ],
             ),

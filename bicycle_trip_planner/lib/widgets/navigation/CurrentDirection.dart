@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
@@ -20,30 +21,47 @@ class _CurrentDirectionState extends State<CurrentDirection> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          const Spacer(flex: 1),
-          directionManager.directionIcon(widget.currentDirection.instruction),
-          Flexible(
-            flex: 15,
-            child: Html(
-              data: widget.currentDirection.instruction,
-            )
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.15
+        ),
+        child: SingleChildScrollView(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Spacer(flex: 1),
+              Container(
+                margin: EdgeInsets.only(top: 10),
+                child: directionManager.directionIcon(widget.currentDirection.instruction),
+              ),
+              Flexible(
+                flex: 15,
+                child: Html(
+                  style: {
+                    "body": Style(fontSize: FontSize(15.0),
+                    padding: EdgeInsets.all(5),
+                    color: ThemeStyle.secondaryTextColor)
+                  },
+                    data: widget.currentDirection.instruction
+                )
+              ),
+              Container(
+                  margin: EdgeInsets.only(top: 30),
+                  child: Text(
+                      "${widget.currentDirection.distance} m",
+                       style: TextStyle(
+                            fontSize: 20.0,
+                           fontWeight: FontWeight.bold,
+                           color: ThemeStyle.secondaryTextColor
+                       ),
+
+                  )),
+                  // : const Spacer(),
+              const Spacer(flex: 1),
+            ],
           ),
-              // : const Padding(
-              //     padding: EdgeInsets.all(10.0),
-              //     child: Text(
-              //       "No given directions",
-              //       textAlign: TextAlign.center,
-              //       style: TextStyle(fontSize: 30),
-              //     ),
-              //   ),
-          const Spacer(flex: 1),
-          Text("${widget.currentDirection.distance} m"),
-              // : const Spacer(),
-          const Spacer(flex: 1),
-        ],
+        ),
       ),
     );
   }

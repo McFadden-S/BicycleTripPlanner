@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants.dart';
+
 class IntermediateSearchList extends StatefulWidget {
 
   const IntermediateSearchList({
@@ -41,6 +43,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   uid: waypoint.getUID()
               ),
               trailing: IconButton(
+                color: ThemeStyle.secondaryIconColor,
                 key: Key("Remove ${intermediateSearchControllers.length}"),
                   onPressed: (){
                     setState(() {
@@ -51,8 +54,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                       intermediateSearchControllers.removeAt(indexPressed);
                     });
                   },
-                  icon: const Icon(
-                      Icons.remove_circle_outline))
+                  icon: Icon(
+                      Icons.remove_circle_outline,
+                      color: ThemeStyle.secondaryIconColor,))
           )
       );
 
@@ -73,21 +77,21 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         child: Column(
             children: [
               TextButton(
-                child: const Text(
+                child: Text(
                   'Add Stop(s)',
                   style: TextStyle(
                     fontFamily: 'Outfit',
                     fontSize: 16.0,
-                    color: Colors.white,
+                    color: ThemeStyle.primaryTextColor,
                   ),
                 ),
                 onPressed: () => {_addStopWidget(applicationBloc)},
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
+                  backgroundColor: MaterialStateProperty.all<Color>(ThemeStyle.buttonPrimaryColor),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        side: const BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
+                        side: BorderSide(color: ThemeStyle.buttonPrimaryColor)
                     ),
                   ),
                 ),
@@ -100,7 +104,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     children: stopsList.toList(growable: true),
                   ),
                 ),
-              const Icon(Icons.expand_more),
+              Icon(Icons.expand_more, color: ThemeStyle.secondaryIconColor),
             ]
         )
     );

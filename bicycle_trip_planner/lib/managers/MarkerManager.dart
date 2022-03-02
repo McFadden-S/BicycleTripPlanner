@@ -4,7 +4,11 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+<<<<<<< HEAD
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+=======
+import 'package:bicycle_trip_planner/constants.dart';
+>>>>>>> development
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
@@ -100,8 +104,8 @@ class MarkerManager{
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
-  Future<Marker> setUserMarker(LatLng point) async {
 
+  Future<Marker> setUserMarker(LatLng point) async {
     // Wait for this to load
     if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
 
@@ -202,7 +206,7 @@ class MarkerManager{
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        icon: BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);

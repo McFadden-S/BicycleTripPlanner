@@ -24,7 +24,7 @@ class _LoginHomeScreen extends State<LoginHomeScreen> {
         debugShowCheckedModeBanner: false,
         title: 'Login Screen',
         theme: ThemeData(
-          primaryColor: kPrimaryColor,
+          primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
         home: WelcomeScreen(),

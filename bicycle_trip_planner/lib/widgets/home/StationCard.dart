@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
@@ -36,10 +37,14 @@ class _StationCardState extends State<StationCard> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      // onTap: () => stationClicked(widget.index, applicationBloc, stationManager.getStationByIndex(widget.index)),
+      onTap: () {
+        Navigator.of(context).maybePop();
+        stationClicked(applicationBloc, stationManager.getStationByIndex(widget.index));
+      },
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
           child: Card(
+            color: ThemeStyle.cardColor,
             child:
               Container(
                 padding: const EdgeInsets.all(10),
@@ -54,7 +59,7 @@ class _StationCardState extends State<StationCard> {
                           child: Text(
                               stationManager.getStationByIndex(widget.index).name,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold)
+                              style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: ThemeStyle.secondaryTextColor)
                           ),
                         ),
                         const Spacer(flex: 1),
@@ -63,25 +68,27 @@ class _StationCardState extends State<StationCard> {
                     const Divider(),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.directions_bike,
                           size: 20.0,
+                            color: ThemeStyle.secondaryIconColor,
                         ),
                         Text(
                           "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
-                          style: const TextStyle(fontSize: 15.0),
+                          style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor),
                         ),
                       ],
                     ),
                     Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.chair_alt,
                           size: 20.0,
+                            color: ThemeStyle.secondaryIconColor,
                         ),
                         Text(
                           "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
-                          style: const TextStyle(fontSize: 15.0),
+                          style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor),
                         ),
                         const Spacer(),
                         Container(
@@ -102,8 +109,8 @@ class _StationCardState extends State<StationCard> {
   }
 }
 
-// void stationClicked(int index, ApplicationBloc appBloc, Station station) {
-//   appBloc.searchSelectedStation(station);
-//   appBloc.setSelectedScreen('routePlanning');
-//   appBloc.pushPrevScreen('home');
-// }
+void stationClicked(ApplicationBloc appBloc, Station station) {
+  appBloc.searchSelectedStation(station);
+  appBloc.setSelectedScreen('routePlanning');
+  appBloc.pushPrevScreen('home');
+}
