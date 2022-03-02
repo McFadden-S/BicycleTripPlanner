@@ -132,11 +132,11 @@ class ApplicationBloc with ChangeNotifier {
   findRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
 
-    Location startStationLocation = (await _placesService.getPlace(origin)).geometry.location;
-    Location endStationLocation = (await _placesService.getPlace(destination)).geometry.location;
+    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
 
-    Station startStation = _stationManager.getPickupStationNear(LatLng(startStationLocation.lat, startStationLocation.lng), groupSize);
-    Station endStation = _stationManager.getDropoffStationNear(LatLng(endStationLocation.lat, endStationLocation.lng), groupSize);
+    Station startStation = _stationManager.getPickupStationNear(LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(LatLng(endLocation.lat, endLocation.lng), groupSize);
 
     String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
     String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
