@@ -11,11 +11,6 @@ class RouteManager{
   final DirectionManager _directionManager = DirectionManager();
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-
-  //String _start = "";
-  //String _destination = "";
-
-  //final List<String> _intermediates = <String>[];
   final Pathway _pathway = Pathway();
 
   int _groupsize = 1;
@@ -23,14 +18,11 @@ class RouteManager{
   bool _changed = false;
 
    bool _optimised = true;
-
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
 
-  factory RouteManager() {
-    return _routeManager;
-  }
+  factory RouteManager() => _routeManager;
 
   RouteManager._internal();
 
@@ -59,28 +51,22 @@ class RouteManager{
   }
 
   //String getStart(){return pathway.getStart().getText();}
-  Stop getStart(){
-    return _pathway.getStart();
-  } 
+  Stop getStart() => _pathway.getStart();
 
   //String getDestination() => pathway.getDestination().getText();
-  Stop getDestination(){
-    return _pathway.getDestination();
-  }
+  Stop getDestination() => _pathway.getDestination();
 
-  List<Stop> getWaypoints() {
-    return _pathway.getWaypoints();
-  }
+  List<Stop> getWaypoints() => _pathway.getWaypoints();
 
   Stop getStop(int id) => _pathway.getStop(id);
 
-  bool ifChanged(){return _changed;}
+  bool ifChanged() => _changed;
 
-  bool ifStartSet(){return _pathway.getStart().getStop() != "";}
+  bool ifStartSet() => _pathway.getStart().getStop() != "";
 
-  bool ifDestinationSet(){return _pathway.getDestination().getStop() != "";}
+  bool ifDestinationSet() => _pathway.getDestination().getStop() != "";
 
-  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;} 
+  bool ifWaypointsSet() => getWaypoints().isNotEmpty;
 
   void changeStart(String start){
     _pathway.changeStart(start);
@@ -170,9 +156,7 @@ class RouteManager{
     }  
   }
 
-  void clearChanged(){
-    _changed = false;
-  }
+  void clearChanged() => _changed = false;
 
   void endRoute() {
     _polylineManager.clearPolyline();
