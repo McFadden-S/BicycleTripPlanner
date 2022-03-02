@@ -92,7 +92,7 @@ class _NavigationState extends State<Navigation> {
                                     color: Color(0xFF8B0000), width: 1),
                                 borderRadius: BorderRadius.circular(9.0),
                               ),
-                              child: Countdown(duration: directionManager.duration)),
+                              child: Countdown(duration: directionManager.getDuration())),
                         ],
                       ),
                     ),
