@@ -36,7 +36,7 @@ class ApplicationBloc with ChangeNotifier {
     'routePlanning': RoutePlanning(),
   };
 
-  List<PlaceSearch> searchResults = [];
+  late List<PlaceSearch> searchResults = [];
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -52,6 +52,8 @@ class ApplicationBloc with ChangeNotifier {
 
   ApplicationBloc() {
     fetchCurrentLocation();
+
+
     updateStationsPeriodically(Duration(seconds: 30));
   }
 
@@ -66,11 +68,11 @@ class ApplicationBloc with ChangeNotifier {
     });
   }
 
-  updateCurrentLocationPeriodically(Duration duration) {
+  /*updateCurrentLocationPeriodically(Duration duration) {
     Timer.periodic(duration, (timer){
       _currentLocation = fetchCurrentLocation();
     });
-  }
+  }*/
 
   setupStations() async{
     List<Station> stations = await _stationsService.getStations();
@@ -104,6 +106,10 @@ class ApplicationBloc with ChangeNotifier {
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+    searchResults.add(PlaceSearch(description: _currentLocation.name, placeId: _currentLocation.placeId));
+    notifyListeners();
+    //return _currentLocation;
+    //notifyListeners();
   }
 
   setSelectedCurrentLocation(SearchType searchType) async {

@@ -87,7 +87,6 @@ class _SearchState extends State<Search> {
                           applicationBloc.searchResults[index].placeId,
                           applicationBloc.searchResults[index].description,
                           widget.searchType, widget.intermediateIndex);
-                      applicationBloc.setSelectedCurrentLocation(SearchType.start);
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
                       //TODO should be changed to appropriate scope

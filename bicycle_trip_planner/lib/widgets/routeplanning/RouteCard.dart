@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
@@ -31,18 +32,23 @@ class _RouteCardState extends State<RouteCard> {
 
   }
 
+  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance
-        ?.addPostFrameCallback((_) => setCurrentLocation(context));
+    WidgetsBinding
+        .instance?.addPostFrameCallback((_) => setCurrentLocation(context));
   }
 
   setCurrentLocation(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    if(!routeManager.ifStartSet() && routeManager.ifDestinationSet()){
+    if(!routeManager.ifStartSet()){
       applicationBloc.setSelectedCurrentLocation(SearchType.start);
     }
   }
+
+  /*void onLoad(BuildContext context){
+    setCurrentLocation(context);
+  }*/
 
   @override
   Widget build(BuildContext context) {
