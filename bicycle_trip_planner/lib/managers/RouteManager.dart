@@ -22,8 +22,7 @@ class RouteManager{
 
   bool _changed = false;
 
-  //TODO add toggle for optimized and toggle the api call
-  // bool _optimised = false;
+   bool _optimised = true;
 
   //********** Singleton **********
 
@@ -48,6 +47,15 @@ class RouteManager{
       _groupsize = size;
       _changed = true;
     }
+  }
+
+  void toggleOptimised(){
+    _optimised = !_optimised;
+    _changed = true;
+  }
+
+  bool ifOptimised(){
+    return _optimised;
   }
 
   //String getStart(){return pathway.getStart().getText();}

@@ -142,7 +142,7 @@ class ApplicationBloc with ChangeNotifier {
     String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
 
     Rou.Route startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
-    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
