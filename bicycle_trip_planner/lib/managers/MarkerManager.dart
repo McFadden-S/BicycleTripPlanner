@@ -4,11 +4,8 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-<<<<<<< HEAD
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
-=======
 import 'package:bicycle_trip_planner/constants.dart';
->>>>>>> development
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';

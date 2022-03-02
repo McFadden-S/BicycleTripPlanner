@@ -174,7 +174,6 @@ class ApplicationBloc with ChangeNotifier {
     prevScreens.addFirst(screenName);
   }
 
-<<<<<<< HEAD
   void goBack() {
     if(prevScreens.isNotEmpty){
       endRoute();
@@ -182,6 +181,4 @@ class ApplicationBloc with ChangeNotifier {
       notifyListeners();
     }
   }
-=======
->>>>>>> development
 }
