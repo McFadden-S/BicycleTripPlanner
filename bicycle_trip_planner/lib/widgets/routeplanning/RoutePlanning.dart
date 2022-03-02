@@ -31,7 +31,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
-    
+
     return SafeArea(
       child: Stack(
         children: [
@@ -96,8 +96,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           SizedBox(height: 10),
                           CircleButton(
                               iconIn: Icons.alt_route,
-                              iconColor: _routeManager.ifOptimised() ? ThemeStyle.primaryIconColor : Colors.amber,
-                              onButtonClicked: () => _routeManager.toggleOptimised()),
+                              iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                              onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
+                          ),
                           SizedBox(height: 10),
                           CustomBackButton(backTo: 'home'),
                         ],
