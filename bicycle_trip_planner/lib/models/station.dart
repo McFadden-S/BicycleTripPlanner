@@ -42,4 +42,8 @@ class Station{
       totalDocks: int.parse(element.findElements("nbDocks").first.text),
     );
   }
+
+  double calculateStationAvailability() {
+    return (bikes/totalDocks)*50;
+  }
 }

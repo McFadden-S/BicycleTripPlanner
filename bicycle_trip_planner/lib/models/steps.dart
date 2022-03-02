@@ -8,6 +8,12 @@ class Steps {
       required this.distance,
       required this.duration});
 
+  Steps.stepsNotFound({
+    this.instruction = "",
+    this.distance = 0,
+    this.duration = 0
+});
+
   factory Steps.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Steps(
       instruction: parsedJson['html_instructions'],

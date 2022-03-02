@@ -29,7 +29,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: mainFontColor,
+                  color: ThemeStyle.mainFontColor,
                 ),
               ),
               Flexible(
@@ -43,7 +43,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 child: Text(
                   "Please enter your email to reset password",
                   style: TextStyle(
-                    color: secondaryFontColor,
+                    color: ThemeStyle.secondaryFontColor,
                   ),
                 ),
                 flex: 2,
