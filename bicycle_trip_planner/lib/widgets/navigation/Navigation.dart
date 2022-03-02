@@ -8,7 +8,8 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -24,13 +25,8 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager();
   late StreamSubscription locatorSubscription;
-
-  void _toggleMapZoomInOut() {
-    setState(() => {mapZoomed = !mapZoomed});
-  }
 
   @override
   void initState() {
@@ -77,14 +73,7 @@ class _NavigationState extends State<Navigation> {
                         children: [
                           CurrentLocationButton(),
                           SizedBox(height: 10),
-                          CircleButton(
-                            iconIn: mapZoomed
-                                ? Icons.zoom_out_map
-                                : Icons.fullscreen_exit,
-                            onButtonClicked: () {
-                              _toggleMapZoomInOut();
-                            },
-                          ),
+                          ViewRouteButton(),
                           SizedBox(height: 10),
                           Card(
                               shape: RoundedRectangleBorder(

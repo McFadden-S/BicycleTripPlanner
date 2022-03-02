@@ -1,11 +1,12 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -45,6 +46,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       child: Column(
                         children: [
                           CurrentLocationButton(),
+                          SizedBox(height: 10),
+                          ViewRouteButton(),
                           SizedBox(height: 10),
                           Container(
                             padding:
