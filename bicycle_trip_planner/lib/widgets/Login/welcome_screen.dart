@@ -10,6 +10,7 @@ import 'package:bicycle_trip_planner/widgets/Login/components/or_divider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
+import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -105,7 +106,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   color: Colors.black,
                   tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                   onPressed: () {
-                    // TODO: go back to home
+                    Navigator.of(context, rootNavigator: true).pop(context);
                   },
                 ),
               ],
