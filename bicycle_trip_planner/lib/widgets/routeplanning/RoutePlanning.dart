@@ -1,13 +1,18 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../constants.dart';
 
 class RoutePlanning extends StatefulWidget {
   const RoutePlanning({Key? key}) : super(key: key);
@@ -17,12 +22,16 @@ class RoutePlanning extends StatefulWidget {
 }
 
 class _RoutePlanningState extends State<RoutePlanning> {
+
+  final RouteManager _routeManager = RouteManager();
+  final DirectionManager _directionManager = DirectionManager();
+
   List<int> groupSizeOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  int? groupSizeValue = 1;
 
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return SafeArea(
       child: Stack(
         children: [
@@ -40,17 +49,19 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         children: [
                           CurrentLocationButton(),
                           SizedBox(height: 10),
+                          ViewRouteButton(),
+                          SizedBox(height: 10),
                           Container(
                             padding:
                                 const EdgeInsets.only(left: 3.0, right: 7.0),
-                            decoration: const BoxDecoration(
-                              color: const Color.fromRGBO(12, 156, 238, 1.0),
+                            decoration: BoxDecoration(
+                              color: ThemeStyle.buttonPrimaryColor,
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(30.0)),
+                                  const BorderRadius.all(Radius.circular(30.0)),
                             ),
                             child: DropdownButton<int>(
                               isDense: true,
-                              value: groupSizeValue,
+                              value: _routeManager.getGroupSize(),
                               icon:
                                   const Icon(Icons.group, color: Colors.white),
                               iconSize: 30,
@@ -59,14 +70,14 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   color: Colors.black45, fontSize: 18),
                               menuMaxHeight: 200,
                               onChanged: (int? newValue) =>
-                                  onGroupSizeChanged(newValue!),
+                                  _routeManager.setGroupSize(newValue!),
                               selectedItemBuilder: (BuildContext context) {
                                 return groupSizeOptions.map((int value) {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 5.0),
                                     child: Text(
-                                      groupSizeValue.toString(),
+                                      _routeManager.getGroupSize().toString(),
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),
@@ -81,6 +92,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                 );
                               }).toList(),
                             ),
+                          ),
+                          SizedBox(height: 10),
+                          CircleButton(
+                              iconIn: Icons.alt_route,
+                              iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                              onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
                           ),
                           SizedBox(height: 10),
                           CustomBackButton(backTo: 'home'),
@@ -100,20 +117,19 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                          Wrap(
-                           children: [
-                             const DistanceETACard(),
-                           ],
+                           children: [ DistanceETACard() ],
                          ),
                          const Spacer(flex: 2),
                          Expanded(
                            flex: 1,
                            child: RoundedRectangleButton(
                                   iconIn: Icons.directions_bike,
-                                  buttonColor: Colors.green,
+                                  buttonColor: ThemeStyle.goButtonColor,
                                   onButtonClicked: () {
                                     if (RouteManager().ifStartSet() &&
                                         RouteManager().ifDestinationSet()) {
                                       applicationBloc.setSelectedScreen('navigation');
+                                      _directionManager.showStartRoute();
                                       Wakelock.enable();
                                     } else {
                                       ScaffoldMessenger.of(context)
@@ -132,11 +148,4 @@ class _RoutePlanningState extends State<RoutePlanning> {
     );
   }
 
-  // TODO: remove print statement after linking the button correctly
-  void onGroupSizeChanged(int newValue) {
-    print("menu option changed form $groupSizeValue to: $newValue");
-    setState(() {
-      groupSizeValue = newValue;
-    });
-  }
 }

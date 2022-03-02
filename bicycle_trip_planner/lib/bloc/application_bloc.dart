@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -83,71 +84,68 @@ class ApplicationBloc with ChangeNotifier {
 
   searchSelectedStation(Station station) async {
     Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setSelectedLocation(place.placeId, place.name, SearchType.start);
-
+    setLocationMarker(place.placeId);
+    // Currently will always set station as a destination
+    // Check if station.name and place.name is different (ideally should be placeSearch.description)
+    print(station.name);
+    print(place.name);
+    setSelectedLocation(place.name, _routeManager.getStart().getUID());
     notifyListeners();
   }
 
-  setSelectedCurrentLocation(SearchType searchType) async {
+  setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-    setSelectedLocation(place.placeId, place.name, searchType);
-
+     // Currently will always set station as a start
+    setLocationMarker(place.placeId);
+    setSelectedLocation(place.name, _routeManager.getStart().getUID());
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId, String placeDescription, SearchType searchType, [int intermediateIndex = 0]) async {
-    Place selected = await _placesService.getPlace(placeId);
-
+  setLocationMarker(String placeID, [int uid = -1]) async {
+    Place selected = await _placesService.getPlace(placeID);
     _cameraManager.viewPlace(selected);
-    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
-
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.setStart(placeDescription);
-        break;
-      case SearchType.end:
-        _routeManager.setDestination(placeDescription);
-        break;
-      case SearchType.intermediate:
-        _routeManager.setIntermediate(placeDescription, intermediateIndex);
-        break;
-    }
-
-    searchResults.clear();
+    _markerManager.setPlaceMarker(selected, uid);
     notifyListeners();
   }
 
-  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
-    _markerManager.clearMarker(searchType, intermediateIndex);
-
-    switch (searchType){
-      case SearchType.start:
-        _routeManager.clearStart();
-        break;
-      case SearchType.end:
-        _routeManager.clearDestination();
-        break;
-      case SearchType.intermediate:
-        _routeManager.removeIntermediate(intermediateIndex);
-        break;
-    }
-
+  setSelectedLocation(String stop, int uid) {
+    _routeManager.changeStop(uid, stop);
     notifyListeners();
   }
 
-  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+  clearLocationMarker(int uid) {
+    _markerManager.clearMarker(uid);
+    notifyListeners();
+  }
+
+  clearSelectedLocation(int uid){
+    _routeManager.clearStop(uid);
+    notifyListeners();
+  }
+
+  removeSelectedLocation(int uid){
+    _routeManager.removeStop(uid);
+    notifyListeners();
+  }
+
+  findRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
 
-    _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
-        route.bounds.northeast,
-        route.bounds.southwest);
+    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
 
-    _polylineManager.setPolyline(route.polyline.points);
+    Station startStation = _stationManager.getPickupStationNear(LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(LatLng(endLocation.lat, endLocation.lng), groupSize);
 
-    _directionManager.setRoute(route);
+    String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
+
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
   }
 
@@ -155,8 +153,10 @@ class ApplicationBloc with ChangeNotifier {
     Wakelock.disable();
     selectedScreen = screens['home']!;
     _routeManager.endRoute();
+    _directionManager.clear();
     notifyListeners();
   }
+
 
   // ********** Screen Management **********
 

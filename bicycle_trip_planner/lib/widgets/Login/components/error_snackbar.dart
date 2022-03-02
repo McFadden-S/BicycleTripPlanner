@@ -10,7 +10,7 @@ class ErrorSnackBar {
       SnackBar(
         content: Text(errorMessage(message)),
         duration: const Duration(seconds: 3),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: ThemeStyle.kPrimaryColor,
       ),
     );
   }

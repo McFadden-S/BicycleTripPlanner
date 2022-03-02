@@ -1,13 +1,15 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/currentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -23,13 +25,8 @@ class Navigation extends StatefulWidget {
 }
 
 class _NavigationState extends State<Navigation> {
-  bool mapZoomed = true;
   DirectionManager directionManager = DirectionManager();
   late StreamSubscription locatorSubscription;
-
-  void _toggleMapZoomInOut() {
-    setState(() => {mapZoomed = !mapZoomed});
-  }
 
   @override
   void initState() {
@@ -76,14 +73,7 @@ class _NavigationState extends State<Navigation> {
                         children: [
                           CurrentLocationButton(),
                           SizedBox(height: 10),
-                          CircleButton(
-                            iconIn: mapZoomed
-                                ? Icons.zoom_out_map
-                                : Icons.fullscreen_exit,
-                            onButtonClicked: () {
-                              _toggleMapZoomInOut();
-                            },
-                          ),
+                          ViewRouteButton(),
                           SizedBox(height: 10),
                           Card(
                               shape: RoundedRectangleBorder(
@@ -91,7 +81,7 @@ class _NavigationState extends State<Navigation> {
                                     color: Color(0xFF8B0000), width: 1),
                                 borderRadius: BorderRadius.circular(9.0),
                               ),
-                              child: Countdown(duration: directionManager.duration)),
+                              child: Countdown(duration: directionManager.getDuration())),
                         ],
                       ),
                     ),
@@ -110,7 +100,10 @@ class _NavigationState extends State<Navigation> {
                       child: Column(
                         children: [
                             Expanded(child: ElevatedButton(
-                                onPressed: () => applicationBloc.endRoute(),
+                                onPressed: (){
+                                  applicationBloc.endRoute();
+                                  applicationBloc.setSelectedScreen('home');
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: Row(

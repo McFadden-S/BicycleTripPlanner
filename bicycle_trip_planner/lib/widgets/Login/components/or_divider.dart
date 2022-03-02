@@ -16,7 +16,7 @@ class OrDivider extends StatelessWidget {
               child: Text(
                 "Or",
                 style: TextStyle(
-                    color: kPrimaryColor,
+                    color: ThemeStyle.kPrimaryColor,
                     fontWeight: FontWeight.w600
                 ),
               ),
@@ -37,7 +37,7 @@ class buildDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Divider(
-        color: kPrimaryLightColor,
+        color: ThemeStyle.kPrimaryLightColor,
         height: 1.5,
       ),
     );
