@@ -12,6 +12,8 @@ class Weather extends StatefulWidget {
 class _WeatherState extends State<Weather> {
 
   String location = 'London';
+  String weather = 'clear';
+  int temperature = 0;
   int woeid = 44418;
   String searchApiUrl = 'https://www.metaweather.com/api/location/search/?query=london';
   String locationApiUrl = 'https://www.metaweather.com/api/location/';
@@ -23,6 +25,18 @@ class _WeatherState extends State<Weather> {
     setState(() {
       location = result["title"];
       woeid = result["woeid"];
+    });
+  }
+
+  void fetchLocation() async {
+    var locationResult = await http.get(Uri.parse(locationApiUrl + woeid.toString()));
+    var result = json.decode(locationResult.body);
+    var consolidated_weather = result["consolidated_weather"];
+    var data = consolidated_weather[0];
+
+    setState(() {
+      temperature = data["the_temp"].round();
+      weather = data["weather_state_name"];
     });
   }
 
