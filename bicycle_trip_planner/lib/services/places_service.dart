@@ -34,4 +34,14 @@ class PlacesService {
     var jsonResults = json['results'][0] as Map<String, dynamic>;
     return Place.fromJson(jsonResults);
   }
+
+  Future<Place> getPlaceFromAddress(String address) async {
+    const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+    var url =
+        'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
+    var response = await http.get(Uri.parse(url));
+    var json = convert.jsonDecode(response.body);
+    var jsonResults = json['results'][0] as Map<String, dynamic>;
+    return Place.fromJson(jsonResults);
+  }
 }

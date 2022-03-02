@@ -100,7 +100,7 @@ class MarkerManager {
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
-  Future<void> setUserMarker(LatLng point) async {
+  Future<void> setUserMarker(LatLng point) async{
 
     // Wait for this to load
     if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 

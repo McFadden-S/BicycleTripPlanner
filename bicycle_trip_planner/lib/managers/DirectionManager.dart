@@ -42,6 +42,21 @@ class DirectionManager{
     return _directions.first;
   }
 
+  void showStartRoute(){
+    setCurrentRoute(_startWalkingRoute);
+    _isCycling = false;
+  }
+
+  void showBikeRoute(){
+    setCurrentRoute(_bikingRoute);
+    _isCycling = true;
+  }
+
+  void showEndRoute(){
+    setCurrentRoute(_endWalkingRoute);
+    _isCycling = false;
+  }
+
   //********** Getting **********
 
   String getDuration(){
@@ -123,20 +138,23 @@ class DirectionManager{
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
-    setCurrentRoute(_startWalkingRoute);
+    //Set as biking route to show general route user will take
+    showBikeRoute();
   }
 
   void setCurrentRoute(R.Route route){
-    _currentDirection = route.legs.first.steps.removeAt(0);
 
     int duration = 0;
     int distance = 0;
+    _directions.clear();
 
     for(var i =0; i < route.legs.length; i++){
       _directions += route.legs[i].steps;
       duration += route.legs[i].duration;
       distance += route.legs[i].distance;
     }
+
+    _currentDirection = _directions.removeAt(0);
 
     setDuration(duration);
     setDistance(distance);
@@ -154,10 +172,10 @@ class DirectionManager{
     _isCycling = !_isCycling;
 
     if(_isCycling){
-      setCurrentRoute(_bikingRoute);
+      showBikeRoute();
     }else {
       //TODO handle whether to display start or end walking route
-      setCurrentRoute(_endWalkingRoute);
+     showEndRoute();
     }
 
   }

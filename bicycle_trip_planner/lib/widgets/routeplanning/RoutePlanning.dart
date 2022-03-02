@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
@@ -19,6 +20,9 @@ class RoutePlanning extends StatefulWidget {
 }
 
 class _RoutePlanningState extends State<RoutePlanning> {
+
+  final DirectionManager _directionManager = DirectionManager();
+
   List<int> groupSizeOptions = <int>[1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
   int? groupSizeValue = 1;
 
@@ -116,6 +120,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     if (RouteManager().ifStartSet() &&
                                         RouteManager().ifDestinationSet()) {
                                       applicationBloc.setSelectedScreen('navigation');
+                                      _directionManager.showStartRoute();
                                       Wakelock.enable();
                                     } else {
                                       ScaffoldMessenger.of(context)
