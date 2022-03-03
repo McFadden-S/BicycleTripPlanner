@@ -8,6 +8,8 @@ class StationManager {
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
+  Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
 
   //TODO currently maintains a distance list to have a value when stations are
   //TODO updated but new distance values arent calculated
@@ -57,12 +59,30 @@ class StationManager {
 
   Station getPickupStationNear(LatLng pos, [int groupSize = 1]){
     List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere((station) => station.bikes >= groupSize, orElse: Station.stationNotFound);
+    _pickUpStation = orderedStations.firstWhere((station) => station.bikes >= groupSize, orElse: Station.stationNotFound);
+    return _pickUpStation;
+  }
+
+  Station getPickupStation() {
+    return _pickUpStation;
+  }
+
+  bool checkPickUpStationHasBikes(int groupSize) {
+    return _pickUpStation.bikes >= groupSize;
+  }
+
+  Station getDropOffStation() {
+    return _dropOffStation;
+  }
+
+  bool checkDropOffStationHasEmptyDocks(int groupSize) {
+    return _dropOffStation.emptyDocks >= groupSize;
   }
 
   Station getDropoffStationNear(LatLng pos, [int groupSize = 1]){
     List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere((station) => station.emptyDocks >= groupSize, orElse: Station.stationNotFound);
+    _dropOffStation = orderedStations.firstWhere((station) => station.emptyDocks >= groupSize, orElse: Station.stationNotFound);
+    return _dropOffStation;
   }
 
   //TODO Refactor so that no longer have to maintain distances list

@@ -188,19 +188,10 @@ class ApplicationBloc with ChangeNotifier {
     prevScreens.addFirst(screenName);
   }
 
-
-
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {
       if(_isNavigating) {
-        await fetchCurrentLocation();
-        RouteManager().changeStart(_currentLocation.name);
-        findRoute(
-            RouteManager().getStart().getStop(),
-            RouteManager().getDestination().getStop(),
-            RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
-            RouteManager().getGroupSize()
-        );
+        await _updateRoute();
         notifyListeners();
       } else {
         timer.cancel();
@@ -210,20 +201,56 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> setNavigating(bool value) async {
     _isNavigating = value;
-    if(value == true) {
+    // if (value && RouteManager().getStart().getStop() == _currentLocation.name) {
+    //   updateDirectionsPeriodically(Duration(seconds: 30));
+    // }
+    if(value) {
       String firstStop = RouteManager().getStart().getStop();
-      await fetchCurrentLocation();
-      await RouteManager().addStart(_currentLocation.name);
+      await _updateRoute();
       RouteManager().addFirstWaypoint(firstStop);
-      findRoute(
-          RouteManager().getStart().getStop(),
-          RouteManager().getDestination().getStop(),
-          RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
-          RouteManager().getGroupSize()
-      );
       updateDirectionsPeriodically(Duration(seconds: 30));
-
     }
+  }
+
+  // changeRouteFromCurrentLocation() async {
+  //   String firstStop = RouteManager().getStart().getStop();
+  //   await fetchCurrentLocation();
+  //   Station startStation = _stationManager.getPickupStation();
+  //   Rou.Route startWalkRoute = await _directionsService.getRoutes(_currentLocation.name, startStation.name, );
+  // }
+
+  Future<void> _updateRoute() async {
+    await fetchCurrentLocation();
+    RouteManager().changeStart(_currentLocation.name);
+    await updateRoute(
+        RouteManager().getStart().getStop(),
+        RouteManager().getDestination().getStop(),
+        RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+        RouteManager().getGroupSize()
+    );
+  }
+
+  updateRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
+    Station startStation = _stationManager.getPickupStation();
+    Station endStation = _stationManager.getDropOffStation();
+
+    String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
+
+    Rou.Route startWalkRoute;
+    if (RouteManager().ifFirstWaypointSet()) {
+      startWalkRoute = await _directionsService.getRoutes(
+        origin, startStationName, [ RouteManager().getFirstWaypoint().getStop() ]);
+    }
+    else {
+      startWalkRoute = await _directionsService.getRoutes(
+          origin, startStationName);
+    }
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    notifyListeners();
   }
 
 }

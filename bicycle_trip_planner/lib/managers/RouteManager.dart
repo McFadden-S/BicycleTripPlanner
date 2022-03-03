@@ -72,6 +72,10 @@ class RouteManager{
     return _pathway.getWaypoints();
   }
 
+  Stop getFirstWaypoint() {
+    return _pathway.getFirstWaypoint();
+  }
+
   List<Stop> getStops() {
     return _pathway.getStops();
   }
@@ -84,7 +88,9 @@ class RouteManager{
 
   bool ifDestinationSet(){return _pathway.getDestination().getStop() != "";}
 
-  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;} 
+  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;}
+
+  bool ifFirstWaypointSet(){return _pathway.getFirstWaypoint().getStop() != "";}
 
   void changeStart(String start){
     _pathway.changeStart(start);
@@ -141,11 +147,8 @@ class RouteManager{
 
   // Adds a new waypoint at the beginning (before destination)
   Stop addFirstWaypoint(String waypoint){
-    //Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
     _pathway.addFirstWayPoint(waypointStop);
-    //_pathway.moveStop(waypointStop.getUID(), 1);
-    //_pathway.swapStops(destination.getUID(), waypointStop.getUID());
     //Adding a new waypoint with empty string implies no change
     if(waypoint != ""){
       _changed = true;

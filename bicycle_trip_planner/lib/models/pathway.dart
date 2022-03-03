@@ -3,7 +3,8 @@ import 'package:bicycle_trip_planner/models/stop.dart';
 class Pathway{
 
   Stop _start = Stop(); 
-  Stop _destination = Stop(); 
+  Stop _destination = Stop();
+  Stop _firstWaypoint = Stop();
   final List<Stop> _stops = [];
   int size = 0;
 
@@ -25,6 +26,8 @@ class Pathway{
   }
 
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
+
+  Stop getFirstWaypoint() => _firstWaypoint;
 
   List<Stop> getStops() => _stops; 
 
@@ -54,9 +57,9 @@ class Pathway{
   }
 
   void addFirstWayPoint(Stop stop){
-    _stops.insert(1, stop);
+    _firstWaypoint = stop;
+    //_stops.insert(1, stop);
     size = size + 1;
-    //_updateDestination();
   }
 
   void removeStop(int id){
