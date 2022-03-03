@@ -48,8 +48,7 @@ class CameraManager{
 
   //********** Private **********
 
-  // TEMPORARY TEST
-  void setCameraPosition(LatLng position){
+  void _setCameraPosition(LatLng position){
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
@@ -88,18 +87,18 @@ class CameraManager{
     final double lat = place.geometry.location.lat;
     final double lng = place.geometry.location.lng;
 
-    setCameraPosition(LatLng(lat, lng));
+    _setCameraPosition(LatLng(lat, lng));
   }
 
   Future<void> viewRoute() async {
-    setCameraPosition(_routeOriginCamera);
+    _setCameraPosition(_routeOriginCamera);
     _setCameraBounds(_routeBoundsSW, _routeBoundsNE);
   }
 
   // Sets the camera to the user's location
   Future<void> viewUser() async {
     LatLng userLocation = await locationManager.locate();
-    setCameraPosition(userLocation);
+    _setCameraPosition(userLocation);
   }
 
 }

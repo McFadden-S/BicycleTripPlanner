@@ -58,5 +58,8 @@ class LocationManager{
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
+  Stream<LocationData> onUserLocationChange(){
+    return location.onLocationChanged;
+    }
 
 }

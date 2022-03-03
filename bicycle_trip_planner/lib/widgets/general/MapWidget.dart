@@ -51,7 +51,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
 
   //********** Widget **********
 
-  String test = "Loading";
   @override
   void initState() {
     super.initState();
@@ -71,24 +70,12 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
       markerManager.setUserMarker(pos);
     }));
 
-    locationManager.location.onLocationChanged.listen((LocationData currentLocation) {
-      // Use current location
-    setState(() {
-      test = currentLocation.longitude.toString() + " ++ " + currentLocation.latitude.toString();
-      markerManager.setUserMarker(
-          LatLng(currentLocation.latitude!, currentLocation.longitude!));
+    locationManager.onUserLocationChange().listen((LocationData currentLocation) {
+      setState(() {
+        markerManager.setUserMarker(
+            LatLng(currentLocation.latitude!, currentLocation.longitude!));
+      });
     });
-    });
-    // locatorSubscription =
-    //     Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
-    //         .listen((Position position) {
-    //         // TODO: Temporary test
-    //         setState(() {
-    //           test = position.longitude.toString() + " ++ " + position.latitude.toString();
-    //           markerManager.animateMarker(position.latitude, position.longitude, this);
-    //           // markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
-    //         });
-    //     });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
@@ -148,15 +135,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
       body: Stack(
         children: [
           googleMap,
-          Align(
-            alignment: Alignment.bottomCenter,
-            child:
-            Container(
-              margin: EdgeInsets.only(bottom: 200),
-              color: Colors.white,
-              child: Text(test),
-            ),
-          )
         ],
       ),
     );
