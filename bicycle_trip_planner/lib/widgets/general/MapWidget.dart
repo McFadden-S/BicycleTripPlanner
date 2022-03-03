@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:provider/provider.dart';
@@ -57,8 +57,10 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
     super.initState();
 
     // Requires permission for the locator to work
-    LocationPermission perm;
+    PermissionStatus perm;
     locationManager.requestPermission().then((permission) => perm = permission);
+
+    locationManager.locationSettings();
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
@@ -69,16 +71,24 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
       markerManager.setUserMarker(pos);
     }));
 
-    locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
-            .listen((Position position) {
-            // TODO: Temporary test
-            setState(() {
-              test = position.longitude.toString() + " ++ " + position.latitude.toString();
-              markerManager.animateMarker(position.latitude, position.longitude, this);
-              // markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
-            });
-        });
+    locationManager.location.onLocationChanged.listen((LocationData currentLocation) {
+      // Use current location
+    setState(() {
+      test = currentLocation.longitude.toString() + " ++ " + currentLocation.latitude.toString();
+      markerManager.setUserMarker(
+          LatLng(currentLocation.latitude!, currentLocation.longitude!));
+    });
+    });
+    // locatorSubscription =
+    //     Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
+    //         .listen((Position position) {
+    //         // TODO: Temporary test
+    //         setState(() {
+    //           test = position.longitude.toString() + " ++ " + position.latitude.toString();
+    //           markerManager.animateMarker(position.latitude, position.longitude, this);
+    //           // markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
+    //         });
+    //     });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
@@ -139,9 +149,10 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
         children: [
           googleMap,
           Align(
-            alignment: Alignment.center,
+            alignment: Alignment.bottomCenter,
             child:
             Container(
+              margin: EdgeInsets.only(bottom: 200),
               color: Colors.white,
               child: Text(test),
             ),

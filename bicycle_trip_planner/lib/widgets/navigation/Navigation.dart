@@ -15,16 +15,21 @@ import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
+
 
   @override
   _NavigationState createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
+
+  final LocationManager locationManager = LocationManager();
+
   DirectionManager directionManager = DirectionManager();
   late StreamSubscription locatorSubscription;
 
@@ -35,14 +40,22 @@ class _NavigationState extends State<Navigation> {
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
 
-    // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE
-    locatorSubscription = Geolocator.getPositionStream(
-        locationSettings: LocationManager().locationSettings())
-        .listen((Position position) {
+
+    locationManager.location.onLocationChanged.listen((LocationData currentLocation) {
+      // Use current location
       setState(() {
         CameraManager.instance.viewUser();
       });
     });
+
+    // // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE
+    // locatorSubscription = Geolocator.getPositionStream(
+    //     locationSettings: LocationManager().locationSettings())
+    //     .listen((Position position) {
+    //   setState(() {
+    //     CameraManager.instance.viewUser();
+    //   });
+    // });
   }
 
   @override

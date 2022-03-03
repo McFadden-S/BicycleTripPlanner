@@ -9,7 +9,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 
@@ -125,81 +125,81 @@ class MarkerManager{
     return userMarker; 
   }
 
-  animateMarker(
-    // double fromLat, //Starting latitude
-    // double fromLong, //Starting longitude
-    double toLat, //Ending latitude
-    double toLong, //Ending longitude
-    TickerProvider
-        provider, //Ticker provider of the widget. This is used for animation
-  ) async {
-    Position? position = await Geolocator.getLastKnownPosition();
-    double fromLat = position!.latitude;
-    double fromLong = position!.longitude;
-    final double bearing =
-    getBearing(LatLng(fromLat, fromLong), LatLng(toLat, toLong));
+  // animateMarker(
+  //   // double fromLat, //Starting latitude
+  //   // double fromLong, //Starting longitude
+  //   double toLat, //Ending latitude
+  //   double toLong, //Ending longitude
+  //   TickerProvider
+  //       provider, //Ticker provider of the widget. This is used for animation
+  // ) async {
+  //   LocationData? position = await Geolocator.getLastKnownPosition();
+  //   double fromLat = position!.latitude;
+  //   double fromLong = position!.longitude;
+  //   final double bearing =
+  //   getBearing(LatLng(fromLat, fromLong), LatLng(toLat, toLong));
+  //
+  //   _markers.clear();
+  //
+  //   Marker userMarker = await setUserMarker(LatLng(fromLat, fromLong));
+  //   //Adding initial marker to the start location.
+  //   _mapMarkerSink.add(_markers);
+  //
+  //   final animationController = AnimationController(
+  //     duration: const Duration(seconds: 10), //Animation duration of marker
+  //     vsync: provider, //From the widget
+  //   );
+  //
+  //   print(animationController);
+  //
+  //   Tween<double> tween = Tween(begin: 0, end: 1);
+  //
+  //   print(tween);
+  //
+  //   _animation = tween.animate(animationController)
+  //     ..addListener(() async {
+  //       //We are calculating new latitude and logitude for our marker
+  //       final v = _animation!.value;
+  //       double lng = v * toLong + (1 - v) * fromLong;
+  //       double lat = v * toLat + (1 - v) * fromLat;
+  //       LatLng newPos = LatLng(lat, lng);
+  //
+  //       //Removing old marker if present in the marker array
+  //       if (_markers.contains(userMarker)) _markers.remove(userMarker);
+  //
+  //       //New marker location
+  //     userMarker = await setUserMarker(newPos);
+  //
+  //       //Adding new marker to our list and updating the google map UI.
+  //       _markers.add(userMarker);
+  //       _mapMarkerSink.add(_markers);
+  //
+  //       // TODO: HERE TO TEST
+  //       CameraManager.instance.setCameraPosition(newPos);
+  //     });
+  //
+  //   //Starting the animation
+  //   animationController.forward();
+  // }
 
-    _markers.clear();
-
-    Marker userMarker = await setUserMarker(LatLng(fromLat, fromLong));
-    //Adding initial marker to the start location.
-    _mapMarkerSink.add(_markers);
-
-    final animationController = AnimationController(
-      duration: const Duration(seconds: 10), //Animation duration of marker
-      vsync: provider, //From the widget
-    );
-
-    print(animationController); 
-
-    Tween<double> tween = Tween(begin: 0, end: 1);
-
-    print(tween); 
-
-    _animation = tween.animate(animationController)
-      ..addListener(() async {
-        //We are calculating new latitude and logitude for our marker
-        final v = _animation!.value;
-        double lng = v * toLong + (1 - v) * fromLong;
-        double lat = v * toLat + (1 - v) * fromLat;
-        LatLng newPos = LatLng(lat, lng);
-
-        //Removing old marker if present in the marker array
-        if (_markers.contains(userMarker)) _markers.remove(userMarker);
-
-        //New marker location
-      userMarker = await setUserMarker(newPos);
-
-        //Adding new marker to our list and updating the google map UI.
-        _markers.add(userMarker);
-        _mapMarkerSink.add(_markers);
-
-        // TODO: HERE TO TEST
-        CameraManager.instance.setCameraPosition(newPos);
-      });
-
-    //Starting the animation
-    animationController.forward();
-  }
-
-  double getBearing(LatLng begin, LatLng end) {
-    double lat = (begin.latitude - end.latitude).abs();
-    double lng = (begin.longitude - end.longitude).abs();
-
-    if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
-      return vector.degrees(atan(lng / lat));
-    } else if (begin.latitude >= end.latitude &&
-        begin.longitude < end.longitude) {
-      return (90 - vector.degrees(atan(lng / lat))) + 90;
-    } else if (begin.latitude >= end.latitude &&
-        begin.longitude >= end.longitude) {
-      return vector.degrees(atan(lng / lat)) + 180;
-    } else if (begin.latitude < end.latitude &&
-        begin.longitude >= end.longitude) {
-      return (90 - vector.degrees(atan(lng / lat))) + 270;
-    }
-    return -1;
-  }
+  // double getBearing(LatLng begin, LatLng end) {
+  //   double lat = (begin.latitude - end.latitude).abs();
+  //   double lng = (begin.longitude - end.longitude).abs();
+  //
+  //   if (begin.latitude < end.latitude && begin.longitude < end.longitude) {
+  //     return vector.degrees(atan(lng / lat));
+  //   } else if (begin.latitude >= end.latitude &&
+  //       begin.longitude < end.longitude) {
+  //     return (90 - vector.degrees(atan(lng / lat))) + 90;
+  //   } else if (begin.latitude >= end.latitude &&
+  //       begin.longitude >= end.longitude) {
+  //     return vector.degrees(atan(lng / lat)) + 180;
+  //   } else if (begin.latitude < end.latitude &&
+  //       begin.longitude >= end.longitude) {
+  //     return (90 - vector.degrees(atan(lng / lat))) + 270;
+  //   }
+  //   return -1;
+  // }
 
   void setStationMarkers(List<Station> stations, ApplicationBloc appBloc){
     for(var station in stations){
