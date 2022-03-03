@@ -72,6 +72,10 @@ class RouteManager{
     return _pathway.getWaypoints();
   }
 
+  List<Stop> getStops() {
+    return _pathway.getStops();
+  }
+
   Stop getStop(int id) => _pathway.getStop(id);
 
   bool ifChanged(){return _changed;}
@@ -115,7 +119,7 @@ class RouteManager{
   }
 
   // Overrides the new stop
-  void addStart(String start){
+  Future<void> addStart(String start) async {
     Stop startStop = Stop(start); 
     _pathway.addStop(startStop); 
     _pathway.moveStop(startStop.getUID(), 0); 
@@ -136,11 +140,12 @@ class RouteManager{
   }
 
   // Adds a new waypoint at the beginning (before destination)
-  Stop addFirsrWaypoint(String waypoint){
-    Stop destination = getDestination();
+  Stop addFirstWaypoint(String waypoint){
+    //Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
-    _pathway.addFirstStop(waypointStop);
-    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    _pathway.addFirstWayPoint(waypointStop);
+    //_pathway.moveStop(waypointStop.getUID(), 1);
+    //_pathway.swapStops(destination.getUID(), waypointStop.getUID());
     //Adding a new waypoint with empty string implies no change
     if(waypoint != ""){
       _changed = true;

@@ -8,8 +8,8 @@ class Pathway{
   int size = 0;
 
   // NOTE: TODO ADD EDGE CASE (Pathway MUST have 2 stops at least)
-  Pathway(){ 
-    _stops.add(_start); 
+  Pathway(){
+    _stops.add(_start);
     _stops.add(_destination);
     size = 2;  
     _updatePointers(); 
@@ -47,10 +47,16 @@ class Pathway{
     _updateDestination(); 
   }
 
-  void addFirstStop(Stop stop){
+  void addStart(Stop stop){
     _stops.insert(0, stop);
     size = size + 1;
-    _updateDestination();
+    _updateStart();
+  }
+
+  void addFirstWayPoint(Stop stop){
+    _stops.insert(1, stop);
+    size = size + 1;
+    //_updateDestination();
   }
 
   void removeStop(int id){
@@ -87,6 +93,7 @@ class Pathway{
   void changeStart(String start){
     Stop startStop = getStart(); 
     startStop.setStop(start);
+    _updateStart();
   }
 
   void changeDestination(String destination){

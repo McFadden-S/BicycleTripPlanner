@@ -191,10 +191,16 @@ class ApplicationBloc with ChangeNotifier {
 
 
   updateDirectionsPeriodically(Duration duration){
-    Timer.periodic(duration, (timer){
+    Timer.periodic(duration, (timer) async {
       if(_isNavigating) {
-        fetchCurrentLocation();
+        await fetchCurrentLocation();
         RouteManager().changeStart(_currentLocation.name);
+        findRoute(
+            RouteManager().getStart().getStop(),
+            RouteManager().getDestination().getStop(),
+            RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+            RouteManager().getGroupSize()
+        );
         notifyListeners();
       } else {
         timer.cancel();
@@ -202,10 +208,19 @@ class ApplicationBloc with ChangeNotifier {
     });
   }
 
-  void setNavigating(bool value) {
+  Future<void> setNavigating(bool value) async {
     _isNavigating = value;
     if(value == true) {
-      RouteManager().addFirsrWaypoint(RouteManager().getStart().getStop());
+      String firstStop = RouteManager().getStart().getStop();
+      await fetchCurrentLocation();
+      await RouteManager().addStart(_currentLocation.name);
+      RouteManager().addFirstWaypoint(firstStop);
+      findRoute(
+          RouteManager().getStart().getStop(),
+          RouteManager().getDestination().getStop(),
+          RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+          RouteManager().getGroupSize()
+      );
       updateDirectionsPeriodically(Duration(seconds: 30));
 
     }
