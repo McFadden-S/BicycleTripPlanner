@@ -179,7 +179,7 @@ class MarkerManager{
       });
 
     //Starting the animation
-    animationController.repeat(reverse: true);
+    animationController.forward();
   }
 
   double getBearing(LatLng begin, LatLng end) {

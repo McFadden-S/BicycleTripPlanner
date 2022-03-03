@@ -29,7 +29,7 @@ class _HomeState extends State<Home> {
               child: SizedBox(height: topPaddingHeight, width: MediaQuery.of(context).size.width)
             ),
           ),
-          applicationBloc.getSelectedScreen()
+          applicationBloc.getSelectedScreen(),
         ],
       ),
     );

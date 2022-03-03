@@ -51,6 +51,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
 
   //********** Widget **********
 
+  String test = "Loading";
   @override
   void initState() {
     super.initState();
@@ -69,10 +70,11 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
     }));
 
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings(5))
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
             .listen((Position position) {
             // TODO: Temporary test
             setState(() {
+              test = position.longitude.toString() + " ++ " + position.latitude.toString();
               markerManager.animateMarker(position.latitude, position.longitude, this);
               // markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
             });
@@ -136,6 +138,14 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
       body: Stack(
         children: [
           googleMap,
+          Align(
+            alignment: Alignment.center,
+            child:
+            Container(
+              color: Colors.white,
+              child: Text(test),
+            ),
+          )
         ],
       ),
     );
