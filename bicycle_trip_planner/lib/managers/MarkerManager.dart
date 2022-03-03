@@ -208,7 +208,7 @@ class MarkerManager{
         onTap: (){
           appBloc.searchSelectedStation(station);
           appBloc.setSelectedScreen('routePlanning');
-          appBloc.pushPrevScreen('home');},
+          },
       ));
     }
   }

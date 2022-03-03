@@ -31,7 +31,6 @@ class ApplicationBloc with ChangeNotifier {
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
 
-  Queue<String> prevScreens = Queue();
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -170,15 +169,5 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void pushPrevScreen(String screenName) {
-    prevScreens.addFirst(screenName);
-  }
 
-  void goBack() {
-    if(prevScreens.isNotEmpty){
-      endRoute();
-      selectedScreen = screens[prevScreens.removeFirst()]!;
-      notifyListeners();
-    }
-  }
 }
