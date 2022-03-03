@@ -37,6 +37,10 @@ class LocationManager{
     return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
   }
 
+  double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
+    return _calculateDistance(posFrom, posTo);
+  }
+
   LocationSettings locationSettings([int distanceFilter = 0]){
     return LocationSettings(
       accuracy: LocationAccuracy.best, // How accurate the location is

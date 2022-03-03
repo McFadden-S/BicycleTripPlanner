@@ -177,7 +177,8 @@ class DirectionManager{
       showBikeRoute();
     }else {
       //TODO handle whether to display start or end walking route
-     showEndRoute();
+      showStartRoute();
+     //showEndRoute();
     }
 
   }
