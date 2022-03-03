@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
@@ -8,7 +7,6 @@ import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -24,13 +22,13 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 
+
 class ApplicationBloc with ChangeNotifier {
 
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
 
-  Queue<String> prevScreens = Queue();
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -42,7 +40,6 @@ class ApplicationBloc with ChangeNotifier {
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
-  final PolylineManager _polylineManager = PolylineManager();
   final DirectionManager _directionManager = DirectionManager();
   final RouteManager _routeManager = RouteManager();
   final LocationManager _locationManager = LocationManager();
@@ -85,10 +82,8 @@ class ApplicationBloc with ChangeNotifier {
   searchSelectedStation(Station station) async {
     Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
     setLocationMarker(place.placeId);
-    // Currently will always set station as a destination
+    // TODO: Currently will always set station as a destination
     // Check if station.name and place.name is different (ideally should be placeSearch.description)
-    print(station.name);
-    print(place.name);
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
     notifyListeners();
   }
@@ -169,8 +164,5 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void pushPrevScreen(String screenName) {
-    prevScreens.addFirst(screenName);
-  }
 
 }

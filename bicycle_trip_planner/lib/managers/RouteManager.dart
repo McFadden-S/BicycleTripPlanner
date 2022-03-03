@@ -16,8 +16,8 @@ class RouteManager{
   int _groupsize = 1;
 
   bool _changed = false;
+  bool _optimised = true;
 
-   bool _optimised = true;
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();

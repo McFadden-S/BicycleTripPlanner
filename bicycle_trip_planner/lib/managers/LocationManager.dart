@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/models/locator.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 
 class LocationManager{
 
@@ -8,6 +9,7 @@ class LocationManager{
 
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
+  final Location location = Location();
 
   //********** Singleton **********
 
@@ -25,8 +27,8 @@ class LocationManager{
     return _locator.locate();
   }
 
-  Future<LocationPermission> requestPermission() async{
-    return await Geolocator.requestPermission();
+  Future<PermissionStatus> requestPermission() async{
+    return await location.hasPermission();
   }
 
   Future<double> distanceTo(LatLng pos) async {
@@ -37,11 +39,11 @@ class LocationManager{
     return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
   }
 
-  LocationSettings locationSettings([int distanceFilter = 0]){
-    return LocationSettings(
-      accuracy: LocationAccuracy.best, // How accurate the location is
-      distanceFilter: distanceFilter, // The distance needed to travel until the next update (0 means it will always update)
-    );
+  Future<bool> locationSettings([double distanceFilter = 0]){
+    return location.changeSettings(
+         accuracy: LocationAccuracy.high,
+         interval: 1000,
+         distanceFilter: distanceFilter) ;
   }
 
   //********** private *********
@@ -52,9 +54,12 @@ class LocationManager{
 
   // Returns the distance between the two points in metres
   double _calculateDistance(LatLng pos1, LatLng pos2) {
-    return Geolocator.distanceBetween(
+    return geo.Geolocator.distanceBetween(
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
+  Stream<LocationData> onUserLocationChange(){
+    return location.onLocationChanged;
+    }
 
 }

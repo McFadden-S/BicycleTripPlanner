@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +19,7 @@ class MapWidget extends StatefulWidget {
   _MapWidgetState createState() => _MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
+class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
 
   //********** Providers **********
 
@@ -56,8 +56,10 @@ class _MapWidgetState extends State<MapWidget> {
     super.initState();
 
     // Requires permission for the locator to work
-    LocationPermission perm;
+    PermissionStatus perm;
     locationManager.requestPermission().then((permission) => perm = permission);
+
+    locationManager.locationSettings();
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
@@ -68,13 +70,12 @@ class _MapWidgetState extends State<MapWidget> {
       markerManager.setUserMarker(pos);
     }));
 
-    locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
-            .listen((Position position) {
-            setState(() {
-              markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
-            });
-        });
+    locationManager.onUserLocationChange().listen((LocationData currentLocation) {
+      setState(() {
+        markerManager.setUserMarker(
+            LatLng(currentLocation.latitude!, currentLocation.longitude!));
+      });
+    });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
@@ -82,6 +83,7 @@ class _MapWidgetState extends State<MapWidget> {
     //Use a periodic timer to update the TFL Santander bike stations 
     //(Once every 30 seconds) 
     applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
+
   }
 
   @override
@@ -109,20 +111,32 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
-
-    return GoogleMap(
-      mapType: MapType.normal,
-      markers: _markers,
-      polylines: _polylines,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      initialCameraPosition: CameraManager.initialCameraPosition,
-      onMapCreated: (controller) {
-        cameraManager = CameraManager(
-            googleMapController: controller,
+    final googleMap = StreamBuilder<Set<Marker>>(
+      stream: markerManager.mapMarkerStream,
+      builder: (context, snapshot){
+        return GoogleMap(
+          mapType: MapType.normal,
+          markers: _markers,
+          polylines: _polylines,
+          myLocationButtonEnabled: false,
+          zoomControlsEnabled: false,
+          initialCameraPosition: CameraManager.initialCameraPosition,
+          onMapCreated: (controller) {
+            cameraManager = CameraManager(
+                googleMapController: controller,
+            );
+            cameraManager?.init();
+          }
         );
-        cameraManager?.init();
       }
+    ); 
+    
+    return Scaffold(
+      body: Stack(
+        children: [
+          googleMap,
+        ],
+      ),
     );
   }
 

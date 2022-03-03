@@ -52,7 +52,7 @@ class CameraManager{
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
-        zoom: 14.0,
+        zoom: 16.0,
       )),
     );
   }
