@@ -69,12 +69,13 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
     }));
 
     locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings())
+        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings(5))
             .listen((Position position) {
             // TODO: Temporary test
-            // setState(() {
-            //   markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
-            // });
+            setState(() {
+              markerManager.animateMarker(position.latitude, position.longitude, this);
+              // markerManager.setUserMarker(LatLng(position.latitude, position.longitude));
+            });
         });
 
     // Get the initial update for the markers
@@ -84,18 +85,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
     //(Once every 30 seconds) 
     applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
 
-    //Starting the animation after 1 second.
-    Future.delayed(const Duration(seconds: 1)).then((value) {
-      setState(() {
-        markerManager.animateMarker(
-          37.42796133580664,
-          -122.085749655962,
-          37.428714,
-          -122.078301,
-          this,
-        );
-      });
-    });
   }
 
   @override

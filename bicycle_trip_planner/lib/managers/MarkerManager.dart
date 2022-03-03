@@ -9,6 +9,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 
@@ -125,13 +126,16 @@ class MarkerManager{
   }
 
   animateMarker(
-    double fromLat, //Starting latitude
-    double fromLong, //Starting longitude
+    // double fromLat, //Starting latitude
+    // double fromLong, //Starting longitude
     double toLat, //Ending latitude
     double toLong, //Ending longitude
     TickerProvider
         provider, //Ticker provider of the widget. This is used for animation
   ) async {
+    Position? position = await Geolocator.getLastKnownPosition();
+    double fromLat = position!.latitude;
+    double fromLong = position!.longitude;
     final double bearing =
     getBearing(LatLng(fromLat, fromLong), LatLng(toLat, toLong));
 
