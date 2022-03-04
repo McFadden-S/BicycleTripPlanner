@@ -50,4 +50,12 @@ class Station {
   String toString() {
     return name;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Station && other.id == id && other.name == name;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name);
 }

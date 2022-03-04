@@ -85,7 +85,7 @@ class StationManager {
   List<Station> getDeadStationsWhichNowHaveBikes() {
     List<Station> deadStations = getStationsWithNoBikes();
     List<Station> newStations =
-        deadStations.toSet().difference(_deadStations.toSet()).toList();
+        _deadStations.toSet().difference(deadStations.toSet()).toList();
     return newStations;
   }
 

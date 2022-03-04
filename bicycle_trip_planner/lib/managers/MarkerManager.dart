@@ -156,18 +156,4 @@ class MarkerManager {
       _removeMarker(station.name);
     }
   }
-
-  void hideStationMarkers(List<Station> stations) {
-    for (var station in stations) {
-      Marker marker = _getMarker(station.name).copyWith(visibleParam: false);
-      if (marker.markerId != const MarkerId("false")) _markers.add(marker);
-    }
-  }
-
-  void showStationMarkers(List<Station> stations) {
-    for (var station in stations) {
-      Marker marker = _getMarker(station.name).copyWith(visibleParam: true);
-      if (marker.markerId != const MarkerId("false")) _markers.add(marker);
-    }
-  }
 }
