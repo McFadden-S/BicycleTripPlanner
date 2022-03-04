@@ -200,11 +200,11 @@ class ApplicationBloc with ChangeNotifier {
 
   void endRoute() {
     Wakelock.disable();
-    selectedScreen = screens['home']!;
-    _routeManager.endRoute();
-    _directionManager.clear();
+    clearMap();
+    setSelectedScreen('home');
     notifyListeners();
   }
+
 
   // ********** Screen Management **********
 
@@ -215,5 +215,18 @@ class ApplicationBloc with ChangeNotifier {
   void setSelectedScreen(String screenName) {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
+  }
+
+  void goBack(String backTo) {
+    clearMap();
+
+    // this will also invoke notifyListeners()
+    setSelectedScreen(backTo);
+  }
+
+  // Clears selected route and directions
+  void clearMap(){
+    _routeManager.clear();
+    _directionManager.clear();
   }
 }

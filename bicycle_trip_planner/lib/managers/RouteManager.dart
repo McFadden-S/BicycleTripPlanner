@@ -156,7 +156,7 @@ class RouteManager {
 
   void clearChanged() => _changed = false;
 
-  void endRoute() {
+  void clear() {
     _polylineManager.clearPolyline();
     clearRouteMarkers();
 
