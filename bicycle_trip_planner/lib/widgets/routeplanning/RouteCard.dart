@@ -80,28 +80,33 @@ class _RouteCardState extends State<RouteCard> {
               borderRadius: BorderRadius.circular(30.0),
               side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Search(
-                      labelTextIn: "Starting Point",
-                      searchController: startSearchController,
-                      uid: routeManager.getStart().getUID(),
-                  ),
+            child: LimitedBox(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                          labelTextIn: "Starting Point",
+                          searchController: startSearchController,
+                          uid: routeManager.getStart().getUID(),
+                      ),
+                    ),
+                    IntermediateSearchList(),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                        labelTextIn: "Destination",
+                        searchController: endSearchController,
+                        uid: routeManager.getDestination().getUID(),
+                      ),
+                    ),
+                      // const Icon(Icons.expand_more),
+                  ],
                 ),
-                IntermediateSearchList(),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Search(
-                    labelTextIn: "Destination",
-                    searchController: endSearchController,
-                    uid: routeManager.getDestination().getUID(),
-                  ),
-                ),
-                  // const Icon(Icons.expand_more),
-              ],
+              ),
             ),
           ),
         );

@@ -1,3 +1,4 @@
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
@@ -56,34 +57,37 @@ class _DirectionsState extends State<Directions> {
                           (directionManager.ifDirections())
                           ? Divider()
                           : const SizedBox.shrink(),
-                      extendedNavigation
-                          ? LimitedBox(
-                        maxHeight:
-                        MediaQuery.of(context).size.height * 0.25,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          color: ThemeStyle.directionTileColor,
-                          child: ListView.separated(
-                            itemCount: directionManager.getNumberOfDirections(),
-                            itemBuilder: (BuildContext context, int index) {
-                              return DirectionTile(
-                                  index: index,
-                                  directionManager: directionManager);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider();
-                            },
-                          ),
-                        ),
+                      AnimatedSizeAndFade(
+                        fadeDuration: const Duration(milliseconds: 300),
+                        sizeDuration: const Duration(milliseconds: 300),
+                        child: extendedNavigation
+                            ? LimitedBox(
+                                  maxHeight:
+                                  MediaQuery.of(context).size.height * 0.25,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                                    color: ThemeStyle.directionTileColor,
+                                    child: ListView.separated(
+                                      itemCount: directionManager.getNumberOfDirections(),
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return DirectionTile(
+                                            index: index,
+                                            directionManager: directionManager);
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const Divider();
+                                      },
+                                    ),
+                                  ),
+                                )
+                            : const SizedBox.shrink(),
+                      ),
+                      Align(
+                          alignment: Alignment.bottomCenter,
+                          child: extendedNavigation
+                                  ? Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor)
+                                  : Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)
                       )
-                          : Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)),
-                      extendedNavigation
-                          ? Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor))
-                          : const SizedBox.shrink(),
                     ],
                   ),
             ),

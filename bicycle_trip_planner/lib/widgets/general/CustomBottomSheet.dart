@@ -16,10 +16,9 @@ class _StationCardState extends State<CustomBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-
     return Align(
         alignment: Alignment.bottomCenter,
-        child: Container(
+        child: AnimatedContainer(
           decoration: BoxDecoration(
             color: ThemeStyle.cardColor,
             borderRadius: const BorderRadius.only(
@@ -29,6 +28,10 @@ class _StationCardState extends State<CustomBottomSheet> {
           height: isExpanded
               ? MediaQuery.of(context).size.height * 0.15
               : MediaQuery.of(context).size.height * 0.05,
+          // Define how long the animation should take.
+          duration: const Duration(milliseconds: 300),
+          // Provide an optional curve to make the animation feel smoother.
+          curve: Curves.fastOutSlowIn,
           child: Column(
             children: [
               // top bar where the expand/shrink ion is
