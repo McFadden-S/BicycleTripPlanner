@@ -34,7 +34,7 @@ class ApplicationBloc with ChangeNotifier {
     'routePlanning': RoutePlanning(),
   };
 
-  List<PlaceSearch> searchResults = [];
+  late List<PlaceSearch> searchResults = [];
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
@@ -44,8 +44,14 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
 
   late Timer _stationTimer;
+  late Place _currentLocation;
 
-  cancelStationTimer() {
+  ApplicationBloc() {
+    fetchCurrentLocation();
+    updateStationsPeriodically(Duration(seconds: 30));
+  }
+
+  cancelStationTimer(){
     _stationTimer.cancel();
   }
 
@@ -89,6 +95,13 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
+    searchResults.insert(0, PlaceSearch(description: "My current location", placeId: _currentLocation.placeId));
+    notifyListeners();
+  }
+
+  getDefaultSearchResult() async {
+    searchResults = [];
+    searchResults.insert(0, PlaceSearch(description: "My current location", placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
@@ -102,6 +115,14 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+
+  fetchCurrentLocation() async {
+    LatLng latLng = await _locationManager.locate();
+    _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+    notifyListeners();
+  }
+
+
   setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(
@@ -109,6 +130,7 @@ class ApplicationBloc with ChangeNotifier {
     // Currently will always set station as a start
     setLocationMarker(place.placeId);
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
+
     notifyListeners();
   }
 
