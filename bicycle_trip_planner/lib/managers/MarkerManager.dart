@@ -9,8 +9,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MarkerManager{
-
+class MarkerManager {
   //********** Fields **********
 
   final Set<Marker> _markers = <Marker>{};
@@ -19,13 +18,15 @@ class MarkerManager{
   int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
-  BitmapDescriptor? userMarkerIcon; 
+  BitmapDescriptor? userMarkerIcon;
 
   //********** Singleton **********
 
   static final MarkerManager _markerManager = MarkerManager._internal();
 
-  factory MarkerManager() {return _markerManager;}
+  factory MarkerManager() {
+    return _markerManager;
+  }
 
   MarkerManager._internal();
 
@@ -35,22 +36,34 @@ class MarkerManager{
 
   Stream<Set<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
 
-  String _generateMarkerID(int id, [String name = ""]){
-    if(name != ""){return "Marker_$name";}
-    return "Marker_$id"; 
+  String _generateMarkerID(int id, [String name = ""]) {
+    if (name != "") {
+      return "Marker_$name";
+    }
+    return "Marker_$id";
   }
 
-  bool _markerExists(String markerID){
+  bool _markerExists(String markerID) {
     MarkerId falseMarker = const MarkerId("false");
-    Marker marker = _markers.firstWhere((marker) =>
-      marker.markerId == MarkerId(markerID), orElse: () => Marker(markerId: falseMarker));
+    Marker marker = _markers.firstWhere(
+        (marker) => marker.markerId == MarkerId(markerID),
+        orElse: () => Marker(markerId: falseMarker));
     return marker.markerId != falseMarker;
   }
 
-  void _removeMarker(String markerID){
-    if(_markerExists(markerID)){
-      _markers.remove(_markers.firstWhere((marker) =>
-      marker.markerId == MarkerId(markerID)));
+  Marker _getMarker(String markerID) {
+    Marker marker = const Marker(markerId: MarkerId("false"));
+    if (_markerExists(markerID)) {
+      return _markers
+          .firstWhere((marker) => marker.markerId == MarkerId(markerID));
+    }
+    return marker;
+  }
+
+  void _removeMarker(String markerID) {
+    if (_markerExists(markerID)) {
+      _markers.remove(_markers
+          .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
     }
   }
 
@@ -59,8 +72,9 @@ class MarkerManager{
     final Canvas canvas = Canvas(pictureRecorder);
     final Paint paint = Paint()..color = Colors.blue;
     canvas.drawCircle(Offset(radius, radius), radius, paint);
-    int diamater = (radius * 2).ceil();  
-    final img = await pictureRecorder.endRecording().toImage(diamater, diamater);
+    int diamater = (radius * 2).ceil();
+    final img =
+        await pictureRecorder.endRecording().toImage(diamater, diamater);
     final data = await img.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List markerIcon = data!.buffer.asUint8List();
     userMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
@@ -79,15 +93,15 @@ class MarkerManager{
 
   //********** Public **********
 
-  Set<Marker> getMarkers(){
+  Set<Marker> getMarkers() {
     return _markers;
   }
 
-  void removeMarker(String markerID){
-    _removeMarker(markerID); 
+  void removeMarker(String markerID) {
+    _removeMarker(markerID);
   }
 
-  void clearMarker(int uid){
+  void clearMarker(int uid) {
     _removeMarker(_generateMarkerID(uid));
   }
 
@@ -97,10 +111,11 @@ class MarkerManager{
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
-
   Future<Marker> setUserMarker(LatLng point) async {
     // Wait for this to load
-    if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
+    if (userMarkerIcon == null) {
+      await _initUserMarkerIcon(25);
+    }
 
     String userID = 'user';
 
@@ -110,29 +125,35 @@ class MarkerManager{
       icon: userMarkerIcon!,
       markerId: MarkerId(userID),
       position: point,
-
       draggable: false,
       zIndex: 2,
       flat: true,
       anchor: const Offset(0.5, 0.5),
     );
     _markers.add(userMarker);
-    return userMarker; 
+    return userMarker;
   }
 
-  void setStationMarkers(List<Station> stations, ApplicationBloc appBloc){
-    for(var station in stations){
+  void setStationMarkers(List<Station> stations, ApplicationBloc appBloc) {
+    for (var station in stations) {
       LatLng pos = LatLng(station.lat, station.lng);
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
+        icon: BitmapDescriptor.defaultMarkerWithHue(
+            ThemeStyle.stationMarkerColor),
         position: pos,
-        onTap: (){
+        onTap: () {
           appBloc.searchSelectedStation(station);
           appBloc.setSelectedScreen('routePlanning');
-          },
+        },
       ));
+    }
+  }
+
+  void clearStationMarkers(List<Station> stations) {
+    for (var station in stations) {
+      _removeMarker(station.name);
     }
   }
 }

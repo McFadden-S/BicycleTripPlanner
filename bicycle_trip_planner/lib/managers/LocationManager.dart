@@ -3,8 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
-class LocationManager{
-
+class LocationManager {
   //********** Fields **********
 
   // This is specifying the Locator class in locator.dart
@@ -15,7 +14,9 @@ class LocationManager{
 
   static final LocationManager _locationManager = LocationManager._internal();
 
-  factory LocationManager() {return _locationManager;}
+  factory LocationManager() {
+    return _locationManager;
+  }
 
   LocationManager._internal();
 
@@ -23,11 +24,11 @@ class LocationManager{
 
   //********** Public *********
 
-  Future<LatLng> locate() async{
+  Future<LatLng> locate() async {
     return _locator.locate();
   }
 
-  Future<PermissionStatus> requestPermission() async{
+  Future<PermissionStatus> requestPermission() async {
     return await location.hasPermission();
   }
 
@@ -35,15 +36,15 @@ class LocationManager{
     return distanceFromTo(await locate(), pos);
   }
 
-  double distanceFromTo(LatLng posFrom, LatLng posTo){
+  double distanceFromTo(LatLng posFrom, LatLng posTo) {
     return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
   }
 
-  Future<bool> locationSettings([double distanceFilter = 0]){
+  Future<bool> locationSettings([double distanceFilter = 0]) {
     return location.changeSettings(
-         accuracy: LocationAccuracy.high,
-         interval: 1000,
-         distanceFilter: distanceFilter) ;
+        accuracy: LocationAccuracy.high,
+        interval: 1000,
+        distanceFilter: distanceFilter);
   }
 
   //********** private *********
@@ -58,8 +59,7 @@ class LocationManager{
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
-  Stream<LocationData> onUserLocationChange(){
+  Stream<LocationData> onUserLocationChange() {
     return location.onLocationChanged;
-    }
-
+  }
 }
