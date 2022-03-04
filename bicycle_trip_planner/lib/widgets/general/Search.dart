@@ -104,12 +104,13 @@ class _SearchState extends State<Search> {
           child: TextField(
             controller: widget.searchController,
             onChanged: (input) {
-              if(input=="") {
-                hideSearch();
-              } else {
+              //if(input=="") {
+              //  hideSearch();
+              //} else {
                 isSearching = true;
-              }
+              //}
               applicationBloc.searchPlaces(input);
+              print(applicationBloc.searchResults.length);
               },
             onTap: (){isSearching = true;},
             decoration: InputDecoration(

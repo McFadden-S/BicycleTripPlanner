@@ -52,8 +52,6 @@ class ApplicationBloc with ChangeNotifier {
 
   ApplicationBloc() {
     fetchCurrentLocation();
-
-
     updateStationsPeriodically(Duration(seconds: 30));
   }
 
@@ -93,6 +91,8 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
+    //searchResults.insert(0, PlaceSearch(description: _currentLocation.name, placeId: _currentLocation.placeId));
+    searchResults.add(PlaceSearch(description: _currentLocation.name, placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
@@ -108,8 +108,6 @@ class ApplicationBloc with ChangeNotifier {
     _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
     searchResults.add(PlaceSearch(description: _currentLocation.name, placeId: _currentLocation.placeId));
     notifyListeners();
-    //return _currentLocation;
-    //notifyListeners();
   }
 
   setSelectedCurrentLocation(SearchType searchType) async {
