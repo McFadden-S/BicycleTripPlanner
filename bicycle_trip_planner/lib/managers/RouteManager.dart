@@ -18,6 +18,10 @@ class RouteManager{
   //final List<String> _intermediates = <String>[];
   final Pathway _pathway = Pathway();
 
+  //TODO implement toggles in Route Widget
+  bool _startFromCurrentLocation = false;
+  bool _walkToFirstWaypoint = false;
+
   int _groupsize = 1;
 
   bool _changed = false;
@@ -47,6 +51,24 @@ class RouteManager{
       _groupsize = size;
       _changed = true;
     }
+  }
+
+  bool getWalkToFirstWaypoint() {
+    return _walkToFirstWaypoint;
+  }
+
+  void toggleWalkToFirstWaypoint(){
+    _walkToFirstWaypoint = !_walkToFirstWaypoint;
+    _changed = true;
+  }
+
+  bool getStartFromCurrentLocation() {
+    return _startFromCurrentLocation;
+  }
+
+  void toggleStartFromCurrentLocation(){
+    _startFromCurrentLocation = !_startFromCurrentLocation;
+    _changed = true;
   }
 
   void toggleOptimised(){

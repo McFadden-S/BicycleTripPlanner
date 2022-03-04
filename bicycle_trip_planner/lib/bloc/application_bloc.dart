@@ -188,12 +188,16 @@ class ApplicationBloc with ChangeNotifier {
     prevScreens.addFirst(screenName);
   }
 
+  // ********** Navigation Management **********
+
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {
       if(_isNavigating) {
-        if (isWaypointPassed((await _placesService.getPlace(RouteManager().getWaypoints().first.getStop())).getLatLng())) {
+        //TODO error stop id is not what getPlace method needs
+        print('Name of the first stop: ${RouteManager().getStops().sublist(1).first.getStop()}');
+        if (isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getStops().sublist(1).first.getStop())).getLatLng())) {
           RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
-          if (RouteManager().getWaypoints().length == 0) {
+          if (RouteManager().getStops().length <= 1) {
             endRoute();
             timer.cancel();
           }
@@ -208,27 +212,30 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> setNavigating(bool value) async {
     _isNavigating = value;
-    // if (value && RouteManager().getStart().getStop() == _currentLocation.name) {
-    //   updateDirectionsPeriodically(Duration(seconds: 30));
-    // }
-    if(value) {
-      String firstStop = RouteManager().getStart().getStop();
-      RouteManager().addFirstWaypoint(firstStop);
-      await _updateRoute();
-      updateDirectionsPeriodically(Duration(seconds: 270));
+    if (value && RouteManager().getStartFromCurrentLocation()) {
+      updateDirectionsPeriodically(Duration(seconds: 30));
+    }
+    else if(value) {
+      if (RouteManager().getWalkToFirstWaypoint()) {
+        //TODO implement walk to first waypoint
+      }
+      else {
+        String firstStop = RouteManager().getStart().getStop();
+        RouteManager().addFirstWaypoint(firstStop);
+        await _updateRoute();
+        //TODO: stop zoom in/out each time map gets reloaded
+        updateDirectionsPeriodically(Duration(seconds: 20));
+      }
     }
   }
 
-  // changeRouteFromCurrentLocation() async {
-  //   String firstStop = RouteManager().getStart().getStop();
-  //   await fetchCurrentLocation();
-  //   Station startStation = _stationManager.getPickupStation();
-  //   Rou.Route startWalkRoute = await _directionsService.getRoutes(_currentLocation.name, startStation.name, );
-  // }
-
-  Future<void> _updateRoute() async {
+  Future<void> _changeRouteStartToCurrentLocation() async {
     await fetchCurrentLocation();
     RouteManager().changeStart(_currentLocation.name);
+  }
+
+  Future<void> _updateRoute() async {
+    await _changeRouteStartToCurrentLocation();
     await updateRoute(
         RouteManager().getStart().getStop(),
         RouteManager().getDestination().getStop(),
@@ -238,7 +245,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   bool isWaypointPassed(LatLng waypoint) {
-    print(_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint));
+    //print(_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint));
     return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 10);
   }
 
@@ -267,6 +274,7 @@ class ApplicationBloc with ChangeNotifier {
       bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
     }
     //TODO: change startStation to current location once at the start station
+    //TODO change endstation to current location once passed end station
     //Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
     Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
 
