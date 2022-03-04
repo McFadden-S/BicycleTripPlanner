@@ -54,7 +54,6 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically(Duration(seconds: 30));
   }
 
-
   cancelStationTimer(){
     _stationTimer.cancel();
   }

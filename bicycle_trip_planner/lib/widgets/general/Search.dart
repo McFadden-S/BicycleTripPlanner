@@ -107,6 +107,7 @@ class _SearchState extends State<Search> {
               },
             onTap: (){
               isSearching = true;
+              applicationBloc.fetchCurrentLocation();
               applicationBloc.getDefaultSearchResult();
               },
             decoration: InputDecoration(
