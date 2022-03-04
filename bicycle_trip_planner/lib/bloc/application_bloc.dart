@@ -22,9 +22,7 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 
-
 class ApplicationBloc with ChangeNotifier {
-
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
@@ -46,7 +44,6 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
 
   late Timer _stationTimer;
-
   late Place _currentLocation;
 
   ApplicationBloc() {
@@ -58,13 +55,13 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer.cancel();
   }
 
-  updateStationsPeriodically(Duration duration){
-    _stationTimer = Timer.periodic(duration, (timer){
+  updateStationsPeriodically(Duration duration) {
+    _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
     });
   }
 
-  setupStations() async{
+  setupStations() async {
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
     _markerManager.setStationMarkers(stations, this);
@@ -77,7 +74,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  bool ifSearchResult(){
+  bool ifSearchResult() {
     return searchResults.isNotEmpty;
   }
 
@@ -94,8 +91,9 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   searchSelectedStation(Station station) async {
-    Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setLocationMarker(place.placeId);
+    Place place =
+        await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
+    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
     // TODO: Currently will always set station as a destination
     // Check if station.name and place.name is different (ideally should be placeSearch.description)
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
@@ -112,9 +110,10 @@ class ApplicationBloc with ChangeNotifier {
 
   setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
-    Place place = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-     // Currently will always set station as a start
-    setLocationMarker(place.placeId);
+    Place place = await _placesService.getPlaceFromCoordinates(
+        latLng.latitude, latLng.longitude);
+    // Currently will always set station as a start
+    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
 
     notifyListeners();
@@ -137,44 +136,59 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  clearSelectedLocation(int uid){
+  clearSelectedLocation(int uid) {
     _routeManager.clearStop(uid);
     notifyListeners();
   }
 
-  removeSelectedLocation(int uid){
+  removeSelectedLocation(int uid) {
     _routeManager.removeStop(uid);
     notifyListeners();
   }
 
-  findRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
-    Rou.Route route = await _directionsService.getRoutes(origin, destination, intermediates);
+  findRoute(String origin, String destination,
+      [List<String> intermediates = const <String>[],
+      int groupSize = 1]) async {
+    Rou.Route route =
+        await _directionsService.getRoutes(origin, destination, intermediates);
 
-    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
-    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
+    Location startLocation =
+        (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation =
+        (await _placesService.getPlaceFromAddress(destination))
+            .geometry
+            .location;
 
-    Station startStation = _stationManager.getPickupStationNear(LatLng(startLocation.lat, startLocation.lng), groupSize);
-    Station endStation = _stationManager.getDropoffStationNear(LatLng(endLocation.lat, endLocation.lng), groupSize);
+    Station startStation = _stationManager.getPickupStationNear(
+        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(
+        LatLng(endLocation.lat, endLocation.lng), groupSize);
 
-    String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
-    String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
+    String startStationName = (await _placesService.getPlaceFromCoordinates(
+            startStation.lat, startStation.lng))
+        .name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(
+            endStation.lat, endStation.lng))
+        .name;
 
-    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
-    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+    Rou.Route startWalkRoute =
+        await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName,
+        endStationName, intermediates, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute =
+        await _directionsService.getRoutes(endStationName, destination);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
   }
 
-  void endRoute(){
+  void endRoute() {
     Wakelock.disable();
     selectedScreen = screens['home']!;
     _routeManager.endRoute();
     _directionManager.clear();
     notifyListeners();
   }
-
 
   // ********** Screen Management **********
 
@@ -186,6 +200,4 @@ class ApplicationBloc with ChangeNotifier {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
   }
-
-
 }
