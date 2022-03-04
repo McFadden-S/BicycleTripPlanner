@@ -108,7 +108,8 @@ class ApplicationBloc with ChangeNotifier {
   searchSelectedStation(Station station) async {
     Place place =
         await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setLocationMarker(place.placeId);
+    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
+
     // TODO: Currently will always set station as a destination
     // Check if station.name and place.name is different (ideally should be placeSearch.description)
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
@@ -128,7 +129,7 @@ class ApplicationBloc with ChangeNotifier {
     Place place = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude);
     // Currently will always set station as a start
-    setLocationMarker(place.placeId);
+    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
 
     notifyListeners();
