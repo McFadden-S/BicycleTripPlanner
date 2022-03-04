@@ -73,10 +73,10 @@ class ApplicationBloc with ChangeNotifier {
   updateStationMarkers() {
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes();
-    print("New stations $newStations");
+    //print("New stations $newStations");
     _markerManager.setStationMarkers(newStations, this);
     List<Station> deadStations = _stationManager.getStationsWithNoBikes();
-    print("Dead stations $deadStations");
+    //print("Dead stations $deadStations");
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
     _stationManager.setDeadStations(deadStations);
