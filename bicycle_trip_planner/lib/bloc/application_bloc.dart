@@ -52,7 +52,6 @@ class ApplicationBloc with ChangeNotifier {
   ApplicationBloc() {
     fetchCurrentLocation();
     updateStationsPeriodically(Duration(seconds: 30));
-    updateCurrentLocationPeriodically(Duration(seconds: 30));
   }
 
 
@@ -63,12 +62,6 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically(Duration duration){
     _stationTimer = Timer.periodic(duration, (timer){
       updateStations();
-    });
-  }
-
-  updateCurrentLocationPeriodically(Duration duration) {
-    Timer.periodic(duration, (timer){
-      _currentLocation = fetchCurrentLocation();
     });
   }
 
