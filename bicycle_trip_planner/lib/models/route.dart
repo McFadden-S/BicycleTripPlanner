@@ -9,6 +9,12 @@ class Route {
 
   Route({required this.bounds, required this.legs, required this.polyline});
 
+  Route.routeNotFound({
+    this.bounds = const Bounds.boundsNotFound(),
+    this.legs = const <Legs>[],
+    this.polyline = const OverviewPolyline.overviewPolylineNotFound()
+});
+
   factory Route.fromJson(Map<String, dynamic> parsedJson) {
     //TODO Find more suitable name than substitute 'xLegs'
     List<Legs> xLegs = [];

@@ -1,26 +1,22 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
 
   final String labelTextIn;
   final TextEditingController searchController;
+  int uid; 
 
-  final SearchType searchType;
-  final int intermediateIndex;
-
-  const Search({
+  Search({
     Key? key,
     required this.labelTextIn,
     required this.searchController,
-    required this.searchType,
-    this.intermediateIndex = 0,
-  }) : super(key: key);
+    this.uid = -1
+  }): super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
@@ -38,15 +34,8 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  getText(){
-    switch (widget.searchType){
-      case SearchType.start:
-        return routeManager.getStart();
-      case SearchType.end:
-        return routeManager.getDestination();
-      case SearchType.intermediate:
-        return routeManager.getIntermediate(widget.intermediateIndex);
-    }
+  String getText(){
+    return routeManager.getStop(widget.uid).getStop(); 
   }
 
    @override
@@ -55,16 +44,16 @@ class _SearchState extends State<Search> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if(!isSearching){
-      widget.searchController.text = getText();
+        widget.searchController.text = getText();
     }
 
     return Stack(
       children: [
         if (applicationBloc.ifSearchResult() && isSearching)
           Card(
-            color: Colors.white,
+            color: ThemeStyle.cardColor,
             child: Container(
-              // padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+              padding: const EdgeInsets.only(top: 60),
               child: ListView.separated(
                 separatorBuilder: (context, index) {
                   return const Divider();
@@ -75,18 +64,26 @@ class _SearchState extends State<Search> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    trailing: Visibility(child: Icon(Icons.my_location), visible: (index == 0)),
                     title: Text(
                       applicationBloc
                           .searchResults[index].description,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                      ),
+                      style: TextStyle(color: ThemeStyle.secondaryTextColor),
                     ),
                     onTap: () {
-                      applicationBloc.setSelectedLocation(
-                          applicationBloc.searchResults[index].placeId,
-                          applicationBloc.searchResults[index].description,
-                          widget.searchType, widget.intermediateIndex);
+                      // TODO: This will create a marker that cannot be removed IF it's the home page one. 
+                      // Possible solution: we don't move to routeplanning when search is tapped   
+                      // Pass in an argument that holds this search as a placeholder in routemanager so we 
+                      // Have access to it and to pass onto destination OR have home search take a unique id/
+                      // Make a search type enum of search and route (search enum = has unique id only for marker
+                      // No need for any getText for this search) (route enum = behaves as it does currently i.e.
+                      // will have a unique id for marker + WILL also getText for this search)~
+                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
+                      if(widget.uid != -1){
+                        applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
+                      }
+
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
                       //TODO should be changed to appropriate scope
@@ -102,37 +99,39 @@ class _SearchState extends State<Search> {
         Container(
           padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
           child: TextField(
+            style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
-              //if(input=="") {
-              //  hideSearch();
-              //} else {
-                isSearching = true;
-              //}
+              isSearching = true;
               applicationBloc.searchPlaces(input);
-              print(applicationBloc.searchResults.length);
               },
-            onTap: (){isSearching = true;},
+            onTap: (){
+              isSearching = true;
+              applicationBloc.getDefaultSearchResult();
+              },
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
-              hintStyle: const TextStyle(color: Color.fromRGBO(38, 36, 36, 0.6)),
-              fillColor: Colors.white,
+              hintStyle: TextStyle(color: ThemeStyle.secondaryTextColor),
+              fillColor: ThemeStyle.cardColor,
               filled: true,
-              enabledBorder: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
-              border: const OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: Color(0xff969393)),
+              border: OutlineInputBorder(
+                borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
                   setState(() {
-                    applicationBloc.clearSelectedLocation(widget.searchType, widget.intermediateIndex);
+                    applicationBloc.clearLocationMarker(widget.uid); 
+                    if(widget.uid != -1){
+                      applicationBloc.clearSelectedLocation(widget.uid);
+                    }
                   }
-                  );
+                );
                   hideSearch();
                 },
               ),

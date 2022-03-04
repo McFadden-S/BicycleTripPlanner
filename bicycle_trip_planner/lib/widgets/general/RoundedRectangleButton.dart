@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../constants.dart';
+
 class RoundedRectangleButton extends StatefulWidget {
 
   final IconData iconIn;
@@ -21,13 +23,13 @@ class _StationCardState extends State<RoundedRectangleButton> {
       onPressed: widget.onButtonClicked,
       child: Icon(
           widget.iconIn,
-          color: Colors.white,
+          color: ThemeStyle.primaryIconColor,
       ),
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(17.0),
         ),
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(left: 30, top: 10, bottom: 10, right: 30),
         primary: widget.buttonColor,
       ),
     );

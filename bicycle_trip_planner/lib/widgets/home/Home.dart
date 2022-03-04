@@ -1,5 +1,4 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +14,7 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    double topPaddingHeight = MediaQuery.of(context).padding.top;
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -22,26 +22,17 @@ class _HomeState extends State<Home> {
         fit: StackFit.expand,
         children: [
           MapWidget(),
-          applicationBloc.prevScreens.isNotEmpty ? Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0, bottom: 80.0),
-                    child: CircleButton(
-                        iconIn: Icons.arrow_back,
-                        onButtonClicked: () => applicationBloc.goBack()
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ) : SizedBox.shrink(),
-          applicationBloc.getSelectedScreen()
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              color: Colors.grey.withOpacity(0.4),
+              child: SizedBox(height: topPaddingHeight, width: MediaQuery.of(context).size.width)
+            ),
+          ),
+          applicationBloc.getSelectedScreen(),
         ],
       ),
     );
   }
 }
+

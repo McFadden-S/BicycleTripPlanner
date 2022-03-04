@@ -3,7 +3,12 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../constants.dart';
+import 'TimeManager.dart';
+
 class CameraManager{
+
+  final _time = CurrentTime();
 
   static const initialCameraPosition = CameraPosition(
     target: LatLng(51.509865, -0.118092),
@@ -27,12 +32,12 @@ class CameraManager{
     return _cameraManager;
   } 
 
-  CameraManager._internal(); 
+  CameraManager._internal();
 
   //********** Setup/Teardown **********
 
   void init(){
-    rootBundle.loadString('assets/map_style.txt').then((style) {
+    rootBundle.loadString(ThemeStyle.mapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
   }
@@ -47,7 +52,7 @@ class CameraManager{
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
-        zoom: 14.0,
+        zoom: 16.0,
       )),
     );
   }

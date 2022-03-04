@@ -8,9 +8,11 @@ import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
+  ThemeStyle();
   WidgetsFlutterBinding.ensureInitialized();
   // TODO: Ensure firebase initialization only occurs once
   try {
@@ -37,32 +39,33 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
+        '/weather': (context) => Weather(),
       },
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: const Color(0xFF0C9CEE),
+        primaryColor: ThemeStyle.buttonPrimaryColor,
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            textStyle: buttonTextStyle,
+            textStyle: ThemeStyle.buttonTextStyle,
             padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
-            primary: const Color(0xFF0C9CEE),
-            shadowColor: Colors.grey,
+            primary: ThemeStyle.buttonPrimaryColor,
+            shadowColor: ThemeStyle.boxShadow,
             elevation: 5,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(13.0),
             ),
           ),
         ),
-        floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Colors.white,
-            foregroundColor: Colors.black54,
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: ThemeStyle.buttonSecondaryColor,
+            foregroundColor: ThemeStyle.secondaryTextColor,
             elevation: 3,
             splashColor: Colors.transparent,
             extendedPadding: EdgeInsets.all(10)),
         cardTheme: CardTheme(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
-              side: BorderSide(width: 0.5, color: Color(0xff969393))),
+              side: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor)),
           elevation: 3,
         ),
         fontFamily: 'Outfit',

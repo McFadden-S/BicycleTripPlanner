@@ -1,20 +1,21 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MarkerManager {
+class MarkerManager{
 
   //********** Fields **********
 
   final Set<Marker> _markers = <Marker>{};
 
+  final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
   int _markerIdCounter = 1;
   final String _startMarkerID = "Start";
   final String _finalDestinationMarkerID = "Final Destination";
@@ -30,11 +31,13 @@ class MarkerManager {
 
   //********** Private **********
 
-  String _generateMarkerID(SearchType searchType, [int intermediateIndex = 0]){
-    if(intermediateIndex != 0){
-      return searchType.toString() + intermediateIndex.toString();
-    }
-    return searchType.toString();
+  StreamSink<Set<Marker>> get _mapMarkerSink => _mapMarkerSC.sink;
+
+  Stream<Set<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
+
+  String _generateMarkerID(int id, [String name = ""]){
+    if(name != ""){return "Marker_$name";}
+    return "Marker_$id"; 
   }
 
   bool _markerExists(String markerID){
@@ -80,18 +83,22 @@ class MarkerManager {
     return _markers;
   }
 
-  void clearMarker(SearchType searchType, [int intermediateIndex = 0]){
-    _removeMarker(_generateMarkerID(searchType, intermediateIndex));
+  void removeMarker(String markerID){
+    _removeMarker(markerID); 
   }
 
-  void setPlaceMarker(Place place, SearchType searchType, [int intermediateIndex = 0]) {
+  void clearMarker(int uid){
+    _removeMarker(_generateMarkerID(uid));
+  }
+
+  void setPlaceMarker(Place place, [int uid = -1]) {
     final double lat = place.geometry.location.lat;
     final double lng = place.geometry.location.lng;
-    setMarker(LatLng(lat, lng), _generateMarkerID(searchType, intermediateIndex));
+    setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
-  Future<void> setUserMarker(LatLng point) async {
 
+  Future<Marker> setUserMarker(LatLng point) async {
     // Wait for this to load
     if(userMarkerIcon == null){await _initUserMarkerIcon(25);} 
 
@@ -110,6 +117,7 @@ class MarkerManager {
       anchor: const Offset(0.5, 0.5),
     );
     _markers.add(userMarker);
+    return userMarker; 
   }
 
   void setStationMarkers(List<Station> stations, ApplicationBloc appBloc){
@@ -118,12 +126,12 @@ class MarkerManager {
       _markers.add(Marker(
         markerId: MarkerId(station.name),
         infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        icon: BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
         position: pos,
         onTap: (){
           appBloc.searchSelectedStation(station);
           appBloc.setSelectedScreen('routePlanning');
-          appBloc.pushPrevScreen('home');},
+          },
       ));
     }
   }

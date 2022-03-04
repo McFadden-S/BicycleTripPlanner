@@ -33,7 +33,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: mainFontColor,
+                  color: ThemeStyle.mainFontColor,
                 ),
               ),
               Flexible(
