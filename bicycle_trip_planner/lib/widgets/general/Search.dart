@@ -53,7 +53,7 @@ class _SearchState extends State<Search> {
           Card(
             color: ThemeStyle.cardColor,
             child: Container(
-              // padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+              padding: const EdgeInsets.only(top: 60),
               child: ListView.separated(
                 separatorBuilder: (context, index) {
                   return const Divider();
@@ -64,6 +64,7 @@ class _SearchState extends State<Search> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    trailing: Visibility(child: Icon(Icons.my_location), visible: (index == 0)),
                     title: Text(
                       applicationBloc
                           .searchResults[index].description,
@@ -101,14 +102,14 @@ class _SearchState extends State<Search> {
             style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
-              if(input=="") {
-                hideSearch();
-              } else {
-                isSearching = true;
-              }
+              isSearching = true;
               applicationBloc.searchPlaces(input);
               },
-            onTap: (){isSearching = true;},
+            onTap: (){
+              isSearching = true;
+              applicationBloc.fetchCurrentLocation();
+              applicationBloc.getDefaultSearchResult();
+              },
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
               hintStyle: TextStyle(color: ThemeStyle.secondaryTextColor),
