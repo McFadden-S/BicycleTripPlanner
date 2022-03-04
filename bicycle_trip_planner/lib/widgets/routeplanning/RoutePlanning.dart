@@ -33,6 +33,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     return SafeArea(
+      bottom: false,
       child: Stack(
         children: [
           Align(
