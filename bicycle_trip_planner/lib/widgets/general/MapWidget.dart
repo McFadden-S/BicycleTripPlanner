@@ -19,8 +19,7 @@ class MapWidget extends StatefulWidget {
   _MapWidgetState createState() => _MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
-
+class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   //********** Providers **********
 
   late StreamSubscription locatorSubscription;
@@ -39,7 +38,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
 
   // TODO: CHANGE THIS BACK WHEN POSSIBLE
   // WAS TEMPORARILY REVERTED TO ALLOW TESTS TO PASS
-  CameraManager? cameraManager; 
+  CameraManager? cameraManager;
 
   //********** User Position **********
 
@@ -61,16 +60,19 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
 
     locationManager.locationSettings();
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
 
     applicationBloc.setupStations();
 
     // Initialise the marker with his current position
-    locationManager.locate().then((pos) => setState((){
-      markerManager.setUserMarker(pos);
-    }));
+    locationManager.locate().then((pos) => setState(() {
+          markerManager.setUserMarker(pos);
+        }));
 
-    locationManager.onUserLocationChange().listen((LocationData currentLocation) {
+    locationManager
+        .onUserLocationChange()
+        .listen((LocationData currentLocation) {
       setState(() {
         markerManager.setUserMarker(
             LatLng(currentLocation.latitude!, currentLocation.longitude!));
@@ -80,21 +82,23 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
     // Get the initial update for the markers
     applicationBloc.updateStations();
 
-    //Use a periodic timer to update the TFL Santander bike stations 
-    //(Once every 30 seconds) 
-    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
-
+    //Use a periodic timer to update the TFL Santander bike stations
+    //(Once every 30 seconds)
+    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   @override
   void dispose() {
-    try{
-      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    try {
+      final applicationBloc =
+          Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
-    }
-    catch(e){}; 
+    } catch (e) {}
+    ;
 
-    if(cameraManager != null) {cameraManager?.dispose();}
+    if (cameraManager != null) {
+      cameraManager?.dispose();
+    }
     locatorSubscription.cancel();
 
     super.dispose();
@@ -104,33 +108,31 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
   void setState(fn) {
     try {
       super.setState(fn);
-    } catch (e) {};
+    } catch (e) {}
+    ;
   }
 
   @override
   Widget build(BuildContext context) {
-
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     final googleMap = StreamBuilder<Set<Marker>>(
-      stream: markerManager.mapMarkerStream,
-      builder: (context, snapshot){
-        return GoogleMap(
-          mapType: MapType.normal,
-          markers: _markers,
-          polylines: _polylines,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          initialCameraPosition: CameraManager.initialCameraPosition,
-          onMapCreated: (controller) {
-            cameraManager = CameraManager(
-                googleMapController: controller,
-            );
-            cameraManager?.init();
-          }
-        );
-      }
-    ); 
-    
+        stream: markerManager.mapMarkerStream,
+        builder: (context, snapshot) {
+          return GoogleMap(
+              mapType: MapType.normal,
+              markers: _markers,
+              polylines: _polylines,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              initialCameraPosition: CameraManager.initialCameraPosition,
+              onMapCreated: (controller) {
+                cameraManager = CameraManager(
+                  googleMapController: controller,
+                );
+                cameraManager?.init();
+              });
+        });
+
     return Scaffold(
       body: Stack(
         children: [
@@ -139,5 +141,4 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin  {
       ),
     );
   }
-
 }
