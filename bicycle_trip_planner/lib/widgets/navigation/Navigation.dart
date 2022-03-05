@@ -18,13 +18,11 @@ import 'package:provider/provider.dart';
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
 
-
   @override
   _NavigationState createState() => _NavigationState();
 }
 
 class _NavigationState extends State<Navigation> {
-
   final LocationManager locationManager = LocationManager();
 
   DirectionManager directionManager = DirectionManager();
@@ -37,8 +35,8 @@ class _NavigationState extends State<Navigation> {
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
 
-
-    locationManager.location.onLocationChanged.listen((LocationData currentLocation) {
+    locatorSubscription = locationManager.location.onLocationChanged
+        .listen((LocationData currentLocation) {
       // Use current location
       setState(() {
         CameraManager.instance.viewUser();
@@ -91,7 +89,8 @@ class _NavigationState extends State<Navigation> {
                                     color: Color(0xFF8B0000), width: 1),
                                 borderRadius: BorderRadius.circular(9.0),
                               ),
-                              child: Countdown(duration: directionManager.getDuration())),
+                              child: Countdown(
+                                  duration: directionManager.getDuration())),
                         ],
                       ),
                     ),
@@ -101,43 +100,47 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
           CustomBottomSheet(
-              child: Container(
-                margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
-                child: Row(
-                  children: [
-                    Expanded(child: DistanceETACard()),
-                    Expanded(
-                      child: Column(
-                        children: [
-                            Expanded(child: ElevatedButton(
-                                onPressed: (){
-                                  applicationBloc.endRoute();
-                                  applicationBloc.setSelectedScreen('home');
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text("End",
-                                          style: TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
+            child: Container(
+              margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
+              child: Row(
+                children: [
+                  Expanded(child: DistanceETACard()),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                              onPressed: () {
+                                applicationBloc.endRoute();
+                                applicationBloc.setSelectedScreen('home');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(5.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("End",
+                                        style: TextStyle(color: Colors.white)),
+                                  ],
                                 ),
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(Colors.red))),
-                            ),
-                            Expanded(child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: WalkOrCycleToggle(directionManager: directionManager),
-                            )),
-
-                        ],
-                      ),
+                              ),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.red))),
+                        ),
+                        Expanded(
+                            child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: WalkOrCycleToggle(
+                              directionManager: directionManager),
+                        )),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
+            ),
           ),
         ],
       ),
