@@ -93,6 +93,22 @@ class StationManager {
     _deadStations = deadStations;
   }
 
+  Future<List<Station>> getNearbyStations() async {
+    List<Station> _nearbyStations = [];
+    LatLng currentPos = await _locationManager.locate();
+    double distance;
+
+    for (var station in _stations) {
+      distance = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
+      if (distance < 0.5) {
+        _nearbyStations.add(station);
+      }
+    }
+
+    //print(_nearbyStations);
+    return _nearbyStations;
+  }
+
   //TODO Refactor so that no longer have to maintain distances list
   Future<void> setStations(List<Station> stations) async {
     if (_stationDistances.isEmpty) {
@@ -120,10 +136,12 @@ class StationManager {
     //   station.distanceTo = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
     // }
 
+    // Set distance from current pos to each station, for each station
     for (int i = 0; i < _stations.length; i++) {
       _stations[i].distanceTo = _locationManager.distanceFromTo(
           currentPos, LatLng(_stations[i].lat, _stations[i].lng));
       _stationDistances[i] = _stations[i].distanceTo;
+       //print(_stationDistances[i]);
     }
   }
 }

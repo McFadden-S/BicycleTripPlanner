@@ -66,6 +66,7 @@ class ApplicationBloc with ChangeNotifier {
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
     _markerManager.setStationMarkers(stations, this);
+
     updateStations();
     updateStationMarkers();
     notifyListeners();
@@ -86,6 +87,7 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
     _stationManager.setDeadStations(deadStations);
+
     notifyListeners();
   }
 
