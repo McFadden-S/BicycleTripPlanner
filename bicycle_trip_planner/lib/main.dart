@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -21,8 +22,9 @@ Future<void> main() async {
     );
   }catch(e){};
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(ChangeNotifierProvider(
+      create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
