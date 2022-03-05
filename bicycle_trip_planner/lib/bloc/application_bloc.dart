@@ -150,11 +150,11 @@ class ApplicationBloc with ChangeNotifier {
     _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
   }
 
-  clearStationMarkers(Station station) {
+  clearStationMarkersWithoutUID() {
     _markerManager.clearStationMarkers(_stationManager.getStations());
   }
 
-  setStationMarkers(Station station) {
+  setStationMarkersWithoutUID() {
     _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
 

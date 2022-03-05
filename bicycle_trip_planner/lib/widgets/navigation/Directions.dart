@@ -36,7 +36,7 @@ class _DirectionsState extends State<Directions> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: ThemeStyle.cardColor,//Colors.white,
+                color: ThemeStyle.cardColor, //Colors.white,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10.0),
                     topRight: Radius.circular(10.0)),
@@ -46,50 +46,52 @@ class _DirectionsState extends State<Directions> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: ThemeStyle.cardColor,//Colors.white,
+                color: ThemeStyle.cardColor, //Colors.white,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0)),
               ),
-                  child: Column(
-                    children: [
-                      (!extendedNavigation) ||
-                          (directionManager.ifDirections())
-                          ? Divider()
-                          : const SizedBox.shrink(),
-                      AnimatedSizeAndFade(
-                        fadeDuration: const Duration(milliseconds: 300),
-                        sizeDuration: const Duration(milliseconds: 300),
-                        child: extendedNavigation
-                            ? LimitedBox(
-                                  maxHeight:
-                                  MediaQuery.of(context).size.height * 0.25,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                                    color: ThemeStyle.directionTileColor,
-                                    child: ListView.separated(
-                                      itemCount: directionManager.getNumberOfDirections(),
-                                      itemBuilder: (BuildContext context, int index) {
-                                        return DirectionTile(
-                                            index: index,
-                                            directionManager: directionManager);
-                                      },
-                                      separatorBuilder: (context, index) {
-                                        return const Divider();
-                                      },
-                                    ),
-                                  ),
-                                )
-                            : const SizedBox.shrink(),
-                      ),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: extendedNavigation
-                                  ? Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor)
-                                  : Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)
-                      )
-                    ],
+              child: Column(
+                children: [
+                  (!extendedNavigation) || (directionManager.ifDirections())
+                      ? Divider()
+                      : const SizedBox.shrink(),
+                  AnimatedSizeAndFade(
+                    fadeDuration: const Duration(milliseconds: 300),
+                    sizeDuration: const Duration(milliseconds: 300),
+                    child: extendedNavigation
+                        ? LimitedBox(
+                            maxHeight:
+                                MediaQuery.of(context).size.height * 0.25,
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
+                              color: ThemeStyle.directionTileColor,
+                              child: ListView.separated(
+                                itemCount:
+                                    directionManager.getNumberOfDirections(),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return DirectionTile(
+                                      index: index,
+                                      directionManager: directionManager);
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const Divider();
+                                },
+                              ),
+                            ),
+                          )
+                        : const SizedBox.shrink(),
                   ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: extendedNavigation
+                          ? Icon(Icons.keyboard_arrow_up,
+                              color: ThemeStyle.secondaryIconColor)
+                          : Icon(Icons.keyboard_arrow_down,
+                              color: ThemeStyle.secondaryIconColor))
+                ],
+              ),
             ),
           ],
         ),
