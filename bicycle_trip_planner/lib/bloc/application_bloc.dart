@@ -68,6 +68,7 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.setStationMarkers(stations, this);
 
     updateStations();
+    filterStationMarkers();
     updateStationMarkers();
     notifyListeners();
   }
@@ -89,6 +90,12 @@ class ApplicationBloc with ChangeNotifier {
     _stationManager.setDeadStations(deadStations);
 
     notifyListeners();
+  }
+
+  filterStationMarkers() async{
+    List<Station> notNearbyStations = await _stationManager.getFarStations();
+    // print(notNearbyStations);
+    _markerManager.clearStationMarkers(notNearbyStations);
   }
 
   bool ifSearchResult() {

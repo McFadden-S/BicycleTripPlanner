@@ -93,14 +93,14 @@ class StationManager {
     _deadStations = deadStations;
   }
 
-  Future<List<Station>> getNearbyStations() async {
+  Future<List<Station>> getFarStations() async {
     List<Station> _nearbyStations = [];
     LatLng currentPos = await _locationManager.locate();
     double distance;
 
     for (var station in _stations) {
       distance = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
-      if (distance < 0.5) {
+      if (distance > 0.5) {
         _nearbyStations.add(station);
       }
     }
