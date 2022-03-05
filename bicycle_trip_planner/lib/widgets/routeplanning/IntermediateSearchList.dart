@@ -1,3 +1,4 @@
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
@@ -96,15 +97,25 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   ),
                 ),
               ),
-              if(isShowingIntermediate)
-                LimitedBox(
-                  maxHeight: MediaQuery.of(context).size.height * 0.2,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: stopsList.toList(growable: true),
-                  ),
+                  LimitedBox(
+                        maxHeight: MediaQuery.of(context).size.height * 0.2,
+                        child: AnimatedSizeAndFade(
+                          fadeDuration: const Duration(milliseconds: 300),
+                          sizeDuration: const Duration(milliseconds: 300),
+                          child: isShowingIntermediate && stopsList.isNotEmpty
+                             ? ListView(
+                              shrinkWrap: true,
+                              children: stopsList.toList(growable: true),
+                              )
+                             : SizedBox.shrink(),
+
                 ),
-              Icon(Icons.expand_more, color: ThemeStyle.secondaryIconColor),
+              ),
+                  stopsList.isNotEmpty && isShowingIntermediate
+                  ? Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor)
+                  : stopsList.isNotEmpty
+                  ? Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)
+                  : SizedBox.shrink(),
             ]
         )
     );

@@ -53,6 +53,7 @@ dependencies:
   test_api: ^0.4.3
   vector_math: ^2.1.1
   sunrise_sunset_calc: ^2.2.0
+  animated_size_and_fade: ^3.0.0
 
 
 dev_dependencies:
