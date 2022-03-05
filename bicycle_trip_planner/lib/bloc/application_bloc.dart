@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
@@ -77,6 +76,10 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStationMarkers() {
+    // Does not update markers during navigation
+    if (_directionManager.ifNavigating()) {
+      return;
+    }
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes();
     //print("New stations $newStations");
