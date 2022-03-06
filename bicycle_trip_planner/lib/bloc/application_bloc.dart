@@ -57,6 +57,7 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically(Duration duration) {
     _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
+      filterStationMarkers();
       updateStationMarkers();
     });
   }
@@ -65,7 +66,9 @@ class ApplicationBloc with ChangeNotifier {
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
     _markerManager.setStationMarkers(stations, this);
+
     updateStations();
+    filterStationMarkers();
     updateStationMarkers();
     notifyListeners();
   }
@@ -82,14 +85,18 @@ class ApplicationBloc with ChangeNotifier {
     }
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes();
-    //print("New stations $newStations");
     _markerManager.setStationMarkers(newStations, this);
     List<Station> deadStations = _stationManager.getStationsWithNoBikes();
-    //print("Dead stations $deadStations");
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
     _stationManager.setDeadStations(deadStations);
+
     notifyListeners();
+  }
+
+  filterStationMarkers() async{
+    List<Station> notNearbyStations = await _stationManager.getFarStations();
+    _markerManager.clearStationMarkers(notNearbyStations);
   }
 
   bool ifSearchResult() {
@@ -140,6 +147,7 @@ class ApplicationBloc with ChangeNotifier {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude);
+
     // Currently will always set station as a start
     setLocationMarker(place.placeId, _routeManager.getStart().getUID());
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
