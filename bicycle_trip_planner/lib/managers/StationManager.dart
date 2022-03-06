@@ -105,7 +105,6 @@ class StationManager {
       }
     }
 
-    //print(_nearbyStations);
     return _nearbyStations;
   }
 
@@ -132,16 +131,11 @@ class StationManager {
   Future<void> setStationDistances() async {
     LatLng currentPos = await _locationManager.locate();
 
-    // for (var station in _stations) {
-    //   station.distanceTo = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
-    // }
-
     // Set distance from current pos to each station, for each station
     for (int i = 0; i < _stations.length; i++) {
       _stations[i].distanceTo = _locationManager.distanceFromTo(
           currentPos, LatLng(_stations[i].lat, _stations[i].lng));
       _stationDistances[i] = _stations[i].distanceTo;
-       //print(_stationDistances[i]);
     }
   }
 }

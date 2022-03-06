@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
@@ -58,6 +57,7 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically(Duration duration) {
     _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
+      filterStationMarkers();
       updateStationMarkers();
     });
   }
@@ -81,10 +81,8 @@ class ApplicationBloc with ChangeNotifier {
   updateStationMarkers() {
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes();
-    //print("New stations $newStations");
     _markerManager.setStationMarkers(newStations, this);
     List<Station> deadStations = _stationManager.getStationsWithNoBikes();
-    //print("Dead stations $deadStations");
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
     _stationManager.setDeadStations(deadStations);
@@ -94,7 +92,6 @@ class ApplicationBloc with ChangeNotifier {
 
   filterStationMarkers() async{
     List<Station> notNearbyStations = await _stationManager.getFarStations();
-    // print(notNearbyStations);
     _markerManager.clearStationMarkers(notNearbyStations);
   }
 
@@ -125,18 +122,17 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
     notifyListeners();
   }
 
-
   setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place place = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude);
+
     // Currently will always set station as a start
     setLocationMarker(place.placeId, _routeManager.getStart().getUID());
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
