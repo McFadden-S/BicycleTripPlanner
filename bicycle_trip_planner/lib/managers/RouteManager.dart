@@ -98,6 +98,10 @@ class RouteManager{
     return _pathway.getFirstWaypoint();
   }
 
+  List<Stop> getWaypointsWithFirstWaypoint() {
+    return _pathway.getWaypointsWithFirstWaypoint();
+  }
+
   List<Stop> getStops() {
     return _pathway.getStops();
   }

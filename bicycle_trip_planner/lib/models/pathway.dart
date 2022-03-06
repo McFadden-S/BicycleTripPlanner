@@ -21,11 +21,21 @@ class Pathway{
   Stop getDestination() => _destination;
 
   Stop getStop(int id){
-    if(id == -1){return Stop();} 
+    if(id == -1){return Stop();}
+    if(id == _firstWaypoint.getUID()) {return _firstWaypoint;}
     return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
   }
 
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
+
+  List<Stop> getWaypointsWithFirstWaypoint() {
+   if (_firstWaypoint.getStop() != "") {
+     return [_firstWaypoint] + _stops.sublist(1, size - 1);
+   }
+   else {
+     return _stops.sublist(1, size - 1);
+   }
+  }
 
   Stop getFirstWaypoint() => _firstWaypoint;
 
@@ -58,14 +68,24 @@ class Pathway{
 
   void addFirstWayPoint(Stop stop){
     _firstWaypoint = stop;
-    _stops.insert(1, stop);
+    //_stops.insert(1, stop);
     size = size + 1;
   }
 
+  void removeFirstWayPoint() {
+    _firstWaypoint = Stop();
+    size = size - 1;
+  }
+
   void removeStop(int id){
-    Stop stop = getStop(id); 
-    _stops.remove(stop);
-    size = size - 1; 
+    Stop stop = getStop(id);
+    if (_firstWaypoint.getUID() == id) {
+      removeFirstWayPoint();
+    }
+    else {
+      _stops.remove(stop);
+      size = size - 1;
+    }
     _updatePointers(); 
   }
 
