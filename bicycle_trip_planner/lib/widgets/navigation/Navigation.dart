@@ -24,13 +24,15 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   final LocationManager locationManager = LocationManager();
-
-  DirectionManager directionManager = DirectionManager();
+  final DirectionManager directionManager = DirectionManager();
+  late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
 
   @override
   void initState() {
     super.initState();
+
+    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
@@ -43,26 +45,18 @@ class _NavigationState extends State<Navigation> {
       });
     });
 
-    // // TODO: POTENTIAL REFACTOR INTO MANAGER AND MAKE TOGGLEABLE
-    // locatorSubscription = Geolocator.getPositionStream(
-    //     locationSettings: LocationManager().locationSettings())
-    //     .listen((Position position) {
-    //   setState(() {
-    //     CameraManager.instance.viewUser();
-    //   });
-    // });
+    applicationBloc.clearStationMarkersWithoutUID();
   }
 
   @override
   void dispose() {
+    applicationBloc.setStationMarkersWithoutUID();
     locatorSubscription.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
-
     return SafeArea(
       bottom: false,
       child: Stack(

@@ -36,6 +36,25 @@ class MarkerManager {
 
   Stream<Set<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
 
+  Marker _createStationMarker(Station station, ApplicationBloc appBloc,
+      [String markerID = ""]) {
+    if (markerID == "") {
+      markerID = station.name;
+    }
+
+    return Marker(
+      markerId: MarkerId(markerID),
+      infoWindow: InfoWindow(title: station.name),
+      icon:
+          BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
+      position: LatLng(station.lat, station.lng),
+      onTap: () {
+        appBloc.searchSelectedStation(station);
+        appBloc.setSelectedScreen('routePlanning');
+      },
+    );
+  }
+
   String _generateMarkerID(int id, [String name = ""]) {
     if (name != "") {
       return "Marker_$name";
@@ -111,6 +130,12 @@ class MarkerManager {
     setMarker(LatLng(lat, lng), _generateMarkerID(uid));
   }
 
+  void setStationMarkerWithUID(Station station, ApplicationBloc appBloc,
+      [int uid = -1]) {
+    _markers
+        .add(_createStationMarker(station, appBloc, _generateMarkerID(uid)));
+  }
+
   Future<Marker> setUserMarker(LatLng point) async {
     // Wait for this to load
     if (userMarkerIcon == null) {
@@ -134,20 +159,17 @@ class MarkerManager {
     return userMarker;
   }
 
+  void setStationMarker(Station station, ApplicationBloc appBloc) {
+    if (_markerExists(station.name)) {
+      return;
+    }
+
+    _markers.add(_createStationMarker(station, appBloc));
+  }
+
   void setStationMarkers(List<Station> stations, ApplicationBloc appBloc) {
     for (var station in stations) {
-      LatLng pos = LatLng(station.lat, station.lng);
-      _markers.add(Marker(
-        markerId: MarkerId(station.name),
-        infoWindow: InfoWindow(title: station.name),
-        icon: BitmapDescriptor.defaultMarkerWithHue(
-            ThemeStyle.stationMarkerColor),
-        position: pos,
-        onTap: () {
-          appBloc.searchSelectedStation(station);
-          appBloc.setSelectedScreen('routePlanning');
-        },
-      ));
+      setStationMarker(station, appBloc);
     }
   }
 

@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
@@ -51,7 +50,7 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically(Duration(seconds: 30));
   }
 
-  cancelStationTimer(){
+  cancelStationTimer() {
     _stationTimer.cancel();
   }
 
@@ -77,6 +76,10 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStationMarkers() {
+    // Does not update markers during navigation
+    if (_directionManager.ifNavigating()) {
+      return;
+    }
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes();
     //print("New stations $newStations");
@@ -95,34 +98,43 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
-    searchResults.insert(0, PlaceSearch(description: "My current location", placeId: _currentLocation.placeId));
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: "My current location",
+            placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
   getDefaultSearchResult() async {
     searchResults = [];
-    searchResults.insert(0, PlaceSearch(description: "My current location", placeId: _currentLocation.placeId));
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: "My current location",
+            placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
   searchSelectedStation(Station station) async {
-    Place place =
-        await _placesService.getPlaceFromCoordinates(station.lat, station.lng);
-    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
+    // Do not set new location marker. Use the station marker
+    viewStationMarker(station, _routeManager.getStart().getUID());
 
     // TODO: Currently will always set station as a destination
-    // Check if station.name and place.name is different (ideally should be placeSearch.description)
-    setSelectedLocation(place.name, _routeManager.getStart().getUID());
+    // TODO: Will break if search results can't find the right place
+    // Use the google maps location name for stations (Santander Cycles: [station name])
+    await searchPlaces("Santander Cycles: ${station.name}");
+    setSelectedLocation(
+        searchResults[1].description, _routeManager.getStart().getUID());
     notifyListeners();
   }
-
 
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
-    _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
+    _currentLocation = await _placesService.getPlaceFromCoordinates(
+        latLng.latitude, latLng.longitude);
     notifyListeners();
   }
-
 
   setSelectedCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
@@ -133,6 +145,20 @@ class ApplicationBloc with ChangeNotifier {
     setSelectedLocation(place.name, _routeManager.getStart().getUID());
 
     notifyListeners();
+  }
+
+  viewStationMarker(Station station, [int uid = -1]) {
+    // Do this in case station marker is not on the map
+    _markerManager.setStationMarkerWithUID(station, this, uid);
+    _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
+  }
+
+  clearStationMarkersWithoutUID() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+  }
+
+  setStationMarkersWithoutUID() {
+    _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
 
   setLocationMarker(String placeID, [int uid = -1]) async {
@@ -205,7 +231,6 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-
   // ********** Screen Management **********
 
   Widget getSelectedScreen() {
@@ -225,7 +250,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   // Clears selected route and directions
-  void clearMap(){
+  void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
   }
