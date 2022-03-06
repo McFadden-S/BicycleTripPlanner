@@ -50,6 +50,18 @@ class StationManager {
     return _stations;
   }
 
+  List<Station> getStationsInRadius(LatLng pos, [double distance = 4.0]) {
+    List<Station> allStations = List.castFrom(_stations);
+    
+    List<Station> nearbyStations =
+    allStations
+      .where(
+        (s) => _locationManager.distanceFromTo(pos, LatLng(s.lat, s.lng)) <= distance)
+      .toList();
+    
+    return nearbyStations;
+  }
+
   Station getStationByIndex(int stationIndex) {
     return _stations[stationIndex];
   }
