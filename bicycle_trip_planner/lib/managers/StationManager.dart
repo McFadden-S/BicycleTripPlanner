@@ -67,12 +67,20 @@ class StationManager {
     return _pickUpStation;
   }
 
+  void clearPickUpStation() {
+    _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  }
+
   bool checkPickUpStationHasBikes(int groupSize) {
     return _pickUpStation.bikes >= groupSize;
   }
 
   Station getDropOffStation() {
     return _dropOffStation;
+  }
+
+  void clearDropOffStation() {
+    _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
   }
 
   bool checkDropOffStationHasEmptyDocks(int groupSize) {

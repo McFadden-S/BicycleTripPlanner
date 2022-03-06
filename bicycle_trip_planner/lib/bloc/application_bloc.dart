@@ -190,6 +190,8 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Navigation Management **********
 
+  //TODO refactor whole navigation management block
+
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {
       if(_isNavigating) {
@@ -249,6 +251,44 @@ class ApplicationBloc with ChangeNotifier {
     return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 10);
   }
 
+  walkToFirstLocation(String origin, String destination, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
+    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location firstLocation = (await _placesService.getPlaceFromAddress(first)).geometry.location;
+    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
+
+    Station startStation = _stationManager.getPickupStationNear(LatLng(firstLocation.lat, firstLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(LatLng(endLocation.lat, endLocation.lng), groupSize);
+
+    String startStationName = (await _placesService.getPlaceFromCoordinates(startStation.lat, startStation.lng)).name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(endStation.lat, endStation.lng)).name;
+
+    Rou.Route startWalkRoute;
+    Rou.Route bikeRoute;
+    Rou.Route endWalkRoute;
+    if (_stationManager.getPickupStation().name != "" && isWaypointPassed(LatLng(startStation.lat, startStation.lng))) {
+      print("Waypoint was passed");
+      _stationManager.clearPickUpStation();
+      startWalkRoute = Rou.Route.routeNotFound();
+      bikeRoute = await _directionsService.getRoutes(_currentLocation.name, endStationName, intermediates, true);
+      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+    }
+    else if (_stationManager.getDropOffStation().name != "" && isWaypointPassed(LatLng(endStation.lat, endStation.lng))) {
+      _stationManager.clearDropOffStation();
+      startWalkRoute = Rou.Route.routeNotFound();
+      bikeRoute = Rou.Route.routeNotFound();
+      endWalkRoute = await _directionsService.getRoutes(_currentLocation.name, destination);
+    }
+    else {
+      startWalkRoute = await _directionsService.getRoutes(origin, startStationName, [first], false);
+      bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
+      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+    }
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    notifyListeners();
+
+  }
+
 
   updateRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     //Station startStation = _stationManager.getPickupStation();
@@ -264,19 +304,27 @@ class ApplicationBloc with ChangeNotifier {
 
     Rou.Route startWalkRoute;
     Rou.Route bikeRoute;
-    if (isWaypointPassed(LatLng(startStation.lat, startStation.lng))) {
+    Rou.Route endWalkRoute;
+    if (_stationManager.getPickupStation().name != "" && isWaypointPassed(LatLng(startStation.lat, startStation.lng))) {
       print("Waypoint was passed");
+      _stationManager.clearPickUpStation();
       startWalkRoute = Rou.Route.routeNotFound();
       bikeRoute = await _directionsService.getRoutes(_currentLocation.name, endStationName, intermediates, true);
+      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+    }
+    else if (_stationManager.getDropOffStation().name != "" && isWaypointPassed(LatLng(endStation.lat, endStation.lng))) {
+      _stationManager.clearDropOffStation();
+      startWalkRoute = Rou.Route.routeNotFound();
+      bikeRoute = Rou.Route.routeNotFound();
+      endWalkRoute = await _directionsService.getRoutes(_currentLocation.name, destination);
     }
     else {
       startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
       bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
+      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
     }
-    //TODO: change startStation to current location once at the start station
-    //TODO change endstation to current location once passed end station
     //Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
-    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+    //endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
