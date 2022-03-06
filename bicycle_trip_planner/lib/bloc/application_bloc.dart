@@ -202,7 +202,7 @@ class ApplicationBloc with ChangeNotifier {
             endRoute();
             timer.cancel();
           }
-        if (RouteManager().getWalkToFirstWaypoint()) {
+        if (RouteManager().getWalkToFirstWaypoint() && RouteManager().ifFirstWaypointSet()) {
           await _updateRouteWithWalking();
         }
         else {
@@ -328,7 +328,7 @@ class ApplicationBloc with ChangeNotifier {
     if (_stationManager.getPickupStation().name != "" && isWaypointPassed(LatLng(startStation.lat, startStation.lng))) {
       _stationManager.clearPickUpStation();
       startWalkRoute = Rou.Route.routeNotFound();
-      if (RouteManager().getFirstWaypoint().getStop() != "") {
+      if (RouteManager().ifFirstWaypointSet()) {
         bikeRoute = await _directionsService.getRoutes(_currentLocation.name, endStationName, [RouteManager().getFirstWaypoint().getStop()] + intermediates, true);
       }
       else {
@@ -344,12 +344,12 @@ class ApplicationBloc with ChangeNotifier {
     }
     else {
       startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
-      if (RouteManager().getFirstWaypoint().getStop() != "") {
+      //if (RouteManager().ifFirstWaypointSet()) {
+      //  bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
+      //}
+      //else {
         bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
-      }
-      else {
-        bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
-      }
+      //}
       endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
     }
 
