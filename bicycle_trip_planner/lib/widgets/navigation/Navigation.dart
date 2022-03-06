@@ -37,7 +37,7 @@ class _NavigationState extends State<Navigation> {
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
 
-    locationManager.location.onLocationChanged
+    locatorSubscription = locationManager.location.onLocationChanged
         .listen((LocationData currentLocation) {
       // Use current location
       setState(() {
