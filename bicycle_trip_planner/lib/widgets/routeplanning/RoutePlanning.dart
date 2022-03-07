@@ -59,6 +59,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
                               onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
                           ),
+                          CircleButton(
+                            iconIn: Icons.directions_walk,
+                            iconColor: _routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
+                            onButtonClicked: () => setState(() => {_routeManager.toggleWalkToFirstWaypoint()}),
+                          ),
+                          CircleButton(
+                            iconIn: Icons.location_on_outlined,
+                            iconColor: _routeManager.getStartFromCurrentLocation() ? Colors.amber : ThemeStyle.primaryIconColor,
+                            onButtonClicked: () => setState(() => {_routeManager.toggleStartFromCurrentLocation()}),
+                          ),
                         ],
                       ),
                     ),

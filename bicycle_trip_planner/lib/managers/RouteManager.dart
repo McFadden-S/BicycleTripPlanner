@@ -238,6 +238,9 @@ class RouteManager {
 
   void clear() {
     _polylineManager.clearPolyline();
+    _ifBeginning = true;
+    _ifCycling = false;
+    _ifEndWalking = false;
     clearRouteMarkers();
 
     removeWaypoints();

@@ -28,7 +28,7 @@ class Pathway{
     return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
   }
 
-  List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
+  List<Stop> getWaypoints() => _stops.isNotEmpty ? _stops.sublist(1, size - 1) : [];
 
   List<Stop> getWaypointsWithFirstWaypoint() {
     if (_stops.isNotEmpty) {

@@ -109,6 +109,19 @@ class StationManager {
     return _dropOffStation;
   }
 
+  bool isStationSet(Station station) {
+    return (_dropOffStation == station || _pickUpStation == station);
+  }
+
+  void clearStation(Station station) {
+    if (_dropOffStation == station) {
+      clearDropOffStation();
+    }
+    else if (_pickUpStation == station) {
+      clearPickUpStation();
+    }
+  }
+
   // TODO: Find a better method name
   List<Station> getStationsWithAtLeastXBikes(int bikes) {
     return _stations.where((station) => station.bikes >= bikes).toList();

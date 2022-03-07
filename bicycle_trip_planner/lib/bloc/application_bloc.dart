@@ -270,7 +270,6 @@ class ApplicationBloc with ChangeNotifier {
   // ********** Navigation Management **********
 
   //TODO refactor whole navigation management block
-  //TODO check with more waypoints
 
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {
@@ -279,6 +278,7 @@ class ApplicationBloc with ChangeNotifier {
           //TODO implement what happens once destination reached
             endRoute();
             timer.cancel();
+            setSelectedScreen('home');
           }
         if (RouteManager().getWalkToFirstWaypoint() && RouteManager().ifFirstWaypointSet()) {
           await _updateRouteWithWalking();
@@ -304,7 +304,6 @@ class ApplicationBloc with ChangeNotifier {
         await setInitialPickUpDropOffStations();
         String firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
-        //TODO implement walk to first waypoint
         _updateRouteWithWalking();
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
@@ -344,7 +343,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   bool isWaypointPassed(LatLng waypoint) {
-    return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 10);
+    return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 30);
   }
 
   walkToFirstLocation(String origin, String destination, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
@@ -365,8 +364,6 @@ class ApplicationBloc with ChangeNotifier {
     setNewPickUpStation(startLocation, groupSize);
     setNewDropOffStation(endLocation, groupSize);
 
-    print('Number of waypoints ${RouteManager().getWaypointsWithFirstWaypoint().length}');
-
     await setPartialRoutes([], intermediates);
   }
 
@@ -376,7 +373,6 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   Future<void> setPartialRoutes([List<String> first = const <String>[] ,List<String> intermediates = const <String>[]]) async {
-    //TODO implement easier way to set routes
     String origin = RouteManager().getStart().getStop();
     String destination = RouteManager().getDestination().getStop();
 
@@ -406,9 +402,9 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void passedStation(Station station, void Function(bool) functionA, void Function(bool) functionB) {
-    if (_stationManager.isPickUpStationSet()
+    if (_stationManager.isStationSet(station)
         && isWaypointPassed(LatLng(station.lat, station.lng))) {
-      _stationManager.clearPickUpStation();
+      _stationManager.clearStation(station);
       //TODO reset them once route is done/canceled to original values
       functionA(false);
       functionB(true);
@@ -434,7 +430,7 @@ class ApplicationBloc with ChangeNotifier {
 
   //remove waypoint once passed by it, return true if we reached the destination
   Future<bool> checkWaypointPassed() async {
-    if (isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypointsWithFirstWaypoint().first.getStop())).getLatLng())) {
+    if (RouteManager().getWaypointsWithFirstWaypoint().isNotEmpty && isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypointsWithFirstWaypoint().first.getStop())).getLatLng())) {
       RouteManager().removeStop(RouteManager().getWaypointsWithFirstWaypoint().first.getUID());
     }
     return (RouteManager().getStops().length <= 1);
