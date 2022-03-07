@@ -11,8 +11,11 @@ class RouteManager {
   final Pathway _pathway = Pathway();
 
   //TODO implement toggles in Route Widget
-  bool _startFromCurrentLocation = false;
+  bool _startFromCurrentLocation = true;
   bool _walkToFirstWaypoint = false;
+  bool _ifBeginning = true;
+  bool _ifCycling = false;
+  bool _ifEndWalking = false;
 
   int _groupsize = 1;
 
@@ -30,6 +33,30 @@ class RouteManager {
   //********** Private **********
 
   //********** Public **********
+
+  bool ifBeginning() {
+    return _ifBeginning;
+  }
+
+  void setIfBeginning(bool value) {
+    _ifBeginning = value;
+  }
+
+  bool ifCycling() {
+    return _ifCycling;
+  }
+
+  void setIfCycling(bool value) {
+    _ifCycling = value;
+  }
+
+  bool ifEndWalking() {
+    return _ifEndWalking;
+  }
+
+  void setIfEndWalking(bool value) {
+    _ifEndWalking = value;
+  }
 
   int getGroupSize() {
     return _groupsize;

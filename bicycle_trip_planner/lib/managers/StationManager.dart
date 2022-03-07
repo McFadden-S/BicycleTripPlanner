@@ -73,6 +73,10 @@ class StationManager {
     return _pickUpStation;
   }
 
+  bool isPickUpStationSet() {
+    return _pickUpStation.id != -1;
+  }
+
   void clearPickUpStation() {
     _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
   }
@@ -83,6 +87,10 @@ class StationManager {
 
   Station getDropOffStation() {
     return _dropOffStation;
+  }
+
+  bool isDropOffStationSet() {
+    return _dropOffStation.id != -1;
   }
 
   void clearDropOffStation() {
