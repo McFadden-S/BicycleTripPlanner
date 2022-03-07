@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 
 class TextFieldContainter extends StatelessWidget {
   final Widget child;
@@ -16,7 +16,7 @@ class TextFieldContainter extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       width: size.width * 0.8,
       decoration: BoxDecoration(
-        color: kPrimaryLightColor,
+        color: ThemeStyle.kPrimaryLightColor,
         borderRadius: BorderRadius.circular(29),
       ),
       child: child,

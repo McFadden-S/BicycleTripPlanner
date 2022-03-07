@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +19,10 @@ class MapWidget extends StatefulWidget {
   _MapWidgetState createState() => _MapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
-
+class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   //********** Providers **********
 
-  late StreamSubscription locationSubscription;
-  late StreamSubscription directionSubscription;
   late StreamSubscription locatorSubscription;
-  late StreamSubscription curLocationSubscription;
 
   //********** Markers **********
 
@@ -42,7 +38,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   // TODO: CHANGE THIS BACK WHEN POSSIBLE
   // WAS TEMPORARILY REVERTED TO ALLOW TESTS TO PASS
-  CameraManager? cameraManager; 
+  CameraManager? cameraManager;
 
   //********** User Position **********
 
@@ -59,65 +55,50 @@ class _MapWidgetState extends State<MapWidget> {
     super.initState();
 
     // Requires permission for the locator to work
-    LocationPermission perm;
+    PermissionStatus perm;
     locationManager.requestPermission().then((permission) => perm = permission);
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    locationManager.locationSettings();
 
-    locationSubscription =
-        applicationBloc.selectedLocation.stream.listen((place) {
-          setState(() {
-            cameraManager?.viewPlace(place);
-          });
-        });
-
-    directionSubscription =
-        applicationBloc.currentRoute.stream.listen((direction) {
-          setState(() {
-            cameraManager?.goToPlace(
-                direction.legs.startLocation.lat,
-                direction.legs.startLocation.lng,
-                direction.bounds.northeast,
-                direction.bounds.southwest);
-            polylineManager.setPolyline(direction.polyline.points);
-          });
-        });
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
 
     applicationBloc.setupStations();
 
-    locatorSubscription =
-        Geolocator.getPositionStream(locationSettings: locationManager.locationSettings)
-            .listen((Position position) {
-            setState(() {
-              markerManager.setUserMarker(position);
-            });
-        });
+    // Initialise the marker with his current position
+    locationManager.locate().then((pos) => setState(() {
+          markerManager.setUserMarker(pos);
+        }));
 
-    curLocationSubscription = applicationBloc.currentLocation.stream.listen((event) {
+    locationManager
+        .onUserLocationChange()
+        .listen((LocationData currentLocation) {
       setState(() {
-        cameraManager?.viewUser();
+        markerManager.setUserMarker(
+            LatLng(currentLocation.latitude!, currentLocation.longitude!));
       });
     });
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
 
-    //Use a periodic timer to update the TFL Santander bike stations 
-    //(Once every 30 seconds) 
-    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30)); 
+    //Use a periodic timer to update the TFL Santander bike stations
+    //(Once every 30 seconds)
+    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   @override
   void dispose() {
-    try{
-      final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    try {
+      final applicationBloc =
+          Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
-    }
-    catch(e){}; 
+    } catch (e) {}
+    ;
 
-    if(cameraManager != null) {cameraManager?.dispose();} 
-    locationSubscription.cancel();
-    directionSubscription.cancel();
+    if (cameraManager != null) {
+      cameraManager?.dispose();
+    }
     locatorSubscription.cancel();
 
     super.dispose();
@@ -127,28 +108,37 @@ class _MapWidgetState extends State<MapWidget> {
   void setState(fn) {
     try {
       super.setState(fn);
-    } catch (e) {};
+    } catch (e) {}
+    ;
   }
 
   @override
   Widget build(BuildContext context) {
-
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final googleMap = StreamBuilder<Set<Marker>>(
+        stream: markerManager.mapMarkerStream,
+        builder: (context, snapshot) {
+          return GoogleMap(
+              mapType: MapType.normal,
+              markers: _markers,
+              polylines: _polylines,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              initialCameraPosition: CameraManager.initialCameraPosition,
+              onMapCreated: (controller) {
+                cameraManager = CameraManager(
+                  googleMapController: controller,
+                );
+                cameraManager?.init();
+              });
+        });
 
-    return GoogleMap(
-      mapType: MapType.normal,
-      markers: _markers,
-      polylines: _polylines,
-      myLocationButtonEnabled: false,
-      zoomControlsEnabled: false,
-      initialCameraPosition: CameraManager.initialCameraPosition,
-      onMapCreated: (controller) {
-        cameraManager = CameraManager(
-            googleMapController: controller,
-        );
-        cameraManager?.init();
-      }
+    return Scaffold(
+      body: Stack(
+        children: [
+          googleMap,
+        ],
+      ),
     );
   }
-
 }

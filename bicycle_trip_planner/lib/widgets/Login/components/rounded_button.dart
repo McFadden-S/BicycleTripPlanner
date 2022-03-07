@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 
 class RoundedButton extends StatelessWidget {
   final String text;
   final VoidCallback press;
-  final Color color, textColor;
+  Color? color= ThemeStyle.kPrimaryColor;
+  final Color textColor;
 
-  const RoundedButton({
+  RoundedButton({
     Key? key,
     required this.text,
     required this.press,
-    this.color = kPrimaryColor,
+    this.color,
     this.textColor = Colors.white,
   }) : super(key: key);
 

@@ -1,14 +1,15 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
-
   const RouteCard({Key? key}) : super(key: key);
 
   @override
@@ -18,23 +19,29 @@ class RouteCard extends StatefulWidget {
 class _RouteCardState extends State<RouteCard> {
 
   final TextEditingController startSearchController = TextEditingController();
-  final TextEditingController destinationSearchController = TextEditingController();
-  final List<TextEditingController> intermediateSearchControllers = <TextEditingController>[];
+  final TextEditingController endSearchController = TextEditingController();
 
   final RouteManager routeManager = RouteManager();
+  final PolylineManager polylineManager = PolylineManager();
 
   bool isShowingIntermediate = false;
 
   void toggleShowingIntermediate(){
     setState(()=> {isShowingIntermediate = !isShowingIntermediate});
-
   }
 
-  List<String> getIntermediateSearchText(){
-    if(intermediateSearchControllers.isNotEmpty){
-      return intermediateSearchControllers.map((controller) => controller.text).toList();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding
+        .instance?.addPostFrameCallback((_) => setCurrentLocation(context));
+  }
+
+  setCurrentLocation(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    if(!routeManager.ifStartSet()){
+      applicationBloc.setSelectedCurrentLocation();
     }
-    return <String>[];
   }
 
   @override
@@ -43,60 +50,64 @@ class _RouteCardState extends State<RouteCard> {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       applicationBloc.findRoute(
-          routeManager.getStart(),
-          routeManager.getDestination(),
-          routeManager.getIntermediates()
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+          routeManager.getGroupSize()
       );
+      routeManager.clearChanged();
+
+    } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
+      polylineManager.clearPolyline();
       routeManager.clearChanged();
     }
 
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
-                offset: Offset(0,10),
-                color: Colors.black45,
+                offset: const Offset(0,10),
+                color: ThemeStyle.boxShadow,
                 blurRadius: 30.0,
               ),
             ],
           ),
           child: Card(
-            color: Colors.white,
+            color: ThemeStyle.cardColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(30.0),
-              side: const BorderSide(color: Color.fromRGBO(38, 36, 36, 1.0), width: 1.0),
+              side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
-            child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                                labelTextIn: "Starting Point",
-                                searchController: startSearchController,
-                                searchType: SearchType.start,
-                            ),
-                          ),
-                          IntermediateSearchList(
-                            intermediateSearchControllers: intermediateSearchControllers,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Search(
-                              labelTextIn: "Destination",
-                              searchController: destinationSearchController,
-                              searchType: SearchType.end,
-                            ),
-                          ),
-                            // const Icon(Icons.expand_more),
-                        ],
+            child: LimitedBox(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                          labelTextIn: "Starting Point",
+                          searchController: startSearchController,
+                          uid: routeManager.getStart().getUID(),
                       ),
-                    ],
-                  ),
+                    ),
+                    IntermediateSearchList(),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                        labelTextIn: "Destination",
+                        searchController: endSearchController,
+                        uid: routeManager.getDestination().getUID(),
+                      ),
+                    ),
+                      // const Icon(Icons.expand_more),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
   }

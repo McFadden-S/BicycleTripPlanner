@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:collection';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/locator.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -20,13 +19,13 @@ import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:wakelock/wakelock.dart';
 
 class ApplicationBloc with ChangeNotifier {
-
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
-  Queue<String> prevScreens = Queue();
+
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -34,34 +33,43 @@ class ApplicationBloc with ChangeNotifier {
     'routePlanning': RoutePlanning(),
   };
 
-  Rou.Route? route; // TODO: Potential refactor on route here
-  List<PlaceSearch> searchResults = List.empty();
-
-  StreamController<Rou.Route> currentRoute = StreamController<Rou.Route>.broadcast();
-  StreamController<Place> selectedLocation = StreamController<Place>.broadcast();
-  StreamController<LatLng> currentLocation = StreamController<LatLng>.broadcast();
+  late List<PlaceSearch> searchResults = [];
 
   final StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
+  final RouteManager _routeManager = RouteManager();
+  final LocationManager _locationManager = LocationManager();
+  final CameraManager _cameraManager = CameraManager.instance;
 
   late Timer _stationTimer;
+  late Place _currentLocation;
 
-  cancelStationTimer(){
+  ApplicationBloc() {
+    fetchCurrentLocation();
+    updateStationsPeriodically(Duration(seconds: 30));
+  }
+
+  cancelStationTimer() {
     _stationTimer.cancel();
   }
 
-  updateStationsPeriodically(Duration duration){
-    _stationTimer = Timer.periodic(duration, (timer){
+  updateStationsPeriodically(Duration duration) {
+    _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
+      filterStationMarkers();
+      updateStationMarkers();
     });
   }
 
-  setupStations() async{
+  setupStations() async {
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations);
+    _markerManager.setStationMarkers(stations, this);
+
     updateStations();
+    filterStationMarkers();
+    updateStationMarkers();
     notifyListeners();
   }
 
@@ -70,49 +78,168 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  bool ifSearchResult(){
+  updateStationMarkers() {
+    // Does not update markers during navigation
+    if (_directionManager.ifNavigating()) {
+      return;
+    }
+    List<Station> newStations =
+        _stationManager.getDeadStationsWhichNowHaveBikes();
+    _markerManager.setStationMarkers(newStations, this);
+    List<Station> deadStations = _stationManager.getStationsWithNoBikes();
+    _markerManager.clearStationMarkers(deadStations);
+    // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
+    _stationManager.setDeadStations(deadStations);
+
+    notifyListeners();
+  }
+
+  filterStationMarkers() async{
+    List<Station> notNearbyStations = await _stationManager.getFarStations();
+    _markerManager.clearStationMarkers(notNearbyStations);
+  }
+
+  bool ifSearchResult() {
     return searchResults.isNotEmpty;
   }
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: "My current location",
+            placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
-  setSelectedLocation(String placeId, SearchType searchType, [int intermediateIndex = 0]) async {
-    Place selected = await _placesService.getPlace(placeId);
-
-    selectedLocation.add(selected);
-    _markerManager.setPlaceMarker(selected, searchType, intermediateIndex);
-
-    searchResults.clear();
+  getDefaultSearchResult() async {
+    searchResults = [];
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: "My current location",
+            placeId: _currentLocation.placeId));
     notifyListeners();
   }
 
-  clearSelectedLocation(SearchType searchType, [int intermediateIndex = 0]){
-    _markerManager.clearMarker(searchType, intermediateIndex);
+  searchSelectedStation(Station station) async {
+    // Do not set new location marker. Use the station marker
+    viewStationMarker(station, _routeManager.getStart().getUID());
+
+    // TODO: Currently will always set station as a destination
+    // TODO: Will break if search results can't find the right place
+    // Use the google maps location name for stations (Santander Cycles: [station name])
+    await searchPlaces("Santander Cycles: ${station.name}");
+    setSelectedLocation(
+        searchResults[1].description, _routeManager.getStart().getUID());
+    notifyListeners();
+  }
+
+  fetchCurrentLocation() async {
+    LatLng latLng = await _locationManager.locate();
+    _currentLocation = await _placesService.getPlaceFromCoordinates(
+        latLng.latitude, latLng.longitude);
+    notifyListeners();
+  }
+
+  setSelectedCurrentLocation() async {
+    LatLng latLng = await _locationManager.locate();
+    Place place = await _placesService.getPlaceFromCoordinates(
+        latLng.latitude, latLng.longitude);
+
+    // Currently will always set station as a start
+    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
+    setSelectedLocation(place.name, _routeManager.getStart().getUID());
 
     notifyListeners();
   }
 
-  viewCurrentLocation() async {
-    Locator _locator = Locator();
-    currentLocation.add(await _locator.locate());
+  viewStationMarker(Station station, [int uid = -1]) {
+    // Do this in case station marker is not on the map
+    _markerManager.setStationMarkerWithUID(station, this, uid);
+    _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
+  }
+
+  clearStationMarkersWithoutUID() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+  }
+
+  setStationMarkersWithoutUID() {
+    _markerManager.setStationMarkers(_stationManager.getStations(), this);
+  }
+
+  setLocationMarker(String placeID, [int uid = -1]) async {
+    Place selected = await _placesService.getPlace(placeID);
+    _cameraManager.viewPlace(selected);
+    _markerManager.setPlaceMarker(selected, uid);
     notifyListeners();
   }
 
-  findRoute(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
-    route = await _directionsService.getRoutes(origin, destination, intermediates);
-    currentRoute.add(route!);
+  setSelectedLocation(String stop, int uid) {
+    _routeManager.changeStop(uid, stop);
     notifyListeners();
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    selectedLocation.close();
-    super.dispose();
+  clearLocationMarker(int uid) {
+    _markerManager.clearMarker(uid);
+    notifyListeners();
   }
+
+  clearSelectedLocation(int uid) {
+    _routeManager.clearStop(uid);
+    notifyListeners();
+  }
+
+  removeSelectedLocation(int uid) {
+    _routeManager.removeStop(uid);
+    notifyListeners();
+  }
+
+  findRoute(String origin, String destination,
+      [List<String> intermediates = const <String>[],
+      int groupSize = 1]) async {
+    Rou.Route route =
+        await _directionsService.getRoutes(origin, destination, intermediates);
+
+    Location startLocation =
+        (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation =
+        (await _placesService.getPlaceFromAddress(destination))
+            .geometry
+            .location;
+
+    Station startStation = _stationManager.getPickupStationNear(
+        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(
+        LatLng(endLocation.lat, endLocation.lng), groupSize);
+
+    String startStationName = (await _placesService.getPlaceFromCoordinates(
+            startStation.lat, startStation.lng))
+        .name;
+    String endStationName = (await _placesService.getPlaceFromCoordinates(
+            endStation.lat, endStation.lng))
+        .name;
+
+    Rou.Route startWalkRoute =
+        await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName,
+        endStationName, intermediates, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute =
+        await _directionsService.getRoutes(endStationName, destination);
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    notifyListeners();
+  }
+
+  void endRoute() {
+    Wakelock.disable();
+    clearMap();
+    setSelectedScreen('home');
+    notifyListeners();
+  }
+
+  // ********** Screen Management **********
 
   Widget getSelectedScreen() {
     return selectedScreen;
@@ -123,33 +250,16 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void pushPrevScreen(String screenName) {
-    prevScreens.addFirst(screenName);
+  void goBack(String backTo) {
+    clearMap();
+
+    // this will also invoke notifyListeners()
+    setSelectedScreen(backTo);
   }
 
-  void goBack() {
-    if(prevScreens.isNotEmpty){
-      endRoute();
-      selectedScreen = screens[prevScreens.removeFirst()]!;
-      notifyListeners();
-    }
-  }
-
-  void endRoute() {
-    RouteManager routeManager = RouteManager();
+  // Clears selected route and directions
+  void clearMap() {
+    _routeManager.clear();
     _directionManager.clear();
-    PolylineManager().clearPolyline();
-    _markerManager.clearMarker(SearchType.start);
-    _markerManager.clearMarker(SearchType.end);
-    if(routeManager.ifIntermediatesSet()){
-      int index = routeManager.getIntermediates().length;
-      for(int i = 1; i <= index; i++){
-        MarkerManager().clearMarker(SearchType.intermediate, i);
-        routeManager.removeIntermediate(i);
-      }
-    }
-    routeManager.clearStart();
-    routeManager.clearDestination();
-    notifyListeners();
   }
 }

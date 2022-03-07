@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login/login_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/elavated_button_with_icon.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/or_divider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
 import 'package:bicycle_trip_planner/widgets/Login/welcome_screen.dart';
@@ -31,7 +24,7 @@ class _LoginHomeScreen extends State<LoginHomeScreen> {
         debugShowCheckedModeBanner: false,
         title: 'Login Screen',
         theme: ThemeData(
-          primaryColor: kPrimaryColor,
+          primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
         home: WelcomeScreen(),

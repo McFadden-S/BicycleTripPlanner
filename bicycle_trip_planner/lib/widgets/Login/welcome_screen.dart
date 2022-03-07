@@ -3,13 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/Login/background.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
 import 'package:bicycle_trip_planner/widgets/Login/login_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/elavated_button_with_icon.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/or_divider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
+import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
@@ -30,7 +31,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primaryColor: kPrimaryColor,
+          primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
         home: Scaffold(
@@ -77,7 +78,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       }),
                     );
                   },
-                  color: kPrimaryLightColor,
+                  color: ThemeStyle.kPrimaryLightColor,
                   textColor: Colors.black,
                 ),
                 OrDivider(),
@@ -98,6 +99,15 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     provider.logout();
                   },
                   icon: FaIcon(FontAwesomeIcons.google),
+                ),
+                SizedBox(height: 10),
+                IconButton(
+                  icon: const BackButtonIcon(),
+                  color: Colors.black,
+                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop(context);
+                  },
                 ),
               ],
             ),

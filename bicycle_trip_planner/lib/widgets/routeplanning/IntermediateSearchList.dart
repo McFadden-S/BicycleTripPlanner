@@ -1,15 +1,16 @@
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:provider/provider.dart';
+
+import '../../constants.dart';
 
 class IntermediateSearchList extends StatefulWidget {
-
-  final List<TextEditingController> intermediateSearchControllers;
-
   const IntermediateSearchList({
     Key? key,
-    required this.intermediateSearchControllers
   }) : super(key: key);
 
   @override
@@ -17,6 +18,8 @@ class IntermediateSearchList extends StatefulWidget {
 }
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
+  List<TextEditingController> intermediateSearchControllers =
+      <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
 
@@ -24,87 +27,91 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget() {
+  void _addStopWidget(ApplicationBloc applicationBloc) {
     setState(() {
-      final TextEditingController searchController = TextEditingController();
+      TextEditingController searchController = TextEditingController();
+      intermediateSearchControllers.add(searchController);
+      Stop waypoint = routeManager.addWaypoint("");
 
-      widget.intermediateSearchControllers.add(searchController);
-      stopsList.add(
-          ListTile(
-            title:
-              Search(
-                  labelTextIn: "Stop ${widget.intermediateSearchControllers.length}",
-                  searchController: searchController,
-                  searchType: SearchType.intermediate,
-                  intermediateID: stopsList.length + 1,
-              ),
-              trailing: IconButton(
-                key: Key("Remove ${widget.intermediateSearchControllers.length}"),
-                  onPressed: (){
-                    setState(() {
-                      int indexPressed = widget.intermediateSearchControllers.indexOf(searchController);
-
-                      for(int i = indexPressed; i < widget.intermediateSearchControllers.length - 1; i++){
-                        widget.intermediateSearchControllers[i].text = widget.intermediateSearchControllers[i+1].text;
-                      }
-
-                      routeManager.removeIntermediate(indexPressed+1);
-                      stopsList.removeLast();
-                      widget.intermediateSearchControllers.removeLast();
-                    });
-                  },
-                  icon: const Icon(
-                      Icons.remove_circle_outline))
-          )
-      );
+      stopsList.add(ListTile(
+          title: Search(
+              labelTextIn: "Stop",
+              searchController: searchController,
+              uid: waypoint.getUID()),
+          trailing: IconButton(
+              color: ThemeStyle.secondaryIconColor,
+              key: Key("Remove ${intermediateSearchControllers.length}"),
+              onPressed: () {
+                setState(() {
+                  int indexPressed =
+                      intermediateSearchControllers.indexOf(searchController);
+                  applicationBloc.clearLocationMarker(waypoint.getUID());
+                  applicationBloc.clearSelectedLocation(waypoint.getUID());
+                  stopsList.removeAt(indexPressed);
+                  intermediateSearchControllers.removeAt(indexPressed);
+                });
+              },
+              icon: Icon(
+                Icons.remove_circle_outline,
+                color: ThemeStyle.secondaryIconColor,
+              ))));
 
       isShowingIntermediate = true;
     });
   }
 
-  void toggleShowingIntermediate(){
-    setState(()=> {isShowingIntermediate = !isShowingIntermediate});
+  void toggleShowingIntermediate() {
+    setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
   @override
   Widget build(BuildContext context) {
-
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
-        child: Column(
-            children: [
-              TextButton(
-                child: const Text(
-                  'Add Stop(s)',
-                  style: TextStyle(
-                    fontFamily: 'Outfit',
-                    fontSize: 16.0,
-                    color: Colors.white,
-                  ),
-                ),
-                onPressed: () => {_addStopWidget()},
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(12, 156, 238, 1.0)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: const BorderSide(color: Color.fromRGBO(12, 156, 238, 1.0))
-                    ),
-                  ),
-                ),
+        child: Column(children: [
+          TextButton(
+            child: Text(
+              'Add Stop(s)',
+              style: TextStyle(
+                fontFamily: 'Outfit',
+                fontSize: 16.0,
+                color: ThemeStyle.primaryTextColor,
               ),
-              if(isShowingIntermediate)
-                LimitedBox(
-                  maxHeight: MediaQuery.of(context).size.height * 0.2,
-                  child: ListView(
-                    shrinkWrap: true,
-                    children: stopsList.toList(growable: true),
-                  ),
-                ),
-              const Icon(Icons.expand_more),
-            ]
-        )
-    );
+            ),
+            onPressed: () => {_addStopWidget(applicationBloc)},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  ThemeStyle.buttonPrimaryColor),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                    side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+              ),
+            ),
+          ),
+          LimitedBox(
+            maxHeight: MediaQuery.of(context).size.height * 0.2,
+            child: AnimatedSizeAndFade(
+              fadeDuration: const Duration(milliseconds: 300),
+              sizeDuration: const Duration(milliseconds: 300),
+              child: isShowingIntermediate && stopsList.isNotEmpty
+                  ? ListView(
+                      shrinkWrap: true,
+                      children: stopsList.toList(growable: true),
+                    )
+                  : SizedBox.shrink(),
+            ),
+          ),
+          stopsList.isNotEmpty && isShowingIntermediate
+              ? Icon(Icons.keyboard_arrow_up,
+                  color: ThemeStyle.secondaryIconColor)
+              : stopsList.isNotEmpty
+                  ? Icon(Icons.keyboard_arrow_down,
+                      color: ThemeStyle.secondaryIconColor)
+                  : SizedBox.shrink(),
+        ]));
   }
 }

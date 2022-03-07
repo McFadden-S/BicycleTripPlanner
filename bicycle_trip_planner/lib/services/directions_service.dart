@@ -3,12 +3,10 @@ import 'package:bicycle_trip_planner/models/route.dart';
 import 'dart:convert' as convert;
 
 class DirectionsService {
-  Future<Route> getRoutes(String origin, String destination, [List<String> intermediates = const <String>[]]) async {
+  Future<Route> getRoutes(String origin, String destination, [List<String> intermediates = const <String>[], bool optimised = true]) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
-    // NOTE: Directions for waypoints potentially result in partway directions 
-    // Google recommends to use 'via' when querying url to avoid directions stopping at the waypoint. 
-    var waypoints = _generateWaypoints(intermediates);
+    var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination$waypoints&mode=bicycling&key=$key';
 
@@ -20,10 +18,10 @@ class DirectionsService {
     return Route.fromJson(jsonResults);
   }
 
-  String _generateWaypoints(List<String> intermediates, [bool optimized = true]){
+  String _generateWaypoints(List<String> intermediates, [bool optimised = true]){
     String waypoints = "";
     if(intermediates.isNotEmpty){
-      waypoints += "&waypoints=optimize:$optimized";
+      waypoints += "&waypoints=optimize:$optimised";
       for(var intermediate in intermediates){
         waypoints += "|$intermediate";
       }

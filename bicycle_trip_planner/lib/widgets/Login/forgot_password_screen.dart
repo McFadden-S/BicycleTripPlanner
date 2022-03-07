@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/Login/background.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
-import 'constants.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'components/error_snackbar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -29,7 +29,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
-                  color: mainFontColor,
+                  color: ThemeStyle.mainFontColor,
                 ),
               ),
               Flexible(
@@ -43,7 +43,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 child: Text(
                   "Please enter your email to reset password",
                   style: TextStyle(
-                    color: secondaryFontColor,
+                    color: ThemeStyle.secondaryFontColor,
                   ),
                 ),
                 flex: 2,
