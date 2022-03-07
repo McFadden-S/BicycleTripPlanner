@@ -334,7 +334,7 @@ class ApplicationBloc with ChangeNotifier {
       else {
         bikeRoute = await _directionsService.getRoutes(_currentLocation.name, endStationName, intermediates, true);
       }
-      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+      endWalkRoute = await _directionsService.getWalkingRoutes(endStationName, destination);
     }
     else if (_stationManager.getDropOffStation().name != "" && isWaypointPassed(LatLng(endStation.lat, endStation.lng))) {
       _stationManager.clearDropOffStation();
@@ -350,7 +350,7 @@ class ApplicationBloc with ChangeNotifier {
       else {
         bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
       }
-      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+      endWalkRoute = await _directionsService.getWalkingRoutes(endStationName, destination);
     }
 
     setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
