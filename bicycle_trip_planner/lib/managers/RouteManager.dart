@@ -183,12 +183,12 @@ class RouteManager{
   }
 
   void clearStart(){
-    _pathway.changeStart("");
+    _pathway.clearStart();
     _changed = true;
   }
 
   void clearDestination(){
-    _pathway.changeDestination("");
+    _pathway.clearDestination();
     _changed = true;
   }
 
@@ -204,7 +204,7 @@ class RouteManager{
   }
 
   void removeWaypoints(){
-    List<int> uids = _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
+    List<int> uids = _pathway.getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getUID()).toList();
     for(int id in uids){
       removeStop(id); 
     }

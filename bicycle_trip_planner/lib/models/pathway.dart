@@ -77,6 +77,14 @@ class Pathway{
     size = size - 1;
   }
 
+  void clearStart() {
+    _start = Stop();
+  }
+
+  void clearDestination() {
+    _destination = Stop();
+  }
+
   void removeStop(int id){
     Stop stop = getStop(id);
     if (_firstWaypoint.getUID() == id) {

@@ -49,8 +49,8 @@ class DirectionManager{
     _isCycling = false;
   }
 
-  void showBikeRoute(){
-    setCurrentRoute(_bikingRoute);
+  void showBikeRoute([relocateMap= true]){
+    setCurrentRoute(_bikingRoute, relocateMap);
     _isCycling = true;
   }
 
@@ -135,16 +135,16 @@ class DirectionManager{
     _distance = "$km km";
   }
 
-  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk){
+  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk, [relocateMap= true]){
     _startWalkingRoute = startWalk;
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
     //Set as biking route to show general route user will take
-    showBikeRoute();
+    showBikeRoute(relocateMap);
   }
 
-  void setCurrentRoute(R.Route route){
+  void setCurrentRoute(R.Route route, [relocateMap= true]){
 
     int duration = 0;
     int distance = 0;
@@ -161,11 +161,13 @@ class DirectionManager{
     setDuration(duration);
     setDistance(distance);
 
-    _cameraManager.goToPlace(
+    if(relocateMap) {
+      _cameraManager.goToPlace(
         route.legs.first.startLocation.lat,
         route.legs.first.startLocation.lng,
         route.bounds.northeast,
         route.bounds.southwest);
+    }
 
     _polylineManager.setPolyline(route.polyline.points);
   }
