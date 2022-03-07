@@ -353,7 +353,7 @@ class ApplicationBloc with ChangeNotifier {
     setNewPickUpStation(firstLocation, groupSize);
     setNewDropOffStation(endLocation, groupSize);
 
-    await setPartialRoutes([first]);
+    await setPartialRoutes([first], intermediates);
   }
 
 //TODO get rid of parameters since they are from ROUTEMANAGER()
