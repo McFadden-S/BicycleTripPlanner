@@ -242,8 +242,7 @@ class ApplicationBloc with ChangeNotifier {
 
   void endRoute() {
     Wakelock.disable();
-    _stationManager.clearDropOffStation();
-    _stationManager.clearPickUpStation();
+    _stationManager.clear();
     clearMap();
     setSelectedScreen('home');
     notifyListeners();
@@ -350,8 +349,7 @@ class ApplicationBloc with ChangeNotifier {
     Location firstLocation = (await _placesService.getPlaceFromAddress(first)).geometry.location;
     Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
 
-    setNewPickUpStation(firstLocation, groupSize);
-    setNewDropOffStation(endLocation, groupSize);
+    updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
     await setPartialRoutes([first], intermediates);
   }
@@ -359,10 +357,10 @@ class ApplicationBloc with ChangeNotifier {
 //TODO get rid of parameters since they are from ROUTEMANAGER()
   updateRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    //TODO store end location as Location in RouteManager
     Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
 
-    setNewPickUpStation(startLocation, groupSize);
-    setNewDropOffStation(endLocation, groupSize);
+    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
     await setPartialRoutes([], intermediates);
   }
@@ -401,11 +399,20 @@ class ApplicationBloc with ChangeNotifier {
     setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
+  void updatePickUpDropOffStations(Location startLocation, Location endLocation, int groupSize) {
+    if ((!StationManager().isPickUpStationSet() || !StationManager().checkPickUpStationHasBikes(groupSize)) && !StationManager().passedPickUpStation()) {
+      setNewPickUpStation(startLocation, groupSize);
+    }
+    if ((!StationManager().isDropOffStationSet() || !StationManager().checkDropOffStationHasEmptyDocks(groupSize)) && !StationManager().passedDropOffStation()) {
+      setNewDropOffStation(endLocation, groupSize);
+    }
+  }
+
   void passedStation(Station station, void Function(bool) functionA, void Function(bool) functionB) {
     if (_stationManager.isStationSet(station)
         && isWaypointPassed(LatLng(station.lat, station.lng))) {
+      _stationManager.passedStation(station);
       _stationManager.clearStation(station);
-      //TODO reset them once route is done/canceled to original values
       functionA(false);
       functionB(true);
     }

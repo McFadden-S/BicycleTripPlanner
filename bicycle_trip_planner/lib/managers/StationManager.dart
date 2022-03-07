@@ -7,7 +7,9 @@ class StationManager {
 
   List<Station> _stations = <Station>[];
   Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedPickUpStation = false;
   Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedDropOffStation = false;
 
   // List of dead stations from the PREVIOUS update
   // TODO: ONLY USED FOR UPDATING MARKERS SO FAR
@@ -81,6 +83,21 @@ class StationManager {
     _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
   }
 
+  void setPassedPickUpStation(bool value) {
+    _passedPickUpStation = value;
+  }
+
+  bool passedPickUpStation() => _passedPickUpStation;
+
+  void passedStation(Station station) {
+    if (station == _pickUpStation) {
+      setPassedPickUpStation(true);
+    }
+    if (station == _dropOffStation) {
+      setPassedDropOffStation(true);
+    }
+  }
+
   bool checkPickUpStationHasBikes(int groupSize) {
     return _pickUpStation.bikes >= groupSize;
   }
@@ -96,6 +113,12 @@ class StationManager {
   void clearDropOffStation() {
     _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
   }
+
+  void setPassedDropOffStation(bool value) {
+    _passedDropOffStation = value;
+  }
+
+  bool passedDropOffStation() => _passedDropOffStation;
 
   bool checkDropOffStationHasEmptyDocks(int groupSize) {
     return _dropOffStation.emptyDocks >= groupSize;
@@ -187,5 +210,12 @@ class StationManager {
           currentPos, LatLng(_stations[i].lat, _stations[i].lng));
       _stationDistances[i] = _stations[i].distanceTo;
     }
+  }
+
+  void clear() {
+    clearPickUpStation();
+    clearDropOffStation();
+    _passedPickUpStation = false;
+    _passedDropOffStation = false;
   }
 }
