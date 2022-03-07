@@ -189,9 +189,11 @@ class DirectionManager {
     if (_isCycling) {
       showBikeRoute();
     } else {
-      //TODO handle whether to display start or end walking route
-      showStartRoute();
-     //showEndRoute();
+      if(_startWalkingRoute != R.Route.routeNotFound()){
+        showStartRoute();
+      } else if(_endWalkingRoute != R.Route.routeNotFound()) {
+        showEndRoute();
+      }
     }
   }
 
