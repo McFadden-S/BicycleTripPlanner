@@ -45,6 +45,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                 ),
                 SizedBox(height: size.height * 0.03),
                 RoundedButton(
+                    key: Key("Login"),
                     text: "Login",
                     press: () {
                       if (_auth.currentUser == null) {
@@ -61,6 +62,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                 ),
                 if (_auth.currentUser != null)
                   RoundedButton(
+                    key: Key("LogOut"),
                     text: "Logout",
                     press: () {
                       _auth.signOut();
@@ -69,6 +71,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   ),
                 SizedBox(height: size.height * 0.05),
                 RoundedButton(
+                  key: Key("SignUp"),
                   text: "Sign Up",
                   press: () {
                     Navigator.push(
@@ -83,6 +86,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                 ),
                 OrDivider(),
                 ElavatedButtonWithIcon(
+                  key: Key("googleLogin"),
                   text: "Sign Up/Log In With Google",
                   press: () {
                     final provider =
