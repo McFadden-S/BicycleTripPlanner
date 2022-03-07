@@ -31,12 +31,17 @@ class Pathway{
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
 
   List<Stop> getWaypointsWithFirstWaypoint() {
-   if (_firstWaypoint.getStop() != "") {
-     return [_firstWaypoint] + _stops.sublist(1, size - 1);
-   }
-   else {
-     return _stops.sublist(1, size - 1);
-   }
+    if (_stops.isNotEmpty) {
+      if (_firstWaypoint.getStop() != "") {
+        return [_firstWaypoint] + getWaypoints();
+      }
+      else {
+        return getWaypoints();
+      }
+    }
+    else {
+      return [];
+    }
   }
 
   Stop getFirstWaypoint() => _firstWaypoint;
