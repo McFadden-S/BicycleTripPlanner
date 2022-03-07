@@ -309,11 +309,9 @@ class ApplicationBloc with ChangeNotifier {
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
       else {
-        await setInitialPickUpDropOffStations();
         String firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         await _updateRoute();
-        //TODO: stop zoom in/out each time map gets reloaded
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
     }
@@ -359,7 +357,7 @@ class ApplicationBloc with ChangeNotifier {
     await setPartialRoutes([first]);
   }
 
-
+//TODO get rid of parameters since they are from ROUTEMANAGER()
   updateRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
     Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
@@ -367,7 +365,9 @@ class ApplicationBloc with ChangeNotifier {
     setNewPickUpStation(startLocation, groupSize);
     setNewDropOffStation(endLocation, groupSize);
 
-    await setPartialRoutes();
+    print('Number of waypoints ${RouteManager().getWaypointsWithFirstWaypoint().length}');
+
+    await setPartialRoutes([], intermediates);
   }
 
   setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {

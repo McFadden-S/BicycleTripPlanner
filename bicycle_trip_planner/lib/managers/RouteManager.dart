@@ -11,8 +11,9 @@ class RouteManager {
   final Pathway _pathway = Pathway();
 
   //TODO implement toggles in Route Widget
-  bool _startFromCurrentLocation = true;
+  bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
+
   bool _ifBeginning = true;
   bool _ifCycling = false;
   bool _ifEndWalking = false;
