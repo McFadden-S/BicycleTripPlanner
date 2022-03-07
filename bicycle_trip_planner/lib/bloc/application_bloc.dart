@@ -357,7 +357,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
     notifyListeners();
   }
 
