@@ -301,9 +301,9 @@ class ApplicationBloc with ChangeNotifier {
       endWalkRoute = await _directionsService.getRoutes(_currentLocation.name, destination);
     }
     else {
-      startWalkRoute = await _directionsService.getRoutes(origin, startStationName, [first], false);
+      startWalkRoute = await _directionsService.getWalkingRoutes(origin, startStationName, [first], false);
       bikeRoute = await _directionsService.getRoutes(startStationName, endStationName, intermediates, true);
-      endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
+      endWalkRoute = await _directionsService.getWalkingRoutes(endStationName, destination);
     }
 
     setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
