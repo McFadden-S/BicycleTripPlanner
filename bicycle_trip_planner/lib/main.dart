@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -8,6 +9,7 @@ import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 Future<void> main() async {
@@ -20,8 +22,9 @@ Future<void> main() async {
     );
   }catch(e){};
 
-  runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp()));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((value) => runApp(ChangeNotifierProvider(
+      create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -38,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
+        '/weather': (context) => Weather(),
       },
       theme: ThemeData(
         brightness: Brightness.light,

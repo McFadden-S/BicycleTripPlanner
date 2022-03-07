@@ -112,5 +112,4 @@ class _StationCardState extends State<StationCard> {
 void stationClicked(ApplicationBloc appBloc, Station station) {
   appBloc.searchSelectedStation(station);
   appBloc.setSelectedScreen('routePlanning');
-  appBloc.pushPrevScreen('home');
 }

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {
@@ -30,6 +31,20 @@ class _RouteCardState extends State<RouteCard> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding
+        .instance?.addPostFrameCallback((_) => setCurrentLocation(context));
+  }
+
+  setCurrentLocation(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    if(!routeManager.ifStartSet()){
+      applicationBloc.setSelectedCurrentLocation();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
@@ -49,11 +64,6 @@ class _RouteCardState extends State<RouteCard> {
       routeManager.clearChanged();
     }
 
-    //TODO Find way to get current location faster
-    // if(!routeManager.ifStartSet()){
-    //   applicationBloc.setSelectedCurrentLocation(SearchType.start);
-    // }
-
         return Container(
           decoration: BoxDecoration(
             boxShadow: [
@@ -70,28 +80,33 @@ class _RouteCardState extends State<RouteCard> {
               borderRadius: BorderRadius.circular(30.0),
               side: BorderSide(color: ThemeStyle.boxShadow, width: 1.0),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Search(
-                      labelTextIn: "Starting Point",
-                      searchController: startSearchController,
-                      uid: routeManager.getStart().getUID(),
-                  ),
+            child: LimitedBox(
+              maxHeight: MediaQuery.of(context).size.height * 0.6,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                          labelTextIn: "Starting Point",
+                          searchController: startSearchController,
+                          uid: routeManager.getStart().getUID(),
+                      ),
+                    ),
+                    IntermediateSearchList(),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Search(
+                        labelTextIn: "Destination",
+                        searchController: endSearchController,
+                        uid: routeManager.getDestination().getUID(),
+                      ),
+                    ),
+                      // const Icon(Icons.expand_more),
+                  ],
                 ),
-                IntermediateSearchList(),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Search(
-                    labelTextIn: "Destination",
-                    searchController: endSearchController,
-                    uid: routeManager.getDestination().getUID(),
-                  ),
-                ),
-                  // const Icon(Icons.expand_more),
-              ],
+              ),
             ),
           ),
         );

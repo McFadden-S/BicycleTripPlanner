@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 
+import '../general/GroupSizeSelector.dart';
+
 class HomeWidgets extends StatefulWidget {
   const HomeWidgets({Key? key}) : super(key: key);
 
@@ -70,7 +72,13 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         children: [
                           Container(
                               margin: EdgeInsets.only(bottom: 20),
-                              child: CurrentLocationButton()),
+                              child: Column(
+                                children: [
+                                  CurrentLocationButton(),
+                                  SizedBox(height: 10),
+                                  GroupSizeSelector(),
+                                ],
+                              )),
                         ],
                       ),
                     ],

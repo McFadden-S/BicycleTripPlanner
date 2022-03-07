@@ -473,6 +473,8 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - leveldb-library (1.22.1)
+  - location (0.0.1):
+    - Flutter
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -496,6 +498,7 @@ DEPENDENCIES:
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - location (from `.symlinks/plugins/location/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -542,6 +545,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_sign_in/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
+  location:
+    :path: ".symlinks/plugins/location/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
   wakelock:
@@ -565,7 +570,11 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 3b2e4b532c68809b3df5f8d39d28b3398ffc196b
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
+<<<<<<< HEAD
   google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
+=======
+  google_maps_flutter: fe98b02bbb6717c7297c7747b84c4ead2bc5fc3b
+>>>>>>> development
   google_sign_in: f669f45933dad48cd218dc3e189726bced3d19f4
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleMaps: c213fc2334b7374144cede914da779b99be0ab74
@@ -577,6 +586,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 43748f93435c2aa068b1cbe39655aaf600652e91
   integration_test: a1e7d09bd98eca2fc37aefd79d4f41ad37bdbbe5
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
+  location: 3a2eed4dd2fab25e7b7baf2a9efefe82b512d740
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 68159ce6952d93e17b2dfe273b8c40907db5ba58
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff

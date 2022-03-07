@@ -7,8 +7,7 @@ import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
 
-class DirectionManager{
-
+class DirectionManager {
   //********** Fields **********
 
   final CameraManager _cameraManager = CameraManager.instance;
@@ -19,6 +18,7 @@ class DirectionManager{
   R.Route _endWalkingRoute = R.Route.routeNotFound();
 
   bool _isCycling = false;
+  bool _isNavigating = false;
 
   String _duration = "No data";
   String _distance = "No data";
@@ -29,9 +29,12 @@ class DirectionManager{
 
   //********** Singleton **********
 
-  static final DirectionManager _directionManager = DirectionManager._internal();
+  static final DirectionManager _directionManager =
+      DirectionManager._internal();
 
-  factory DirectionManager(){return _directionManager;}
+  factory DirectionManager() {
+    return _directionManager;
+  }
 
   DirectionManager._internal();
 
@@ -44,82 +47,89 @@ class DirectionManager{
     return _directions.first;
   }
 
-  void showStartRoute(){
+  void showStartRoute() {
     setCurrentRoute(_startWalkingRoute);
     _isCycling = false;
   }
+
 
   void showBikeRoute([relocateMap= true]){
     setCurrentRoute(_bikingRoute, relocateMap);
     _isCycling = true;
   }
 
-  void showEndRoute(){
+  void showEndRoute() {
     setCurrentRoute(_endWalkingRoute);
     _isCycling = false;
   }
 
   //********** Getting **********
 
-  String getDuration(){
+  String getDuration() {
     return _duration;
   }
 
-  String getDistance(){
+  String getDistance() {
     return _distance;
   }
 
-  bool ifCycling(){
+  bool ifNavigating() {
+    return _isNavigating;
+  }
+
+  bool ifCycling() {
     return _isCycling;
   }
 
-  Steps getDirection(int index){
-    if(index >= 0 && index <= _directions.length && _directions.isNotEmpty){
+  Steps getDirection(int index) {
+    if (index >= 0 && index <= _directions.length && _directions.isNotEmpty) {
       return _directions[index];
     }
     return Steps.stepsNotFound();
   }
 
-  List<Steps> getDirections(){
+  List<Steps> getDirections() {
     return _directions;
   }
 
-  int getNumberOfDirections(){
+  int getNumberOfDirections() {
     return _directions.length;
   }
 
-  Steps getCurrentDirection(){
+  Steps getCurrentDirection() {
     return _currentDirection;
   }
 
-  bool ifDirections(){
+  bool ifDirections() {
     return _directions.isNotEmpty;
   }
 
   Icon directionIcon(String direction) {
     late IconData icon;
-    direction.toLowerCase().contains('left') ? icon = Icons.arrow_back :
-    direction.toLowerCase().contains('right') ? icon = Icons.arrow_forward :
-    direction.toLowerCase().contains('straight') ? icon = Icons.arrow_upward :
-    direction.toLowerCase().contains('continue') ? icon = Icons.arrow_upward :
-    direction.toLowerCase().contains('head') ? icon = Icons.arrow_upward :
-    direction.toLowerCase().contains('roundabout') ? icon = Icons.data_usage_outlined:
-    icon = Icons.circle;
+    direction.toLowerCase().contains('left')
+        ? icon = Icons.arrow_back
+        : direction.toLowerCase().contains('right')
+            ? icon = Icons.arrow_forward
+            : direction.toLowerCase().contains('straight')
+                ? icon = Icons.arrow_upward
+                : direction.toLowerCase().contains('continue')
+                    ? icon = Icons.arrow_upward
+                    : direction.toLowerCase().contains('head')
+                        ? icon = Icons.arrow_upward
+                        : direction.toLowerCase().contains('roundabout')
+                            ? icon = Icons.data_usage_outlined
+                            : icon = Icons.circle;
     return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
   List<Steps> createDummyDirections() {
     List<Steps> steps = [];
-    steps.add(Steps(
-        instruction: "Turn right", distance: 50, duration: 16));
-    steps.add(Steps(
-        instruction: "Turn left", distance: 150, duration: 16));
-    steps.add(Steps(
-        instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(Steps(
-        instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(
-        instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
+    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
+    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
+    steps.add(
+        Steps(instruction: "Continue straight", distance: 250, duration: 16));
+    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
     return steps;
   }
 
@@ -145,12 +155,11 @@ class DirectionManager{
   }
 
   void setCurrentRoute(R.Route route, [relocateMap= true]){
-
     int duration = 0;
     int distance = 0;
     _directions.clear();
 
-    for(var i =0; i < route.legs.length; i++){
+    for (var i = 0; i < route.legs.length; i++) {
       _directions += route.legs[i].steps;
       duration += route.legs[i].duration;
       distance += route.legs[i].distance;
@@ -170,24 +179,25 @@ class DirectionManager{
     }
 
     _polylineManager.setPolyline(route.polyline.points);
+
+    _isNavigating = true;
   }
 
   void toggleCycling() {
     _isCycling = !_isCycling;
 
-    if(_isCycling){
+    if (_isCycling) {
       showBikeRoute();
-    }else {
+    } else {
       //TODO handle whether to display start or end walking route
       showStartRoute();
      //showEndRoute();
     }
-
   }
 
   //********** Clearing **********
 
-  void clear(){
+  void clear() {
     _polylineManager.clearPolyline();
 
     clearDuration();
@@ -196,28 +206,29 @@ class DirectionManager{
     clearDirections();
 
     clearRoutes();
+
+    _isNavigating = false;
   }
 
-  void clearDuration(){
+  void clearDuration() {
     _duration = "No data";
   }
 
-  void clearDistance(){
+  void clearDistance() {
     _distance = "No data";
   }
 
-  void clearDirections(){
+  void clearDirections() {
     _directions.clear();
   }
 
-  void clearCurrentDirection(){
+  void clearCurrentDirection() {
     _currentDirection = Steps.stepsNotFound();
   }
 
-  void clearRoutes(){
+  void clearRoutes() {
     _startWalkingRoute = R.Route.routeNotFound();
     _bikingRoute = R.Route.routeNotFound();
     _endWalkingRoute = R.Route.routeNotFound();
   }
-
 }

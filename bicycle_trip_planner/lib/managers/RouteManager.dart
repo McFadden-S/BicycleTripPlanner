@@ -1,21 +1,13 @@
-import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 
-class RouteManager{
-
+class RouteManager {
   //********** Fields **********
 
-  final DirectionManager _directionManager = DirectionManager();
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-
-  //String _start = "";
-  //String _destination = "";
-
-  //final List<String> _intermediates = <String>[];
   final Pathway _pathway = Pathway();
 
   //TODO implement toggles in Route Widget
@@ -25,16 +17,13 @@ class RouteManager{
   int _groupsize = 1;
 
   bool _changed = false;
-
-   bool _optimised = true;
+  bool _optimised = true;
 
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
 
-  factory RouteManager() {
-    return _routeManager;
-  }
+  factory RouteManager() => _routeManager;
 
   RouteManager._internal();
 
@@ -42,12 +31,12 @@ class RouteManager{
 
   //********** Public **********
 
-  int getGroupSize(){
+  int getGroupSize() {
     return _groupsize;
   }
 
-  void setGroupSize(int size){
-    if(size > 0){
+  void setGroupSize(int size) {
+    if (size > 0) {
       _groupsize = size;
       _changed = true;
     }
@@ -71,28 +60,22 @@ class RouteManager{
     _changed = true;
   }
 
-  void toggleOptimised(){
+  void toggleOptimised() {
     _optimised = !_optimised;
     _changed = true;
   }
 
-  bool ifOptimised(){
+  bool ifOptimised() {
     return _optimised;
   }
 
   //String getStart(){return pathway.getStart().getText();}
-  Stop getStart(){
-    return _pathway.getStart();
-  } 
+  Stop getStart() => _pathway.getStart();
 
   //String getDestination() => pathway.getDestination().getText();
-  Stop getDestination(){
-    return _pathway.getDestination();
-  }
+  Stop getDestination() => _pathway.getDestination();
 
-  List<Stop> getWaypoints() {
-    return _pathway.getWaypoints();
-  }
+  List<Stop> getWaypoints() => _pathway.getWaypoints();
 
   Stop getFirstWaypoint() {
     return _pathway.getFirstWaypoint();
@@ -108,65 +91,65 @@ class RouteManager{
 
   Stop getStop(int id) => _pathway.getStop(id);
 
-  bool ifChanged(){return _changed;}
+  bool ifChanged() => _changed;
 
-  bool ifStartSet(){return _pathway.getStart().getStop() != "";}
+  bool ifStartSet() => _pathway.getStart().getStop() != "";
 
-  bool ifDestinationSet(){return _pathway.getDestination().getStop() != "";}
-
-  bool ifWaypointsSet(){return getWaypoints().isNotEmpty;}
+  bool ifDestinationSet() => _pathway.getDestination().getStop() != "";
 
   bool ifFirstWaypointSet(){return _pathway.getFirstWaypoint().getStop() != "";}
 
-  void changeStart(String start){
+  bool ifWaypointsSet() => getWaypoints().isNotEmpty;
+
+  void changeStart(String start) {
     _pathway.changeStart(start);
     _changed = true;
   }
 
-  void changeDestination(String destination){
+  void changeDestination(String destination) {
     _pathway.changeDestination(destination);
     _changed = true;
   }
 
-  void changeWaypoint(int id, String waypoint){
-    _pathway.changeStop(id, waypoint); 
+  void changeWaypoint(int id, String waypoint) {
+    _pathway.changeStop(id, waypoint);
     _changed = true;
   }
 
-  void changeStop(int id, String stop){
+  void changeStop(int id, String stop) {
     _pathway.changeStop(id, stop);
-    _changed = true; 
+    _changed = true;
   }
 
-  void swapStops(int stop1ID, int stop2ID){
+  void swapStops(int stop1ID, int stop2ID) {
     _pathway.swapStops(stop1ID, stop2ID);
-    _changed = true; 
+    _changed = true;
   }
 
   // Overrides the old destination
-  void addDestination(String destination){
-    Stop destinationStop = Stop(destination); 
-    _pathway.addStop(destinationStop); 
-    _changed = true; 
+  void addDestination(String destination) {
+    Stop destinationStop = Stop(destination);
+    _pathway.addStop(destinationStop);
+    _changed = true;
   }
 
   // Overrides the new stop
-  Future<void> addStart(String start) async {
-    Stop startStop = Stop(start); 
-    _pathway.addStop(startStop); 
-    _pathway.moveStop(startStop.getUID(), 0); 
-    _changed = true; 
+  void addStart(String start) {
+    Stop startStop = Stop(start);
+    _pathway.addStop(startStop);
+    _pathway.moveStop(startStop.getUID(), 0);
+    _changed = true;
   }
 
   // Adds a new waypoint at the end (before destination)
-  Stop addWaypoint(String waypoint){
-    Stop destination = getDestination(); 
-    Stop waypointStop = Stop(waypoint); 
-    _pathway.addStop(waypointStop); 
+  Stop addWaypoint(String waypoint) {
+    Stop destination = getDestination();
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addStop(waypointStop);
     _pathway.swapStops(destination.getUID(), waypointStop.getUID());
     //Adding a new waypoint with empty string implies no change
-    if(waypoint != ""){
-      _changed = true; 
+    if (waypoint != "") {
+      _changed = true;
     }
     return waypointStop;
   }
@@ -193,44 +176,39 @@ class RouteManager{
   }
 
   // Clears a waypoint (doesn't remove)
-  void clearStop(int id){
+  void clearStop(int id) {
     _pathway.changeStop(id, "");
     _changed = true;
   }
 
-  void removeStop(int id){
+  void removeStop(int id) {
     _pathway.removeStop(id);
     _changed = true;
   }
 
   void removeWaypoints(){
-    List<int> uids = _pathway.getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getUID()).toList();
+    List<int> uids =
+      _pathway.getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getUID()).toList();
     for(int id in uids){
-      removeStop(id); 
+      removeStop(id);
     }
   }
 
-  void clearRouteMarkers(){
+  void clearRouteMarkers() {
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
-    for(int id in uids){
+    for (int id in uids) {
       _markerManager.clearMarker(id);
-    }  
+    }
   }
 
-  void clearChanged(){
-    _changed = false;
-  }
+  void clearChanged() => _changed = false;
 
-  void endRoute() {
+  void clear() {
     _polylineManager.clearPolyline();
-    clearRouteMarkers(); 
+    clearRouteMarkers();
 
     removeWaypoints();
     clearStart();
     clearDestination();
   }
-
-
-
-
 }

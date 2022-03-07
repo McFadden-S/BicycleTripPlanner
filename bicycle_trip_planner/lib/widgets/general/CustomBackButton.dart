@@ -26,7 +26,7 @@ class _StationCardState extends State<CustomBackButton> {
           children: [
             CircleButton(
                 iconIn: Icons.arrow_back,
-                onButtonClicked: () => applicationBloc.setSelectedScreen(widget.backTo)
+                onButtonClicked: () => applicationBloc.goBack(widget.backTo)
             ),
           ],
         ),
