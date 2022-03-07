@@ -28,7 +28,7 @@ void main(){
     Geometry geometry = Geometry(location: location);
     Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1");
     expect(markerManager.getMarkers().length,0);
-    markerManager.setPlaceMarker(place, SearchType.start);
+    markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
     markerManager.getMarkers().clear();
   });
@@ -43,7 +43,7 @@ void main(){
   });
 
   test('ensure marker for station is correct', (){
-    List<Station> station = <Station>[Station(id: 1, name: 'Holborn Station', lat: 0.0, lng: 0.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1)];
+    List<Station> station = <Station>[Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1)];
     markerManager.setStationMarkers(station, ApplicationBloc());
     expect(markerManager.getMarkers().first.markerId, MarkerId("user"));
   });
