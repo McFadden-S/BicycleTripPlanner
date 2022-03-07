@@ -209,6 +209,11 @@ class RouteManager {
     _changed = true;
   }
 
+  void clearFirstWaypoint() {
+    _pathway.removeFirstWayPoint();
+    _changed = true;
+  }
+
   void removeStop(int id) {
     _pathway.removeStop(id);
     _changed = true;
@@ -236,6 +241,7 @@ class RouteManager {
     clearRouteMarkers();
 
     removeWaypoints();
+    clearFirstWaypoint();
     clearStart();
     clearDestination();
   }
