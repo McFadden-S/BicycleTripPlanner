@@ -65,6 +65,6 @@ class LocationManager {
 
   Future<double> getHeading() async {
     var currentLocation = await location.getLocation();
-    return currentLocation.heading!;
+    return currentLocation.heading ?? 0;
   }
 }
