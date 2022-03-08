@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/loading',
+      initialRoute: '/weather',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
         '/login': (context) => const LoginHomeScreen(),
