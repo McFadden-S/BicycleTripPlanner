@@ -30,9 +30,5 @@ class _LoginHomeScreen extends State<LoginHomeScreen> {
         home: WelcomeScreen(),
       ),
     );
-
-
-
-
   }
 }

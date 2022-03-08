@@ -49,16 +49,20 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 flex: 2,
               ),
               RoundedInputField(
+                key: Key("emailField"),
                 hintText: "Email",
                 onChanged: (value) {
                   email = value;
                 },
               ),
               RoundedButton(
+                key: Key("reset"),
                 text: "Send email to reset password",
                 press: resetPassword, // to be modified...
               ),
-              BackButton(),
+              BackButton(
+                key: Key("back"),
+              ),
             ],
           ),
         ),

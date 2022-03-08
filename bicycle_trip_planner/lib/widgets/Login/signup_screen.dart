@@ -45,6 +45,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               ),
               Flexible(
                 child: RoundedInputField(
+                  key: Key("emailField"),
                   hintText: "Email",
                   onChanged: (value) {
                     email = value;
@@ -54,18 +55,21 @@ class _SignUpScreen extends State<SignUpScreen> {
               ),
 
               RoundedPasswordField(
+                  key: Key("passwordField"),
                   text: "Password",
                   onChanged: (value) {
                     password = value;
                   }
               ),
               RoundedPasswordField(
+                  key: Key("confirmPasswordField"),
                   text: "Confirm Password",
                   onChanged: (value) {
                     confirmPassword = value;
                   }
               ),
               RoundedButton(
+                key: Key("signUp"),
                 text: "Sign Up",
                 press: () async {
                   try {
@@ -84,7 +88,9 @@ class _SignUpScreen extends State<SignUpScreen> {
                   }
                 },
               ),
-              BackButton()
+              BackButton(
+                key: Key("back"),
+              )
             ],
           ),
         ),

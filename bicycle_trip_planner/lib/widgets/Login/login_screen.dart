@@ -41,6 +41,7 @@ class LoginScreen extends StatelessWidget {
               ),
               Flexible(
                 child: RoundedInputField(
+                  key: Key("emailField"),
                   hintText: "Email",
                   onChanged: (value) {
                     email = value;
@@ -49,12 +50,14 @@ class LoginScreen extends StatelessWidget {
                 flex: 2,
               ),
               RoundedPasswordField(
+                  key: Key("passwordField"),
                   text: "Password",
                   onChanged: (value) {
                     password = value;
                   }
               ),
               RoundedButton(
+                key: Key("login"),
                 text: "Login",
                 press: () async {
                   try {
@@ -74,6 +77,7 @@ class LoginScreen extends StatelessWidget {
                 },
               ),
               AlreadyHaveAnAccount(
+                key: Key("signUp"),
                 press: () {
                   Navigator.push(
                     context,
@@ -85,6 +89,7 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: size.height * 0.01),
               GestureDetector(
+                key: Key("resetPassword"),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -103,7 +108,9 @@ class LoginScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: size.height * 0.02),
-              BackButton()
+              BackButton(
+                key: Key("back"),
+              )
             ],
           ),
         ),
