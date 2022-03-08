@@ -66,9 +66,9 @@ class ApplicationBloc with ChangeNotifier {
   setupStations() async {
     List<Station> stations = await _stationsService.getStations();
     _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations, this);
 
     updateStations();
+    filterStationMarkers();
     List<Station> filteredStations = await _stationManager.getNearStations();
     updateStationMarkers(filteredStations);
     notifyListeners();
@@ -87,7 +87,8 @@ class ApplicationBloc with ChangeNotifier {
     List<Station> newStations =
         _stationManager.getDeadStationsWhichNowHaveBikes(filteredStations);
     _markerManager.setStationMarkers(newStations, this);
-    List<Station> deadStations = _stationManager.getStationsWithNoBikes(filteredStations);
+    List<Station> deadStations =
+        _stationManager.getStationsWithNoBikes(filteredStations);
     //print(deadStations);
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
@@ -96,8 +97,8 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> filterStationMarkers() async{
-    if(_directionManager.ifNavigating()){
+  Future<void> filterStationMarkers() async {
+    if (_directionManager.ifNavigating()) {
       return;
     }
     List<Station> notNearbyStations = await _stationManager.getFarStations();
