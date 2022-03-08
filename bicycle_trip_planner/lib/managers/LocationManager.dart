@@ -62,4 +62,9 @@ class LocationManager {
   Stream<LocationData> onUserLocationChange() {
     return location.onLocationChanged;
   }
+
+  Future<double> getHeading() async {
+    var currentLocation = await location.getLocation();
+    return currentLocation.heading!;
+  }
 }
