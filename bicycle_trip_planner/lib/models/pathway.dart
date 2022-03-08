@@ -24,6 +24,10 @@ class Pathway {
       ? Stop()
       : _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop());
 
+  Stop getStopByIndex(int index){
+    return _stops[index];
+  }
+
   List<Stop> getWaypoints() => _stops.sublist(1, size - 1);
 
   List<Stop> getStops() => _stops;

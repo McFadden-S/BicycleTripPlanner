@@ -33,6 +33,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
       intermediateSearchControllers.add(searchController);
       Stop waypoint = routeManager.addWaypoint("");
 
+<<<<<<< Updated upstream
       stopsList.add(ListTile(
           title: Search(
               labelTextIn: "Stop",
@@ -55,6 +56,45 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 Icons.remove_circle_outline,
                 color: ThemeStyle.secondaryIconColor,
               ))));
+=======
+      stopsList.add(
+          ListTile(
+              key: Key("Stop ${stopsList.length+1}"),
+              title:
+              Search(
+                  labelTextIn: "Stop ${stopsList.length+1}",
+                  searchController: searchController,
+                  uid: waypoint.getUID()
+              ),
+              trailing: 
+              Wrap(
+                spacing: 12,
+                children: <Widget> [
+                  IconButton(
+                  color: ThemeStyle.secondaryIconColor,
+                  key: Key("Remove ${intermediateSearchControllers.length}"),
+                    onPressed: (){
+                      setState(() {
+                        int indexPressed = intermediateSearchControllers.indexOf(searchController); 
+                        applicationBloc.clearLocationMarker(waypoint.getUID());
+                        applicationBloc.clearSelectedLocation(waypoint.getUID());
+                        stopsList.removeAt(indexPressed);
+                        intermediateSearchControllers.removeAt(indexPressed);
+                      });
+                    },
+                    icon: Icon(
+                        Icons.remove_circle_outline,
+                        color: ThemeStyle.secondaryIconColor
+                    )
+                  ),
+                  Icon(
+                      Icons.drag_handle,
+                      color: ThemeStyle.secondaryIconColor,
+                    ),
+              ])
+          )
+      );
+>>>>>>> Stashed changes
 
       isShowingIntermediate = true;
     });
@@ -62,6 +102,15 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   void toggleShowingIntermediate() {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
+  }
+
+  void printOrder(){
+    for (Widget stop in stopsList) {
+      print(stop.key);
+    }
+    for (Widget stop in stopsList) {
+      print(routeManager.getStop(stopsList.indexOf(stop)).toString());
+    }
   }
 
   @override
@@ -90,6 +139,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     borderRadius: BorderRadius.circular(30.0),
                     side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
               ),
+<<<<<<< Updated upstream
             ),
           ),
           LimitedBox(
@@ -113,5 +163,34 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                       color: ThemeStyle.secondaryIconColor)
                   : SizedBox.shrink(),
         ]));
+=======
+              if(isShowingIntermediate)
+                LimitedBox(
+                  maxHeight: MediaQuery.of(context).size.height * 0.2,
+                  child: ReorderableListView(
+                    shrinkWrap: true,
+                    children: stopsList.toList(growable: true),
+                    onReorder: (oldIndex, newIndex) => setState(() {
+                      final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+
+                      final stop = stopsList.removeAt(oldIndex);
+                      stopsList.insert(index, stop);
+
+                      routeManager.swapStops(routeManager.getStopByIndex(oldIndex+1).getUID(), routeManager.getStopByIndex(newIndex+1).getUID());
+
+                    }),
+                  ),
+                ),
+              Icon(Icons.expand_more, color: ThemeStyle.secondaryIconColor),
+              TextButton(
+                child: Text(
+                  'test order'
+                ),
+                onPressed: () => {printOrder()},
+              )
+            ]
+        )
+    );
+>>>>>>> Stashed changes
   }
 }

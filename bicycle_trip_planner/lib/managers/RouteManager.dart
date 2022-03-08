@@ -57,7 +57,13 @@ class RouteManager {
 
   Stop getStop(int id) => _pathway.getStop(id);
 
+<<<<<<< Updated upstream
   bool ifChanged() => _changed;
+=======
+  Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
+
+  bool ifChanged(){return _changed;}
+>>>>>>> Stashed changes
 
   bool ifStartSet() => _pathway.getStart().getStop() != "";
 
