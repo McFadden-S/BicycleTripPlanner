@@ -36,11 +36,11 @@ class MyApp extends StatelessWidget {
       initialRoute: '/weather',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/login': (context) => const LoginHomeScreen(),
-        '/loading': (context) => const Loading(),
-        '/': (context) => const Home(),
-        '/navigation': (context) => const Navigation(),
-        '/routePlanning': (context) => RoutePlanning(),
+        // '/login': (context) => const LoginHomeScreen(),
+        // '/loading': (context) => const Loading(),
+        // '/': (context) => const Home(),
+        // '/navigation': (context) => const Navigation(),
+        // '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
       },
       theme: ThemeData(

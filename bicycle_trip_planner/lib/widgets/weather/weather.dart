@@ -42,7 +42,10 @@ class _WeatherState extends State<Weather> {
   }
 
   void _search() async{
-    _weatherService.getWeather(_cityTextController.text);
+    final response = await _weatherService.getWeather(_cityTextController.text);
+    print(response.cityName);
+    print(response.weatherInfo.description);
+    print(response.tempInfo.temperature);
   }
 
 }
