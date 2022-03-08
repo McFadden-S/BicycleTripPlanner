@@ -17,7 +17,6 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 
 class RoutePlanning extends StatefulWidget {
-
   RoutePlanning({Key? key}) : super(key: key);
 
   @override
