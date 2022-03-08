@@ -55,10 +55,11 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) {
+    _stationTimer = Timer.periodic(duration, (timer) async {
       updateStations();
       filterStationMarkers();
-      updateStationMarkers();
+      List<Station> filteredStations = await _stationManager.getNearStations();
+      updateStationMarkers(filteredStations);
     });
   }
 
@@ -68,8 +69,8 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.setStationMarkers(stations, this);
 
     updateStations();
-    filterStationMarkers();
-    updateStationMarkers();
+    List<Station> filteredStations = await _stationManager.getNearStations();
+    updateStationMarkers(filteredStations);
     notifyListeners();
   }
 
@@ -78,15 +79,16 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStationMarkers() {
+  updateStationMarkers(List<Station> filteredStations) {
     // Does not update markers during navigation
     if (_directionManager.ifNavigating()) {
       return;
     }
     List<Station> newStations =
-        _stationManager.getDeadStationsWhichNowHaveBikes();
+        _stationManager.getDeadStationsWhichNowHaveBikes(filteredStations);
     _markerManager.setStationMarkers(newStations, this);
-    List<Station> deadStations = _stationManager.getStationsWithNoBikes();
+    List<Station> deadStations = _stationManager.getStationsWithNoBikes(filteredStations);
+    //print(deadStations);
     _markerManager.clearStationMarkers(deadStations);
     // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
     _stationManager.setDeadStations(deadStations);
@@ -94,8 +96,13 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  filterStationMarkers() async{
+  Future<void> filterStationMarkers() async{
+    if(_directionManager.ifNavigating()){
+      return;
+    }
     List<Station> notNearbyStations = await _stationManager.getFarStations();
+    List<Station> nearbyStations = await _stationManager.getNearStations();
+    _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
   }
 

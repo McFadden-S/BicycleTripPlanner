@@ -77,13 +77,13 @@ class StationManager {
     return _stations.where((station) => station.bikes >= bikes).toList();
   }
 
-  List<Station> getStationsWithNoBikes() {
-    return _stations.where((station) => station.bikes <= 0).toList();
+  List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
+    return filteredStations.where((station) => station.bikes <= 0).toList();
   }
 
   // Retrieves a list of stations that previously had 0 bikes but just got bikes
-  List<Station> getDeadStationsWhichNowHaveBikes() {
-    List<Station> deadStations = getStationsWithNoBikes();
+  List<Station> getDeadStationsWhichNowHaveBikes(List<Station> filteredStations) {
+    List<Station> deadStations = getStationsWithNoBikes(filteredStations);
     List<Station> newStations =
         _deadStations.toSet().difference(deadStations.toSet()).toList();
     return newStations;
@@ -94,17 +94,32 @@ class StationManager {
   }
 
   Future<List<Station>> getFarStations() async {
-    List<Station> _nearbyStations = [];
+    List<Station> _farStations = [];
     LatLng currentPos = await _locationManager.locate();
     double distance;
 
     for (var station in _stations) {
       distance = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
       if (distance > 0.5) {
-        _nearbyStations.add(station);
+        _farStations.add(station);
       }
     }
 
+    return _farStations;
+  }
+
+  Future<List<Station>> getNearStations() async {
+    List<Station> _nearbyStations = [];
+    LatLng currentPos = await _locationManager.locate();
+    double distance;
+
+    for (var station in _stations) {
+      distance = _locationManager.distanceFromTo(
+          currentPos, LatLng(station.lat, station.lng));
+      if (distance < 0.5) {
+        _nearbyStations.add(station);
+      }
+    }
     return _nearbyStations;
   }
 
