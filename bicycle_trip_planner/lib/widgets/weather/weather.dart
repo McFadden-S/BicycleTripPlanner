@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/widgets/weather/weather_model.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -13,6 +14,8 @@ class Weather extends StatefulWidget {
 class _WeatherState extends State<Weather> {
   final _cityTextController = TextEditingController();
   final _weatherService = WeatherService();
+  WeatherResponse _response;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -43,9 +46,9 @@ class _WeatherState extends State<Weather> {
 
   void _search() async{
     final response = await _weatherService.getWeather(_cityTextController.text);
-    print(response.cityName);
-    print(response.weatherInfo.description);
-    print(response.tempInfo.temperature);
+    setState(() {
+      _response = response;
+    });
   }
 
 }
