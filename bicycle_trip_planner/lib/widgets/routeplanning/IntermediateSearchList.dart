@@ -32,8 +32,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
       TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
       Stop waypoint = routeManager.addWaypoint("");
-
-<<<<<<< Updated upstream
+      
       stopsList.add(ListTile(
           title: Search(
               labelTextIn: "Stop",
@@ -56,7 +55,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 Icons.remove_circle_outline,
                 color: ThemeStyle.secondaryIconColor,
               ))));
-=======
       stopsList.add(
           ListTile(
               key: Key("Stop ${stopsList.length+1}"),
@@ -94,8 +92,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               ])
           )
       );
->>>>>>> Stashed changes
-
       isShowingIntermediate = true;
     });
   }
@@ -139,7 +135,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     borderRadius: BorderRadius.circular(30.0),
                     side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
               ),
-<<<<<<< Updated upstream
             ),
           ),
           LimitedBox(
@@ -162,8 +157,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   ? Icon(Icons.keyboard_arrow_down,
                       color: ThemeStyle.secondaryIconColor)
                   : SizedBox.shrink(),
-        ]));
-=======
               if(isShowingIntermediate)
                 LimitedBox(
                   maxHeight: MediaQuery.of(context).size.height * 0.2,
@@ -191,6 +184,5 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
             ]
         )
     );
->>>>>>> Stashed changes
   }
 }
