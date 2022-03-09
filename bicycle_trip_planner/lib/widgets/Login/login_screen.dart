@@ -13,15 +13,30 @@ import 'package:provider/provider.dart';
 import '../../bloc/application_bloc.dart';
 import 'components/error_snackbar.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  late String email;
+  late String password;
+
+
+  @override
+  void initState() {
+    super.initState();
+    email = "!";
+    password = "!";
+  }
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size;
 
-    final _auth = FirebaseAuth.instance;
-    late String email;
-    late String password;
+
     return Scaffold(
         body: Background(
           child: Column(
