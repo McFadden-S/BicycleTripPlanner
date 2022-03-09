@@ -9,11 +9,14 @@ import 'package:bicycle_trip_planner/widgets/Login//components/rounded_button.da
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_input_field.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_password_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/application_bloc.dart';
 import 'components/error_snackbar.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size;
 
     final _auth = FirebaseAuth.instance;
@@ -63,14 +66,12 @@ class LoginScreen extends StatelessWidget {
                   try {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
-                    if (user != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return WelcomeScreen();
-                        }),
-                      );
-                    }
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return WelcomeScreen();
+                      }),
+                    );
                   } catch (e) {
                     ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }

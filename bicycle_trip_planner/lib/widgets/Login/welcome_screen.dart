@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/widgets/Login/UserProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/Login/background.dart';
@@ -12,6 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 
+import '../../bloc/application_bloc.dart';
+
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
 
@@ -22,6 +25,7 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreen extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size; // Gives height and width of screen
 
     final _auth = FirebaseAuth.instance;
@@ -34,7 +38,10 @@ class _WelcomeScreen extends State<WelcomeScreen> {
           primaryColor: ThemeStyle.kPrimaryColor,
           scaffoldBackgroundColor: Colors.white,
         ),
-        home: Scaffold(
+        home:
+        applicationBloc.getCurrentUser() != null ?
+            UserProfile()
+          : Scaffold(
           body: Background(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
