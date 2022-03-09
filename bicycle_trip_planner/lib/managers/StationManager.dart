@@ -12,7 +12,7 @@ class StationManager {
 
   // List of dead stations from the PREVIOUS update
   // TODO: ONLY USED FOR UPDATING MARKERS SO FAR
-  List<Station> _deadStations = [];
+  //List<Station> _deadStations = [];
 
   final LocationManager _locationManager = LocationManager();
 
@@ -71,74 +71,50 @@ class StationManager {
   }
 
   // TODO: Find a better method name
-  List<Station> getStationsWithAtLeastXBikes(int bikes) {
-    return _stations.where((station) => station.bikes >= bikes).toList();
+  List<Station> getStationsWithAtLeastXBikes(
+      int bikes, List<Station> filteredStations) {
+    return filteredStations.where((station) => station.bikes >= bikes).toList();
   }
 
   List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
     return filteredStations.where((station) => station.bikes <= 0).toList();
   }
 
-  // Retrieves a list of stations that previously had 0 bikes but just got bikes
-  List<Station> getDeadStationsWhichNowHaveBikes(
-      List<Station> filteredStations) {
-    List<Station> deadStations = getStationsWithNoBikes(filteredStations);
-    List<Station> newStations =
-        _deadStations.toSet().difference(deadStations.toSet()).toList();
-    return newStations;
+  List<Station> getFarStations() {
+    List<Station> farStations = [];
+
+    farStations =
+        _stationsLookUp.difference(getNearStations().toSet()).toList();
+    //print(farStations);
+
+    return farStations;
   }
 
-  void setDeadStations(List<Station> deadStations) {
-    _deadStations = deadStations;
-  }
+  List<Station> getNearStations() {
+    List<Station> nearbyStations = [];
 
-  Future<List<Station>> getFarStations() async {
-    List<Station> _farStations = [];
-    LatLng currentPos = await _locationManager.locate();
-    double distance;
+    int lastIndex = _stations.lastIndexWhere((station) {
+      return station.distanceTo < 0.5;
+    });
+    nearbyStations = _stations.take(lastIndex + 1).toList();
+    //print(nearbyStations);
 
-    for (var station in _stations) {
-      distance = _locationManager.distanceFromTo(
-          currentPos, LatLng(station.lat, station.lng));
-      if (distance > 0.5) {
-        _farStations.add(station);
-      }
-    }
-
-    return _farStations;
-  }
-
-  Future<List<Station>> getNearStations() async {
-    List<Station> _nearbyStations = [];
-    LatLng currentPos = await _locationManager.locate();
-    double distance;
-
-    for (var station in _stations) {
-      distance = _locationManager.distanceFromTo(
-          currentPos, LatLng(station.lat, station.lng));
-      if (distance < 0.5) {
-        _nearbyStations.add(station);
-      }
-    }
-    return _nearbyStations;
+    return nearbyStations;
   }
 
   Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = await _locationManager.locate();
 
-    //Add any new stations to list if they are not in the list
-    List<Station> refreshedStations =
-        newStations.toSet().difference(_stations.toSet()).toList();
-
-    _stations.addAll(refreshedStations);
-    _stationsLookUp.addAll(refreshedStations);
-
     for (Station newStation in newStations) {
       Station? station = _stationsLookUp.lookup(newStation);
+      double distance = _locationManager.distanceFromTo(
+          currentPos, LatLng(newStation.lat, newStation.lng));
       if (station != null) {
-        double distance = _locationManager.distanceFromTo(
-            currentPos, LatLng(station.lat, station.lng));
         station.update(newStation, distance);
+      } else {
+        _stations.add(newStation);
+        _stationsLookUp.add(newStation);
+        newStation.update(newStation, distance);
       }
     }
 
