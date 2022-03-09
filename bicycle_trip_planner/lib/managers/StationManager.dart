@@ -7,13 +7,12 @@ class StationManager {
 
   List<Station> _stations = <Station>[];
 
+  // Used only for O(1) look up times for efficiency
+  Set<Station> _stationsLookUp = <Station>{};
+
   // List of dead stations from the PREVIOUS update
   // TODO: ONLY USED FOR UPDATING MARKERS SO FAR
   List<Station> _deadStations = [];
-
-  //TODO currently maintains a distance list to have a value when stations are
-  //TODO updated but new distance values arent calculated
-  List<double> _stationDistances = <double>[];
 
   final LocationManager _locationManager = LocationManager();
 
@@ -60,15 +59,14 @@ class StationManager {
   }
 
   Station getPickupStationNear(LatLng pos, [int groupSize = 1]) {
-    List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere((station) => station.bikes >= groupSize,
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    return nearPos.firstWhere((station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
   }
 
   Station getDropoffStationNear(LatLng pos, [int groupSize = 1]) {
-    List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere(
-        (station) => station.emptyDocks >= groupSize,
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    return nearPos.firstWhere((station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
   }
 
@@ -82,7 +80,8 @@ class StationManager {
   }
 
   // Retrieves a list of stations that previously had 0 bikes but just got bikes
-  List<Station> getDeadStationsWhichNowHaveBikes(List<Station> filteredStations) {
+  List<Station> getDeadStationsWhichNowHaveBikes(
+      List<Station> filteredStations) {
     List<Station> deadStations = getStationsWithNoBikes(filteredStations);
     List<Station> newStations =
         _deadStations.toSet().difference(deadStations.toSet()).toList();
@@ -99,7 +98,8 @@ class StationManager {
     double distance;
 
     for (var station in _stations) {
-      distance = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
+      distance = _locationManager.distanceFromTo(
+          currentPos, LatLng(station.lat, station.lng));
       if (distance > 0.5) {
         _farStations.add(station);
       }
@@ -123,34 +123,26 @@ class StationManager {
     return _nearbyStations;
   }
 
-  //TODO Refactor so that no longer have to maintain distances list
-  Future<void> setStations(List<Station> stations) async {
-    if (_stationDistances.isEmpty) {
-      _stationDistances = List.filled(stations.length, 0, growable: true);
-    }
-    _stations = stations;
+  Future<void> setStations(List<Station> newStations) async {
+    LatLng currentPos = await _locationManager.locate();
 
-    //Sets stations with intermediate distance values while waiting for new
-    //values to be calculated async
-    for (int i = 0; i < _stations.length; i++) {
-      _stations[i].distanceTo = _stationDistances[i];
-    }
+    //Add any new stations to list if they are not in the list
+    List<Station> refreshedStations =
+        newStations.toSet().difference(_stations.toSet()).toList();
 
-    await setStationDistances();
+    _stations.addAll(refreshedStations);
+    _stationsLookUp.addAll(refreshedStations);
+
+    for (Station newStation in newStations) {
+      Station? station = _stationsLookUp.lookup(newStation);
+      if (station != null) {
+        double distance = _locationManager.distanceFromTo(
+            currentPos, LatLng(station.lat, station.lng));
+        station.update(newStation, distance);
+      }
+    }
 
     _stations.sort((stationA, stationB) =>
         stationA.distanceTo.compareTo(stationB.distanceTo));
-  }
-
-  //TODO Refactor so that no longer have to maintain distances list
-  Future<void> setStationDistances() async {
-    LatLng currentPos = await _locationManager.locate();
-
-    // Set distance from current pos to each station, for each station
-    for (int i = 0; i < _stations.length; i++) {
-      _stations[i].distanceTo = _locationManager.distanceFromTo(
-          currentPos, LatLng(_stations[i].lat, _stations[i].lng));
-      _stationDistances[i] = _stations[i].distanceTo;
-    }
   }
 }
