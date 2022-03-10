@@ -23,7 +23,6 @@ class _WelcomeScreen extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size; // Gives height and width of screen
-    final _auth = FirebaseAuth.instance;
     return  MultiProvider(
       providers: [
         ListenableProvider(create: (context) => GoogleSignInProvider()),
@@ -54,8 +53,8 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       key: Key("Login"),
                       text: "Login",
                       press: () async {
-                        if (_auth.currentUser == null) {
-                          await Navigator.push(
+                        if (applicationBloc.getCurrentUser() == null) {
+                         await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
@@ -63,6 +62,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                               },
                             ),
                           );
+                          redirectToUserProfile(applicationBloc);
                         }
                       }
                   ),
@@ -77,6 +77,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                           return SignUpScreen();
                         }),
                       );
+                      redirectToUserProfile(applicationBloc);
                     },
                     color: ThemeStyle.kPrimaryLightColor,
                     textColor: Colors.black,
@@ -88,13 +89,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     label: Text("Sign in with Google"),
                     onPressed: () async {
                       await GoogleSignInProvider().googleLogin();
-                      if(applicationBloc.getCurrentUser() != null){
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return UserProfile();
-                        })
-                        );
-                      }
+                      redirectToUserProfile(applicationBloc);
                     },
 
                   ),
@@ -115,6 +110,16 @@ class _WelcomeScreen extends State<WelcomeScreen> {
           ),
         );
       });
+  }
+
+  void redirectToUserProfile(ApplicationBloc applicationBloc) {
+    if(applicationBloc.getCurrentUser() != null) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) {
+            return UserProfile();
+          })
+      );
+    }
   }
 
 
