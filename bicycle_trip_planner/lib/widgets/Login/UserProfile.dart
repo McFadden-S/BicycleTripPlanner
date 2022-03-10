@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../bloc/application_bloc.dart';
 import '../../constants.dart';
+import '../../managers/DatabaseManager.dart';
 
 class UserProfile extends StatefulWidget {
 
@@ -15,16 +16,16 @@ class UserProfile extends StatefulWidget {
 }
 
 class _StationCardState extends State<UserProfile> {
+  // final databaseManager = DatabaseManager();
   final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
     return Scaffold(
       body: Center(
         child: Wrap(
           children: [
-            Text(applicationBloc.getCurrentUser()?.email ?? "NO EMAIL"),
+            Text(_auth.currentUser?.email ?? "NO EMAIL"),
             ElevatedButton(
                 onPressed: () async {
                   await _auth.signOut();

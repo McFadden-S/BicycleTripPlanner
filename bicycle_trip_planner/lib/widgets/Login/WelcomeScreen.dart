@@ -19,6 +19,8 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreen extends State<WelcomeScreen> {
+  // final databaseManager = DatabaseManager();
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -37,7 +39,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
             scaffoldBackgroundColor: Colors.white,
           ),
           home:
-          applicationBloc.getCurrentUser() != null ?
+          _auth.currentUser != null ?
           UserProfile()
               : Scaffold(
             body: Background(
@@ -53,7 +55,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       key: Key("Login"),
                       text: "Login",
                       press: () async {
-                        if (applicationBloc.getCurrentUser() == null) {
+                        if (_auth.currentUser == null) {
                          await Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -62,7 +64,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                               },
                             ),
                           );
-                          redirectToUserProfile(applicationBloc);
+                          redirectToUserProfile();
                         }
                       }
                   ),
@@ -77,7 +79,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                           return SignUpScreen();
                         }),
                       );
-                      redirectToUserProfile(applicationBloc);
+                      redirectToUserProfile();
                     },
                     color: ThemeStyle.kPrimaryLightColor,
                     textColor: Colors.black,
@@ -89,7 +91,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     label: Text("Sign in with Google"),
                     onPressed: () async {
                       await GoogleSignInProvider().googleLogin();
-                      redirectToUserProfile(applicationBloc);
+                      redirectToUserProfile();
                     },
 
                   ),
@@ -112,8 +114,8 @@ class _WelcomeScreen extends State<WelcomeScreen> {
       });
   }
 
-  void redirectToUserProfile(ApplicationBloc applicationBloc) {
-    if(applicationBloc.getCurrentUser() != null) {
+  void redirectToUserProfile() {
+    if(_auth.currentUser != null) {
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) {
             return UserProfile();

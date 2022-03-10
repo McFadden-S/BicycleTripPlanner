@@ -47,10 +47,6 @@ class ApplicationBloc with ChangeNotifier {
   late Place _currentLocation;
 
 
-  // *** Login details *****
-  final _auth = FirebaseAuth.instance;
-
-
   ApplicationBloc() {
     fetchCurrentLocation();
     updateStationsPeriodically(const Duration(seconds: 30));
@@ -267,8 +263,5 @@ class ApplicationBloc with ChangeNotifier {
     _directionManager.clear();
   }
 
-  User? getCurrentUser(){
-    return _auth.currentUser;
-  }
 
 }
