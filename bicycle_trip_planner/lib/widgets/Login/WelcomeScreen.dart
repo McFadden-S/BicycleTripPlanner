@@ -19,11 +19,12 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreen extends State<WelcomeScreen> {
+  // final databaseManager = DatabaseManager();
+  final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size; // Gives height and width of screen
-    final _auth = FirebaseAuth.instance;
     return  MultiProvider(
       providers: [
         ListenableProvider(create: (context) => GoogleSignInProvider()),
@@ -38,7 +39,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
             scaffoldBackgroundColor: Colors.white,
           ),
           home:
-          applicationBloc.getCurrentUser() != null ?
+          _auth.currentUser != null ?
           UserProfile()
               : Scaffold(
             body: Background(
@@ -55,7 +56,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       text: "Login",
                       press: () async {
                         if (_auth.currentUser == null) {
-                          await Navigator.push(
+                         await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
@@ -63,6 +64,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                               },
                             ),
                           );
+                          redirectToUserProfile();
                         }
                       }
                   ),
@@ -77,6 +79,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                           return SignUpScreen();
                         }),
                       );
+                      redirectToUserProfile();
                     },
                     color: ThemeStyle.kPrimaryLightColor,
                     textColor: Colors.black,
@@ -88,13 +91,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     label: Text("Sign in with Google"),
                     onPressed: () async {
                       await GoogleSignInProvider().googleLogin();
-                      if(applicationBloc.getCurrentUser() != null){
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) {
-                          return UserProfile();
-                        })
-                        );
-                      }
+                      redirectToUserProfile();
                     },
 
                   ),
@@ -115,6 +112,16 @@ class _WelcomeScreen extends State<WelcomeScreen> {
           ),
         );
       });
+  }
+
+  void redirectToUserProfile() {
+    if(_auth.currentUser != null) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) {
+            return UserProfile();
+          })
+      );
+    }
   }
 
 
