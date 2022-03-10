@@ -1,16 +1,15 @@
 import 'package:bicycle_trip_planner/widgets/Login/UserProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
+import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login/login_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/elavated_button_with_icon.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/or_divider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/widgets/Login/google_sign_in.dart';
+import 'package:bicycle_trip_planner/widgets/Login/GoogleSignIn.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 
 import '../../bloc/application_bloc.dart';
@@ -91,7 +90,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   color: ThemeStyle.kPrimaryLightColor,
                   textColor: Colors.black,
                 ),
-                OrDivider(),
+                Text("Divider"),
                 ElavatedButtonWithIcon(
                   key: Key("googleLogin"),
                   text: "Sign Up/Log In With Google",

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
+import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_password_field.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'components/error_snackbar.dart';
+import 'components/ErrorSnackbar.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
 class SignUpScreen extends StatefulWidget {

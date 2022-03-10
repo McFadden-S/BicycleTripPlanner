@@ -1,4 +1,4 @@
-import 'package:bicycle_trip_planner/widgets/Login/login_screen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

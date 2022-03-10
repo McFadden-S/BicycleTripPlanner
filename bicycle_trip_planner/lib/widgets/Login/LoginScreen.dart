@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/forgot_password_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
-import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/welcome_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/already_have_account.dart';
+import 'package:bicycle_trip_planner/widgets/Login/ForgotPasswordScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
+import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/AlreadyHaveAccount.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/rounded_input_field.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/rounded_password_field.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/application_bloc.dart';
-import 'components/error_snackbar.dart';
+import 'components/ErrorSnackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
