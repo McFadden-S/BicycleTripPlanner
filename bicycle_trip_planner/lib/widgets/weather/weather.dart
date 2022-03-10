@@ -27,6 +27,7 @@ class _WeatherState extends State<Weather> {
               if(_response != null)
                 Column(
                   children: [
+                    Image.network(_response.iconUrl),
                     Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
                     Text(_response.weatherInfo.description)
                   ],
