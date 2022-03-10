@@ -53,7 +53,7 @@ class ApplicationBloc with ChangeNotifier {
 
   ApplicationBloc() {
     fetchCurrentLocation();
-    updateStationsPeriodically(Duration(seconds: 30));
+    updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   cancelStationTimer() {
@@ -61,22 +61,15 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) async {
+    _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
       filterStationMarkers();
-      List<Station> filteredStations = await _stationManager.getNearStations();
-      updateStationMarkers(filteredStations);
     });
   }
 
   setupStations() async {
-    List<Station> stations = await _stationsService.getStations();
-    _stationManager.setStations(stations);
-
-    updateStations();
+    await updateStations();
     filterStationMarkers();
-    List<Station> filteredStations = await _stationManager.getNearStations();
-    updateStationMarkers(filteredStations);
     notifyListeners();
   }
 
@@ -85,32 +78,29 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStationMarkers(List<Station> filteredStations) {
-    // Does not update markers during navigation
-    if (_directionManager.ifNavigating()) {
-      return;
-    }
-    List<Station> newStations =
-        _stationManager.getDeadStationsWhichNowHaveBikes(filteredStations);
-    _markerManager.setStationMarkers(newStations, this);
-    List<Station> deadStations =
-        _stationManager.getStationsWithNoBikes(filteredStations);
-    //print(deadStations);
-    _markerManager.clearStationMarkers(deadStations);
-    // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
-    _stationManager.setDeadStations(deadStations);
-
-    notifyListeners();
-  }
-
-  Future<void> filterStationMarkers() async {
-    if (_directionManager.ifNavigating()) {
-      return;
-    }
-    List<Station> notNearbyStations = await _stationManager.getFarStations();
-    List<Station> nearbyStations = await _stationManager.getNearStations();
+  List<Station> filterNearbyStations() {
+    List<Station> notNearbyStations = _stationManager.getFarStations();
+    List<Station> nearbyStations = _stationManager.getNearStations();
     _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
+    return nearbyStations;
+  }
+
+  filterStationsWithBikes(List<Station> filteredStations) {
+    List<Station> stationsWithBikes =
+        _stationManager.getStationsWithAtLeastXBikes(1, filteredStations);
+    _markerManager.setStationMarkers(stationsWithBikes, this);
+    List<Station> bikelessStations =
+        _stationManager.getStationsWithNoBikes(filteredStations);
+    _markerManager.clearStationMarkers(bikelessStations);
+  }
+
+  void filterStationMarkers() {
+    if (_directionManager.ifNavigating()) {
+      return;
+    }
+    List<Station> nearbyStations = filterNearbyStations();
+    filterStationsWithBikes(nearbyStations);
   }
 
   bool ifSearchResult() {

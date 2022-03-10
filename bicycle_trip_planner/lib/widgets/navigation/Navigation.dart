@@ -52,11 +52,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   void dispose() {
-    //applicationBloc.setStationMarkersWithoutUID();
     applicationBloc.filterStationMarkers();
-    StationManager().getNearStations().then((stations){
-      applicationBloc.updateStationMarkers(stations);
-    });
     locatorSubscription.cancel();
     super.dispose();
   }
