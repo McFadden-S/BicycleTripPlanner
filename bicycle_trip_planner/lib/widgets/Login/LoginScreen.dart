@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/forgot_password_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
-import 'package:bicycle_trip_planner/widgets/Login/signup_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/welcome_screen.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/already_have_account.dart';
+import 'package:bicycle_trip_planner/widgets/Login/ForgotPasswordScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
+import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/AlreadyHaveAccount.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/rounded_input_field.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/rounded_password_field.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'components/error_snackbar.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/application_bloc.dart';
+import 'components/ErrorSnackbar.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  late String email;
+  late String password;
+
+
+  @override
+  void initState() {
+    super.initState();
+    email = "!";
+    password = "!";
+  }
+
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size;
 
-    final _auth = FirebaseAuth.instance;
-    late String email;
-    late String password;
+
     return Scaffold(
         body: Background(
           child: Column(
@@ -63,14 +81,7 @@ class LoginScreen extends StatelessWidget {
                   try {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
-                    if (user != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return WelcomeScreen();
-                        }),
-                      );
-                    }
+                    Navigator.pop(context);
                   } catch (e) {
                     ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }

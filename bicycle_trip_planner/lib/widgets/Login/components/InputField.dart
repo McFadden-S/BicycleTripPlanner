@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/text_field_container.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/InputFieldDecoration.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
 class RoundedInputField extends StatelessWidget {
