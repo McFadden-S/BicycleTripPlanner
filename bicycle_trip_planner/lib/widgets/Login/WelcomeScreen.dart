@@ -53,9 +53,9 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                   RoundedButton(
                       key: Key("Login"),
                       text: "Login",
-                      press: () {
+                      press: () async {
                         if (_auth.currentUser == null) {
-                          Navigator.push(
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) {
@@ -66,21 +66,12 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                         }
                       }
                   ),
-                  if (_auth.currentUser != null)
-                    RoundedButton(
-                      key: Key("LogOut"),
-                      text: "Logout",
-                      press: () {
-                        _auth.signOut();
-                        setState(() => _auth.currentUser);
-                      },
-                    ),
                   SizedBox(height: size.height * 0.05),
                   RoundedButton(
                     key: Key("SignUp"),
                     text: "Sign Up",
-                    press: () {
-                      Navigator.push(
+                    press: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) {
                           return SignUpScreen();
