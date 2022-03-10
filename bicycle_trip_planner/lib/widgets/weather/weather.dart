@@ -14,7 +14,7 @@ class Weather extends StatefulWidget {
 class _WeatherState extends State<Weather> {
   final _cityTextController = TextEditingController();
   final _weatherService = WeatherService();
-  WeatherResponse _response;
+  late WeatherResponse _response = WeatherResponse(cityName: "", tempInfo: TemperatureInfo(temperature: 0), weatherInfo: WeatherInfo(description: "", icon: ""));
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,13 @@ class _WeatherState extends State<Weather> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if(_response != null)
+                Column(
+                  children: [
+                    Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
+                    Text(_response.weatherInfo.description)
+                  ],
+                ),
               Padding(
                   padding: EdgeInsets.symmetric(vertical: 50),
                   child: SizedBox(
