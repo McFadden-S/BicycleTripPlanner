@@ -59,6 +59,8 @@ class RouteManager {
 
   bool ifChanged() => _changed;
 
+  Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
+
   bool ifStartSet() => _pathway.getStart().getStop() != "";
 
   bool ifDestinationSet() => _pathway.getDestination().getStop() != "";

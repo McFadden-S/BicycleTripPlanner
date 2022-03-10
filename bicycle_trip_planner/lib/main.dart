@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +9,6 @@ import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
@@ -35,8 +35,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
-        '/': (context) => const NavigateWindow(),
-        '/login': (context) => const LoginHomeScreen(),
+        // '/': (context) => const NavigateWindow(),
+        '/login': (context) => const WelcomeScreen(),
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),

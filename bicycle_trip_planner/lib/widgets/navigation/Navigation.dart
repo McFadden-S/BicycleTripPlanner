@@ -4,6 +4,8 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
@@ -50,7 +52,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   void dispose() {
-    applicationBloc.setStationMarkersWithoutUID();
+    applicationBloc.filterStationMarkers();
     locatorSubscription.cancel();
     super.dispose();
   }

@@ -46,6 +46,13 @@ class Station {
     return (bikes / totalDocks) * 50;
   }
 
+  void update(Station station, double distance) {
+    bikes = station.bikes;
+    emptyDocks = station.emptyDocks;
+    totalDocks = station.totalDocks;
+    distanceTo = distance;
+  }
+
   @override
   String toString() {
     return name;

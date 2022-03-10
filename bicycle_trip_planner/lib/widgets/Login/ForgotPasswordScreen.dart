@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/background.dart';
+import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_input_field.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'components/error_snackbar.dart';
+import 'components/ErrorSnackbar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -49,16 +49,20 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                 flex: 2,
               ),
               RoundedInputField(
+                key: Key("emailField"),
                 hintText: "Email",
                 onChanged: (value) {
                   email = value;
                 },
               ),
               RoundedButton(
+                key: Key("reset"),
                 text: "Send email to reset password",
                 press: resetPassword, // to be modified...
               ),
-              BackButton(),
+              BackButton(
+                key: Key("back"),
+              ),
             ],
           ),
         ),

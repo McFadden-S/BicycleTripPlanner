@@ -9,6 +9,7 @@ import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -45,9 +46,10 @@ class ApplicationBloc with ChangeNotifier {
   late Timer _stationTimer;
   late Place _currentLocation;
 
+
   ApplicationBloc() {
     fetchCurrentLocation();
-    updateStationsPeriodically(Duration(seconds: 30));
+    updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   cancelStationTimer() {
@@ -58,18 +60,12 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer = Timer.periodic(duration, (timer) {
       updateStations();
       filterStationMarkers();
-      updateStationMarkers();
     });
   }
 
   setupStations() async {
-    List<Station> stations = await _stationsService.getStations();
-    _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations, this);
-
-    updateStations();
+    await updateStations();
     filterStationMarkers();
-    updateStationMarkers();
     notifyListeners();
   }
 
@@ -78,25 +74,29 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStationMarkers() {
-    // Does not update markers during navigation
+  List<Station> filterNearbyStations() {
+    List<Station> notNearbyStations = _stationManager.getFarStations();
+    List<Station> nearbyStations = _stationManager.getNearStations();
+    _markerManager.setStationMarkers(nearbyStations, this);
+    _markerManager.clearStationMarkers(notNearbyStations);
+    return nearbyStations;
+  }
+
+  filterStationsWithBikes(List<Station> filteredStations) {
+    List<Station> stationsWithBikes =
+        _stationManager.getStationsWithAtLeastXBikes(1, filteredStations);
+    _markerManager.setStationMarkers(stationsWithBikes, this);
+    List<Station> bikelessStations =
+        _stationManager.getStationsWithNoBikes(filteredStations);
+    _markerManager.clearStationMarkers(bikelessStations);
+  }
+
+  void filterStationMarkers() {
     if (_directionManager.ifNavigating()) {
       return;
     }
-    List<Station> newStations =
-        _stationManager.getDeadStationsWhichNowHaveBikes();
-    _markerManager.setStationMarkers(newStations, this);
-    List<Station> deadStations = _stationManager.getStationsWithNoBikes();
-    _markerManager.clearStationMarkers(deadStations);
-    // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
-    _stationManager.setDeadStations(deadStations);
-
-    notifyListeners();
-  }
-
-  filterStationMarkers() async{
-    List<Station> notNearbyStations = await _stationManager.getFarStations();
-    _markerManager.clearStationMarkers(notNearbyStations);
+    List<Station> nearbyStations = filterNearbyStations();
+    filterStationsWithBikes(nearbyStations);
   }
 
   bool ifSearchResult() {
@@ -262,4 +262,6 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager.clear();
     _directionManager.clear();
   }
+
+
 }
