@@ -17,6 +17,12 @@ class _WeatherState extends State<Weather> {
   late WeatherResponse _response = WeatherResponse(cityName: "", tempInfo: TemperatureInfo(temperature: 0), weatherInfo: WeatherInfo(description: "", icon: ""));
 
   @override
+  void initState() {
+    super.initState();
+    _search();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
@@ -27,23 +33,12 @@ class _WeatherState extends State<Weather> {
               if(_response != null)
                 Column(
                   children: [
+                    Text('London', style: TextStyle(fontSize: 30)),
                     Image.network(_response.iconUrl),
                     Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
                     Text(_response.weatherInfo.description)
                   ],
                 ),
-              Padding(
-                  padding: EdgeInsets.symmetric(vertical: 50),
-                  child: SizedBox(
-                    width: 150,
-                    child: TextField(
-                      controller: _cityTextController,
-                      decoration: InputDecoration(labelText: 'City'),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-              ),
-              ElevatedButton(onPressed: _search, child: Text('Search')),
             ],
 
           ),
@@ -53,7 +48,7 @@ class _WeatherState extends State<Weather> {
   }
 
   void _search() async{
-    final response = await _weatherService.getWeather(_cityTextController.text);
+    final response = await _weatherService.getWeather("london");
     setState(() {
       _response = response;
     });
