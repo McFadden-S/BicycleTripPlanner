@@ -29,7 +29,32 @@ class LocationManager {
   }
 
   Future<PermissionStatus> requestPermission() async {
-    return await location.hasPermission();
+    PermissionStatus _permissionGranted = await location.hasPermission();
+
+    // returns whether service is enabled or not
+    await checkServiceEnabled();
+
+    // returns true or false based on user accepting or rejecting location services
+    await checkPermission(_permissionGranted);
+
+    return _permissionGranted;
+  }
+
+  Future<bool> checkServiceEnabled() async {
+    print("service check");
+    return await location.serviceEnabled() && await location.requestService();
+  }
+
+  Future<bool> checkPermission(PermissionStatus _permissionGranted) async {
+    bool grantedPermission = true;
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        grantedPermission = false;
+      }
+    }
+    return grantedPermission;
   }
 
   Future<double> distanceTo(LatLng pos) async {
