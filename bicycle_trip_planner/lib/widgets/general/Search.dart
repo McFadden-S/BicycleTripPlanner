@@ -97,12 +97,12 @@ class _SearchState extends State<Search> {
             style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
-              isSearching = true;
-              searchInput = input;
+                isSearching = true;
+                searchInput = input;
               },
             onTap: (){
-              isSearching = true;
-              applicationBloc.getDefaultSearchResult();
+                isSearching = true;
+                applicationBloc.getDefaultSearchResult();
               },
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
@@ -127,13 +127,10 @@ class _SearchState extends State<Search> {
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  setState(() {
-                    applicationBloc.clearLocationMarker(widget.uid); 
+                    applicationBloc.clearLocationMarker(widget.uid);
                     if(widget.uid != -1){
                       applicationBloc.clearSelectedLocation(widget.uid);
                     }
-                  }
-                );
                   hideSearch();
                 },
               ),
