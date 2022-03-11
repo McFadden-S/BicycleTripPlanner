@@ -47,6 +47,8 @@ class _SearchState extends State<Search> {
         widget.searchController.text = getText();
     }
 
+    String searchInput = "";
+
     return Stack(
       children: [
         if (applicationBloc.ifSearchResult() && isSearching)
@@ -103,7 +105,7 @@ class _SearchState extends State<Search> {
             controller: widget.searchController,
             onChanged: (input) {
               isSearching = true;
-              applicationBloc.searchPlaces(input);
+              searchInput = input;
               },
             onTap: (){
               isSearching = true;
@@ -122,6 +124,16 @@ class _SearchState extends State<Search> {
               border: OutlineInputBorder(
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                 borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
+              ),
+              prefixIcon: IconButton(
+                icon: const Icon(Icons.search),
+
+                onPressed: () {
+                  setState(() {
+                    applicationBloc.searchPlaces(searchInput);
+                  }
+                  );
+                },
               ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),

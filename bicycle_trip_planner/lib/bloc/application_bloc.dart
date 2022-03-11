@@ -199,15 +199,9 @@ class ApplicationBloc with ChangeNotifier {
   findRoute(String origin, String destination,
       [List<String> intermediates = const <String>[],
       int groupSize = 1]) async {
-    Rou.Route route =
-        await _directionsService.getRoutes(origin, destination, intermediates);
 
-    Location startLocation =
-        (await _placesService.getPlaceFromAddress(origin)).geometry.location;
-    Location endLocation =
-        (await _placesService.getPlaceFromAddress(destination))
-            .geometry
-            .location;
+    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
 
     Station startStation = _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
@@ -215,18 +209,14 @@ class ApplicationBloc with ChangeNotifier {
         LatLng(endLocation.lat, endLocation.lng), groupSize);
 
     String startStationName = (await _placesService.getPlaceFromCoordinates(
-            startStation.lat, startStation.lng))
-        .name;
+            startStation.lat, startStation.lng)).name;
     String endStationName = (await _placesService.getPlaceFromCoordinates(
-            endStation.lat, endStation.lng))
-        .name;
+            endStation.lat, endStation.lng)).name;
 
-    Rou.Route startWalkRoute =
-        await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin, startStationName);
     Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName,
         endStationName, intermediates, _routeManager.ifOptimised());
-    Rou.Route endWalkRoute =
-        await _directionsService.getRoutes(endStationName, destination);
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStationName, destination);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
