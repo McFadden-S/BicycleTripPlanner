@@ -20,49 +20,55 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
 
     return Scaffold(
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Reset Password",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: ThemeStyle.mainFontColor,
-                ),
-              ),
-              Flexible(
-                child: Image.asset(
-                  "assets/reset_password_image.png",
-                  height: size.height * 0.35,
-                ),
-                flex: 1,
-              ),
-              Flexible(
-                child: Text(
-                  "Please enter your email to reset password",
-                  style: TextStyle(
-                    color: ThemeStyle.secondaryFontColor,
+          child: Container(
+            color: ThemeStyle.cardColor,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Reset Password",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30,
+                      color: ThemeStyle.primaryTextColor,
+                    ),
                   ),
-                ),
-                flex: 2,
+                  Flexible(
+                    child: Image.asset(
+                      "assets/reset_password_image.png",
+                      height: size.height * 0.4,
+                    ),
+                    flex: 1,
+                  ),
+                  Flexible(
+                    child: Text(
+                      "Please enter your email to reset password",
+                      style: TextStyle(
+                        color: ThemeStyle.primaryTextColor,
+                      ),
+                    ),
+                    flex: 2,
+                  ),
+                  RoundedInputField(
+                    key: Key("emailField"),
+                    hintText: "Email",
+                    onChanged: (value) {
+                      email = value;
+                    },
+                  ),
+                  RoundedTextButton(
+                    key: Key("reset"),
+                    text: "Reset password",
+                    press: resetPassword, // to be modified...
+                  ),
+                  BackButton(
+                    color: ThemeStyle.primaryIconColor,
+                    key: Key("back"),
+                  ),
+                ],
               ),
-              RoundedInputField(
-                key: Key("emailField"),
-                hintText: "Email",
-                onChanged: (value) {
-                  email = value;
-                },
-              ),
-              RoundedTextButton(
-                key: Key("reset"),
-                text: "Send email to reset password",
-                press: resetPassword, // to be modified...
-              ),
-              BackButton(
-                key: Key("back"),
-              ),
-            ],
+            ),
           ),
         ),
     );

@@ -25,100 +25,104 @@ class _SignUpScreen extends State<SignUpScreen> {
 
     return Scaffold(
         body: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Sign Up",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: ThemeStyle.mainFontColor,
-                ),
-              ),
-              Flexible(
-                child: Image.asset(
-                  "assets/signup_image.png",
-                  height: size.height * 0.35,
-                ),
-                flex: 1,
-              ),
-              Flexible(
-                child: RoundedInputField(
-                  key: Key("emailField"),
-                  hintText: "Email",
-                  onChanged: (value) {
-                    email = value;
-                  },
-                ),
-                flex: 2,
-              ),
-
-              RoundedPasswordField(
-                  key: Key("passwordField"),
-                  text: "Password",
-                  onChanged: (value) {
-                    password = value;
-                  }
-              ),
-              RoundedPasswordField(
-                  key: Key("confirmPasswordField"),
-                  text: "Confirm Password",
-                  onChanged: (value) {
-                    confirmPassword = value;
-                  }
-              ),
-              RoundedTextButton(
-                key: Key("signUp"),
-                text: "Sign Up",
-                press: () async {
-                  try {
-                    if (password==confirmPassword){
-                      await _auth.createUserWithEmailAndPassword(
-                        email: email,
-                        password: password,
-                      );
-                      Navigator.pop(context);
-                    }
-                    else{
-                      ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
-                    }
-                  } catch (e) {
-                    //_showSnackBar(e.toString());
-                    ErrorSnackBar.buildErrorSnackbar(context, e.toString());
-                  }
-                },
-              ),Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Already have an Account? ",
-                    style: TextStyle(color: ThemeStyle.secondaryFontColor),
+          child: Container(
+            color: ThemeStyle.cardColor,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Sign Up",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: ThemeStyle.primaryTextColor,
                   ),
-                  GestureDetector(
-                    onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) {
-                          return LoginScreen();
-                        }),
-                      );
+                ),
+                Flexible(
+                  child: Image.asset(
+                    "assets/signup_image.png",
+                    height: size.height * 0.4,
+                  ),
+                  flex: 1,
+                ),
+                Flexible(
+                  child: RoundedInputField(
+                    key: Key("emailField"),
+                    hintText: "Email",
+                    onChanged: (value) {
+                      email = value;
                     },
-                    child: Text(
-                      " Login",
-                      style: TextStyle(
-                        color: ThemeStyle.secondaryFontColor,
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline,
+                  ),
+                  flex: 2,
+                ),
+
+                RoundedPasswordField(
+                    key: Key("passwordField"),
+                    text: "Password",
+                    onChanged: (value) {
+                      password = value;
+                    }
+                ),
+                RoundedPasswordField(
+                    key: Key("confirmPasswordField"),
+                    text: "Confirm Password",
+                    onChanged: (value) {
+                      confirmPassword = value;
+                    }
+                ),
+                RoundedTextButton(
+                  key: Key("signUp"),
+                  text: "Sign Up",
+                  press: () async {
+                    try {
+                      if (password==confirmPassword){
+                        await _auth.createUserWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
+                        Navigator.pop(context);
+                      }
+                      else{
+                        ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
+                      }
+                    } catch (e) {
+                      //_showSnackBar(e.toString());
+                      ErrorSnackBar.buildErrorSnackbar(context, e.toString());
+                    }
+                  },
+                ),Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Already have an Account? ",
+                      style: TextStyle(color: ThemeStyle.primaryTextColor),
+                    ),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) {
+                            return LoginScreen();
+                          }),
+                        );
+                      },
+                      child: Text(
+                        " Login",
+                        style: TextStyle(
+                          color: ThemeStyle.kPrimaryLightColor,
+                          fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              BackButton(
-                key: Key("back"),
-              )
-            ],
+                  ],
+                ),
+                BackButton(
+                  color: ThemeStyle.primaryIconColor,
+                  key: Key("back"),
+                )
+              ],
+            ),
           ),
         ),
     );

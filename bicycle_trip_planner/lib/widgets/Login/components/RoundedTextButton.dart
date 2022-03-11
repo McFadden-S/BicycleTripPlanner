@@ -4,15 +4,13 @@ import 'package:bicycle_trip_planner/constants.dart';
 class RoundedTextButton extends StatefulWidget {
   final String text;
   final VoidCallback press;
-  Color? color= ThemeStyle.kPrimaryColor;
-  final Color textColor;
+  Color? color = ThemeStyle.buttonPrimaryColor;
 
   RoundedTextButton({
     Key? key,
     required this.text,
     required this.press,
     this.color,
-    this.textColor = Colors.white,
   }) : super(key: key);
 
   @override
@@ -20,6 +18,7 @@ class RoundedTextButton extends StatefulWidget {
 }
 
 class _RoundedTextButtonState extends State<RoundedTextButton> {
+  Color textColor = ThemeStyle.primaryTextColor;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery
@@ -27,9 +26,9 @@ class _RoundedTextButtonState extends State<RoundedTextButton> {
         .size;
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 10 ),
-      width: size.width * 0.8,
+      width: size.width * 0.6,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(29),
+        borderRadius: BorderRadius.circular(30),
         child: newElevatedButton(),
       ),
     );
@@ -39,14 +38,14 @@ class _RoundedTextButtonState extends State<RoundedTextButton> {
     return ElevatedButton(
       child: Text(
         widget.text,
-        style: TextStyle(color: widget.textColor),
+        style: TextStyle(color: textColor),
       ),
       onPressed: widget.press, // add on pressed function
       style: ElevatedButton.styleFrom(
           primary: widget.color,
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           textStyle: TextStyle(
-              color: widget.textColor, fontSize: 14, fontWeight: FontWeight.w500)),
+              color: textColor, fontSize: 14, fontWeight: FontWeight.w500)),
     );
   }
 }
