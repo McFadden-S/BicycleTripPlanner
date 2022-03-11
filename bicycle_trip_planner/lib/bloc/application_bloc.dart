@@ -294,6 +294,7 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> setNavigating(bool value) async {
     _isNavigating = value;
+    await RouteManager().setDestinationLocation();
     if (value && RouteManager().getStartFromCurrentLocation()) {
       await setInitialPickUpDropOffStations();
       updateDirectionsPeriodically(Duration(seconds: 20));

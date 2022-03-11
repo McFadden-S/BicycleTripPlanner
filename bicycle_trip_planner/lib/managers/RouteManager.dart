@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/services/places_service.dart';
 
 
 class RouteManager {
@@ -10,6 +11,7 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
+  final _placesService = PlacesService();
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
@@ -157,6 +159,10 @@ class RouteManager {
   void swapStops(int stop1ID, int stop2ID) {
     _pathway.swapStops(stop1ID, stop2ID);
     _changed = true;
+  }
+
+  Future<void> setDestinationLocation() async {
+    _destination = (await _placesService.getPlaceFromAddress(getDestination().getStop())).geometry.location;
   }
 
   // Overrides the old destination
