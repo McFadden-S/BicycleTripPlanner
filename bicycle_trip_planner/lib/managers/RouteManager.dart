@@ -3,6 +3,8 @@ import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 
+import '../models/place.dart';
+
 class RouteManager {
   //********** Fields **********
 
@@ -61,28 +63,28 @@ class RouteManager {
 
   Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
 
-  bool ifStartSet() => _pathway.getStart().getStop() != "";
+  bool ifStartSet() => _pathway.getStart().getStop() != const Place.placeNotFound();
 
-  bool ifDestinationSet() => _pathway.getDestination().getStop() != "";
+  bool ifDestinationSet() => _pathway.getDestination().getStop() != const Place.placeNotFound();
 
   bool ifWaypointsSet() => getWaypoints().isNotEmpty;
 
-  void changeStart(String start) {
+  void changeStart(Place start) {
     _pathway.changeStart(start);
     _changed = true;
   }
 
-  void changeDestination(String destination) {
+  void changeDestination(Place destination) {
     _pathway.changeDestination(destination);
     _changed = true;
   }
 
-  void changeWaypoint(int id, String waypoint) {
+  void changeWaypoint(int id, Place waypoint) {
     _pathway.changeStop(id, waypoint);
     _changed = true;
   }
 
-  void changeStop(int id, String stop) {
+  void changeStop(int id, Place stop) {
     _pathway.changeStop(id, stop);
     _changed = true;
   }
@@ -93,14 +95,14 @@ class RouteManager {
   }
 
   // Overrides the old destination
-  void addDestination(String destination) {
+  void addDestination(Place destination) {
     Stop destinationStop = Stop(destination);
     _pathway.addStop(destinationStop);
     _changed = true;
   }
 
   // Overrides the new stop
-  void addStart(String start) {
+  void addStart(Place start) {
     Stop startStop = Stop(start);
     _pathway.addStop(startStop);
     _pathway.moveStop(startStop.getUID(), 0);
@@ -108,31 +110,31 @@ class RouteManager {
   }
 
   // Adds a new waypoint at the end (before destination)
-  Stop addWaypoint(String waypoint) {
+  Stop addWaypoint(Place waypoint) {
     Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
     _pathway.addStop(waypointStop);
     _pathway.swapStops(destination.getUID(), waypointStop.getUID());
     //Adding a new waypoint with empty string implies no change
-    if (waypoint != "") {
+    if (waypoint != const Place.placeNotFound()) {
       _changed = true;
     }
     return waypointStop;
   }
 
   void clearStart() {
-    _pathway.changeStart("");
+    _pathway.changeStart(const Place.placeNotFound());
     _changed = true;
   }
 
   void clearDestination() {
-    _pathway.changeDestination("");
+    _pathway.changeDestination(const Place.placeNotFound());
     _changed = true;
   }
 
   // Clears a waypoint (doesn't remove)
   void clearStop(int id) {
-    _pathway.changeStop(id, "");
+    _pathway.changeStop(id, const Place.placeNotFound());
     _changed = true;
   }
 

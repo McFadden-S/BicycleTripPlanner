@@ -33,18 +33,14 @@ class _SearchState extends State<Search> {
     isSearching = false;
     FocusScope.of(context).requestFocus(new FocusNode());
   }
-
-  String getText(){
-    return routeManager.getStop(widget.uid).getStop(); 
-  }
-
+  
    @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if(!isSearching){
-        widget.searchController.text = getText();
+        widget.searchController.text = routeManager.getStop(widget.uid).getStop().description;
     }
 
     String searchInput = "";
@@ -66,7 +62,7 @@ class _SearchState extends State<Search> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                    trailing: Visibility(child: Icon(Icons.my_location), visible: (index == 0)),
+                    trailing: Visibility(child: const Icon(Icons.my_location), visible: (index == 0)),
                     title: Text(
                       applicationBloc
                           .searchResults[index].description,
@@ -81,10 +77,7 @@ class _SearchState extends State<Search> {
                       // Make a search type enum of search and route (search enum = has unique id only for marker
                       // No need for any getText for this search) (route enum = behaves as it does currently i.e.
                       // will have a unique id for marker + WILL also getText for this search)~
-                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
-                      if(widget.uid != -1){
-                        applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
-                      }
+                      applicationBloc.setSelectedSearch(index, widget.uid);
 
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
@@ -109,7 +102,6 @@ class _SearchState extends State<Search> {
               },
             onTap: (){
               isSearching = true;
-              applicationBloc.fetchCurrentLocation();
               applicationBloc.getDefaultSearchResult();
               },
             decoration: InputDecoration(
@@ -127,12 +119,9 @@ class _SearchState extends State<Search> {
               ),
               prefixIcon: IconButton(
                 icon: const Icon(Icons.search),
-
-                onPressed: () {
-                  setState(() {
+                onPressed: () {setState(() {
                     applicationBloc.searchPlaces(searchInput);
-                  }
-                  );
+                  });
                 },
               ),
               suffixIcon: IconButton(
