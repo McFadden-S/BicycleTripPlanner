@@ -148,7 +148,7 @@ class ApplicationBloc with ChangeNotifier {
         int groupSize = 1]) async {
 
     Location startLocation = origin.geometry.location;
-    Location endLocation = origin.geometry.location;
+    Location endLocation = destination.geometry.location;
 
     Station startStation = _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
