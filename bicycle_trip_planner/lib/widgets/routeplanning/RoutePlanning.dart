@@ -17,13 +17,14 @@ import 'package:provider/provider.dart';
 import '../../constants.dart';
 
 class RoutePlanning extends StatefulWidget {
-  const RoutePlanning({Key? key}) : super(key: key);
+  RoutePlanning({Key? key}) : super(key: key);
 
   @override
   _RoutePlanningState createState() => _RoutePlanningState();
 }
 
 class _RoutePlanningState extends State<RoutePlanning> {
+  bool showRouteCard = true;
 
   final RouteManager _routeManager = RouteManager();
   final DirectionManager _directionManager = DirectionManager();
@@ -40,29 +41,44 @@ class _RoutePlanningState extends State<RoutePlanning> {
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                RouteCard(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          CurrentLocationButton(),
-                          SizedBox(height: 10),
-                          ViewRouteButton(),
-                          SizedBox(height: 10),
-                          GroupSizeSelector(),
-                          SizedBox(height: 10),
-                          CircleButton(
-                              iconIn: Icons.alt_route,
-                              iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
-                              onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
-                          ),
-                        ],
+                showRouteCard ? RouteCard() : Container(),
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {setState(() {
+                    showRouteCard = false;
+                  });},
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          children: [
+                            !showRouteCard ?
+                              CircleButton(
+                              iconIn: Icons.search,
+                              iconColor: ThemeStyle.primaryIconColor,
+                              onButtonClicked: () {setState(() {
+                                showRouteCard = true;
+                              }
+                              );}) : Container(),
+                            !showRouteCard ? SizedBox(height: 10) : Container(),
+                            CurrentLocationButton(),
+                            SizedBox(height: 10),
+                            ViewRouteButton(),
+                            SizedBox(height: 10),
+                            GroupSizeSelector(),
+                            SizedBox(height: 10),
+                            CircleButton(
+                                iconIn: Icons.alt_route,
+                                iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                                onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

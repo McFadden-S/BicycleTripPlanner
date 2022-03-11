@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
   const IntermediateSearchList({
@@ -31,8 +32,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     setState(() {
       TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
-      Stop waypoint = routeManager.addWaypoint("");
 
+      Stop waypoint = routeManager.addWaypoint(const Place.placeNotFound());
+      
       stopsList.add(
           ListTile(
             key: Key("Stop ${stopsList.length+1}"),

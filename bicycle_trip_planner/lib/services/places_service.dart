@@ -15,33 +15,33 @@ class PlacesService {
     return jsonResults.map((place) => PlaceSearch.fromJson(place)).toList();
   }
 
-  Future<Place> getPlace(String placeId) async {
+  Future<Place> getPlace(String placeId, String description) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['result'] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults);
+    return Place.fromJson(jsonResults, description);
   }
 
-  Future<Place> getPlaceFromCoordinates(double lat, double lng) async {
+  Future<Place> getPlaceFromCoordinates(double lat, double lng, String description) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'][0] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults);
+    return Place.fromJson(jsonResults, description);
   }
 
-  Future<Place> getPlaceFromAddress(String address) async {
+  Future<Place> getPlaceFromAddress(String address, String description) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'][0] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults);
+    return Place.fromJson(jsonResults, description);
   }
 }

@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>407783421630-qupl3vj243qldd31che4uaj56qmd67c6.apps.googleusercontent.com</string>
+	<string>755682009749-7kks00cltft6b3umbr0aofqnk7jocshp.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.407783421630-qupl3vj243qldd31che4uaj56qmd67c6</string>
+	<string>com.googleusercontent.apps.755682009749-7kks00cltft6b3umbr0aofqnk7jocshp</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>755682009749-nddti9jlrgtp8loaek8tgv4h6q750mpg.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAJJZC8AV3FneriFTDsRMFna4ARgCU2ZS0</string>
+	<string>AIzaSyArYGOsCTh2Ja8D6NVsm32ftv4S0qu6f2Q</string>
 	<key>GCM_SENDER_ID</key>
-	<string>407783421630</string>
+	<string>755682009749</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.bicycleTripPlanner</string>
+	<string>BikeTripPlanner</string>
 	<key>PROJECT_ID</key>
-	<string>bicycletripplanner-c1288</string>
+	<string>biketripplanner-2022</string>
 	<key>STORAGE_BUCKET</key>
-	<string>bicycletripplanner-c1288.appspot.com</string>
+	<string>biketripplanner-2022.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:407783421630:ios:3ea0a2953edde0745a10ef</string>
+	<string>1:755682009749:ios:0d778b6d8d849678c0f19c</string>
+	<key>DATABASE_URL</key>
+	<string>https://biketripplanner-2022-default-rtdb.firebaseio.com</string>
 </dict>
 </plist>
