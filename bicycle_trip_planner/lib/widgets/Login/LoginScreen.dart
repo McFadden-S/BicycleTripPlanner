@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/ForgotPasswordScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
 import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/AlreadyHaveAccount.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login//components/RoundedTextButton.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/InputField.dart';
 import 'package:bicycle_trip_planner/widgets/Login//components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:provider/provider.dart';
-import '../../bloc/application_bloc.dart';
 import 'components/ErrorSnackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -33,12 +28,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size;
 
 
     return Scaffold(
-        body: Background(
+        body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -74,12 +68,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     password = value;
                   }
               ),
-              RoundedButton(
+              RoundedTextButton(
                 key: Key("login"),
                 text: "Login",
                 press: () async {
                   try {
-                    final user = await _auth.signInWithEmailAndPassword(
+                    await _auth.signInWithEmailAndPassword(
                         email: email, password: password);
                     Navigator.pop(context);
                   } catch (e) {
@@ -87,17 +81,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   }
                 },
               ),
-              AlreadyHaveAnAccount(
-                key: Key("signUp"),
-                press: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) {
-                      return SignUpScreen();
-                    }),
-                  );
-                },
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Do not have an Account? ",
+                  style: TextStyle(color: ThemeStyle.secondaryFontColor),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return SignUpScreen();
+                      }),
+                    );
+                  },
+                  child: Text(
+                    " Sign Up",
+                    style: TextStyle(
+                      color: ThemeStyle.secondaryFontColor,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
+            ),
               SizedBox(height: size.height * 0.01),
               GestureDetector(
                 key: Key("resetPassword"),

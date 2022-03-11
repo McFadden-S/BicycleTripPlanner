@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
-class RoundedButton extends StatelessWidget {
+class RoundedTextButton extends StatefulWidget {
   final String text;
   final VoidCallback press;
   Color? color= ThemeStyle.kPrimaryColor;
   final Color textColor;
 
-  RoundedButton({
+  RoundedTextButton({
     Key? key,
     required this.text,
     required this.press,
@@ -15,6 +15,11 @@ class RoundedButton extends StatelessWidget {
     this.textColor = Colors.white,
   }) : super(key: key);
 
+  @override
+  State<RoundedTextButton> createState() => _RoundedTextButtonState();
+}
+
+class _RoundedTextButtonState extends State<RoundedTextButton> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery
@@ -33,15 +38,15 @@ class RoundedButton extends StatelessWidget {
   Widget newElevatedButton() {
     return ElevatedButton(
       child: Text(
-        text,
-        style: TextStyle(color: textColor),
+        widget.text,
+        style: TextStyle(color: widget.textColor),
       ),
-      onPressed: press, // add on pressed function
+      onPressed: widget.press, // add on pressed function
       style: ElevatedButton.styleFrom(
-          primary: color,
+          primary: widget.color,
           padding: EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           textStyle: TextStyle(
-              color: textColor, fontSize: 14, fontWeight: FontWeight.w500)),
+              color: widget.textColor, fontSize: 14, fontWeight: FontWeight.w500)),
     );
   }
 }

@@ -1,8 +1,7 @@
 import 'package:bicycle_trip_planner/widgets/Login/UserProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
 import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
@@ -23,7 +22,6 @@ class _WelcomeScreen extends State<WelcomeScreen> {
   final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
     Size size = MediaQuery.of(context).size; // Gives height and width of screen
     return  MultiProvider(
       providers: [
@@ -42,7 +40,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
           _auth.currentUser != null ?
           UserProfile()
               : Scaffold(
-            body: Background(
+            body: SafeArea(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -51,7 +49,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: size.height * 0.03),
-                  RoundedButton(
+                  RoundedTextButton(
                       key: Key("Login"),
                       text: "Login",
                       press: () async {
@@ -69,7 +67,7 @@ class _WelcomeScreen extends State<WelcomeScreen> {
                       }
                   ),
                   SizedBox(height: size.height * 0.05),
-                  RoundedButton(
+                  RoundedTextButton(
                     key: Key("SignUp"),
                     text: "Sign Up",
                     press: () async {

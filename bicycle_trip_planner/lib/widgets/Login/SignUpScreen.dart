@@ -1,6 +1,6 @@
+import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -24,7 +24,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: Background(
+        body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -68,13 +68,13 @@ class _SignUpScreen extends State<SignUpScreen> {
                     confirmPassword = value;
                   }
               ),
-              RoundedButton(
+              RoundedTextButton(
                 key: Key("signUp"),
                 text: "Sign Up",
                 press: () async {
                   try {
                     if (password==confirmPassword){
-                      final newUser = await _auth.createUserWithEmailAndPassword(
+                      await _auth.createUserWithEmailAndPassword(
                         email: email,
                         password: password,
                       );
@@ -88,6 +88,32 @@ class _SignUpScreen extends State<SignUpScreen> {
                     ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                   }
                 },
+              ),Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Already have an Account? ",
+                    style: TextStyle(color: ThemeStyle.secondaryFontColor),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) {
+                          return LoginScreen();
+                        }),
+                      );
+                    },
+                    child: Text(
+                      " Login",
+                      style: TextStyle(
+                        color: ThemeStyle.secondaryFontColor,
+                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ],
               ),
               BackButton(
                 key: Key("back"),

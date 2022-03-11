@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/BackgroundContainer.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/rounded_button.dart';
+import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
 import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'components/ErrorSnackbar.dart';
@@ -20,7 +19,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: Background(
+        body: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -55,7 +54,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                   email = value;
                 },
               ),
-              RoundedButton(
+              RoundedTextButton(
                 key: Key("reset"),
                 text: "Send email to reset password",
                 press: resetPassword, // to be modified...
