@@ -53,14 +53,9 @@ class StationManager {
     return _stations[stationIndex];
   }
 
-  Station? getStationById(int stationId) {
-    Station? output;
-    for (var station in _stations) {
-      if(station.id == stationId){
-        output = station;
-      }
-    }
-    return output;
+  Station getStationById(int stationId) {
+    return _stations.firstWhere((station) => station.id == stationId,
+        orElse: Station.stationNotFound);
   }
 
   Station getStationByName(String stationName) {
