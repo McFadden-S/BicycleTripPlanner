@@ -1,4 +1,4 @@
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/login': (context) => const WelcomeScreen(),
+        '/login': (context) => const AuthenticationScreen(),
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),

@@ -10,14 +10,14 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/Login/GoogleSignIn.dart';
 import '../../bloc/application_bloc.dart';
 
-class WelcomeScreen extends StatefulWidget {
-  const WelcomeScreen({Key? key}) : super(key: key);
+class AuthenticationScreen extends StatefulWidget {
+  const AuthenticationScreen({Key? key}) : super(key: key);
 
   @override
   _WelcomeScreen createState() => _WelcomeScreen();
 }
 
-class _WelcomeScreen extends State<WelcomeScreen> {
+class _WelcomeScreen extends State<AuthenticationScreen> {
   // final databaseManager = DatabaseManager();
   final _auth = FirebaseAuth.instance;
   @override
