@@ -4,16 +4,14 @@ class Pathway{
 
   Stop _start = Stop(); 
   Stop _destination = Stop();
+  bool _hasFirstWaypoint = false;
   Stop _firstWaypoint = Stop();
   final List<Stop> _stops = [];
   int size = 0;
 
   // NOTE: TODO ADD EDGE CASE (Pathway MUST have 2 stops at least)
   Pathway() {
-    _stops.add(_start);
-    _stops.add(_destination);
-    size = 2;
-    _updatePointers();
+    initial();
   }
 
   //********** Getters **********
@@ -24,34 +22,17 @@ class Pathway{
 
   Stop getStop(int id){
     if(id == -1){return Stop();}
-    if(id == _firstWaypoint.getUID()) {return _firstWaypoint;}
     return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
   }
 
-  List<Stop> getWaypoints() => _stops.isNotEmpty ? _stops.sublist(1, size - 1) : [];
-
-  List<Stop> getWaypointsWithFirstWaypoint() {
-    if (_stops.isNotEmpty) {
-      if (_firstWaypoint.getStop() != "") {
-        return [_firstWaypoint] + getWaypoints();
-      }
-      else {
-        return getWaypoints();
-      }
-    }
-    else {
-      return [];
-    }
-  }
+  List<Stop> getWaypoints() =>
+      _stops.isEmpty
+          ? []
+          : _stops.sublist(1, size - 1);
 
   Stop getFirstWaypoint() => _firstWaypoint;
 
   List<Stop> getStops() => _stops; 
-
-  // Stop getStop(int id) => (id == -1)
-  //     ? Stop()
-  //     : _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop());
-
 
   //********** Private: Update Pointers **********
 
@@ -66,12 +47,19 @@ class Pathway{
 
   //********** Public **********
 
+  void setHasFirstWaypoint(bool value) {
+    _hasFirstWaypoint = value;
+  }
+
+  void toggleHasFirstWaypoint() {
+    _hasFirstWaypoint = !_hasFirstWaypoint;
+  }
+
   void addStop(Stop stop) {
     _stops.add(stop);
     size = size + 1;
     _updateDestination();
   }
-
 
   void addStart(Stop stop){
     _stops.insert(0, stop);
@@ -81,17 +69,23 @@ class Pathway{
 
   void addFirstWayPoint(Stop stop){
     _firstWaypoint = stop;
-    //_stops.insert(1, stop);
-    //size = size + 1;
+    _stops.insert(1, stop);
+    size = size + 1;
   }
 
   void removeFirstWayPoint() {
     _firstWaypoint = Stop();
-    //size = size - 1;
+    _stops.removeAt(1);
+    size = size - 1;
   }
 
   void clearStart() {
     _start = Stop();
+  }
+
+  void clearFirstWaypoint() {
+    _hasFirstWaypoint = false;
+    _firstWaypoint = Stop();
   }
 
   void clearDestination() {
@@ -100,13 +94,11 @@ class Pathway{
 
   void removeStop(int id) {
     Stop stop = getStop(id);
-    if (_firstWaypoint.getUID() == id) {
-      removeFirstWayPoint();
+    if (stop == _firstWaypoint) {
+      clearFirstWaypoint();
     }
-    else {
-      _stops.remove(stop);
-      size = size - 1;
-    }
+    _stops.remove(stop);
+    size = size - 1;
     _updatePointers();
   }
 
@@ -147,5 +139,12 @@ class Pathway{
   void changeStop(int id, String newStop) {
     Stop stop = getStop(id);
     stop.setStop(newStop);
+  }
+
+  void initial() {
+    _stops.add(_start);
+    _stops.add(_destination);
+    size = 2;
+    _updatePointers();
   }
 }

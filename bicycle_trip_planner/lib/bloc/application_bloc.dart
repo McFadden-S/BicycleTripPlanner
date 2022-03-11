@@ -292,14 +292,13 @@ class ApplicationBloc with ChangeNotifier {
     });
   }
 
-  Future<void> setNavigating(bool value) async {
-    _isNavigating = value;
+  Future<void> startNavigation() async {
     await RouteManager().setDestinationLocation();
-    if (value && RouteManager().getStartFromCurrentLocation()) {
+    if (RouteManager().getStartFromCurrentLocation()) {
       await setInitialPickUpDropOffStations();
       updateDirectionsPeriodically(Duration(seconds: 20));
     }
-    else if(value) {
+    else {
       if (RouteManager().getWalkToFirstWaypoint()) {
         await setInitialPickUpDropOffStations();
         String firstStop = RouteManager().getStart().getStop();
@@ -317,6 +316,14 @@ class ApplicationBloc with ChangeNotifier {
     }
   }
 
+  Future<void> setNavigating(bool value) async {
+    _isNavigating = value;
+    if (_isNavigating) {
+      startNavigation();
+    }
+
+  }
+
   Future<void> _changeRouteStartToCurrentLocation() async {
     await fetchCurrentLocation();
     RouteManager().changeStart(_currentLocation.name);
@@ -326,7 +333,7 @@ class ApplicationBloc with ChangeNotifier {
     await _changeRouteStartToCurrentLocation();
     await updateRoute(
         RouteManager().getStart().getStop(),
-        RouteManager().getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getStop()).toList(),
+        RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
     );
   }
@@ -336,7 +343,7 @@ class ApplicationBloc with ChangeNotifier {
     await walkToFirstLocation(
         RouteManager().getStart().getStop(),
         RouteManager().getFirstWaypoint().getStop(),
-        RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+        RouteManager().getWaypoints().sublist(1).map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
     );
   }
@@ -436,8 +443,8 @@ class ApplicationBloc with ChangeNotifier {
 
   //remove waypoint once passed by it, return true if we reached the destination
   Future<bool> checkWaypointPassed() async {
-    if (RouteManager().getWaypointsWithFirstWaypoint().isNotEmpty && isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypointsWithFirstWaypoint().first.getStop())).getLatLng())) {
-      RouteManager().removeStop(RouteManager().getWaypointsWithFirstWaypoint().first.getUID());
+    if (RouteManager().getWaypoints().isNotEmpty && isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypoints().first.getStop())).getLatLng())) {
+      RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
     }
     return (RouteManager().getStops().length <= 1);
     }

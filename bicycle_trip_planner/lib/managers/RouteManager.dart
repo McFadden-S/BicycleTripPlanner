@@ -11,7 +11,7 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-  final _placesService = PlacesService();
+  final PlacesService _placesService = PlacesService();
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
@@ -81,6 +81,7 @@ class RouteManager {
 
   void toggleWalkToFirstWaypoint(){
     _walkToFirstWaypoint = !_walkToFirstWaypoint;
+    _pathway.toggleHasFirstWaypoint();
     _changed = true;
   }
 
@@ -102,27 +103,19 @@ class RouteManager {
     return _optimised;
   }
 
-  //String getStart(){return pathway.getStart().getText();}
   Stop getStart() => _pathway.getStart();
 
-  //String getDestination() => pathway.getDestination().getText();
   Stop getDestination() => _pathway.getDestination();
 
   Location getDestinationLocation() => _destination;
 
   List<Stop> getWaypoints() => _pathway.getWaypoints();
 
-  Stop getFirstWaypoint() {
-    return _pathway.getFirstWaypoint();
-  }
+  Stop getFirstWaypoint() => _pathway.getFirstWaypoint();
 
-  List<Stop> getWaypointsWithFirstWaypoint() {
-    return _pathway.getWaypointsWithFirstWaypoint();
-  }
+  //List<Stop> getWaypointsWithFirstWaypoint() => _pathway.getWaypointsWithFirstWaypoint();
 
-  List<Stop> getStops() {
-    return _pathway.getStops();
-  }
+  List<Stop> getStops() => _pathway.getStops();
 
   Stop getStop(int id) => _pathway.getStop(id);
 
@@ -222,6 +215,7 @@ class RouteManager {
   }
 
   void clearFirstWaypoint() {
+    _pathway.setHasFirstWaypoint(false);
     _pathway.removeFirstWayPoint();
     _changed = true;
   }
@@ -233,7 +227,7 @@ class RouteManager {
 
   void removeWaypoints(){
     List<int> uids =
-      _pathway.getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getUID()).toList();
+      _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
     for(int id in uids){
       removeStop(id);
     }
@@ -256,8 +250,8 @@ class RouteManager {
     clearRouteMarkers();
 
     removeWaypoints();
-    clearFirstWaypoint();
     clearStart();
     clearDestination();
+    _pathway.initial();
   }
 }
