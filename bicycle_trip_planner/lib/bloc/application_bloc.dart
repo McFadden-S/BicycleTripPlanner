@@ -268,7 +268,7 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Navigation Management **********
 
-  //TODO refactor whole navigation management block
+  //TODO refactor whole navigation management block -- move to new file
 
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {
@@ -310,6 +310,7 @@ class ApplicationBloc with ChangeNotifier {
         String firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         await _updateRoute();
+        await setInitialPickUpDropOffStations();
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
     }
@@ -324,7 +325,6 @@ class ApplicationBloc with ChangeNotifier {
     await _changeRouteStartToCurrentLocation();
     await updateRoute(
         RouteManager().getStart().getStop(),
-        RouteManager().getDestination().getStop(),
         RouteManager().getWaypointsWithFirstWaypoint().map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
     );
@@ -334,7 +334,6 @@ class ApplicationBloc with ChangeNotifier {
     await _changeRouteStartToCurrentLocation();
     await walkToFirstLocation(
         RouteManager().getStart().getStop(),
-        RouteManager().getDestination().getStop(),
         RouteManager().getFirstWaypoint().getStop(),
         RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
@@ -345,9 +344,9 @@ class ApplicationBloc with ChangeNotifier {
     return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 30);
   }
 
-  walkToFirstLocation(String origin, String destination, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
+  walkToFirstLocation(String origin, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Location firstLocation = (await _placesService.getPlaceFromAddress(first)).geometry.location;
-    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
+    Location endLocation = RouteManager().getDestinationLocation();
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
@@ -355,10 +354,9 @@ class ApplicationBloc with ChangeNotifier {
   }
 
 //TODO get rid of parameters since they are from ROUTEMANAGER()
-  updateRoute(String origin, String destination, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
+  updateRoute(String origin, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
     Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
-    //TODO store end location as Location in RouteManager
-    Location endLocation = (await _placesService.getPlaceFromAddress(destination)).geometry.location;
+    Location endLocation = RouteManager().getDestinationLocation();
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
@@ -400,10 +398,10 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void updatePickUpDropOffStations(Location startLocation, Location endLocation, int groupSize) {
-    if ((!StationManager().isPickUpStationSet() || !StationManager().checkPickUpStationHasBikes(groupSize)) && !StationManager().passedPickUpStation()) {
+    if (!StationManager().checkPickUpStationHasBikes(groupSize) && !StationManager().passedPickUpStation()) {
       setNewPickUpStation(startLocation, groupSize);
     }
-    if ((!StationManager().isDropOffStationSet() || !StationManager().checkDropOffStationHasEmptyDocks(groupSize)) && !StationManager().passedDropOffStation()) {
+    if (!StationManager().checkDropOffStationHasEmptyDocks(groupSize) && !StationManager().passedDropOffStation()) {
       setNewDropOffStation(endLocation, groupSize);
     }
   }

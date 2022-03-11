@@ -2,6 +2,8 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
+
 
 class RouteManager {
   //********** Fields **********
@@ -10,7 +12,6 @@ class RouteManager {
   final MarkerManager _markerManager = MarkerManager();
   final Pathway _pathway = Pathway();
 
-  //TODO implement toggles in Route Widget
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
 
@@ -22,6 +23,8 @@ class RouteManager {
 
   bool _changed = false;
   bool _optimised = true;
+
+  Location _destination = Location(lng: -1, lat: -1);
 
   //********** Singleton **********
 
@@ -102,6 +105,8 @@ class RouteManager {
 
   //String getDestination() => pathway.getDestination().getText();
   Stop getDestination() => _pathway.getDestination();
+
+  Location getDestinationLocation() => _destination;
 
   List<Stop> getWaypoints() => _pathway.getWaypoints();
 
@@ -200,6 +205,7 @@ class RouteManager {
 
   void clearDestination(){
     _pathway.clearDestination();
+    _destination = Location(lng: -1, lat: -1);
     _changed = true;
   }
 
