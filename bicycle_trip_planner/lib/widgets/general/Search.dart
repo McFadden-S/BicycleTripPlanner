@@ -33,7 +33,7 @@ class _SearchState extends State<Search> {
     isSearching = false;
     FocusScope.of(context).requestFocus(new FocusNode());
   }
-  
+
    @override
   Widget build(BuildContext context) {
 
