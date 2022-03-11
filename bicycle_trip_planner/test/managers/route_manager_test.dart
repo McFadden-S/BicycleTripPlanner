@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
@@ -36,8 +37,8 @@ void main(){
   });
 
   test('ensure that start is changed when requested', (){
-    routeManager.changeStart("Bush House");
-    expect(routeManager.getStart().getStop(), "Bush House");
+    routeManager.changeStart(const Place.placeNotFound());
+    expect(routeManager.getStart().getStop(), const Place.placeNotFound());
     expect(routeManager.ifChanged(), true);
     expect(routeManager.ifStartSet(), true);
   });
@@ -52,8 +53,8 @@ void main(){
   });
 
   test('ensure that destination is changed when requested', (){
-    routeManager.changeDestination("Bush House");
-    expect(routeManager.getDestination().getStop(), "Bush House");
+    routeManager.changeDestination(const Place.placeNotFound());
+    expect(routeManager.getDestination().getStop(), const Place.placeNotFound());
     expect(routeManager.ifChanged(), true);
     expect(routeManager.ifDestinationSet(), true);
   });
@@ -68,14 +69,14 @@ void main(){
 
   test('ensure that can add waypoint when requested', (){
     expect(routeManager.getWaypoints().length, 0);
-    routeManager.addWaypoint("Bush House");
+    routeManager.addWaypoint(const Place.placeNotFound());
     expect(routeManager.getWaypoints().length, 1);
     expect(routeManager.ifWaypointsSet(), true);
   });
 
   test('ensure that number of waypoints do not changed when existing id is changed', (){
     expect(routeManager.getWaypoints().length, 1);
-    routeManager.changeWaypoint(1, "Strand");
+    routeManager.changeWaypoint(1, const Place.placeNotFound());
     expect(routeManager.getWaypoints().length, 1);
   });
 
@@ -91,7 +92,7 @@ void main(){
   });
 
   test('ensure can clear waypoints when requested', (){
-    routeManager.addWaypoint("Bush House");
+    routeManager.addWaypoint(const Place.placeNotFound());
     expect(routeManager.getWaypoints().length, 1);
     routeManager.removeWaypoints();
     expect(routeManager.getWaypoints().length, 0);

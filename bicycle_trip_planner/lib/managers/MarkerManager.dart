@@ -15,9 +15,6 @@ class MarkerManager {
   final Set<Marker> _markers = <Marker>{};
 
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
-  int _markerIdCounter = 1;
-  final String _startMarkerID = "Start";
-  final String _finalDestinationMarkerID = "Final Destination";
   BitmapDescriptor? userMarkerIcon;
 
   //********** Singleton **********
