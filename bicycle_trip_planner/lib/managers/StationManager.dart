@@ -53,6 +53,11 @@ class StationManager {
     return _stations[stationIndex];
   }
 
+  Station getStationById(int stationId) {
+    return _stations.firstWhere((station) => station.id == stationId,
+        orElse: Station.stationNotFound);
+  }
+
   Station getStationByName(String stationName) {
     return _stations.singleWhere((station) => station.name == stationName,
         orElse: Station.stationNotFound);
@@ -121,4 +126,5 @@ class StationManager {
     _stations.sort((stationA, stationB) =>
         stationA.distanceTo.compareTo(stationB.distanceTo));
   }
+
 }

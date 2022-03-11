@@ -9,7 +9,6 @@ import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -259,6 +258,4 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager.clear();
     _directionManager.clear();
   }
-
-
 }

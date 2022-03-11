@@ -4,11 +4,12 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../managers/DatabaseManager.dart';
 
 class StationCard extends StatefulWidget {
   final int index;
@@ -39,7 +40,7 @@ class _StationCardState extends State<StationCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        stationClicked(applicationBloc, stationManager.getStationByIndex(widget.index));
+        stationClicked(applicationBloc, stationManager.getStationByIndex(widget.index), context);
       },
       child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.85,
@@ -109,7 +110,30 @@ class _StationCardState extends State<StationCard> {
   }
 }
 
-void stationClicked(ApplicationBloc appBloc, Station station) {
+Future<void> stationClicked(ApplicationBloc appBloc, Station station, context) async {
   appBloc.searchSelectedStation(station);
   appBloc.setSelectedScreen('routePlanning');
+
+  //TODO: The code below is for testing purposes and to be deleted later
+  final databaseManager = DatabaseManager();
+  if(await databaseManager.addToFavouriteStations(station.id)) {
+  }else{
+    showAlertDialog(BuildContext context) {
+
+      // set up the AlertDialog
+      AlertDialog alert = AlertDialog(
+        title: Text("No user"),
+        content: Text("Station won't be saved unless user is logged in!"),
+      );
+
+      // show the dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+    showAlertDialog(context);
+  }
 }

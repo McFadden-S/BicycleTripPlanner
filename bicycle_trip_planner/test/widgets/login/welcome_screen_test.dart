@@ -1,4 +1,4 @@
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,12 +13,12 @@ void main() {
   });
 
   testWidgets("Welcome screen has a login button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: WelcomeScreen()));
+    await pumpWidget(tester, MaterialApp(home: AuthenticationScreen()));
     expect(find.byKey(ValueKey("Login")), findsOneWidget);
   });
 
   testWidgets("Welcome screen has a signup button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: WelcomeScreen()));
+    await pumpWidget(tester, MaterialApp(home: AuthenticationScreen()));
     expect(find.byKey(ValueKey("SignUp")), findsOneWidget);
   });
 
@@ -28,7 +28,7 @@ void main() {
   // });
 
   testWidgets("Welcome screen has a google sign in button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: WelcomeScreen()));
+    await pumpWidget(tester, MaterialApp(home: AuthenticationScreen()));
     expect(find.byKey(ValueKey("googleLogin")), findsOneWidget);
   });
 }

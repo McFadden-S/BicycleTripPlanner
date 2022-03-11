@@ -1,10 +1,6 @@
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../bloc/application_bloc.dart';
-import '../../constants.dart';
 import '../../managers/DatabaseManager.dart';
 
 class UserProfile extends StatefulWidget {
@@ -16,7 +12,7 @@ class UserProfile extends StatefulWidget {
 }
 
 class _StationCardState extends State<UserProfile> {
-  // final databaseManager = DatabaseManager();
+  final databaseManager = DatabaseManager();
   final _auth = FirebaseAuth.instance;
 
   @override
@@ -24,6 +20,7 @@ class _StationCardState extends State<UserProfile> {
     return Scaffold(
       body: Center(
         child: Wrap(
+          direction: Axis.vertical,
           children: [
             Text(_auth.currentUser?.email ?? "NO EMAIL"),
             ElevatedButton(
@@ -31,7 +28,7 @@ class _StationCardState extends State<UserProfile> {
                   await _auth.signOut();
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) {
-                        return WelcomeScreen();
+                        return AuthenticationScreen();
                       })
                   );
                 },

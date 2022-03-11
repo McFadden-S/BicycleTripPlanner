@@ -34,9 +34,6 @@ class ErrorSnackBar {
     } else if (error.contains("password-reset-sent")) {
       error = "Email sent to reset password";
     }
-    // } else {
-    //   error = "Error. Please try again";
-    // }
     return error;
   }
 
