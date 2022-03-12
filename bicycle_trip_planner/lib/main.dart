@@ -12,6 +12,7 @@ import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/Error.dart';
 
 Future<void> main() async {
   ThemeStyle();
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
+        '/error' : (context) => Error(),
       },
       theme: ThemeData(
         brightness: Brightness.light,
