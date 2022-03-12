@@ -70,10 +70,13 @@ class LocationManager {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
+        geo.Geolocator.openLocationSettings();
       }
     }
     return grantedPermission;
   }
+
+
 
   Future<double> distanceTo(LatLng pos) async {
     return distanceFromTo(await locate(), pos);
