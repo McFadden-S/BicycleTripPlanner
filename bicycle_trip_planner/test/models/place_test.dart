@@ -6,7 +6,7 @@ import 'package:bicycle_trip_planner/models/place.dart';
 main(){
   final location = Location(lat: 1, lng: -1);
   final geometry = Geometry(location: location);
-  final place = Place(geometry: geometry, name: "Bush House", placeId: "1");
+  final place = Place(geometry: geometry, name: "Bush House", placeId: "1", description: "");
 
   test('ensure geometry is Geometry', (){
     expect(place.geometry.runtimeType, Geometry);
