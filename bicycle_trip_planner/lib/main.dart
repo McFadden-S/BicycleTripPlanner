@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,11 +21,15 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }catch(e){};
+  } catch (e) {}
+  ;
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp())));
+  LocationManager locationManager = LocationManager();
+  await locationManager.requestPermission();
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
