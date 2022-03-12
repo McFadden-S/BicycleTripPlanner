@@ -65,7 +65,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
           markerManager.setUserMarker(pos);
         }));
 
-    locationManager
+    locatorSubscription = locationManager
         .onUserLocationChange()
         .listen((LocationData currentLocation) {
       setState(() {

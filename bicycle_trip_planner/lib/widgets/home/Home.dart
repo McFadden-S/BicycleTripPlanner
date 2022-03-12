@@ -20,16 +20,19 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.mobile || result == ConnectivityResult.wifi) {
-        // I am connected to a mobile/wifi network.
-        Navigator.pop(context);
-      } else {
+      if (result == ConnectivityResult.none) {
         // I am not connected at all
-        Navigator.pushNamed(context, '/error');
-
+          Navigator.pushNamed(context, '/error');
+      } else {
+        // I am connected to a mobile/wifi network
+        // NB: Will pop off the current thing on stack... If
+        // error widget is not on top of stack, error will not be
+        // popped off.
+        if(Navigator.canPop(context)) {
+          Navigator.pop(context);
+        }
       }
     });
-
   }
 
   @override
