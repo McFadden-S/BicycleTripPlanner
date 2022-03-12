@@ -2,7 +2,6 @@ import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
-import 'package:permission_handler/permission_handler.dart' as perm;
 
 class LocationManager {
   //********** Fields **********
@@ -75,8 +74,6 @@ class LocationManager {
     }
     return grantedPermission;
   }
-
-
 
   Future<double> distanceTo(LatLng pos) async {
     return distanceFromTo(await locate(), pos);
