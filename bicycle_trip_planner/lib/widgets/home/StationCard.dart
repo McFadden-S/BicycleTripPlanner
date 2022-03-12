@@ -115,9 +115,9 @@ Future<void> stationClicked(
 
   //TODO: The code below is for testing purposes and to be deleted later
   final databaseManager = DatabaseManager();
-  if (await databaseManager.addToFavouriteStations(station.id)) {
-  } else {
-    showAlertDialog(BuildContext context) {
+  bool successfullyAdded = await databaseManager.addToFavouriteStations(station.id);
+  if (successfullyAdded) {
+  }else {
       // set up the AlertDialog
       AlertDialog alert = AlertDialog(
         title: Text("No user"),
@@ -131,8 +131,5 @@ Future<void> stationClicked(
           return alert;
         },
       );
-    }
-
-    showAlertDialog(context);
   }
 }

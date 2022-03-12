@@ -2,11 +2,13 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../managers/DatabaseManager.dart';
 import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
@@ -87,25 +89,59 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
         child: Column(children: [
-          TextButton(
-            child: Text(
-              'Add Stop(s)',
-              style: TextStyle(
-                fontFamily: 'Outfit',
-                fontSize: 16.0,
-                color: ThemeStyle.primaryTextColor,
+          Wrap(
+            children: [
+              TextButton(
+                child: Text(
+                  'Add Stop(s)',
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 16.0,
+                    color: ThemeStyle.primaryTextColor,
+                  ),
+                ),
+                onPressed: () => {_addStopWidget(applicationBloc)},
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      ThemeStyle.buttonPrimaryColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+                  ),
+                ),
               ),
-            ),
-            onPressed: () => {_addStopWidget(applicationBloc)},
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                  ThemeStyle.buttonPrimaryColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
-              ),
-            ),
+              //TODO: the button below is for testing purposes
+              TextButton(
+              onPressed: () async {
+                final databaseManager = DatabaseManager();
+                bool successfullyAdded = await databaseManager.addToFavouriteRoutes(routeManager.getStart().getStop(),
+                    routeManager.getDestination().getStop(),
+                    routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList());
+                if (successfullyAdded){
+                  print('route added');
+                }else {
+                  // set up the AlertDialog
+                  AlertDialog alert = AlertDialog(
+                    title: Text("Error"),
+                    content: Text(
+                        FirebaseAuth.instance.currentUser == null
+                        ? "User not logged in!"
+                        : "Invalid start/end"
+                    ),
+                  );
+
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }
+              },
+              child: Text("save")),
+            ],
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.2,
