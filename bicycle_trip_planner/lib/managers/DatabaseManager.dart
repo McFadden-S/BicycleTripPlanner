@@ -56,7 +56,6 @@ class DatabaseManager {
      output.add(int.parse(id.value.toString()));
     }
 
-    print("DM favourite stations: ${output.length}");
     return output;
   }
 
