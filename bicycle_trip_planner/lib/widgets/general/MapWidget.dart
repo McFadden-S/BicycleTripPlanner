@@ -9,7 +9,6 @@ import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 
 class MapWidget extends StatefulWidget {
@@ -56,6 +55,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
 
     // Requires permission for the locator to work
     PermissionStatus perm;
+
     locationManager.requestPermission().then((permission) => perm = permission);
 
     locationManager.locationSettings();

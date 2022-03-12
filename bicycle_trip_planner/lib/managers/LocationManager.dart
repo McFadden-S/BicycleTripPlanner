@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+import 'package:permission_handler/permission_handler.dart' as perm;
 
 class LocationManager {
   //********** Fields **********
@@ -31,21 +32,38 @@ class LocationManager {
   Future<PermissionStatus> requestPermission() async {
     PermissionStatus _permissionGranted = await location.hasPermission();
 
-    // returns whether service is enabled or not
-    await checkServiceEnabled();
+    print("check permission");
+    print(await checkPermission());
 
-    // returns true or false based on user accepting or rejecting location services
-    await checkPermission(_permissionGranted);
+    print("check req service");
+    print(await location.requestService());
+
+    print("check service enabled");
+    print(await location.serviceEnabled());
+
+    print(await location.requestPermission());
 
     return _permissionGranted;
   }
 
   Future<bool> checkServiceEnabled() async {
-    print("service check");
-    return await location.serviceEnabled() && await location.requestService();
+    bool _serviceEnabled = true;
+    // Device is on
+    _serviceEnabled = await location.serviceEnabled();
+    if(!_serviceEnabled) {
+      // GPS Device is turned on
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled){
+        _serviceEnabled = false;
+      }
+    }
+    return _serviceEnabled;
   }
 
-  Future<bool> checkPermission(PermissionStatus _permissionGranted) async {
+  // returns true or false based on user accepting or rejecting location services
+  Future<bool> checkPermission() async {
+    PermissionStatus _permissionGranted = await location.hasPermission();
+
     bool grantedPermission = true;
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
