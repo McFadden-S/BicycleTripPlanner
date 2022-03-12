@@ -165,7 +165,7 @@ class DirectionManager {
       distance += route.legs[i].distance;
     }
 
-    _currentDirection = _directions.removeAt(0);
+    _currentDirection = _directions.isNotEmpty ? _directions.removeAt(0) : Steps.stepsNotFound();
 
     setDuration(duration);
     setDistance(distance);

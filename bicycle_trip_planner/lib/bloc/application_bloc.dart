@@ -147,9 +147,7 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Routes **********
 
-  findRoute(Place origin, Place destination,
-      [List<Place> intermediates = const <Place>[],
-        int groupSize = 1]) async {
+  findRoute(Place origin, Place destination, [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
 
     Location startLocation = origin.geometry.location;
     Location endLocation = destination.geometry.location;
@@ -161,10 +159,10 @@ class ApplicationBloc with ChangeNotifier {
 
     List<String> intermediateNames = intermediates.map((place) => place.name).toList();
 
-    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin.name, startStation.name);
-    Rou.Route bikeRoute = await _directionsService.getRoutes(startStation.name,
-        endStation.name, intermediateNames, _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStation.name, destination.name);
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin.name, startStation.place.name);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStation.place.name,
+        endStation.place.name, intermediateNames, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStation.place.name, destination.name);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();

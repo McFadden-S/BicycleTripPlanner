@@ -6,14 +6,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../models/place.dart';
 import '../models/station.dart';
 import '../services/directions_service.dart';
-import '../services/places_service.dart';
 import 'DirectionManager.dart';
 import 'RouteManager.dart';
 import 'StationManager.dart';
 
 class NavigationManager {
 
-  final _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final StationManager _stationManager = StationManager();
   final DirectionManager _directionManager = DirectionManager();
@@ -53,8 +51,8 @@ class NavigationManager {
     String origin = RouteManager().getStart().getStop().name;
     String destination = RouteManager().getDestination().getStop().name;
 
-    String startStationName = await getStationPlaceName(_stationManager.getPickupStation());
-    String endStationName = await getStationPlaceName(_stationManager.getDropOffStation());
+    String startStationName = getStationPlaceName(_stationManager.getPickupStation());
+    String endStationName = getStationPlaceName(_stationManager.getDropOffStation());
 
     Rou.Route startWalkRoute = RouteManager().ifBeginning()
         ? await _directionsService.getWalkingRoutes(origin, startStationName, first, false)
@@ -90,9 +88,7 @@ class NavigationManager {
     return _stationManager.getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
   }
 
-  Future<String> getStationPlaceName(Station station) async {
-    return (await _placesService.getPlaceFromCoordinates(station.lat, station.lng, station.name)).name;
-  }
+  String getStationPlaceName(Station station) => station.place.name;
 
   Future<void> setInitialPickUpDropOffStations() async {
     setNewPickUpStation(RouteManager().getStart().getStop().geometry.location, RouteManager().getGroupSize());
