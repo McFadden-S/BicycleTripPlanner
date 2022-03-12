@@ -1,11 +1,17 @@
+import 'dart:async';
+
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 
 class DatabaseManager {
+  //************Fields************
+
 
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
+  final applicationBloc = ApplicationBloc();
 
   FirebaseDatabase _DBInstance = FirebaseDatabase.instance;
   final _auth = FirebaseAuth.instance;
@@ -41,16 +47,15 @@ class DatabaseManager {
 
   Future<List<int>> getFavouriteStations() async {
     List<int> output = [];
-    List<DataSnapshot> IDs = [];
     var uid = _auth.currentUser?.uid;
 
     DatabaseReference favouriteStations = _DBInstance.ref('users/$uid/favouriteStations');
     await favouriteStations.once().then((value) => {
-    IDs = value.snapshot.children.toList(growable: true)
-    });
-    for (var id in IDs) {
-     output.add(int.parse(id.value.toString()));
+    for (var id in value.snapshot.children.cast()) {
+        output.add(id.value)
     }
+    });
+
     return output;
   }
 

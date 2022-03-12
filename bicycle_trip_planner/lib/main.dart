@@ -1,5 +1,4 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
