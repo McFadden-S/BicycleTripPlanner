@@ -29,19 +29,9 @@ class LocationManager {
   }
 
   Future<PermissionStatus> requestPermission() async {
+    await checkServiceEnabled();
+    await checkPermission();
     PermissionStatus _permissionGranted = await location.hasPermission();
-
-    print("check permission");
-    print(await checkPermission());
-
-    print("check req service");
-    print(await location.requestService());
-
-    print("check service enabled");
-    print(await location.serviceEnabled());
-
-    print(await location.requestPermission());
-
     return _permissionGranted;
   }
 
@@ -49,10 +39,10 @@ class LocationManager {
     bool _serviceEnabled = true;
     // Device is on
     _serviceEnabled = await location.serviceEnabled();
-    if(!_serviceEnabled) {
+    if (!_serviceEnabled) {
       // GPS Device is turned on
       _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled){
+      if (!_serviceEnabled) {
         _serviceEnabled = false;
       }
     }
@@ -61,15 +51,18 @@ class LocationManager {
 
   // returns true or false based on user accepting or rejecting location services
   Future<bool> checkPermission() async {
-    PermissionStatus _permissionGranted = await location.hasPermission();
-
     bool grantedPermission = true;
-    _permissionGranted = await location.hasPermission();
+    PermissionStatus _permissionGranted = await location.hasPermission();
+    print("Has permission");
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
+      print("Request permission");
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
-        geo.Geolocator.openLocationSettings();
+        // TODO: Using geolocator to openLocationSettings causes another
+        // permission dialogue to pop up. Perhaps rely on only one location package
+        //print("Open location settings");
+        //geo.Geolocator.openLocationSettings();
       }
     }
     return grantedPermission;

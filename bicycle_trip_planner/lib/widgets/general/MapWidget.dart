@@ -53,11 +53,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    // Requires permission for the locator to work
-    PermissionStatus perm;
-
-    locationManager.requestPermission().then((permission) => perm = permission);
-
     locationManager.locationSettings();
 
     final applicationBloc =
@@ -93,9 +88,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
       final applicationBloc =
           Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
-    } catch (e) {
-
-    }
+    } catch (e) {}
     ;
 
     if (cameraManager != null) {
