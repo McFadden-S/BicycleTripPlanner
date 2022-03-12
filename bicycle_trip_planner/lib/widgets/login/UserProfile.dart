@@ -13,35 +13,44 @@ class UserProfile extends StatefulWidget {
 }
 
 class _StationCardState extends State<UserProfile> {
-  final databaseManager = DatabaseManager();
+  // final databaseManager = DatabaseManager();
   final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          Text(_auth.currentUser?.email ?? "NO EMAIL"),
-          ElevatedButton(
-              onPressed: () async {
-                await _auth.signOut();
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) {
-                  return AuthenticationScreen();
-                }));
-              },
-              child: Text("Log out")),
-          IconButton(
-              icon: const BackButtonIcon(),
-              color: ThemeStyle.primaryIconColor,
-              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-              onPressed: () {
-                Navigator.of(context, rootNavigator: true).pop(context);
-              }),
-          FavouriteBar(),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_auth.currentUser?.email ?? "NO EMAIL"),
+                ElevatedButton(
+                    onPressed: () async {
+                      await _auth.signOut();
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) {
+                        return AuthenticationScreen();
+                      }));
+                    },
+                    child: Text("Log out")),
+                IconButton(
+                    icon: const BackButtonIcon(),
+                    color: ThemeStyle.primaryIconColor,
+                    tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                    onPressed: () {
+                      Navigator.of(context, rootNavigator: true).pop(context);
+                    }),
+              ],
+            ),
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: FavouriteBar()),
         ],
       ),
+
     );
   }
 }
