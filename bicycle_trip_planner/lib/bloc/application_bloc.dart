@@ -21,6 +21,8 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 
+import '../managers/NavigationManager.dart';
+
 class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
   final _directionsService = DirectionsService();
@@ -295,12 +297,12 @@ class ApplicationBloc with ChangeNotifier {
   Future<void> startNavigation() async {
     await RouteManager().setDestinationLocation();
     if (RouteManager().getStartFromCurrentLocation()) {
-      await setInitialPickUpDropOffStations();
+      await NavigationManager().setInitialPickUpDropOffStations();
       updateDirectionsPeriodically(Duration(seconds: 20));
     }
     else {
       if (RouteManager().getWalkToFirstWaypoint()) {
-        await setInitialPickUpDropOffStations();
+        await NavigationManager().setInitialPickUpDropOffStations();
         String firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         _updateRouteWithWalking();
@@ -310,7 +312,7 @@ class ApplicationBloc with ChangeNotifier {
         String firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         await _updateRoute();
-        await setInitialPickUpDropOffStations();
+        await NavigationManager().setInitialPickUpDropOffStations();
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
     }
@@ -321,7 +323,6 @@ class ApplicationBloc with ChangeNotifier {
     if (_isNavigating) {
       startNavigation();
     }
-
   }
 
   Future<void> _changeRouteStartToCurrentLocation() async {
@@ -331,92 +332,33 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> _updateRoute() async {
     await _changeRouteStartToCurrentLocation();
-    await updateRoute(
+    checkPassedByPickUpDropOffStations();
+    await NavigationManager().updateRoute(
         RouteManager().getStart().getStop(),
         RouteManager().getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
     );
+    notifyListeners();
   }
 
   Future<void> _updateRouteWithWalking() async {
     await _changeRouteStartToCurrentLocation();
-    await walkToFirstLocation(
+    checkPassedByPickUpDropOffStations();
+    await NavigationManager().walkToFirstLocation(
         RouteManager().getStart().getStop(),
         RouteManager().getFirstWaypoint().getStop(),
         RouteManager().getWaypoints().sublist(1).map((waypoint) => waypoint.getStop()).toList(),
         RouteManager().getGroupSize()
     );
+    notifyListeners();
   }
-
+//
   bool isWaypointPassed(LatLng waypoint) {
     return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 30);
   }
 
-  walkToFirstLocation(String origin, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
-    Location firstLocation = (await _placesService.getPlaceFromAddress(first)).geometry.location;
-    Location endLocation = RouteManager().getDestinationLocation();
-
-    updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
-
-    await setPartialRoutes([first], intermediates);
-  }
-
-//TODO get rid of parameters since they are from ROUTEMANAGER()
-  updateRoute(String origin, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
-    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
-    Location endLocation = RouteManager().getDestinationLocation();
-
-    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
-
-    await setPartialRoutes([], intermediates);
-  }
-
-  setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
-    notifyListeners();
-  }
-
-  Future<void> setPartialRoutes([List<String> first = const <String>[] ,List<String> intermediates = const <String>[]]) async {
-    String origin = RouteManager().getStart().getStop();
-    String destination = RouteManager().getDestination().getStop();
-
-    Station startStation = _stationManager.getPickupStation();
-    Station endStation = _stationManager.getDropOffStation();
-
-    String startStationName = await getStationPlaceName(startStation);
-    String endStationName = await getStationPlaceName(endStation);
-
-    passedStation(startStation, RouteManager().setIfBeginning, RouteManager().setIfCycling);
-    passedStation(endStation, RouteManager().setIfCycling, RouteManager().setIfEndWalking);
-
-    Rou.Route startWalkRoute = RouteManager().ifBeginning()
-        ? await _directionsService.getWalkingRoutes(origin, startStationName, first, false)
-        : Rou.Route.routeNotFound();
-    Rou.Route bikeRoute = RouteManager().ifBeginning()
-        ? await _directionsService.getRoutes(startStationName, endStationName, intermediates, RouteManager().ifOptimised())
-        : RouteManager().ifCycling()
-        ? await _directionsService.getRoutes(origin, endStationName, intermediates, RouteManager().ifOptimised())
-        :Rou.Route.routeNotFound();
-    Rou.Route endWalkRoute =
-          RouteManager().ifEndWalking()
-              ? await _directionsService.getWalkingRoutes(origin, destination)
-              : await _directionsService.getWalkingRoutes(endStationName, destination);
-
-    setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
-  }
-
-  void updatePickUpDropOffStations(Location startLocation, Location endLocation, int groupSize) {
-    if (!StationManager().checkPickUpStationHasBikes(groupSize) && !StationManager().passedPickUpStation()) {
-      setNewPickUpStation(startLocation, groupSize);
-    }
-    if (!StationManager().checkDropOffStationHasEmptyDocks(groupSize) && !StationManager().passedDropOffStation()) {
-      setNewDropOffStation(endLocation, groupSize);
-    }
-  }
-
   void passedStation(Station station, void Function(bool) functionA, void Function(bool) functionB) {
-    if (_stationManager.isStationSet(station)
-        && isWaypointPassed(LatLng(station.lat, station.lng))) {
+    if (_stationManager.isStationSet(station) && isWaypointPassed(LatLng(station.lat, station.lng))) {
       _stationManager.passedStation(station);
       _stationManager.clearStation(station);
       functionA(false);
@@ -424,24 +366,14 @@ class ApplicationBloc with ChangeNotifier {
     }
   }
 
-  Station setNewPickUpStation(Location location, [int groupSize = 1]) {
-    return _stationManager.getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
+  void checkPassedByPickUpDropOffStations() {
+    Station startStation = _stationManager.getPickupStation();
+    Station endStation = _stationManager.getDropOffStation();
+    passedStation(startStation, RouteManager().setIfBeginning, RouteManager().setIfCycling);
+    passedStation(endStation, RouteManager().setIfCycling, RouteManager().setIfEndWalking);
   }
 
-  Station setNewDropOffStation(Location location, [int groupSize = 1]) {
-    return _stationManager.getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
-  }
-
-  Future<String> getStationPlaceName(Station station) async {
-    return (await _placesService.getPlaceFromCoordinates(station.lat, station.lng)).name;
-  }
-
-  Future<void> setInitialPickUpDropOffStations() async {
-    setNewPickUpStation((await _placesService.getPlaceFromAddress(RouteManager().getStart().getStop())).geometry.location, RouteManager().getGroupSize());
-    setNewDropOffStation((await _placesService.getPlaceFromAddress(RouteManager().getDestination().getStop())).geometry.location, RouteManager().getGroupSize());
-  }
-
-  //remove waypoint once passed by it, return true if we reached the destination
+   //remove waypoint once passed by it, return true if we reached the destination
   Future<bool> checkWaypointPassed() async {
     if (RouteManager().getWaypoints().isNotEmpty && isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypoints().first.getStop())).getLatLng())) {
       RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
