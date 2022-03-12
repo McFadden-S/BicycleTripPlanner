@@ -9,8 +9,11 @@ class Error extends StatefulWidget {
 class _State extends State<Error> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: const Center(
-      child: const Text("error :("),
+    return Scaffold(
+      body: const Center(
+      child: const Text(
+          "error :("
+      ),
     ),
     );
   }
