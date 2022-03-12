@@ -1,3 +1,5 @@
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,7 +10,6 @@ import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
@@ -20,11 +21,15 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }catch(e){};
+  } catch (e) {}
+  ;
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp())));
+  LocationManager locationManager = LocationManager();
+  await locationManager.requestPermission();
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/login': (context) => const LoginHomeScreen(),
+        '/login': (context) => const AuthenticationScreen(),
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),

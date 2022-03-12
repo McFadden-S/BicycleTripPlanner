@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 
 class Pathway{
@@ -31,6 +32,10 @@ class Pathway{
           : _stops.sublist(1, size - 1);
 
   Stop getFirstWaypoint() => _firstWaypoint;
+
+  Stop getStopByIndex(int index){
+    return _stops[index];
+  }
 
   List<Stop> getStops() => _stops; 
 
@@ -125,18 +130,18 @@ class Pathway{
     _updatePointers();
   }
 
-  void changeStart(String start) {
+  void changeStart(Place start) {
     Stop startStop = getStart();
     startStop.setStop(start);
     _updateStart();
   }
 
-  void changeDestination(String destination) {
+  void changeDestination(Place destination) {
     Stop destinationStop = getDestination();
     destinationStop.setStop(destination);
   }
 
-  void changeStop(int id, String newStop) {
+  void changeStop(int id, Place newStop) {
     Stop stop = getStop(id);
     stop.setStop(newStop);
   }

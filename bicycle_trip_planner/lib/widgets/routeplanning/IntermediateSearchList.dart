@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
   const IntermediateSearchList({
@@ -19,7 +20,7 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers =
-      <TextEditingController>[];
+  <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
 
@@ -31,30 +32,44 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     setState(() {
       TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
-      Stop waypoint = routeManager.addWaypoint("");
 
-      stopsList.add(ListTile(
+      Stop waypoint = routeManager.addWaypoint(const Place.placeNotFound());
+      
+      stopsList.add(
+          ListTile(
+            key: Key("Stop ${stopsList.length+1}"),
           title: Search(
               labelTextIn: "Stop",
               searchController: searchController,
               uid: waypoint.getUID()),
-          trailing: IconButton(
-              color: ThemeStyle.secondaryIconColor,
-              key: Key("Remove ${intermediateSearchControllers.length}"),
-              onPressed: () {
-                setState(() {
-                  int indexPressed =
-                      intermediateSearchControllers.indexOf(searchController);
-                  applicationBloc.clearLocationMarker(waypoint.getUID());
-                  applicationBloc.clearSelectedLocation(waypoint.getUID());
-                  stopsList.removeAt(indexPressed);
-                  intermediateSearchControllers.removeAt(indexPressed);
-                });
-              },
-              icon: Icon(
-                Icons.remove_circle_outline,
-                color: ThemeStyle.secondaryIconColor,
-              ))));
+              trailing:
+              Wrap(
+                  spacing: 12,
+                  children: <Widget> [
+                    IconButton(
+                        color: ThemeStyle.secondaryIconColor,
+                        key: Key("Remove ${intermediateSearchControllers.length}"),
+                        onPressed: (){
+                          setState(() {
+                            int indexPressed = intermediateSearchControllers.indexOf(searchController);
+                            applicationBloc.clearLocationMarker(waypoint.getUID());
+                            applicationBloc.clearSelectedLocation(waypoint.getUID());
+                            stopsList.removeAt(indexPressed);
+                            intermediateSearchControllers.removeAt(indexPressed);
+                          });
+                        },
+                        icon: Icon(
+                            Icons.remove_circle_outline,
+                            color: ThemeStyle.secondaryIconColor
+                        )
+                    ),
+                    Icon(
+                      Icons.drag_handle,
+                      color: ThemeStyle.secondaryIconColor,
+                    ),
+                  ])
+          )
+      );
 
       isShowingIntermediate = true;
     });
@@ -67,7 +82,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -98,20 +113,29 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               fadeDuration: const Duration(milliseconds: 300),
               sizeDuration: const Duration(milliseconds: 300),
               child: isShowingIntermediate && stopsList.isNotEmpty
-                  ? ListView(
-                      shrinkWrap: true,
-                      children: stopsList.toList(growable: true),
-                    )
+                  ? ReorderableListView(
+                shrinkWrap: true,
+                children: stopsList.toList(growable: true),
+                onReorder: (oldIndex, newIndex) => setState(() {
+                  final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+
+                  final stop = stopsList.removeAt(oldIndex);
+                  stopsList.insert(index, stop);
+
+                  routeManager.swapStops(routeManager.getStopByIndex(oldIndex+1).getUID(), routeManager.getStopByIndex(newIndex+1).getUID());
+
+                }),
+              )
                   : SizedBox.shrink(),
             ),
           ),
           stopsList.isNotEmpty && isShowingIntermediate
               ? Icon(Icons.keyboard_arrow_up,
-                  color: ThemeStyle.secondaryIconColor)
+              color: ThemeStyle.secondaryIconColor)
               : stopsList.isNotEmpty
-                  ? Icon(Icons.keyboard_arrow_down,
-                      color: ThemeStyle.secondaryIconColor)
-                  : SizedBox.shrink(),
+              ? Icon(Icons.keyboard_arrow_down,
+              color: ThemeStyle.secondaryIconColor)
+              : SizedBox.shrink(),
         ]));
   }
 }

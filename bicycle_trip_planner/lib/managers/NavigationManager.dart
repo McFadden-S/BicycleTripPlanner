@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/place.dart';
 import '../models/station.dart';
 import '../services/directions_service.dart';
 import '../services/places_service.dart';
@@ -25,23 +26,23 @@ class NavigationManager {
 
   NavigationManager._internal();
 
-  walkToFirstLocation(String origin, String first, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
-    Location firstLocation = (await _placesService.getPlaceFromAddress(first)).geometry.location;
+  walkToFirstLocation(Place origin, Place first, [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    Location firstLocation = first.geometry.location;
     Location endLocation = RouteManager().getDestinationLocation();
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
-    await setPartialRoutes([first], intermediates);
+    await setPartialRoutes([first.name], (intermediates.map((intermediate) => intermediate.name)).toList());
   }
 
 //TODO get rid of parameters since they are from ROUTEMANAGER()
-  updateRoute(String origin, [List<String> intermediates = const <String>[], int groupSize = 1]) async {
-    Location startLocation = (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+  updateRoute(Place origin, [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    Location startLocation = origin.geometry.location;
     Location endLocation = RouteManager().getDestinationLocation();
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
-    await setPartialRoutes([], intermediates);
+    await setPartialRoutes([], (intermediates.map((intermediate) => intermediate.name)).toList());
   }
 
   setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
@@ -49,8 +50,8 @@ class NavigationManager {
   }
 
   Future<void> setPartialRoutes([List<String> first = const <String>[], List<String> intermediates = const <String>[]]) async {
-    String origin = RouteManager().getStart().getStop();
-    String destination = RouteManager().getDestination().getStop();
+    String origin = RouteManager().getStart().getStop().name;
+    String destination = RouteManager().getDestination().getStop().name;
 
     String startStationName = await getStationPlaceName(_stationManager.getPickupStation());
     String endStationName = await getStationPlaceName(_stationManager.getDropOffStation());
@@ -90,16 +91,12 @@ class NavigationManager {
   }
 
   Future<String> getStationPlaceName(Station station) async {
-    return (await _placesService.getPlaceFromCoordinates(station.lat, station.lng)).name;
+    return (await _placesService.getPlaceFromCoordinates(station.lat, station.lng, station.name)).name;
   }
 
   Future<void> setInitialPickUpDropOffStations() async {
-    setNewPickUpStation((await _placesService.getPlaceFromAddress(
-        RouteManager().getStart().getStop())).geometry.location,
-        RouteManager().getGroupSize());
-    setNewDropOffStation((await _placesService.getPlaceFromAddress(
-        RouteManager().getDestination().getStop())).geometry.location,
-        RouteManager().getGroupSize());
+    setNewPickUpStation(RouteManager().getStart().getStop().geometry.location, RouteManager().getGroupSize());
+    setNewDropOffStation(RouteManager().getDestination().getStop().geometry.location, RouteManager().getGroupSize());
   }
 
 }

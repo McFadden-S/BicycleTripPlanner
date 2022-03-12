@@ -50,64 +50,13 @@ class ApplicationBloc with ChangeNotifier {
   late Timer _stationTimer;
   late Place _currentLocation;
 
+
   ApplicationBloc() {
     fetchCurrentLocation();
-    updateStationsPeriodically(Duration(seconds: 30));
+    updateStationsPeriodically(const Duration(seconds: 30));
   }
 
-  cancelStationTimer() {
-    _stationTimer.cancel();
-  }
-
-  updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) {
-      updateStations();
-      filterStationMarkers();
-      updateStationMarkers();
-    });
-  }
-
-  setupStations() async {
-    List<Station> stations = await _stationsService.getStations();
-    _stationManager.setStations(stations);
-    _markerManager.setStationMarkers(stations, this);
-
-    updateStations();
-    filterStationMarkers();
-    updateStationMarkers();
-    notifyListeners();
-  }
-
-  // fetchCurrentLocation() async {
-  //   LatLng latLng = await _locationManager.locate();
-  //   _currentLocation = await _placesService.getPlaceFromCoordinates(latLng.latitude, latLng.longitude);
-  // }
-
-  updateStations() async {
-    await _stationManager.setStations(await _stationsService.getStations());
-    notifyListeners();
-  }
-
-  updateStationMarkers() {
-    // Does not update markers during navigation
-    if (_directionManager.ifNavigating()) {
-      return;
-    }
-    List<Station> newStations =
-        _stationManager.getDeadStationsWhichNowHaveBikes();
-    _markerManager.setStationMarkers(newStations, this);
-    List<Station> deadStations = _stationManager.getStationsWithNoBikes();
-    _markerManager.clearStationMarkers(deadStations);
-    // Sets the new dead stations AFTER checking for previous dead stations that now have bikes
-    _stationManager.setDeadStations(deadStations);
-
-    notifyListeners();
-  }
-
-  filterStationMarkers() async{
-    List<Station> notNearbyStations = await _stationManager.getFarStations();
-    _markerManager.clearStationMarkers(notNearbyStations);
-  }
+  // ********** Search **********
 
   bool ifSearchResult() {
     return searchResults.isNotEmpty;
@@ -115,8 +64,7 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
-    searchResults.insert(
-        0,
+    searchResults.insert(0,
         PlaceSearch(
             description: "My current location",
             placeId: _currentLocation.placeId));
@@ -125,8 +73,7 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
-    searchResults.insert(
-        0,
+    searchResults.insert(0,
         PlaceSearch(
             description: "My current location",
             placeId: _currentLocation.placeId));
@@ -137,56 +84,48 @@ class ApplicationBloc with ChangeNotifier {
     // Do not set new location marker. Use the station marker
     viewStationMarker(station, _routeManager.getStart().getUID());
 
-    // TODO: Currently will always set station as a destination
-    // TODO: Will break if search results can't find the right place
-    // Use the google maps location name for stations (Santander Cycles: [station name])
-    await searchPlaces("Santander Cycles: ${station.name}");
-    setSelectedLocation(
-        searchResults[1].description, _routeManager.getStart().getUID());
+    if(station.place == const Place.placeNotFound()){
+      Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+
+    setSelectedLocation(station.place, _routeManager.getStart().getUID());
+
     notifyListeners();
   }
 
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     _currentLocation = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude);
+        latLng.latitude, latLng.longitude, "Current Location");
     notifyListeners();
   }
 
   setSelectedCurrentLocation() async {
-    LatLng latLng = await _locationManager.locate();
-    Place place = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude);
+    await fetchCurrentLocation();
 
     // Currently will always set station as a start
-    setLocationMarker(place.placeId, _routeManager.getStart().getUID());
-    setSelectedLocation(place.name, _routeManager.getStart().getUID());
+    setLocationMarker(_currentLocation, _routeManager.getStart().getUID());
+    setSelectedLocation(_currentLocation, _routeManager.getStart().getUID());
 
     notifyListeners();
   }
 
-  viewStationMarker(Station station, [int uid = -1]) {
-    // Do this in case station marker is not on the map
-    _markerManager.setStationMarkerWithUID(station, this, uid);
-    _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
+  setSelectedSearch(int searchIndex, int uid) async{
+    Place place = await _placesService.getPlace(searchResults[searchIndex].placeId, searchResults[searchIndex].description);
+    setLocationMarker(place, uid);
+    if(uid != -1){
+      setSelectedLocation(place, uid);
+    }
   }
 
-  clearStationMarkersWithoutUID() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-  }
-
-  setStationMarkersWithoutUID() {
-    _markerManager.setStationMarkers(_stationManager.getStations(), this);
-  }
-
-  setLocationMarker(String placeID, [int uid = -1]) async {
-    Place selected = await _placesService.getPlace(placeID);
-    _cameraManager.viewPlace(selected);
-    _markerManager.setPlaceMarker(selected, uid);
+  setLocationMarker(Place place, [int uid = -1]) async {
+    _cameraManager.viewPlace(place);
+    _markerManager.setPlaceMarker(place, uid);
     notifyListeners();
   }
 
-  setSelectedLocation(String stop, int uid) {
+  setSelectedLocation(Place stop, int uid) {
     _routeManager.changeStop(uid, stop);
     notifyListeners();
   }
@@ -206,37 +145,26 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  findRoute(String origin, String destination,
-      [List<String> intermediates = const <String>[],
-      int groupSize = 1]) async {
-    Rou.Route route =
-        await _directionsService.getRoutes(origin, destination, intermediates);
+  // ********** Routes **********
 
-    Location startLocation =
-        (await _placesService.getPlaceFromAddress(origin)).geometry.location;
-    Location endLocation =
-        (await _placesService.getPlaceFromAddress(destination))
-            .geometry
-            .location;
+  findRoute(Place origin, Place destination,
+      [List<Place> intermediates = const <Place>[],
+        int groupSize = 1]) async {
+
+    Location startLocation = origin.geometry.location;
+    Location endLocation = destination.geometry.location;
 
     Station startStation = _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
     Station endStation = _stationManager.getDropoffStationNear(
         LatLng(endLocation.lat, endLocation.lng), groupSize);
 
-    String startStationName = (await _placesService.getPlaceFromCoordinates(
-            startStation.lat, startStation.lng))
-        .name;
-    String endStationName = (await _placesService.getPlaceFromCoordinates(
-            endStation.lat, endStation.lng))
-        .name;
+    List<String> intermediateNames = intermediates.map((place) => place.name).toList();
 
-    Rou.Route startWalkRoute =
-        await _directionsService.getRoutes(origin, startStationName);
-    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName,
-        endStationName, intermediates, _routeManager.ifOptimised());
-    Rou.Route endWalkRoute =
-        await _directionsService.getRoutes(endStationName, destination);
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin.name, startStation.name);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStation.name,
+        endStation.name, intermediateNames, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStation.name, destination.name);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();
@@ -248,6 +176,69 @@ class ApplicationBloc with ChangeNotifier {
     clearMap();
     setSelectedScreen('home');
     notifyListeners();
+  }
+
+  // ********** Stations **********
+
+  cancelStationTimer() {
+    _stationTimer.cancel();
+  }
+
+  updateStationsPeriodically(Duration duration) {
+    _stationTimer = Timer.periodic(duration, (timer) {
+      updateStations();
+      filterStationMarkers();
+    });
+  }
+
+  setupStations() async {
+    await updateStations();
+    filterStationMarkers();
+    notifyListeners();
+  }
+
+  updateStations() async {
+    await _stationManager.setStations(await _stationsService.getStations());
+    notifyListeners();
+  }
+
+  List<Station> filterNearbyStations() {
+    List<Station> notNearbyStations = _stationManager.getFarStations();
+    List<Station> nearbyStations = _stationManager.getNearStations();
+    _markerManager.setStationMarkers(nearbyStations, this);
+    _markerManager.clearStationMarkers(notNearbyStations);
+    return nearbyStations;
+  }
+
+  filterStationsWithBikes(List<Station> filteredStations) {
+    List<Station> stationsWithBikes =
+    _stationManager.getStationsWithAtLeastXBikes(1, filteredStations);
+    _markerManager.setStationMarkers(stationsWithBikes, this);
+    List<Station> bikelessStations =
+    _stationManager.getStationsWithNoBikes(filteredStations);
+    _markerManager.clearStationMarkers(bikelessStations);
+  }
+
+  void filterStationMarkers() {
+    if (_directionManager.ifNavigating()) {
+      return;
+    }
+    List<Station> nearbyStations = filterNearbyStations();
+    filterStationsWithBikes(nearbyStations);
+  }
+
+  viewStationMarker(Station station, [int uid = -1]) {
+    // Do this in case station marker is not on the map
+    _markerManager.setStationMarkerWithUID(station, this, uid);
+    _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
+  }
+
+  clearStationMarkersWithoutUID() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+  }
+
+  setStationMarkersWithoutUID() {
+    _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
 
   // ********** Screen Management **********
@@ -303,13 +294,13 @@ class ApplicationBloc with ChangeNotifier {
     else {
       if (RouteManager().getWalkToFirstWaypoint()) {
         await NavigationManager().setInitialPickUpDropOffStations();
-        String firstStop = RouteManager().getStart().getStop();
+        Place firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         _updateRouteWithWalking();
         updateDirectionsPeriodically(Duration(seconds: 20));
       }
       else {
-        String firstStop = RouteManager().getStart().getStop();
+        Place firstStop = RouteManager().getStart().getStop();
         RouteManager().addFirstWaypoint(firstStop);
         await _updateRoute();
         await NavigationManager().setInitialPickUpDropOffStations();
@@ -327,7 +318,7 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> _changeRouteStartToCurrentLocation() async {
     await fetchCurrentLocation();
-    RouteManager().changeStart(_currentLocation.name);
+    RouteManager().changeStart(_currentLocation);
   }
 
   Future<void> _updateRoute() async {
@@ -375,7 +366,7 @@ class ApplicationBloc with ChangeNotifier {
 
    //remove waypoint once passed by it, return true if we reached the destination
   Future<bool> checkWaypointPassed() async {
-    if (RouteManager().getWaypoints().isNotEmpty && isWaypointPassed((await _placesService.getPlaceFromAddress(RouteManager().getWaypoints().first.getStop())).getLatLng())) {
+    if (RouteManager().getWaypoints().isNotEmpty && isWaypointPassed(RouteManager().getWaypoints().first.getStop().getLatLng())) {
       RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
     }
     return (RouteManager().getStops().length <= 1);
