@@ -1,5 +1,4 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
 import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,8 @@ import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:bicycle_trip_planner/widgets/Error.dart';
 
 Future<void> main() async {
   ThemeStyle();
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
+        '/error' : (context) => Error(),
       },
       theme: ThemeData(
         brightness: Brightness.light,
