@@ -1,4 +1,6 @@
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/Login/WelcomeScreen.dart';
+import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,11 +22,15 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }catch(e){};
+  } catch (e) {}
+  ;
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp())));
+  LocationManager locationManager = LocationManager();
+  await locationManager.requestPermission();
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -33,14 +39,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/weather',
+      initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        // '/login': (context) => const WelcomeScreen(),
-        // '/loading': (context) => const Loading(),
-        // '/': (context) => const Home(),
-        // '/navigation': (context) => const Navigation(),
-        // '/routePlanning': (context) => RoutePlanning(),
+        '/login': (context) => const AuthenticationScreen(),
+        '/loading': (context) => const Loading(),
+        '/': (context) => const Home(),
+        '/navigation': (context) => const Navigation(),
+        '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
       },
       theme: ThemeData(

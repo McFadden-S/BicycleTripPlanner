@@ -26,7 +26,7 @@ void main(){
   test('ensure marker is added for place requested', (){
     Location location = Location(lat: 51.511448, lng: -0.116414);
     Geometry geometry = Geometry(location: location);
-    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1");
+    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
