@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +13,8 @@ import '../../managers/DatabaseManager.dart';
 class FavouriteStationCard extends StatefulWidget {
   final int index;
 
-  const FavouriteStationCard({Key? key, required this.index}) : super(key: key);
+  final List<Station> stations;
+  const FavouriteStationCard({Key? key, required this.index, required this.stations}) : super(key: key);
 
   @override
   _FavouriteStationCardState createState() => _FavouriteStationCardState();
@@ -22,15 +22,12 @@ class FavouriteStationCard extends StatefulWidget {
 
 class _FavouriteStationCardState extends State<FavouriteStationCard> {
 
-  late StreamSubscription locatorSubscription;
-
-  final LocationManager locationManager = LocationManager();
-  final StationManager stationManager = StationManager();
 
   @override
   void setState(fn) {
     try {
       super.setState(fn);
+
     } catch (e) {};
   }
 
@@ -40,7 +37,7 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        stationClicked(applicationBloc, stationManager.getStationByIndex(widget.index), context);
+        stationClicked(applicationBloc, widget.stations[widget.index], context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -58,7 +55,7 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
                       Expanded(
                         flex: 25,
                         child: Text(
-                            stationManager.getStationByIndex(widget.index).name,
+                            widget.stations[widget.index].name,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontSize: 17.0, fontWeight: FontWeight.bold, color: ThemeStyle.secondaryTextColor)
                         ),
@@ -75,7 +72,7 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
+                        "\t\t${widget.stations[widget.index].bikes.toString()} bikes available",
                         style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor),
                       ),
                     ],
@@ -88,13 +85,13 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
+                        "\t\t${widget.stations[widget.index].totalDocks.toString()} free docks",
                         style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor),
                       ),
                       const Spacer(),
                       Container(
                         child: Text(
-                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}mi",
+                            "${widget.stations[widget.index].distanceTo.toStringAsFixed(1)}mi",
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontSize: 12.0, color: Colors.blueAccent)
                         ),
@@ -113,27 +110,4 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
 Future<void> stationClicked(ApplicationBloc appBloc, Station station, context) async {
   appBloc.searchSelectedStation(station);
   appBloc.setSelectedScreen('routePlanning');
-
-  //TODO: The code below is for testing purposes and to be deleted later
-  final databaseManager = DatabaseManager();
-  if(await databaseManager.addToFavouriteStations(station.id)) {
-  }else{
-    showAlertDialog(BuildContext context) {
-
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        title: Text("No user"),
-        content: Text("Station won't be saved unless user is logged in!"),
-      );
-
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-    }
-    showAlertDialog(context);
-  }
 }

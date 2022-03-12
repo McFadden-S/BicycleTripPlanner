@@ -1,9 +1,8 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/login/FavouriteStationCard.dart';
 
 class FavouriteBar extends StatefulWidget {
@@ -18,6 +17,31 @@ class _FavouriteBarState extends State<FavouriteBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
+  DatabaseManager databaseManager = DatabaseManager();
+
+  List<Station> stations = [];
+
+  Future<List<Station>> getFavouriteStations() async {
+    List<Station> stations =[];
+    List<int> stationIDs = await databaseManager.getFavouriteStations() ;
+
+    for(int id in stationIDs){
+      stations.add(stationManager.getStationById(id));
+      print(stationManager.getStationById(id).toString());
+    }
+
+    return stations;
+  }
+
+  @override
+  void initState()  {
+    super.initState();
+    getFavouriteStations().then((value){
+      setState(() {
+        stations = value;
+      });
+    });
+  }
 
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
@@ -46,7 +70,7 @@ class _FavouriteBarState extends State<FavouriteBar> {
                           children: [
                             Row(
                               children: [
-                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
+                                Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
                                 const Spacer(),
                               ],
                             ),
@@ -56,7 +80,7 @@ class _FavouriteBarState extends State<FavouriteBar> {
                                   itemCount: stations.length,
                                   itemBuilder:
                                       (BuildContext context, int index) =>
-                                      FavouriteStationCard(index: index)),
+                                      FavouriteStationCard(index: index, stations: stations)),
                             ),
                           ],
                         )
@@ -71,8 +95,10 @@ class _FavouriteBarState extends State<FavouriteBar> {
   @override
   Widget build(BuildContext context) {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    //final applicationBloc = Provider.of<ApplicationBloc>(context);
+     getFavouriteStations();
 
+    print(stations.length);
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
@@ -97,7 +123,7 @@ class _FavouriteBarState extends State<FavouriteBar> {
                           icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
-                          onPressed: () => showExpandedList(stationManager.getStations()),
+                          onPressed: () => showExpandedList(stations),
                           icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
@@ -115,9 +141,9 @@ class _FavouriteBarState extends State<FavouriteBar> {
                             controller: stationsPageViewController,
                             // physics: const PageScrollPhysics(),
                             scrollDirection: Axis.horizontal,
-                            itemCount: stationManager.getNumberOfStations(),
+                            itemCount: stations.length,
                             itemBuilder: (BuildContext context, int index) =>
-                                FavouriteStationCard(index: index)
+                                FavouriteStationCard(index: index, stations: stations)
                         ),
                       ),
                     ),

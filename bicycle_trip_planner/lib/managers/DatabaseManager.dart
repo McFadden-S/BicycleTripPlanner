@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../models/station.dart';
+
 
 class DatabaseManager {
+  //************Fields************
+
 
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
@@ -51,8 +55,12 @@ class DatabaseManager {
     for (var id in IDs) {
      output.add(int.parse(id.value.toString()));
     }
+
+    print("DM favourite stations: ${output.length}");
     return output;
   }
+
+
 
 
   addFavouriteRoute(){
