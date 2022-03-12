@@ -31,7 +31,12 @@ class WeatherResponse {
   final WeatherInfo weatherInfo;
 
   String get iconUrl{
-    return 'https://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png';
+    if(weatherInfo.icon == ""){
+      return 'https://openweathermap.org/img/wn/10d@2x.png';
+    }
+    else{
+      return 'https://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png';
+    }
   }
 
   WeatherResponse({required this.cityName, required this.tempInfo, required this.weatherInfo});
