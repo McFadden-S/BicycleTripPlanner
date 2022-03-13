@@ -96,6 +96,11 @@ class RouteManager {
     _changed = true;
   }
 
+  void setStartFromCurrentLocation(bool value){
+    _startFromCurrentLocation = value;
+    _changed = true;
+  }
+
   void toggleOptimised() {
     _optimised = !_optimised;
     _changed = true;

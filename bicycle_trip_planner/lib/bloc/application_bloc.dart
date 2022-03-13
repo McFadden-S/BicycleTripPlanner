@@ -97,7 +97,7 @@ class ApplicationBloc with ChangeNotifier {
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     _currentLocation = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude, "Current Location");
+        latLng.latitude, latLng.longitude, "My current location");
     notifyListeners();
   }
 
