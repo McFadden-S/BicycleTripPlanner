@@ -39,6 +39,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double topPaddingHeight = MediaQuery.of(context).padding.top;
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

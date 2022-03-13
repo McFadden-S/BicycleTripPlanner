@@ -46,6 +46,7 @@ class ApplicationBloc with ChangeNotifier {
 
   // TODO: Add calls to isNavigation from GUI
   bool _isNavigating = false;
+  bool _isDestinationReached = true;
 
   late Timer _stationTimer;
   late Place _currentLocation;
@@ -176,6 +177,8 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  bool getIsDestinationReached() { return _isDestinationReached; }
+
   // ********** Stations **********
 
   cancelStationTimer() {
@@ -264,9 +267,10 @@ class ApplicationBloc with ChangeNotifier {
       if(_isNavigating) {
         if (await checkWaypointPassed()) {
           //TODO implement what happens once destination reached
+            _isDestinationReached = true;
             endRoute();
+            //_isDestinationReached = false;
             timer.cancel();
-            setSelectedScreen('home');
           }
         if (RouteManager().getWalkToFirstWaypoint() && RouteManager().ifFirstWaypointSet()) {
           await _updateRouteWithWalking();
@@ -276,7 +280,9 @@ class ApplicationBloc with ChangeNotifier {
         }
         notifyListeners();
       } else {
+        _isDestinationReached = true;
         timer.cancel();
+        //_isDestinationReached = false;
       }
     });
   }
