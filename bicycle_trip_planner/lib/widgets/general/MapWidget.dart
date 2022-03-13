@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -65,7 +64,7 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
           markerManager.setUserMarker(pos);
         }));
 
-    locationManager
+    locatorSubscription = locationManager
         .onUserLocationChange()
         .listen((LocationData currentLocation) {
       setState(() {

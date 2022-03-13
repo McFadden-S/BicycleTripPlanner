@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart'
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-
 import '../general/GroupSizeSelector.dart';
 
 class HomeWidgets extends StatefulWidget {

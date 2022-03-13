@@ -53,16 +53,13 @@ class LocationManager {
   Future<bool> checkPermission() async {
     bool grantedPermission = true;
     PermissionStatus _permissionGranted = await location.hasPermission();
-    print("Has permission");
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
-      print("Request permission");
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
         // TODO: Using geolocator to openLocationSettings causes another
         // permission dialogue to pop up. Perhaps rely on only one location package
-        //print("Open location settings");
-        //geo.Geolocator.openLocationSettings();
+        // geo.Geolocator.openLocationSettings();
       }
     }
     return grantedPermission;
