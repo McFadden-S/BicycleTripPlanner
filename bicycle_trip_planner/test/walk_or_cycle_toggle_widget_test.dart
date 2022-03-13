@@ -41,7 +41,9 @@ void main() {
 
   testWidgets('When isCycling is false walkIcon is red', (WidgetTester tester) async {
     DirectionManager directionManager = DirectionManager();
-    directionManager.isCycling = false;
+    if(directionManager.ifCycling()){
+      directionManager.toggleCycling();
+    }
     await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
 
     final walkIcon = tester.widget(find.byIcon(Icons.directions_walk));
@@ -53,7 +55,9 @@ void main() {
 
   testWidgets('When isCycling is true bikeIcon is red', (WidgetTester tester) async {
     DirectionManager directionManager = DirectionManager();
-    directionManager.isCycling = true;
+    if(!directionManager.ifCycling()){
+      directionManager.toggleCycling();
+    }
     await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
 
     final walkIcon = tester.widget(find.byIcon(Icons.directions_walk));
@@ -65,14 +69,16 @@ void main() {
 
   testWidgets('WalkOrCycleToggle button toggles isCycling', (WidgetTester tester) async {
     DirectionManager directionManager = DirectionManager();
-    directionManager.isCycling = true;
+    if(!directionManager.ifCycling()){
+      directionManager.toggleCycling();
+    }
     await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
 
-    expect(directionManager.isCycling, true); 
+    expect(directionManager.ifCycling(), true);
 
     final toggleCycleButton = find.byType(ElevatedButton);
     await tester.tap(toggleCycleButton);
 
-    expect(directionManager.isCycling, false); 
+    expect(directionManager.ifCycling(), false);
   });
 }

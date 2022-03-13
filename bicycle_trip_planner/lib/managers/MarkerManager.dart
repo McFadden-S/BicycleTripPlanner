@@ -15,9 +15,6 @@ class MarkerManager {
   final Set<Marker> _markers = <Marker>{};
 
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
-  int _markerIdCounter = 1;
-  final String _startMarkerID = "Start";
-  final String _finalDestinationMarkerID = "Final Destination";
   BitmapDescriptor? userMarkerIcon;
 
   //********** Singleton **********
@@ -48,8 +45,8 @@ class MarkerManager {
       icon:
           BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
       position: LatLng(station.lat, station.lng),
-      onTap: () {
-        appBloc.searchSelectedStation(station);
+      onTap: () async {
+        await appBloc.searchSelectedStation(station);
         appBloc.setSelectedScreen('routePlanning');
       },
     );

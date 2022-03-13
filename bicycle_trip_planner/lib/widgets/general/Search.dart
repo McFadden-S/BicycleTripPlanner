@@ -34,18 +34,16 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-  String getText(){
-    return routeManager.getStop(widget.uid).getStop(); 
-  }
-
    @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if(!isSearching){
-        widget.searchController.text = getText();
+        widget.searchController.text = routeManager.getStop(widget.uid).getStop().description;
     }
+
+    String searchInput = "";
 
     return Stack(
       children: [
@@ -64,7 +62,7 @@ class _SearchState extends State<Search> {
                 itemBuilder: (context, index) {
                   return ListTile(
                     visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                    trailing: Visibility(child: Icon(Icons.my_location), visible: (index == 0)),
+                    trailing: Visibility(child: const Icon(Icons.my_location), visible: (index == 0)),
                     title: Text(
                       applicationBloc
                           .searchResults[index].description,
@@ -79,10 +77,7 @@ class _SearchState extends State<Search> {
                       // Make a search type enum of search and route (search enum = has unique id only for marker
                       // No need for any getText for this search) (route enum = behaves as it does currently i.e.
                       // will have a unique id for marker + WILL also getText for this search)~
-                      applicationBloc.setLocationMarker(applicationBloc.searchResults[index].placeId, widget.uid); 
-                      if(widget.uid != -1){
-                        applicationBloc.setSelectedLocation(applicationBloc.searchResults[index].description, widget.uid);
-                      }
+                      applicationBloc.setSelectedSearch(index, widget.uid);
 
                       //TODO Potential Side effect
                       //TODO Used in home -> routeplanning
@@ -102,13 +97,12 @@ class _SearchState extends State<Search> {
             style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
-              isSearching = true;
-              applicationBloc.searchPlaces(input);
+                isSearching = true;
+                searchInput = input;
               },
             onTap: (){
-              isSearching = true;
-              applicationBloc.fetchCurrentLocation();
-              applicationBloc.getDefaultSearchResult();
+                isSearching = true;
+                applicationBloc.getDefaultSearchResult();
               },
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
@@ -123,16 +117,20 @@ class _SearchState extends State<Search> {
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                 borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
+              prefixIcon: IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {setState(() {
+                    applicationBloc.searchPlaces(searchInput);
+                  });
+                },
+              ),
               suffixIcon: IconButton(
                 icon: const Icon(Icons.clear),
                 onPressed: () {
-                  setState(() {
-                    applicationBloc.clearLocationMarker(widget.uid); 
+                    applicationBloc.clearLocationMarker(widget.uid);
                     if(widget.uid != -1){
                       applicationBloc.clearSelectedLocation(widget.uid);
                     }
-                  }
-                );
                   hideSearch();
                 },
               ),
