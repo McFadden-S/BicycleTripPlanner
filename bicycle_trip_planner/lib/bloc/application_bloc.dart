@@ -152,17 +152,19 @@ class ApplicationBloc with ChangeNotifier {
     Location startLocation = origin.geometry.location;
     Location endLocation = destination.geometry.location;
 
-    Station startStation = _stationManager.getPickupStationNear(
+    Station startStation = await _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
-    Station endStation = _stationManager.getDropoffStationNear(
+    Station endStation = await _stationManager.getDropoffStationNear(
         LatLng(endLocation.lat, endLocation.lng), groupSize);
+
+    print('Pick up Station name: ${startStation.name} and pick up stations place name: ${startStation.place.name}');
 
     List<String> intermediateNames = intermediates.map((place) => place.name).toList();
 
-    Rou.Route startWalkRoute = await _directionsService.getRoutes(origin.name, startStation.place.name);
+    Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(origin.name, startStation.place.name);
     Rou.Route bikeRoute = await _directionsService.getRoutes(startStation.place.name,
         endStation.place.name, intermediateNames, _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getRoutes(endStation.place.name, destination.name);
+    Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(endStation.place.name, destination.name);
 
     _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     notifyListeners();

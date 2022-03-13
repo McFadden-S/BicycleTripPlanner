@@ -251,6 +251,8 @@ class RouteManager {
     _ifBeginning = true;
     _ifCycling = false;
     _ifEndWalking = false;
+    _walkToFirstWaypoint = false;
+    _startFromCurrentLocation = false;
     clearRouteMarkers();
 
     removeWaypoints();

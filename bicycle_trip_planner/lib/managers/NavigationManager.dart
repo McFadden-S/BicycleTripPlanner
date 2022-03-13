@@ -71,21 +71,21 @@ class NavigationManager {
     setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
-  void updatePickUpDropOffStations(Location startLocation, Location endLocation, int groupSize) {
+  Future<void> updatePickUpDropOffStations(Location startLocation, Location endLocation, int groupSize) async {
     if (!StationManager().checkPickUpStationHasBikes(groupSize) && !StationManager().passedPickUpStation()) {
-      setNewPickUpStation(startLocation, groupSize);
+      await setNewPickUpStation(startLocation, groupSize);
     }
     if (!StationManager().checkDropOffStationHasEmptyDocks(groupSize) && !StationManager().passedDropOffStation()) {
-      setNewDropOffStation(endLocation, groupSize);
+      await setNewDropOffStation(endLocation, groupSize);
     }
   }
 
-  Station setNewPickUpStation(Location location, [int groupSize = 1]) {
-    return _stationManager.getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
+  Future<Station> setNewPickUpStation(Location location, [int groupSize = 1]) async {
+    return await _stationManager.getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
   }
 
-  Station setNewDropOffStation(Location location, [int groupSize = 1]) {
-    return _stationManager.getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
+  Future<Station> setNewDropOffStation(Location location, [int groupSize = 1]) async {
+    return await _stationManager.getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
   }
 
   String getStationPlaceName(Station station) => station.place.name;
