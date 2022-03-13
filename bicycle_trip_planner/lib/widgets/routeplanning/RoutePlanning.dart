@@ -43,7 +43,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 showRouteCard ? RouteCard() : Container(),
                 GestureDetector(
-                  behavior: HitTestBehavior.opaque,
+                  behavior: HitTestBehavior.translucent,
                   onTap: () {setState(() {
                     showRouteCard = false;
                   });},
