@@ -200,7 +200,21 @@ class DirectionManager {
     }
   }
 
+<<<<<<< HEAD
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
+=======
+  int getRouteDuration(R.Route route){
+    int duration = 0;
+    for(var i =0; i < route.legs.length; i++){
+      duration += route.legs[i].duration;
+    }
+
+    return duration;
+  }
+
+  void setCurrentRoute(R.Route route){
+
+>>>>>>> 4367a46 (Add findCostEfficientRoute method to applicationBloc)
     int duration = 0;
     int distance = 0;
     _directions.clear();
