@@ -49,8 +49,14 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
+    Widget txt = Text("HI");
+
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       polylineManager.clearPolyline();
+      // applicationBloc.findCostEfficientRoute(
+      //     routeManager.getStart().getStop(),
+      //     routeManager.getDestination().getStop()
+      // );
       applicationBloc.findRoute(
           routeManager.getStart().getStop(),
           routeManager.getDestination().getStop(),

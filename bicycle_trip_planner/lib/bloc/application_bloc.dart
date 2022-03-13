@@ -198,6 +198,81 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<String> _getStationName(Station station) async{
+    String stationName = (await _placesService.getPlaceFromCoordinates(station.lat, station.lng)).name;
+    return stationName;
+  }
+
+  Future<int> _getDurationFromToStation(Station startStation, Station endStation) async{
+    String startStationName = await _getStationName(startStation);
+    String endStationName = await _getStationName(endStation);
+    Rou.Route route = await _directionsService.getRoutes(startStationName, endStationName);
+    int durationSeconds = _directionManager.getRouteDuration(route);
+    int durationMinutes = (durationSeconds / 60).ceil();
+    return durationMinutes;
+  }
+
+  double _costEfficiencyHeuristic(Station curStation, Station intermediaryStation, Station endStation) {
+    double startHeuristic = _locationManager.distanceFromTo(LatLng(curStation.lat, curStation.lng), LatLng(intermediaryStation.lat, intermediaryStation.lng));
+    double endHeuristic = _locationManager.distanceFromTo(LatLng(curStation.lat, curStation.lng), LatLng(intermediaryStation.lat, intermediaryStation.lng));
+    return endHeuristic/startHeuristic;
+  }
+
+  findCostEfficientRoute(String origin, String destination,
+      [int groupSize = 1]) async {
+
+    Location startLocation =
+        (await _placesService.getPlaceFromAddress(origin)).geometry.location;
+    Location endLocation =
+        (await _placesService.getPlaceFromAddress(destination))
+            .geometry
+            .location;
+
+    Station startStation = _stationManager.getPickupStationNear(
+        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = _stationManager.getDropoffStationNear(
+        LatLng(endLocation.lat, endLocation.lng), groupSize);
+
+    String startStationName = await _getStationName(startStation);
+    String endStationName = await _getStationName(endStation);
+
+    Station curStation = startStation;
+
+    List<String> intermediateStations = <String>[];
+
+    while(curStation != endStation) {
+      if (await _getDurationFromToStation(curStation, endStation) <= 25) {
+        curStation = endStation;
+      }
+      else {
+        List<Station> nearbyStations = _stationManager.getStationsInRadius(LatLng(curStation.lat, curStation.lng));
+        nearbyStations.sort((stationA, stationB) => _costEfficiencyHeuristic(curStation, stationA, endStation)
+            .compareTo(_costEfficiencyHeuristic(curStation, stationB, endStation)));
+        for (int i = 0; i < nearbyStations.length; i++) {
+          if (await _getDurationFromToStation(curStation, nearbyStations[i]) <= 25) {
+            intermediateStations.add(await _getStationName(nearbyStations[i]));
+            curStation = nearbyStations[i];
+            setLocationMarker(await _getStationName(nearbyStations[i]), i + 77);
+            break;
+          }
+        }
+      }
+    }
+
+    Rou.Route route =
+      await _directionsService.getRoutes(origin, destination, intermediateStations);
+
+    Rou.Route startWalkRoute =
+    await _directionsService.getRoutes(origin, startStationName);
+    Rou.Route bikeRoute = await _directionsService.getRoutes(startStationName,
+        endStationName, intermediateStations, _routeManager.ifOptimised());
+    Rou.Route endWalkRoute =
+    await _directionsService.getRoutes(endStationName, destination);
+
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    notifyListeners();
+  }
+
   void endRoute() {
     Wakelock.disable();
     clearMap();

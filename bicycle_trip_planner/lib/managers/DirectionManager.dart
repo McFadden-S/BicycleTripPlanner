@@ -142,6 +142,15 @@ class DirectionManager{
     showBikeRoute();
   }
 
+  int getRouteDuration(R.Route route){
+    int duration = 0;
+    for(var i =0; i < route.legs.length; i++){
+      duration += route.legs[i].duration;
+    }
+
+    return duration;
+  }
+
   void setCurrentRoute(R.Route route){
 
     int duration = 0;
