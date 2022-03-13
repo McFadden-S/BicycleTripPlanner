@@ -157,8 +157,6 @@ class ApplicationBloc with ChangeNotifier {
     Station endStation = await _stationManager.getDropoffStationNear(
         LatLng(endLocation.lat, endLocation.lng), groupSize);
 
-    print('Pick up Station name: ${startStation.name} and pick up stations place name: ${startStation.place.name}');
-
     List<String> intermediateNames = intermediates.map((place) => place.name).toList();
 
     Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(origin.name, startStation.place.name);
@@ -260,8 +258,6 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   // ********** Navigation Management **********
-
-  //TODO refactor whole navigation management block -- move to new file
 
   updateDirectionsPeriodically(Duration duration){
     Timer.periodic(duration, (timer) async {

@@ -47,8 +47,8 @@ class DirectionManager {
     return _directions.first;
   }
 
-  void showStartRoute() {
-    setCurrentRoute(_startWalkingRoute);
+  void showStartRoute([relocateMap= true]) {
+    setCurrentRoute(_startWalkingRoute, relocateMap);
     _isCycling = false;
   }
 
@@ -58,8 +58,8 @@ class DirectionManager {
     _isCycling = true;
   }
 
-  void showEndRoute() {
-    setCurrentRoute(_endWalkingRoute);
+  void showEndRoute([relocateMap= true]) {
+    setCurrentRoute(_endWalkingRoute, relocateMap);
     _isCycling = false;
   }
 
@@ -151,7 +151,14 @@ class DirectionManager {
     _endWalkingRoute = endWalk;
 
     //Set as biking route to show general route user will take
-    showBikeRoute(relocateMap);
+    if (_isNavigating) {
+      if (_startWalkingRoute != R.Route.routeNotFound()) {showStartRoute(relocateMap);}
+      else if (_bikingRoute != R.Route.routeNotFound()) {showBikeRoute(relocateMap);}
+      else {showEndRoute(relocateMap);}
+    }
+    else {
+      showBikeRoute(relocateMap);
+    }
   }
 
   void setCurrentRoute(R.Route route, [relocateMap= true]){

@@ -13,8 +13,6 @@ import 'StationManager.dart';
 class NavigationManager {
 
   final _directionsService = DirectionsService();
-  final StationManager _stationManager = StationManager();
-  final DirectionManager _directionManager = DirectionManager();
 
   //********** Singleton **********
 
@@ -23,6 +21,8 @@ class NavigationManager {
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
+
+  //********** Public **********
 
   walkToFirstLocation(Place origin, Place first, [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location firstLocation = first.geometry.location;
@@ -44,15 +44,15 @@ class NavigationManager {
   }
 
   setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
+    DirectionManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
   }
 
   Future<void> setPartialRoutes([List<String> first = const <String>[], List<String> intermediates = const <String>[]]) async {
     String origin = RouteManager().getStart().getStop().name;
     String destination = RouteManager().getDestination().getStop().name;
 
-    String startStationName = getStationPlaceName(_stationManager.getPickupStation());
-    String endStationName = getStationPlaceName(_stationManager.getDropOffStation());
+    String startStationName = getStationPlaceName(StationManager().getPickupStation());
+    String endStationName = getStationPlaceName(StationManager().getDropOffStation());
 
     Rou.Route startWalkRoute = RouteManager().ifBeginning()
         ? await _directionsService.getWalkingRoutes(origin, startStationName, first, false)
@@ -81,11 +81,11 @@ class NavigationManager {
   }
 
   Future<Station> setNewPickUpStation(Location location, [int groupSize = 1]) async {
-    return await _stationManager.getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
+    return await StationManager().getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
   }
 
   Future<Station> setNewDropOffStation(Location location, [int groupSize = 1]) async {
-    return await _stationManager.getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
+    return await StationManager().getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
   }
 
   String getStationPlaceName(Station station) => station.place.name;
