@@ -16,6 +16,7 @@ class DatabaseManager {
 
   FirebaseDatabase _DBInstance = FirebaseDatabase.instance;
   final _auth = FirebaseAuth.instance;
+  final uid = FirebaseAuth.instance.currentUser?.uid;
   factory DatabaseManager() {
     return _databaseManager;
   }
@@ -49,8 +50,6 @@ class DatabaseManager {
 
   Future<List<int>> getFavouriteStations() async {
     List<int> output = [];
-    var uid = _auth.currentUser?.uid;
-
     DatabaseReference favouriteStations = _DBInstance.ref('users/$uid/favouriteStations');
     await favouriteStations.once().then((value) => {
     for (var id in value.snapshot.children.cast()) {
@@ -71,7 +70,6 @@ class DatabaseManager {
       return false;
     }
 
-    var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _DBInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Object> intermediatePlaces = {};
     Map<String, Object> route = {};
@@ -97,8 +95,18 @@ class DatabaseManager {
   }
 
 
-  getFavouriteRoutes(){
+  Future<Map<String, Object>> getFavouriteRoutes() async {
+    Map<String, Object> output = {};
+    DatabaseReference favouriteRoutes = _DBInstance.ref('users/$uid/favouriteRoutes');
+    await favouriteRoutes.once().then((value) => {
+      for (var child in value.snapshot.children) {
+        output[child.key.toString()] = child.value!
+      }
+    });
 
+    print(output);
+
+    return output;
   }
 
 

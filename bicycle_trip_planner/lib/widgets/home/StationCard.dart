@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -132,4 +133,8 @@ Future<void> stationClicked(
         },
       );
   }
+
+  print('******* Favourite routes ********');
+  var map = await databaseManager.getFavouriteRoutes();
+
 }
