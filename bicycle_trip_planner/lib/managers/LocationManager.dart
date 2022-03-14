@@ -63,8 +63,8 @@ class LocationManager {
     return location.onLocationChanged;
   }
 
-  Future<double> getHeading() async {
+  Future<double?> getHeading() async {
     var currentLocation = await location.getLocation();
-    return currentLocation.heading ?? 0;
+    return currentLocation.heading;
   }
 }

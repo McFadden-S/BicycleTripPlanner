@@ -70,13 +70,17 @@ class CameraManager {
   }
 
   Future<void> setUserCameraPosition(LatLng position) async {
-    googleMapController.animateCamera(
-      CameraUpdate.newCameraPosition(CameraPosition(
-        target: position,
-        zoom: 16.0,
-        bearing: await locationManager.getHeading(),
-      )),
-    );
+    double? heading = await locationManager.getHeading();
+
+    if(heading != null){
+      googleMapController.animateCamera(
+        CameraUpdate.newCameraPosition(CameraPosition(
+          target: position,
+          zoom: 16.0,
+          bearing: heading,
+        )),
+      );
+    }
   }
 
   void setRouteCamera(LatLng origin, Map<String, dynamic> boundsSw,
