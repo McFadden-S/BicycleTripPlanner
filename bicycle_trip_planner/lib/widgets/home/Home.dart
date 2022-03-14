@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:bicycle_trip_planner/widgets/home/StartIntermediateEndDialog.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -57,9 +59,26 @@ class _HomeState extends State<Home> {
           ),
           AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              child: applicationBloc.getSelectedScreen()),
+              child: applicationBloc.getSelectedScreen()
+          ),
         ],
       ),
     );
+  }
+
+  void showStartIntermediateEndDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StartIntermediateEndDialog();
+        });
+  }
+
+  void showBinaryChoiceDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BinaryChoiceDialog();
+        });
   }
 }

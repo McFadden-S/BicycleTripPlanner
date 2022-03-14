@@ -323,6 +323,9 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> setNavigating(bool value) async {
     _isNavigating = value;
+    // TODO: Temporarily here to prevent station markers from filtering during navigation
+    // + ensures navigation works as intended (this needs refactoring!)
+
     _directionManager.setNavigating(value);
     if (_isNavigating) {
       startNavigation();
