@@ -8,6 +8,8 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:bicycle_trip_planner/widgets/home/StartIntermediateEndDialog.dart';
+
 
 class MarkerManager {
   //********** Fields **********
@@ -46,6 +48,7 @@ class MarkerManager {
           BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
       position: LatLng(station.lat, station.lng),
       onTap: () async {
+        // showStartIntermediateEndDialog();
         await appBloc.searchSelectedStation(station);
         appBloc.setSelectedScreen('routePlanning');
       },
@@ -175,4 +178,12 @@ class MarkerManager {
       _removeMarker(station.name);
     }
   }
+
+  // void showStartIntermediateEndDialog() {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return StartIntermediateEndDialog();
+  //       });
+  // }
 }
