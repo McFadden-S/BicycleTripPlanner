@@ -77,6 +77,7 @@ class _StationCardState extends State<UserProfile> {
                         margin: EdgeInsets.only(bottom: 20),
                         child: Column(children: [
                           CircleButton(
+                            key: Key("Logout"),
                             iconIn: Icons.logout,
                             onButtonClicked: () async {
                               await _auth.signOut();
@@ -88,6 +89,7 @@ class _StationCardState extends State<UserProfile> {
                           ),
                           SizedBox(height: 10),
                           CircleButton(
+                              key: Key("Back"),
                               iconIn: Icons.arrow_back,
                               onButtonClicked: () {
                                 Navigator.of(context, rootNavigator: true)
