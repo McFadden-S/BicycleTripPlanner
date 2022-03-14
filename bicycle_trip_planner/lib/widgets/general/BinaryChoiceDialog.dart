@@ -15,14 +15,14 @@ import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 // be called anywhere).
 
 
-class YesOrNoDialog extends StatefulWidget {
-  const YesOrNoDialog({ Key? key }) : super(key: key);
+class BinaryChoiceDialog extends StatefulWidget {
+  const BinaryChoiceDialog({ Key? key }) : super(key: key);
 
   @override
-  _YesOrNoDialogState createState() => _YesOrNoDialogState();
+  _BinaryChoiceDialogState createState() => _BinaryChoiceDialogState();
 }
 
-class _YesOrNoDialogState extends State<YesOrNoDialog> {
+class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
 
   void YesOption() {
     // Whatever is meant to happen when the user clicks the 'Yes' button should go in the onPressed method of the 'Yes' button

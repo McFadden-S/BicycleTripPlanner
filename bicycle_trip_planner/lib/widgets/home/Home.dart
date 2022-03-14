@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/general/YesOrNoDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
@@ -63,8 +63,8 @@ class _HomeState extends State<Home> {
               Align(
                 alignment: Alignment.center,
                 child: TextButton(
-                  child: Text("Show YesOrNoDialog"),
-                  onPressed: (){showYesOrNoDialog();},
+                  child: Text("Show BinaryChoiceDialog"),
+                  onPressed: (){showBinaryChoiceDialog();},
                 ),
               ),
               SizedBox(height: 10),
@@ -90,11 +90,11 @@ class _HomeState extends State<Home> {
         });
   }
 
-  void showYesOrNoDialog() {
+  void showBinaryChoiceDialog() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return YesOrNoDialog();
+          return BinaryChoiceDialog();
         });
   }
 
