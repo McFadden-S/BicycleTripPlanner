@@ -140,8 +140,8 @@ class DirectionManager {
   }
 
   void setDistance(int metre) {
-    int km = (metre / 1000).ceil();
-    _distance = "$km km";
+    int miles = (metre / 1609.34).ceil();
+    _distance = "$miles mi";
   }
 
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
