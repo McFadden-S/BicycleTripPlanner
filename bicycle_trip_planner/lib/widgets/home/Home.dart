@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/YesOrNoDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:bicycle_trip_planner/widgets/home/StartIntermediateEndDialog.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -55,71 +57,45 @@ class _HomeState extends State<Home> {
           AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: applicationBloc.getSelectedScreen()),
-          Align(
-            alignment: Alignment.center,
-            child: TextButton(
-              child: Text("Show dialog"),
-              onPressed: (){showMyDialog();},
-            ),
-          )
+          Column(
+            children: [
+              SizedBox(height: 120),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  child: Text("Show YesOrNoDialog"),
+                  onPressed: (){showYesOrNoDialog();},
+                ),
+              ),
+              SizedBox(height: 10),
+              Align(
+                alignment: Alignment.center,
+                child: TextButton(
+                  child: Text("Show StartIntermediateEndDialog"),
+                  onPressed: (){showStartIntermediateEndDialog();},
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
   }
 
-  void showMyDialog() {
+  void showStartIntermediateEndDialog() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(20.0)
-            ),
-            child: Container(
-                height: 200,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10),
-                      Expanded(child: Text("Set as:", textAlign: TextAlign.center)),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size.fromWidth(double.infinity)
-                          ),
-                          onPressed: (){},
-                          child: Text("Starting point"),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: Size.fromWidth(double.infinity)
-                            ),
-                            onPressed: (){},
-                            child: Text("Intermediate stop")
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: Size.fromWidth(double.infinity)
-                            ),
-                            onPressed: (){},
-                            child: Text("Destination")
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                )
-            ),
-          );
+          return StartIntermediateEndDialog();
         });
   }
+
+  void showYesOrNoDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return YesOrNoDialog();
+        });
+  }
+
 }
