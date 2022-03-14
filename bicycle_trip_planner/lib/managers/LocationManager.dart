@@ -73,6 +73,10 @@ class LocationManager {
     return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
   }
 
+  double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
+    return _calculateDistance(posFrom, posTo);
+  }
+
   Future<bool> locationSettings([double distanceFilter = 0]) {
     return location.changeSettings(
         accuracy: LocationAccuracy.high,

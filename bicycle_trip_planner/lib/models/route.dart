@@ -9,16 +9,15 @@ class Route {
 
   Route({required this.bounds, required this.legs, required this.polyline});
 
-  Route.routeNotFound({
-    this.bounds = const Bounds.boundsNotFound(),
-    this.legs = const <Legs>[],
-    this.polyline = const OverviewPolyline.overviewPolylineNotFound()
-});
+  Route.routeNotFound(
+      {this.bounds = const Bounds.boundsNotFound(),
+      this.legs = const <Legs>[],
+      this.polyline = const OverviewPolyline.overviewPolylineNotFound()});
 
   factory Route.fromJson(Map<String, dynamic> parsedJson) {
     //TODO Find more suitable name than substitute 'xLegs'
     List<Legs> xLegs = [];
-    for(var x =0; x < parsedJson['legs'].length; x++){
+    for (var x = 0; x < parsedJson['legs'].length; x++) {
       xLegs.add(Legs.fromJson(parsedJson['legs'][x]));
     }
 
@@ -27,5 +26,10 @@ class Route {
       legs: xLegs,
       polyline: OverviewPolyline.fromJson(parsedJson['overview_polyline']),
     );
+  }
+
+  @override
+  String toString() {
+    return legs.toString();
   }
 }
