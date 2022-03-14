@@ -47,18 +47,17 @@ class DirectionManager {
     return _directions.first;
   }
 
-  void showStartRoute([relocateMap= true]) {
+  void showStartRoute([relocateMap = true]) {
     setCurrentRoute(_startWalkingRoute, relocateMap);
     _isCycling = false;
   }
 
-
-  void showBikeRoute([relocateMap= true]){
+  void showBikeRoute([relocateMap = true]) {
     setCurrentRoute(_bikingRoute, relocateMap);
     _isCycling = true;
   }
 
-  void showEndRoute([relocateMap= true]) {
+  void showEndRoute([relocateMap = true]) {
     setCurrentRoute(_endWalkingRoute, relocateMap);
     _isCycling = false;
   }
@@ -145,23 +144,26 @@ class DirectionManager {
     _distance = "$km km";
   }
 
-  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk, [relocateMap= true]){
+  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
+      [relocateMap = true]) {
     _startWalkingRoute = startWalk;
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
-    //Set as biking route to show general route user will take
     if (_isNavigating) {
-      if (_startWalkingRoute != R.Route.routeNotFound()) {showStartRoute(relocateMap);}
-      else if (_bikingRoute != R.Route.routeNotFound()) {showBikeRoute(relocateMap);}
-      else {showEndRoute(relocateMap);}
-    }
-    else {
+      if (_startWalkingRoute != R.Route.routeNotFound()) {
+        showStartRoute(relocateMap);
+      } else if (_bikingRoute != R.Route.routeNotFound()) {
+        showBikeRoute(relocateMap);
+      } else {
+        showEndRoute(relocateMap);
+      }
+    } else {
       showBikeRoute(relocateMap);
     }
   }
 
-  void setCurrentRoute(R.Route route, [relocateMap= true]){
+  void setCurrentRoute(R.Route route, [relocateMap = true]) {
     int duration = 0;
     int distance = 0;
     _directions.clear();
@@ -172,22 +174,22 @@ class DirectionManager {
       distance += route.legs[i].distance;
     }
 
-    _currentDirection = _directions.isNotEmpty ? _directions.removeAt(0) : Steps.stepsNotFound();
+    _currentDirection = _directions.isNotEmpty
+        ? _directions.removeAt(0)
+        : Steps.stepsNotFound();
 
     setDuration(duration);
     setDistance(distance);
 
-    if(relocateMap) {
+    if (relocateMap) {
       _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
-        route.bounds.northeast,
-        route.bounds.southwest);
+          route.legs.first.startLocation.lat,
+          route.legs.first.startLocation.lng,
+          route.bounds.northeast,
+          route.bounds.southwest);
     }
 
     _polylineManager.setPolyline(route.polyline.points);
-
-    _isNavigating = true;
   }
 
   void toggleCycling() {
@@ -196,9 +198,9 @@ class DirectionManager {
     if (_isCycling) {
       showBikeRoute();
     } else {
-      if(_startWalkingRoute != R.Route.routeNotFound()){
+      if (_startWalkingRoute != R.Route.routeNotFound()) {
         showStartRoute();
-      } else if(_endWalkingRoute != R.Route.routeNotFound()) {
+      } else if (_endWalkingRoute != R.Route.routeNotFound()) {
         showEndRoute();
       }
     }

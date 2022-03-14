@@ -25,4 +25,9 @@ class Legs {
       duration: parsedJson['duration']['value'],
     );
   }
+
+  @override
+  String toString() {
+    return steps.toString();
+  }
 }
