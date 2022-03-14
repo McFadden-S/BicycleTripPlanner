@@ -214,7 +214,7 @@ class ApplicationBloc with ChangeNotifier {
 
   double _costEfficiencyHeuristic(Station curStation, Station intermediaryStation, Station endStation) {
     double startHeuristic = _locationManager.distanceFromTo(LatLng(curStation.lat, curStation.lng), LatLng(intermediaryStation.lat, intermediaryStation.lng));
-    double endHeuristic = _locationManager.distanceFromTo(LatLng(curStation.lat, curStation.lng), LatLng(intermediaryStation.lat, intermediaryStation.lng));
+    double endHeuristic = _locationManager.distanceFromTo(LatLng(intermediaryStation.lat, intermediaryStation.lng), LatLng(endStation.lat, endStation.lng));
     return endHeuristic/startHeuristic;
   }
 
