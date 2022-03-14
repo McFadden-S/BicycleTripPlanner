@@ -2,10 +2,17 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/place.dart';
+import '../services/places_service.dart';
+
 class StationManager {
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
+  Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedPickUpStation = false;
+  Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedDropOffStation = false;
 
   // Used only for O(1) look up times for efficiency
   Set<Station> _stationsLookUp = <Station>{};
@@ -63,16 +70,94 @@ class StationManager {
         orElse: Station.stationNotFound);
   }
 
-  Station getPickupStationNear(LatLng pos, [int groupSize = 1]) {
+  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
-    return nearPos.firstWhere((station) => station.bikes >= groupSize,
+    Station station =  nearPos.firstWhere((station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
+    if(station.place == const Place.placeNotFound()){
+      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+    _pickUpStation = station;
+    return station;
   }
 
-  Station getDropoffStationNear(LatLng pos, [int groupSize = 1]) {
+  Future<Station> getDropoffStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
-    return nearPos.firstWhere((station) => station.emptyDocks >= groupSize,
+    Station station = nearPos.firstWhere((station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
+    if(station.place == const Place.placeNotFound()){
+      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+    _dropOffStation = station;
+    return station;
+  }
+
+  Station getPickupStation() {
+    return _pickUpStation;
+  }
+
+  bool isPickUpStationSet() {
+    return _pickUpStation.id != -1;
+  }
+
+  void clearPickUpStation() {
+    _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  }
+
+  void setPassedPickUpStation(bool value) {
+    _passedPickUpStation = value;
+  }
+
+  bool passedPickUpStation() => _passedPickUpStation;
+
+  void passedStation(Station station) {
+    if (station == _pickUpStation) {
+      setPassedPickUpStation(true);
+    }
+    if (station == _dropOffStation) {
+      setPassedDropOffStation(true);
+    }
+  }
+
+  bool checkPickUpStationHasBikes(int groupSize) {
+    return _pickUpStation.bikes >= groupSize;
+  }
+
+  Station getDropOffStation() {
+    return _dropOffStation;
+  }
+
+  bool isDropOffStationSet() {
+    return _dropOffStation.id != -1;
+  }
+
+  void clearDropOffStation() {
+    _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  }
+
+  void setPassedDropOffStation(bool value) {
+    _passedDropOffStation = value;
+  }
+
+  bool passedDropOffStation() => _passedDropOffStation;
+
+  bool checkDropOffStationHasEmptyDocks(int groupSize) {
+    return _dropOffStation.emptyDocks >= groupSize;
+  }
+
+  bool isStationSet(Station station) {
+    return (_dropOffStation == station || _pickUpStation == station);
+  }
+
+  void clearStation(Station station) {
+    if (_dropOffStation == station) {
+      clearDropOffStation();
+    }
+    else if (_pickUpStation == station) {
+      clearPickUpStation();
+    }
   }
 
   // TODO: Find a better method name
@@ -127,4 +212,10 @@ class StationManager {
         stationA.distanceTo.compareTo(stationB.distanceTo));
   }
 
+  void clear() {
+    clearPickUpStation();
+    clearDropOffStation();
+    _passedPickUpStation = false;
+    _passedDropOffStation = false;
+  }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
@@ -45,18 +47,18 @@ class DirectionManager {
     return _directions.first;
   }
 
-  void showStartRoute() {
-    setCurrentRoute(_startWalkingRoute);
+  void showStartRoute([relocateMap = true]) {
+    setCurrentRoute(_startWalkingRoute, relocateMap);
     _isCycling = false;
   }
 
-  void showBikeRoute() {
-    setCurrentRoute(_bikingRoute);
+  void showBikeRoute([relocateMap = true]) {
+    setCurrentRoute(_bikingRoute, relocateMap);
     _isCycling = true;
   }
 
-  void showEndRoute() {
-    setCurrentRoute(_endWalkingRoute);
+  void showEndRoute([relocateMap = true]) {
+    setCurrentRoute(_endWalkingRoute, relocateMap);
     _isCycling = false;
   }
 
@@ -138,20 +140,30 @@ class DirectionManager {
   }
 
   void setDistance(int metre) {
-    int km = (metre / 1000).ceil();
-    _distance = "$km km";
+    int miles = (metre / 1609.34).ceil();
+    _distance = "$miles mi";
   }
 
-  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk) {
+  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
+      [relocateMap = true]) {
     _startWalkingRoute = startWalk;
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
-    //Set as biking route to show general route user will take
-    showBikeRoute();
+    if (_isNavigating) {
+      if (_startWalkingRoute != R.Route.routeNotFound()) {
+        showStartRoute(relocateMap);
+      } else if (_bikingRoute != R.Route.routeNotFound()) {
+        showBikeRoute(relocateMap);
+      } else {
+        showEndRoute(relocateMap);
+      }
+    } else {
+      showBikeRoute(relocateMap);
+    }
   }
 
-  void setCurrentRoute(R.Route route) {
+  void setCurrentRoute(R.Route route, [relocateMap = true]) {
     int duration = 0;
     int distance = 0;
     _directions.clear();
@@ -162,20 +174,22 @@ class DirectionManager {
       distance += route.legs[i].distance;
     }
 
-    _currentDirection = _directions.removeAt(0);
+    _currentDirection = _directions.isNotEmpty
+        ? _directions.removeAt(0)
+        : Steps.stepsNotFound();
 
     setDuration(duration);
     setDistance(distance);
 
-    _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
-        route.bounds.northeast,
-        route.bounds.southwest);
+    if (relocateMap) {
+      _cameraManager.goToPlace(
+          route.legs.first.startLocation.lat,
+          route.legs.first.startLocation.lng,
+          route.bounds.northeast,
+          route.bounds.southwest);
+    }
 
     _polylineManager.setPolyline(route.polyline.points);
-
-    _isNavigating = true;
   }
 
   void toggleCycling() {
@@ -184,8 +198,11 @@ class DirectionManager {
     if (_isCycling) {
       showBikeRoute();
     } else {
-      //TODO handle whether to display start or end walking route
-      showEndRoute();
+      if (_startWalkingRoute != R.Route.routeNotFound()) {
+        showStartRoute();
+      } else if (_endWalkingRoute != R.Route.routeNotFound()) {
+        showEndRoute();
+      }
     }
   }
 

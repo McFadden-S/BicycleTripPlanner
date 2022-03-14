@@ -33,8 +33,8 @@ class PolylineManager{
 
     _polylines.add(Polyline(
       polylineId: PolylineId(polylineIdVal),
-      width: 2,
-      color: Colors.blue,
+      width: 6,
+      color: Colors.red,
       points: points.map((point) => LatLng(point.latitude, point.longitude),)
           .toList(),
     ));
