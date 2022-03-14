@@ -27,7 +27,6 @@ class _FavouriteBarState extends State<FavouriteBar> {
 
     for(int id in stationIDs){
       stations.add(stationManager.getStationById(id));
-      print(stationManager.getStationById(id).toString());
     }
 
     return stations;
