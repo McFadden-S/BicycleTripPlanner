@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -43,6 +44,7 @@ class ApplicationBloc with ChangeNotifier {
   final RouteManager _routeManager = RouteManager();
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
+  final DialogManager _dialogManager = DialogManager();
 
   // TODO: Add calls to isNavigation from GUI
   bool _isNavigating = false;
@@ -55,6 +57,28 @@ class ApplicationBloc with ChangeNotifier {
   ApplicationBloc() {
     fetchCurrentLocation();
     updateStationsPeriodically(const Duration(seconds: 30));
+  }
+
+  // ********** Dialog **********
+
+  void showBinaryDialog(){
+    _dialogManager.showBinaryChoice();
+    notifyListeners();
+  }
+
+  void showSelectedStationDialog(){
+    _dialogManager.showSelectedStation();
+    notifyListeners();
+  }
+
+  void clearBinaryDialog(){
+    _dialogManager.clearBinaryChoice();
+    notifyListeners();
+  }
+
+  void clearSelectedStationDialog(){
+    _dialogManager.clearSelectedStation();
+    notifyListeners();
   }
 
   // ********** Search **********
