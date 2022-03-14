@@ -45,9 +45,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 showRouteCard ? RouteCard() : Container(),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
-                  onTap: () {setState(() {
-                    showRouteCard = false;
-                  });},
+                  onTap: () {
+                    setState(() {
+                      showRouteCard = false;
+                    });
+                  },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -55,14 +57,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         padding: const EdgeInsets.only(top: 10),
                         child: Column(
                           children: [
-                            !showRouteCard ?
-                            CircleButton(
-                                iconIn: Icons.search,
-                                iconColor: ThemeStyle.primaryIconColor,
-                                onButtonClicked: () {setState(() {
-                                  showRouteCard = true;
-                                }
-                                );}) : Container(),
+                            !showRouteCard
+                                ? CircleButton(
+                                    iconIn: Icons.search,
+                                    iconColor: ThemeStyle.primaryIconColor,
+                                    onButtonClicked: () {
+                                      setState(() {
+                                        showRouteCard = true;
+                                      });
+                                    })
+                                : Container(),
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(),
                             SizedBox(height: 10),
@@ -75,13 +79,18 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               onButtonClicked: () => setState(() {
                                 showOptimisedBinaryDialog();
                               }),
-                              iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                              iconColor: _routeManager.ifOptimised()
+                                  ? Colors.amber
+                                  : ThemeStyle.primaryIconColor,
                               // onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
                             ),
                             CircleButton(
                               iconIn: Icons.directions_walk,
-                              iconColor: _routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
-                              onButtonClicked: () => setState(() => {_routeManager.toggleWalkToFirstWaypoint()}),
+                              iconColor: _routeManager.getWalkToFirstWaypoint()
+                                  ? Colors.amber
+                                  : ThemeStyle.primaryIconColor,
+                              onButtonClicked: () => setState(() =>
+                                  {_routeManager.toggleWalkToFirstWaypoint()}),
                             ),
                           ],
                         ),
@@ -98,41 +107,37 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CustomBackButton(context: context, backTo: 'home'),
-                      ]),
+                  child:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    CustomBackButton(context: context, backTo: 'home'),
+                  ]),
                 ),
                 CustomBottomSheet(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Wrap(
-                          children: [ DistanceETACard() ],
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: RoundedRectangleButton(
-                              iconIn: Icons.directions_bike,
-                              buttonColor: ThemeStyle.goButtonColor,
-                              onButtonClicked: () {
-                                if (RouteManager().ifStartSet() &&
-                                    RouteManager().ifDestinationSet()) {
-                                  applicationBloc.setNavigating(true);
-                                  applicationBloc.setSelectedScreen('navigation');
-                                  _directionManager.showStartRoute();
-                                  Wakelock.enable();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content:
-                                    Text("Start and Destination have not been set!"),
-                                  ));
-                                }
-                              }),
-                        )
-                      ]),
+                  child:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Wrap(
+                      children: [DistanceETACard()],
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: RoundedRectangleButton(
+                          iconIn: Icons.directions_bike,
+                          buttonColor: ThemeStyle.goButtonColor,
+                          onButtonClicked: () {
+                            if (_directionManager.ifRouteSet()) {
+                              applicationBloc.setNavigating(true);
+                              applicationBloc.setSelectedScreen('navigation');
+                              _directionManager.showStartRoute();
+                              Wakelock.enable();
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                content: Text("No route could be found!"),
+                              ));
+                            }
+                          }),
+                    )
+                  ]),
                 ),
               ],
             ),
@@ -147,10 +152,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(20.0)
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Container(
               height: 200,
               child: Padding(
@@ -160,13 +163,14 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   children: [
                     SizedBox(height: 10),
                     // isOptimised ?
-                    Expanded(child: Text("Do you want to toggle route optimization?", textAlign: TextAlign.center)), //:
+                    Expanded(
+                        child: Text("Do you want to toggle route optimization?",
+                            textAlign: TextAlign.center)), //:
                     // Expanded(child: Text("Do you want to unoptimise the route?", textAlign: TextAlign.center)),
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromWidth(double.infinity)
-                        ),
+                            minimumSize: Size.fromWidth(double.infinity)),
                         // onPressed: (){},
                         onPressed: () {
                           setState(() => {_routeManager.toggleOptimised()});
@@ -179,8 +183,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromWidth(double.infinity)
-                        ),
+                            minimumSize: Size.fromWidth(double.infinity)),
                         onPressed: () => Navigator.pop(context),
                         child: Text("No"),
                       ),
@@ -188,12 +191,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     SizedBox(height: 10),
                   ],
                 ),
-              )
-          ),
+              )),
         );
       },
     );
   }
-
 }
-
