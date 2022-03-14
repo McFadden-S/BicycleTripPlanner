@@ -32,4 +32,16 @@ class Route {
   String toString() {
     return legs.toString();
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Route &&
+        other.bounds == bounds &&
+        other.polyline == polyline &&
+        other.legs == legs;
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode => Object.hash(bounds, polyline, legs);
 }
