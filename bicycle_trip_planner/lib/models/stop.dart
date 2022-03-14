@@ -1,9 +1,7 @@
 import 'package:bicycle_trip_planner/managers/IDManager.dart';
-import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 
-class Stop{
- 
+class Stop {
   Place _stop;
   final int _uid = IDManager().generateUID();
 
@@ -11,7 +9,7 @@ class Stop{
 
   Place getStop() => _stop;
 
-  int getUID() => _uid; 
+  int getUID() => _uid;
 
   void setStop(Place stop) => _stop = stop;
 }

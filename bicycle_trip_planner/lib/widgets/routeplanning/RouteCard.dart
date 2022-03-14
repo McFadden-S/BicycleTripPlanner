@@ -50,6 +50,9 @@ class _RouteCardState extends State<RouteCard> {
 
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       polylineManager.clearPolyline();
+      startSearchController.text == "My current location"
+          ? routeManager.setStartFromCurrentLocation(true)
+          : routeManager.setStartFromCurrentLocation(false);
       applicationBloc.findRoute(
           routeManager.getStart().getStop(),
           routeManager.getDestination().getStop(),
