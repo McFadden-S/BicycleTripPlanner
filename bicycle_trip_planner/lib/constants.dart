@@ -58,7 +58,7 @@ class ThemeStyle {
   static Color boxShadow = Colors.black45;
   static Color cardColor = Colors.white;
   static Color goButtonColor = Colors.green;
-  static Color primaryIconColor = Colors.black;
+  static Color primaryIconColor = Colors.white;
   static Color secondaryIconColor = Colors.black54;
   static Color cardOutlineColor = Color(0xff969393);
 

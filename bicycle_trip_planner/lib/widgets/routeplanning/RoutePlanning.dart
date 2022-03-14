@@ -74,6 +74,11 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                 iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
                                 onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
                             ),
+                            CircleButton(
+                              iconIn: Icons.directions_walk,
+                              iconColor: _routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
+                              onButtonClicked: () => setState(() => {_routeManager.toggleWalkToFirstWaypoint()}),
+                            ),
                           ],
                         ),
                       ),
@@ -110,6 +115,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               onButtonClicked: () {
                                 if (RouteManager().ifStartSet() &&
                                     RouteManager().ifDestinationSet()) {
+                                  applicationBloc.setNavigating(true);
                                   applicationBloc.setSelectedScreen('navigation');
                                   _directionManager.showStartRoute();
                                   Wakelock.enable();

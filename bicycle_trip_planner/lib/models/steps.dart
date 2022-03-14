@@ -8,11 +8,8 @@ class Steps {
       required this.distance,
       required this.duration});
 
-  Steps.stepsNotFound({
-    this.instruction = "",
-    this.distance = 0,
-    this.duration = 0
-});
+  Steps.stepsNotFound(
+      {this.instruction = "", this.distance = 0, this.duration = 0});
 
   factory Steps.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Steps(
@@ -20,5 +17,10 @@ class Steps {
       distance: parsedJson['distance']['value'],
       duration: parsedJson['duration']['value'],
     );
+  }
+
+  @override
+  String toString() {
+    return instruction;
   }
 }
