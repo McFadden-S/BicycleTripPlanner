@@ -151,6 +151,11 @@ class DirectionManager {
     _distance = "$miles mi";
   }
 
+  //TODO: Temporary fix, should be refactored
+  void setNavigating(bool isNavigating) {
+    _isNavigating = isNavigating;
+  }
+
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
       [relocateMap = true]) {
     _startWalkingRoute = startWalk;
