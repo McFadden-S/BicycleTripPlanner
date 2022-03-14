@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:js';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
@@ -10,9 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/widgets/home/StartIntermediateEndDialog.dart';
 
+import '../widgets/home/Home.dart';
+
 
 class MarkerManager {
   //********** Fields **********
+
+  Widget home = Home();
 
   final Set<Marker> _markers = <Marker>{};
 
@@ -48,10 +53,12 @@ class MarkerManager {
           BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
       position: LatLng(station.lat, station.lng),
       onTap: () async {
-        // showStartIntermediateEndDialog();
         await appBloc.searchSelectedStation(station);
         appBloc.setSelectedScreen('routePlanning');
       },
+      // onTap: () {
+      //   showStartIntermediateEndDialog(home.getContext());
+      // },
     );
   }
 
@@ -179,11 +186,63 @@ class MarkerManager {
     }
   }
 
-  // void showStartIntermediateEndDialog() {
-  //   showDialog(
-  //       context: context,
-  //       builder: (BuildContext context) {
-  //         return StartIntermediateEndDialog();
-  //       });
-  // }
+  void showStartIntermediateEndDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(20.0)
+            ),
+            child: Container(
+                height: 200,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10),
+                      Expanded(child: Text("Set as:", textAlign: TextAlign.center)),
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              minimumSize: Size.fromWidth(double.infinity)
+                          ),
+                          // onPressed: () => setStart(station),
+                          onPressed: (){},
+                          child: Text("Starting point"),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: Size.fromWidth(double.infinity)
+                            ),
+                            // onPressed: () => setIntermediate(station),
+                            onPressed: (){},
+                            child: Text("Intermediate stop")
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Expanded(
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                minimumSize: Size.fromWidth(double.infinity)
+                            ),
+                            // onPressed: () => setEnd(station),
+                            onPressed: (){},
+                            child: Text("Destination")
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                    ],
+                  ),
+                )
+            ),
+          );
+        }
+    );
+  }
 }

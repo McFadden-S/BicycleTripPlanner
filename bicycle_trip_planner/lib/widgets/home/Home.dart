@@ -79,4 +79,8 @@ class _HomeState extends State<Home> {
         });
   }
 
+  BuildContext getContext() {
+    return context;
+  }
+
 }
