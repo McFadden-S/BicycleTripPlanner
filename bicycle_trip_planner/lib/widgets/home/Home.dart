@@ -56,26 +56,7 @@ class _HomeState extends State<Home> {
           ),
           AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
-              child: applicationBloc.getSelectedScreen()),
-          Column(
-            children: [
-              SizedBox(height: 120),
-              Align(
-                alignment: Alignment.center,
-                child: TextButton(
-                  child: Text("Show BinaryChoiceDialog"),
-                  onPressed: (){showBinaryChoiceDialog();},
-                ),
-              ),
-              SizedBox(height: 10),
-              Align(
-                alignment: Alignment.center,
-                child: TextButton(
-                  child: Text("Show StartIntermediateEndDialog"),
-                  onPressed: (){showStartIntermediateEndDialog();},
-                ),
-              ),
-            ],
+              child: applicationBloc.getSelectedScreen()
           ),
         ],
       ),
