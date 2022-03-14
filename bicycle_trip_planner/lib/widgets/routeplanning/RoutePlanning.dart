@@ -25,6 +25,7 @@ class RoutePlanning extends StatefulWidget {
 
 class _RoutePlanningState extends State<RoutePlanning> {
   bool showRouteCard = true;
+  bool isOptimised = false;
 
   final RouteManager _routeManager = RouteManager();
   final DirectionManager _directionManager = DirectionManager();
@@ -55,13 +56,13 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         child: Column(
                           children: [
                             !showRouteCard ?
-                              CircleButton(
-                              iconIn: Icons.search,
-                              iconColor: ThemeStyle.primaryIconColor,
-                              onButtonClicked: () {setState(() {
-                                showRouteCard = true;
-                              }
-                              );}) : Container(),
+                            CircleButton(
+                                iconIn: Icons.search,
+                                iconColor: ThemeStyle.primaryIconColor,
+                                onButtonClicked: () {setState(() {
+                                  showRouteCard = true;
+                                }
+                                );}) : Container(),
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(),
                             SizedBox(height: 10),
@@ -70,9 +71,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             GroupSizeSelector(),
                             SizedBox(height: 10),
                             CircleButton(
-                                iconIn: Icons.alt_route,
-                                iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
-                                onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
+                              iconIn: Icons.alt_route,
+                              onButtonClicked: () => setState(() {
+                                showOptimisedBinaryDialog();
+                              }),
+                              iconColor: _routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                              // onButtonClicked: () => setState(() => {_routeManager.toggleOptimised()}),
                             ),
                           ],
                         ),
@@ -92,7 +96,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        CustomBackButton(backTo: 'home'),
+                        CustomBackButton(context: context, backTo: 'home'),
                       ]),
                 ),
                 CustomBottomSheet(
@@ -132,4 +136,58 @@ class _RoutePlanningState extends State<RoutePlanning> {
     );
   }
 
+  void showOptimisedBinaryDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.circular(20.0)
+          ),
+          child: Container(
+              height: 200,
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: 10),
+                    // isOptimised ?
+                    Expanded(child: Text("Do you want to toggle route optimization?", textAlign: TextAlign.center)), //:
+                    // Expanded(child: Text("Do you want to unoptimise the route?", textAlign: TextAlign.center)),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size.fromWidth(double.infinity)
+                        ),
+                        // onPressed: (){},
+                        onPressed: () {
+                          setState(() => {_routeManager.toggleOptimised()});
+                          Navigator.pop(context);
+                        },
+                        child: Text("Yes"),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size.fromWidth(double.infinity)
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: Text("No"),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
+              )
+          ),
+        );
+      },
+    );
+  }
+
 }
+
