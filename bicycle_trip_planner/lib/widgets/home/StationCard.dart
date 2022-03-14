@@ -133,8 +133,4 @@ Future<void> stationClicked(
         },
       );
   }
-
-  print('******* Favourite routes ********');
-  var map = await databaseManager.getFavouriteRoutes();
-
 }

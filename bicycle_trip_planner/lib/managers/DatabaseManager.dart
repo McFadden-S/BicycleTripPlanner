@@ -1,30 +1,28 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/models/geometry.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../models/stop.dart';
+
 
 class DatabaseManager {
   //************Fields************
-
+  final FirebaseDatabase _dbInstance = FirebaseDatabase.instance;
+  final _auth = FirebaseAuth.instance;
 
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
-  final applicationBloc = ApplicationBloc();
-
-  FirebaseDatabase _DBInstance = FirebaseDatabase.instance;
-  final _auth = FirebaseAuth.instance;
-  final uid = FirebaseAuth.instance.currentUser?.uid;
   factory DatabaseManager() {
     return _databaseManager;
   }
 
   DatabaseManager._internal();
-
-  //********** Private **********
-
 
 
   //********** Public **********
@@ -34,7 +32,7 @@ class DatabaseManager {
       return false;
     }
     var uid = _auth.currentUser?.uid;
-    DatabaseReference favouriteStations = _DBInstance.ref('users/$uid/favouriteStations');
+    DatabaseReference favouriteStations = _dbInstance.ref('users/$uid/favouriteStations');
     Map<String, int> favorites = {};
     favorites['$stationID'] = stationID;
     await favouriteStations.update(favorites).then((_) {
@@ -49,8 +47,9 @@ class DatabaseManager {
   }
 
   Future<List<int>> getFavouriteStations() async {
+    var uid = FirebaseAuth.instance.currentUser?.uid;
     List<int> output = [];
-    DatabaseReference favouriteStations = _DBInstance.ref('users/$uid/favouriteStations');
+    DatabaseReference favouriteStations = _dbInstance.ref('users/$uid/favouriteStations');
     await favouriteStations.once().then((value) => {
     for (var id in value.snapshot.children.cast()) {
         output.add(id.value)
@@ -69,8 +68,8 @@ class DatabaseManager {
     if(start.description.isEmpty|| end.description.isEmpty){
       return false;
     }
-
-    DatabaseReference favouriteRoutes = _DBInstance.ref('users/$uid/favouriteRoutes');
+    var uid = FirebaseAuth.instance.currentUser?.uid;
+    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Object> intermediatePlaces = {};
     Map<String, Object> route = {};
     route['start'] = _place2Map(start);
@@ -95,20 +94,20 @@ class DatabaseManager {
   }
 
 
-  Future<Map<String, Object>> getFavouriteRoutes() async {
-    Map<String, Object> output = {};
-    DatabaseReference favouriteRoutes = _DBInstance.ref('users/$uid/favouriteRoutes');
+  Future<Map<String, Pathway>> getFavouriteRoutes() async {
+    var uid = FirebaseAuth.instance.currentUser?.uid;
+    Map<String, Pathway> pathways = {};
+    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     await favouriteRoutes.once().then((value) => {
       for (var child in value.snapshot.children) {
-        output[child.key.toString()] = child.value!
+        pathways[child.key.toString()] = _mapToPathway(child.value)
       }
     });
-
-    print(output);
-
-    return output;
+    return pathways;
   }
 
+
+  //********** Private **********
 
   Map<String, Object> _place2Map(Place place) {
     Map<String, Object> output = {};
@@ -119,6 +118,31 @@ class DatabaseManager {
     output['lat'] = place.geometry.location.lat;
     return output;
   }
+
+  Pathway _mapToPathway(dynamic mapIn) {
+    Pathway output = Pathway();
+    output.changeStart(_mapToPlace(mapIn['start']));
+    output.changeDestination(_mapToPlace(mapIn['end']));
+    if(mapIn['stops'] != null) {
+      for(var stop in mapIn['stops']){
+        output.addStop(Stop(_mapToPlace(stop)));
+      }
+    }
+    return output;
+  }
+
+  Place _mapToPlace(dynamic mapIn) {
+    return Place(
+      name: mapIn['name'],
+      description: mapIn['description'],
+      placeId: mapIn['id'],
+      geometry: Geometry(
+          location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
+      )
+    );
+
+  }
+
 
 
 }
