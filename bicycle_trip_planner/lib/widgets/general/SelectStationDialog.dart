@@ -39,7 +39,7 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
             BorderRadius.circular(20.0)
         ),
         child: Container(
-            height: 200,
+            height: 250,
             child: Padding(
               padding: const EdgeInsets.all(5.0),
               child: Column(
