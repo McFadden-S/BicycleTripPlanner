@@ -13,12 +13,12 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-  final PlacesService _placesService = PlacesService();
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
 
+  // TODO: These are variables tied during navigation
   bool _ifBeginning = true;
   bool _ifCycling = false;
   bool _ifEndWalking = false;
@@ -28,6 +28,7 @@ class RouteManager {
   bool _changed = false;
   bool _optimised = true;
 
+  // Remove this
   Location _destination = Location(lng: -1, lat: -1);
 
   //********** Singleton **********

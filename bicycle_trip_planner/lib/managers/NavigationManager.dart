@@ -34,12 +34,7 @@ class NavigationManager {
     return _isNavigating;
   }
 
-  //TODO: Temporary fix, should be refactored
-  void setNavigating(bool isNavigating) {
-    _isNavigating = isNavigating;
-  }
-
-  void start(Place currentLocation) async {
+  Future<void> start() async {
     _isNavigating = true;
     if (_routeManager.ifStartFromCurrentLocation()) {
       await setInitialPickUpDropOffStations();
@@ -48,20 +43,20 @@ class NavigationManager {
         await setInitialPickUpDropOffStations();
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
-        updateRouteWithWalking(currentLocation);
+        updateRouteWithWalking();
       } else {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
-        await _updateRoute(currentLocation);
+        await updateRoute();
         await setInitialPickUpDropOffStations();
       }
     }
   }
 
-  Future<void> updateRoute(Place currentLocation) async {
+  Future<void> updateRoute() async {
     //TODO: Duplicated code here anbd below
-    await _changeRouteStartToCurrentLocation(currentLocation);
-    checkPassedByPickUpDropOffStations(currentLocation);
+    await _changeRouteStartToCurrentLocation();
+    checkPassedByPickUpDropOffStations();
     await _updateRoute(
         _routeManager.getStart().getStop(),
         _routeManager
@@ -71,9 +66,9 @@ class NavigationManager {
         _routeManager.getGroupSize());
   }
 
-  Future<void> updateRouteWithWalking(Place currentLocation) async {
-    await _changeRouteStartToCurrentLocation(currentLocation);
-    checkPassedByPickUpDropOffStations(currentLocation);
+  Future<void> updateRouteWithWalking() async {
+    await _changeRouteStartToCurrentLocation();
+    checkPassedByPickUpDropOffStations();
     await walkToFirstLocation(
         _routeManager.getStart().getStop(),
         _routeManager.getFirstWaypoint().getStop(),
@@ -85,20 +80,20 @@ class NavigationManager {
         _routeManager.getGroupSize());
   }
 
-  Future<void> _changeRouteStartToCurrentLocation(Place currentLocation) async {
-    _routeManager.changeStart(currentLocation);
+  Future<void> _changeRouteStartToCurrentLocation() async {
+    _routeManager.changeStart(_locationManager.getCurrentLocation());
   }
 
-  bool isWaypointPassed(LatLng waypoint, Place currentLocation) {
+  bool isWaypointPassed(LatLng waypoint) {
     return (_locationManager.distanceFromToInMeters(
-            currentLocation.getLatLng(), waypoint) <=
+            _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
         30);
   }
 
   void passedStation(Station station, void Function(bool) functionA,
-      void Function(bool) functionB, Place currentLocation) {
+      void Function(bool) functionB) {
     if (_stationManager.isStationSet(station) &&
-        isWaypointPassed(LatLng(station.lat, station.lng), currentLocation)) {
+        isWaypointPassed(LatLng(station.lat, station.lng))) {
       _stationManager.passedStation(station);
       _stationManager.clearStation(station);
       functionA(false);
@@ -106,21 +101,21 @@ class NavigationManager {
     }
   }
 
-  void checkPassedByPickUpDropOffStations(Place currentLocation) {
+  void checkPassedByPickUpDropOffStations() {
     Station startStation = _stationManager.getPickupStation();
     Station endStation = _stationManager.getDropOffStation();
-    passedStation(startStation, _routeManager.setIfBeginning,
-        _routeManager.setIfCycling, currentLocation);
-    passedStation(endStation, _routeManager.setIfCycling,
-        _routeManager.setIfEndWalking, currentLocation);
+    passedStation(
+        startStation, _routeManager.setIfBeginning, _routeManager.setIfCycling);
+    passedStation(
+        endStation, _routeManager.setIfCycling, _routeManager.setIfEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
-  Future<bool> checkWaypointPassed(Place currentLocation) async {
+  Future<bool> checkWaypointPassed() async {
     if (_routeManager.getWaypoints().isNotEmpty &&
         isWaypointPassed(
-            _routeManager.getWaypoints().first.getStop().getLatLng(),
-            currentLocation)) {
+          _routeManager.getWaypoints().first.getStop().getLatLng(),
+        )) {
       _routeManager.removeStop(_routeManager.getWaypoints().first.getUID());
     }
     return (_routeManager.getStops().length <= 1);
@@ -141,6 +136,7 @@ class NavigationManager {
   _updateRoute(Place origin,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location startLocation = origin.geometry.location;
+    //TODO: Change this...
     Location endLocation = _routeManager.getDestinationLocation();
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
@@ -178,7 +174,8 @@ class NavigationManager {
 
     //Temporary change: Otherwise directionManager and navigationManager try to
     //initialise each other (circular import where they infinitely initialise each other)
-    DirectionManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    DirectionManager()
+        .setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
   }
 
   Future<void> updatePickUpDropOffStations(
@@ -218,5 +215,6 @@ class NavigationManager {
   // TODO: Include in relevant places and clear up any left behidn variables
   void clear() {
     _isNavigating = false;
+    _locationManager.locationSettings();
   }
 }

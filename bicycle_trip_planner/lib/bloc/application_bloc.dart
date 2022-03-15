@@ -6,7 +6,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -20,6 +20,7 @@ import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
@@ -50,9 +51,10 @@ class ApplicationBloc with ChangeNotifier {
   // TODO: Add calls to isNavigation from GUI
 
   late Timer _stationTimer;
+  late StreamSubscription<LocationData> _navigationSubscription;
 
   // TODO: CurrentLocation should be in LocationManager
-  late Place _currentLocation;
+  //late Place _currentLocation;
 
   ApplicationBloc() {
     fetchCurrentLocation();
@@ -94,7 +96,7 @@ class ApplicationBloc with ChangeNotifier {
         0,
         PlaceSearch(
             description: "My current location",
-            placeId: _currentLocation.placeId));
+            placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
 
@@ -104,7 +106,7 @@ class ApplicationBloc with ChangeNotifier {
         0,
         PlaceSearch(
             description: "My current location",
-            placeId: _currentLocation.placeId));
+            placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
 
@@ -123,18 +125,31 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  updateLocationLive() {
+    _navigationSubscription = _locationManager
+        .onUserLocationChange(15)
+        .listen((LocationData currentLocation) {
+      // Print this if you suspect that data is loading more than expected
+      //print("I loaded!");
+      _updateDirections();
+    });
+  }
+
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
-    _currentLocation = await _placesService.getPlaceFromCoordinates(
+    Place currentPlace = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude, "My current location");
+    _locationManager.setCurrentLocation(currentPlace);
     notifyListeners();
   }
 
   setSelectedCurrentLocation() async {
     await fetchCurrentLocation();
 
-    setLocationMarker(_currentLocation, _routeManager.getStart().getUID());
-    setSelectedLocation(_currentLocation, _routeManager.getStart().getUID());
+    setLocationMarker(_locationManager.getCurrentLocation(),
+        _routeManager.getStart().getUID());
+    setSelectedLocation(_locationManager.getCurrentLocation(),
+        _routeManager.getStart().getUID());
 
     notifyListeners();
   }
@@ -179,8 +194,8 @@ class ApplicationBloc with ChangeNotifier {
 
   findRoute(Place origin, Place destination,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation = destination.geometry.location;
+    Loc.Location startLocation = origin.geometry.location;
+    Loc.Location endLocation = destination.geometry.location;
 
     Station startStation = await _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
@@ -205,8 +220,10 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void endRoute() {
+    _navigationSubscription.cancel();
     Wakelock.disable();
     _stationManager.clear();
+    _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
     notifyListeners();
@@ -297,39 +314,34 @@ class ApplicationBloc with ChangeNotifier {
 
   Future<void> startNavigation() async {
     await fetchCurrentLocation();
-    _navigationManager.start(_currentLocation);
     setSelectedScreen('navigation');
-    _updateDirectionsPeriodically(const Duration(seconds: 20));
+    await _navigationManager.start();
+    _updateDirections();
+    updateLocationLive();
     _directionManager.showStartRoute();
     Wakelock.enable();
   }
 
-  _updateDirectionsPeriodically(Duration duration) {
-    Timer.periodic(duration, (timer) async {
-      await fetchCurrentLocation();
-      if (_navigationManager.ifNavigating()) {
-        if (await _navigationManager.checkWaypointPassed(_currentLocation)) {
-          endRoute();
-          timer.cancel();
-        }
-        if (_routeManager.ifWalkToFirstWaypoint() &&
-            _routeManager.ifFirstWaypointSet()) {
-          await _navigationManager.updateRouteWithWalking(_currentLocation);
-        } else {
-          await _navigationManager.updateRoute(_currentLocation);
-        }
-      } else {
-        timer.cancel();
-      }
-    });
-  }
+  _updateDirections() async {
+    if (!_navigationManager.ifNavigating()) return;
 
-  endNavigation() {}
+    await fetchCurrentLocation();
+    if (await _navigationManager.checkWaypointPassed()) {
+      endRoute();
+      return;
+    }
+
+    if (_routeManager.ifWalkToFirstWaypoint() &&
+        _routeManager.ifFirstWaypointSet()) {
+      await _navigationManager.updateRouteWithWalking();
+    } else {
+      await _navigationManager.updateRoute();
+    }
+  }
 
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
-    _navigationManager.clear();
   }
 }
