@@ -3,6 +3,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
+import '../models/place.dart';
+
 class LocationManager {
   //********** Fields **********
 
@@ -100,11 +102,8 @@ class LocationManager {
     return location.onLocationChanged;
   }
 
-  Future<double?> getHeading() async {
-    //geo.Position alternateLocation = await geo.Geolocator.getCurrentPosition();
-    //alternateLocation.heading;
-
-    var currentLocation = await location.getLocation();
-    return currentLocation.heading;
+  double getHeading(Place headingTo)  {
+    var latlng = headingTo.getLatLng();
+    return geo.Geolocator.bearingBetween(0, 0, latlng.latitude, latlng.longitude);
   }
 }

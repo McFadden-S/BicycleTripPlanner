@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:flutter/services.dart';
@@ -70,17 +71,16 @@ class CameraManager {
   }
 
   Future<void> setUserCameraPosition(LatLng position) async {
-    double? heading = await locationManager.getHeading();
 
-    if(heading != null){
+
       googleMapController.animateCamera(
         CameraUpdate.newCameraPosition(CameraPosition(
           target: position,
           zoom: 16.0,
-          bearing: heading,
+          bearing: LocationManager().getHeading(RouteManager().getStart().getStop()),
         )),
       );
-    }
+
   }
 
   void setRouteCamera(LatLng origin, Map<String, dynamic> boundsSw,
