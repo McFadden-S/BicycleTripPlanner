@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
@@ -86,6 +87,12 @@ class RouteManager {
     _changed = true;
   }
 
+  void setWalkToFirstWaypoint(bool ifWalk){
+    _walkToFirstWaypoint = ifWalk;
+    _pathway.setHasFirstWaypoint(ifWalk);
+    _changed = true;
+  }
+
   bool getStartFromCurrentLocation() {
     return _startFromCurrentLocation;
   }
@@ -97,6 +104,11 @@ class RouteManager {
 
   void setStartFromCurrentLocation(bool value) {
     _startFromCurrentLocation = value;
+    _changed = true;
+  }
+
+  void setOptimised(bool optimised){
+    _optimised = optimised;
     _changed = true;
   }
 
