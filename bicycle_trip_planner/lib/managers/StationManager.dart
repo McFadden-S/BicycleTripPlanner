@@ -2,18 +2,24 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/place.dart';
+import '../services/places_service.dart';
+
 class StationManager {
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
+  Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedPickUpStation = false;
+  Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  bool _passedDropOffStation = false;
+
+  // Used only for O(1) look up times for efficiency
+  Set<Station> _stationsLookUp = <Station>{};
 
   // List of dead stations from the PREVIOUS update
   // TODO: ONLY USED FOR UPDATING MARKERS SO FAR
-  List<Station> _deadStations = [];
-
-  //TODO currently maintains a distance list to have a value when stations are
-  //TODO updated but new distance values arent calculated
-  List<double> _stationDistances = <double>[];
+  //List<Station> _deadStations = [];
 
   final LocationManager _locationManager = LocationManager();
 
@@ -54,88 +60,162 @@ class StationManager {
     return _stations[stationIndex];
   }
 
+  Station getStationById(int stationId) {
+    return _stations.firstWhere((station) => station.id == stationId,
+        orElse: Station.stationNotFound);
+  }
+
   Station getStationByName(String stationName) {
     return _stations.singleWhere((station) => station.name == stationName,
         orElse: Station.stationNotFound);
   }
 
-  Station getPickupStationNear(LatLng pos, [int groupSize = 1]) {
-    List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere((station) => station.bikes >= groupSize,
+  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    Station station =  nearPos.firstWhere((station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
+    if(station.place == const Place.placeNotFound()){
+      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+    _pickUpStation = station;
+    return station;
   }
 
-  Station getDropoffStationNear(LatLng pos, [int groupSize = 1]) {
-    List<Station> orderedStations = _getOrderedToFromStationList(pos);
-    return orderedStations.firstWhere(
-        (station) => station.emptyDocks >= groupSize,
+  Future<Station> getDropoffStationNear(LatLng pos, [int groupSize = 1]) async {
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    Station station = nearPos.firstWhere((station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
+    if(station.place == const Place.placeNotFound()){
+      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+    _dropOffStation = station;
+    return station;
+  }
+
+  Station getPickupStation() {
+    return _pickUpStation;
+  }
+
+  bool isPickUpStationSet() {
+    return _pickUpStation.id != -1;
+  }
+
+  void clearPickUpStation() {
+    _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  }
+
+  void setPassedPickUpStation(bool value) {
+    _passedPickUpStation = value;
+  }
+
+  bool passedPickUpStation() => _passedPickUpStation;
+
+  void passedStation(Station station) {
+    if (station == _pickUpStation) {
+      setPassedPickUpStation(true);
+    }
+    if (station == _dropOffStation) {
+      setPassedDropOffStation(true);
+    }
+  }
+
+  bool checkPickUpStationHasBikes(int groupSize) {
+    return _pickUpStation.bikes >= groupSize;
+  }
+
+  Station getDropOffStation() {
+    return _dropOffStation;
+  }
+
+  bool isDropOffStationSet() {
+    return _dropOffStation.id != -1;
+  }
+
+  void clearDropOffStation() {
+    _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  }
+
+  void setPassedDropOffStation(bool value) {
+    _passedDropOffStation = value;
+  }
+
+  bool passedDropOffStation() => _passedDropOffStation;
+
+  bool checkDropOffStationHasEmptyDocks(int groupSize) {
+    return _dropOffStation.emptyDocks >= groupSize;
+  }
+
+  bool isStationSet(Station station) {
+    return (_dropOffStation == station || _pickUpStation == station);
+  }
+
+  void clearStation(Station station) {
+    if (_dropOffStation == station) {
+      clearDropOffStation();
+    }
+    else if (_pickUpStation == station) {
+      clearPickUpStation();
+    }
   }
 
   // TODO: Find a better method name
-  List<Station> getStationsWithAtLeastXBikes(int bikes) {
-    return _stations.where((station) => station.bikes >= bikes).toList();
+  List<Station> getStationsWithAtLeastXBikes(
+      int bikes, List<Station> filteredStations) {
+    return filteredStations.where((station) => station.bikes >= bikes).toList();
   }
 
-  List<Station> getStationsWithNoBikes() {
-    return _stations.where((station) => station.bikes <= 0).toList();
+  List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
+    return filteredStations.where((station) => station.bikes <= 0).toList();
   }
 
-  // Retrieves a list of stations that previously had 0 bikes but just got bikes
-  List<Station> getDeadStationsWhichNowHaveBikes() {
-    List<Station> deadStations = getStationsWithNoBikes();
-    List<Station> newStations =
-        _deadStations.toSet().difference(deadStations.toSet()).toList();
-    return newStations;
+  List<Station> getFarStations() {
+    List<Station> farStations = [];
+
+    farStations =
+        _stationsLookUp.difference(getNearStations().toSet()).toList();
+    //print(farStations);
+
+    return farStations;
   }
 
-  void setDeadStations(List<Station> deadStations) {
-    _deadStations = deadStations;
+  List<Station> getNearStations() {
+    List<Station> nearbyStations = [];
+
+    int lastIndex = _stations.lastIndexWhere((station) {
+      return station.distanceTo < 0.5;
+    });
+    nearbyStations = _stations.take(lastIndex + 1).toList();
+    //print(nearbyStations);
+
+    return nearbyStations;
   }
 
-  Future<List<Station>> getFarStations() async {
-    List<Station> _nearbyStations = [];
+  Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = await _locationManager.locate();
-    double distance;
 
-    for (var station in _stations) {
-      distance = _locationManager.distanceFromTo(currentPos, LatLng(station.lat, station.lng));
-      if (distance > 0.5) {
-        _nearbyStations.add(station);
+    for (Station newStation in newStations) {
+      Station? station = _stationsLookUp.lookup(newStation);
+      double distance = _locationManager.distanceFromTo(
+          currentPos, LatLng(newStation.lat, newStation.lng));
+      if (station != null) {
+        station.update(newStation, distance);
+      } else {
+        _stations.add(newStation);
+        _stationsLookUp.add(newStation);
+        newStation.update(newStation, distance);
       }
     }
-
-    return _nearbyStations;
-  }
-
-  //TODO Refactor so that no longer have to maintain distances list
-  Future<void> setStations(List<Station> stations) async {
-    if (_stationDistances.isEmpty) {
-      _stationDistances = List.filled(stations.length, 0, growable: true);
-    }
-    _stations = stations;
-
-    //Sets stations with intermediate distance values while waiting for new
-    //values to be calculated async
-    for (int i = 0; i < _stations.length; i++) {
-      _stations[i].distanceTo = _stationDistances[i];
-    }
-
-    await setStationDistances();
 
     _stations.sort((stationA, stationB) =>
         stationA.distanceTo.compareTo(stationB.distanceTo));
   }
 
-  //TODO Refactor so that no longer have to maintain distances list
-  Future<void> setStationDistances() async {
-    LatLng currentPos = await _locationManager.locate();
-
-    // Set distance from current pos to each station, for each station
-    for (int i = 0; i < _stations.length; i++) {
-      _stations[i].distanceTo = _locationManager.distanceFromTo(
-          currentPos, LatLng(_stations[i].lat, _stations[i].lng));
-      _stationDistances[i] = _stations[i].distanceTo;
-    }
+  void clear() {
+    clearPickUpStation();
+    clearDropOffStation();
+    _passedPickUpStation = false;
+    _passedDropOffStation = false;
   }
 }

@@ -1,16 +1,16 @@
 import 'package:bicycle_trip_planner/managers/IDManager.dart';
-import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 
-class Stop{
- 
-  String _stop;
+class Stop {
+  Place _stop;
   final int _uid = IDManager().generateUID();
 
-  Stop([this._stop = ""]);
+  Stop([this._stop = const Place.placeNotFound()]);
 
-  String getStop() => _stop; 
 
-  int getUID() => _uid; 
+  Place getStop() => _stop;
 
-  void setStop(String stop) => _stop = stop;  
+  int getUID() => _uid;
+
+  void setStop(Place stop) => _stop = stop;
 }

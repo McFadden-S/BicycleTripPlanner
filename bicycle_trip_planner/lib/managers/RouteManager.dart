@@ -1,19 +1,34 @@
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
+import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/services/places_service.dart';
+
+import '../models/place.dart';
 
 class RouteManager {
   //********** Fields **********
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
+  final PlacesService _placesService = PlacesService();
   final Pathway _pathway = Pathway();
+
+  bool _startFromCurrentLocation = false;
+  bool _walkToFirstWaypoint = false;
+
+  bool _ifBeginning = true;
+  bool _ifCycling = false;
+  bool _ifEndWalking = false;
 
   int _groupsize = 1;
 
   bool _changed = false;
   bool _optimised = true;
+
+  Location _destination = Location(lng: -1, lat: -1);
 
   //********** Singleton **********
 
@@ -27,6 +42,30 @@ class RouteManager {
 
   //********** Public **********
 
+  bool ifBeginning() {
+    return _ifBeginning;
+  }
+
+  void setIfBeginning(bool value) {
+    _ifBeginning = value;
+  }
+
+  bool ifCycling() {
+    return _ifCycling;
+  }
+
+  void setIfCycling(bool value) {
+    _ifCycling = value;
+  }
+
+  bool ifEndWalking() {
+    return _ifEndWalking;
+  }
+
+  void setIfEndWalking(bool value) {
+    _ifEndWalking = value;
+  }
+
   int getGroupSize() {
     return _groupsize;
   }
@@ -38,6 +77,41 @@ class RouteManager {
     }
   }
 
+  bool getWalkToFirstWaypoint() {
+    return _walkToFirstWaypoint;
+  }
+
+  void toggleWalkToFirstWaypoint() {
+    _walkToFirstWaypoint = !_walkToFirstWaypoint;
+    _pathway.toggleHasFirstWaypoint();
+    _changed = true;
+  }
+
+  void setWalkToFirstWaypoint(bool ifWalk){
+    _walkToFirstWaypoint = ifWalk;
+    _pathway.setHasFirstWaypoint(ifWalk);
+    _changed = true;
+  }
+
+  bool getStartFromCurrentLocation() {
+    return _startFromCurrentLocation;
+  }
+
+  void toggleStartFromCurrentLocation() {
+    _startFromCurrentLocation = !_startFromCurrentLocation;
+    _changed = true;
+  }
+
+  void setStartFromCurrentLocation(bool value) {
+    _startFromCurrentLocation = value;
+    _changed = true;
+  }
+
+  void setOptimised(bool optimised){
+    _optimised = optimised;
+    _changed = true;
+  }
+
   void toggleOptimised() {
     _optimised = !_optimised;
     _changed = true;
@@ -47,40 +121,54 @@ class RouteManager {
     return _optimised;
   }
 
-  //String getStart(){return pathway.getStart().getText();}
   Stop getStart() => _pathway.getStart();
 
-  //String getDestination() => pathway.getDestination().getText();
   Stop getDestination() => _pathway.getDestination();
 
+  Location getDestinationLocation() => _destination;
+
   List<Stop> getWaypoints() => _pathway.getWaypoints();
+
+  Stop getFirstWaypoint() => _pathway.getFirstWaypoint();
+
+  //List<Stop> getWaypointsWithFirstWaypoint() => _pathway.getWaypointsWithFirstWaypoint();
+
+  List<Stop> getStops() => _pathway.getStops();
 
   Stop getStop(int id) => _pathway.getStop(id);
 
   bool ifChanged() => _changed;
 
-  bool ifStartSet() => _pathway.getStart().getStop() != "";
+  Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
 
-  bool ifDestinationSet() => _pathway.getDestination().getStop() != "";
+  bool ifStartSet() =>
+      _pathway.getStart().getStop() != const Place.placeNotFound();
+
+  bool ifDestinationSet() =>
+      _pathway.getDestination().getStop() != const Place.placeNotFound();
+
+  bool ifFirstWaypointSet() {
+    return _pathway.getFirstWaypoint().getStop() != const Place.placeNotFound();
+  }
 
   bool ifWaypointsSet() => getWaypoints().isNotEmpty;
 
-  void changeStart(String start) {
+  void changeStart(Place start) {
     _pathway.changeStart(start);
     _changed = true;
   }
 
-  void changeDestination(String destination) {
+  void changeDestination(Place destination) {
     _pathway.changeDestination(destination);
     _changed = true;
   }
 
-  void changeWaypoint(int id, String waypoint) {
+  void changeWaypoint(int id, Place waypoint) {
     _pathway.changeStop(id, waypoint);
     _changed = true;
   }
 
-  void changeStop(int id, String stop) {
+  void changeStop(int id, Place stop) {
     _pathway.changeStop(id, stop);
     _changed = true;
   }
@@ -90,15 +178,19 @@ class RouteManager {
     _changed = true;
   }
 
+  Future<void> setDestinationLocation() async {
+    _destination = getDestination().getStop().geometry.location;
+  }
+
   // Overrides the old destination
-  void addDestination(String destination) {
+  void addDestination(Place destination) {
     Stop destinationStop = Stop(destination);
     _pathway.addStop(destinationStop);
     _changed = true;
   }
 
   // Overrides the new stop
-  void addStart(String start) {
+  void addStart(Place start) {
     Stop startStop = Stop(start);
     _pathway.addStop(startStop);
     _pathway.moveStop(startStop.getUID(), 0);
@@ -106,31 +198,49 @@ class RouteManager {
   }
 
   // Adds a new waypoint at the end (before destination)
-  Stop addWaypoint(String waypoint) {
+  Stop addWaypoint(Place waypoint) {
     Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
     _pathway.addStop(waypointStop);
     _pathway.swapStops(destination.getUID(), waypointStop.getUID());
     //Adding a new waypoint with empty string implies no change
-    if (waypoint != "") {
+    if (waypoint != const Place.placeNotFound()) {
+      _changed = true;
+    }
+    return waypointStop;
+  }
+
+  // Adds a new waypoint at the beginning (before destination)
+  Stop addFirstWaypoint(Place waypoint) {
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addFirstWayPoint(waypointStop);
+    //Adding a new waypoint with empty string implies no change
+    if (waypoint != const Place.placeNotFound()) {
       _changed = true;
     }
     return waypointStop;
   }
 
   void clearStart() {
-    _pathway.changeStart("");
+    _pathway.changeStart(const Place.placeNotFound());
     _changed = true;
   }
 
   void clearDestination() {
-    _pathway.changeDestination("");
+    _pathway.changeDestination(const Place.placeNotFound());
+    _destination = Location(lng: -1, lat: -1);
     _changed = true;
   }
 
   // Clears a waypoint (doesn't remove)
   void clearStop(int id) {
-    _pathway.changeStop(id, "");
+    _pathway.changeStop(id, const Place.placeNotFound());
+    _changed = true;
+  }
+
+  void clearFirstWaypoint() {
+    _pathway.setHasFirstWaypoint(false);
+    _pathway.removeFirstWayPoint();
     _changed = true;
   }
 
@@ -158,10 +268,16 @@ class RouteManager {
 
   void clear() {
     _polylineManager.clearPolyline();
+    _ifBeginning = true;
+    _ifCycling = false;
+    _ifEndWalking = false;
+    _walkToFirstWaypoint = false;
+    _startFromCurrentLocation = false;
     clearRouteMarkers();
 
     removeWaypoints();
     clearStart();
     clearDestination();
+    _pathway.initial();
   }
 }

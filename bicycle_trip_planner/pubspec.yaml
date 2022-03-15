@@ -54,7 +54,9 @@ dependencies:
   vector_math: ^2.1.1
   sunrise_sunset_calc: ^2.2.0
   animated_size_and_fade: ^3.0.0
-
+  firebase_auth_mocks: ^0.8.2
+  google_sign_in_mocks: ^0.2.1
+  connectivity_plus: ^2.2.1
 
 dev_dependencies:
   flutter_test:

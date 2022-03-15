@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/text_field_container.dart';
 
 class RoundedPasswordField extends StatefulWidget {
   final ValueChanged<String> onChanged;
@@ -15,7 +14,14 @@ class _RoundedPasswordField extends State<RoundedPasswordField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextFieldContainter(
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      width: MediaQuery.of(context).size.width * 0.8,
+      decoration: BoxDecoration(
+        color: ThemeStyle.kPrimaryLightColor,
+        borderRadius: BorderRadius.circular(29),
+      ),
       child: TextField(
         obscureText: _isHidden,
         onChanged: widget.onChanged,

@@ -8,7 +8,22 @@ class DirectionsService {
 
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination$waypoints&mode=bicycling&key=$key';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=bicycling&key=$key';
+
+    var response = await http.get(Uri.parse(url));
+
+    var json = convert.jsonDecode(response.body);
+    var jsonResults = json['routes'][0] as Map<String, dynamic>;
+
+    return Route.fromJson(jsonResults);
+  }
+
+  Future<Route> getWalkingRoutes(String origin, String destination, [List<String> intermediates = const <String>[], bool optimised = true]) async {
+    const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+
+    var waypoints = _generateWaypoints(intermediates, optimised);
+    var url =
+        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';
 
     var response = await http.get(Uri.parse(url));
 
@@ -23,7 +38,7 @@ class DirectionsService {
     if(intermediates.isNotEmpty){
       waypoints += "&waypoints=optimize:$optimised";
       for(var intermediate in intermediates){
-        waypoints += "|$intermediate";
+        waypoints += "|place_id:$intermediate";
       }
     }
     return waypoints;

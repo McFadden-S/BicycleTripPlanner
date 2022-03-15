@@ -4,9 +4,12 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -50,7 +53,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   void dispose() {
-    applicationBloc.setStationMarkersWithoutUID();
+    applicationBloc.filterStationMarkers();
     locatorSubscription.cancel();
     super.dispose();
   }
@@ -103,25 +106,7 @@ class _NavigationState extends State<Navigation> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: ElevatedButton(
-                              onPressed: () {
-                                applicationBloc.endRoute();
-                                applicationBloc.setSelectedScreen('home');
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("End",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                ),
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.red))),
+                          child: EndRouteButton(),
                         ),
                         Expanded(
                             child: Padding(
