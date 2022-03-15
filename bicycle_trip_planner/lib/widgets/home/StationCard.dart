@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -110,8 +111,8 @@ class _StationCardState extends State<StationCard> {
 
 Future<void> stationClicked(
     ApplicationBloc appBloc, Station station, context) async {
-  await appBloc.searchSelectedStation(station);
-  appBloc.setSelectedScreen('routePlanning');
+
+    appBloc.showSelectedStationDialog(station);
 
   //TODO: The code below is for testing purposes and to be deleted later
   final databaseManager = DatabaseManager();
@@ -119,7 +120,7 @@ Future<void> stationClicked(
   if (successfullyAdded) {
   }else {
       // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
+      AlertDialog alert = const AlertDialog(
         title: Text("No user"),
         content: Text("Station won't be saved unless user is logged in!"),
       );

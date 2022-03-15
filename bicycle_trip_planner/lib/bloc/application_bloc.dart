@@ -66,7 +66,8 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void showSelectedStationDialog(){
+  void showSelectedStationDialog(Station station){
+    _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
     notifyListeners();
   }
@@ -105,16 +106,16 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  searchSelectedStation(Station station) async {
+  searchSelectedStation(Station station, int uid) async {
     // Do not set new location marker. Use the station marker
-    viewStationMarker(station, _routeManager.getStart().getUID());
+    viewStationMarker(station, uid);
 
     if(station.place == const Place.placeNotFound()){
       Place place = await _placesService.getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
 
-    setSelectedLocation(station.place, _routeManager.getStart().getUID());
+    setSelectedLocation(station.place, uid);
 
     notifyListeners();
   }

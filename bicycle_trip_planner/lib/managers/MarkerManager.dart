@@ -52,12 +52,8 @@ class MarkerManager {
           BitmapDescriptor.defaultMarkerWithHue(ThemeStyle.stationMarkerColor),
       position: LatLng(station.lat, station.lng),
       onTap: () async {
-        await appBloc.searchSelectedStation(station);
-        appBloc.setSelectedScreen('routePlanning');
+        appBloc.showSelectedStationDialog(station);
       },
-      // onTap: () {
-      //   showStartIntermediateEndDialog(home.getContext());
-      // },
     );
   }
 
@@ -185,63 +181,4 @@ class MarkerManager {
     }
   }
 
-  void showStartIntermediateEndDialog(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius:
-                BorderRadius.circular(20.0)
-            ),
-            child: Container(
-                height: 200,
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(height: 10),
-                      Expanded(child: Text("Set as:", textAlign: TextAlign.center)),
-                      Expanded(
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size.fromWidth(double.infinity)
-                          ),
-                          // onPressed: () => setStart(station),
-                          onPressed: (){},
-                          child: Text("Starting point"),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: Size.fromWidth(double.infinity)
-                            ),
-                            // onPressed: () => setIntermediate(station),
-                            onPressed: (){},
-                            child: Text("Intermediate stop")
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Expanded(
-                        child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                minimumSize: Size.fromWidth(double.infinity)
-                            ),
-                            // onPressed: () => setEnd(station),
-                            onPressed: (){},
-                            child: Text("Destination")
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                )
-            ),
-          );
-        }
-    );
-  }
 }

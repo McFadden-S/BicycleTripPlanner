@@ -2,11 +2,14 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
+
+import '../../models/stop.dart';
 
 class SelectStationDialog extends StatefulWidget {
 
@@ -49,9 +52,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                       style: ElevatedButton.styleFrom(
                           minimumSize: const Size.fromWidth(double.infinity)
                       ),
-                      onPressed: () {
-                        routeManager.changeStart(dialogManager.getSelectedStation().place);
-                        applicationBloc.clearSelectedStationDialog();
+                      onPressed: () async {
+                       _setStation(applicationBloc, routeManager.getStart().getUID());
                       },
                       child: const Text("Starting point"),
                     ),
@@ -63,8 +65,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                             minimumSize: const Size.fromWidth(double.infinity)
                         ),
                         onPressed: () {
-                          routeManager.addFirstWaypoint(dialogManager.getSelectedStation().place);
-                          applicationBloc.clearSelectedStationDialog();
+                          Stop waypoint = routeManager.addWaypoint(const Place.placeNotFound());
+                          _setStation(applicationBloc, waypoint.getUID());
                         },
                         child: const Text("Intermediate stop")
                     ),
@@ -76,8 +78,7 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                             minimumSize: const Size.fromWidth(double.infinity)
                         ),
                         onPressed: () {
-                          routeManager.changeDestination(dialogManager.getSelectedStation().place);
-                          applicationBloc.clearSelectedStationDialog();
+                          _setStation(applicationBloc, routeManager.getDestination().getUID());
                         },
                         child: const Text("Destination")
                     ),
@@ -90,4 +91,11 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
       );
     }
   }
+
+  Future<void> _setStation(ApplicationBloc applicationBloc, int uid) async {
+    await applicationBloc.searchSelectedStation(dialogManager.getSelectedStation(), uid);
+    applicationBloc.setSelectedScreen('routePlanning');
+    applicationBloc.clearSelectedStationDialog();
+  }
+
 }
