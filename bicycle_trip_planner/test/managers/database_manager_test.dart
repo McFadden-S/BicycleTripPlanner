@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
@@ -68,13 +70,38 @@ void main() {
     //Need to create the pathway object
     expect(
       routeFromFakeDatabase,
-      equals({
-        'name': userName,
-        'email': 'musk.email@tesla.com',
-        'photoUrl': 'url-to-photo.jpg',
-      }),
+      equals(""),
     );
   });
 
-  test(,)
+  test('Remove favourite station',() async{
+    await databaseManager.removeFavouriteStation(favouriteStationsID);
+    final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
+    expect(stationFromFakeDatabase, equals(null));
+  });
+
+  test('Remove favourite route',()async{
+    await databaseManager.removeFavouriteRoute(routeID);
+    final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
+    expect(stationFromFakeDatabase, equals(null));
+  });
+
+  test('Add favourite station',()async{
+    final initialStationFromFakeDatabase = await databaseManager.getFavouriteStations();
+    expect(initialStationFromFakeDatabase, equals(null));
+
+    await databaseManager.addToFavouriteStations(int.parse(favouriteStationsID));
+
+    final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
+    expect(stationFromFakeDatabase.first.toString(), equals(favouriteStationsID));
+  });
+
+  test('Add favourite route',() async{
+    final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
+    expect(stationFromFakeDatabase, equals(null));
+
+    //await databaseManager.addToFavouriteRoutes(start, end, stops)
+    //Need to add place data to create test
+  });
+
 }
