@@ -16,7 +16,6 @@ class NavigationManager {
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
   final _routeManager = RouteManager();
-  final _directionManager = DirectionManager();
 
   bool _isNavigating = false;
 
@@ -177,7 +176,9 @@ class NavigationManager {
         : await _directionsService.getWalkingRoutes(
             endStationId, destinationId);
 
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    //Temporary change: Otherwise directionManager and navigationManager try to
+    //initialise each other (circular import where they infinitely initialise each other)
+    DirectionManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
   Future<void> updatePickUpDropOffStations(
