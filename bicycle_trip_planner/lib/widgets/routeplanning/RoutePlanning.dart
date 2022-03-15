@@ -77,6 +77,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             GroupSizeSelector(),
                             SizedBox(height: 10),
                             OptimisedButton(),
+                            SizedBox(height: 10),
                             WalkToFirstButton(),
                           ],
                         ),
