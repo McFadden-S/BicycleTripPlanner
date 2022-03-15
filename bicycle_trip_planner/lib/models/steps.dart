@@ -23,4 +23,15 @@ class Steps {
   String toString() {
     return instruction;
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Steps &&
+        other.instruction == instruction &&
+        other.distance == distance &&
+        other.duration == duration;
+  }
+
+  @override
+  int get hashCode => Object.hash(instruction, distance, duration);
 }

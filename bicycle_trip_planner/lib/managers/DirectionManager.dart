@@ -72,6 +72,12 @@ class DirectionManager {
     return _distance;
   }
 
+  bool ifRouteSet() {
+    return _startWalkingRoute != R.Route.routeNotFound() &&
+        _endWalkingRoute != R.Route.routeNotFound() &&
+        _bikingRoute != R.Route.routeNotFound();
+  }
+
   bool ifNavigating() {
     return _isNavigating;
   }
@@ -121,6 +127,7 @@ class DirectionManager {
     return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
+  //TODO: Useful for testing. Should no longer be here
   List<Steps> createDummyDirections() {
     List<Steps> steps = [];
     steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
@@ -142,6 +149,11 @@ class DirectionManager {
   void setDistance(int metre) {
     int miles = (metre / 1609.34).ceil();
     _distance = "$miles mi";
+  }
+
+  //TODO: Temporary fix, should be refactored
+  void setNavigating(bool isNavigating) {
+    _isNavigating = isNavigating;
   }
 
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
