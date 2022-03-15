@@ -30,20 +30,6 @@ class _RouteCardState extends State<RouteCard> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding
-        .instance?.addPostFrameCallback((_) => setCurrentLocation(context));
-  }
-
-  setCurrentLocation(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    if(!routeManager.ifStartSet()){
-      applicationBloc.setSelectedCurrentLocation();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
