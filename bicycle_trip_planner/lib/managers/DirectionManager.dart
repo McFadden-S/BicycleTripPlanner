@@ -68,6 +68,16 @@ class DirectionManager {
     _polylineManager.addBikingPolyline(_bikingRoute.polyline.points);
     _polylineManager.addWalkingPolyline(_endWalkingRoute.polyline.points);
 
+    int duration = 0;
+    int distance = 0;
+
+    _startWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+    _bikingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+    _endWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+
+    setDuration(duration);
+    setDistance(distance);
+
     if (relocateMap) {
       _cameraManager.goToPlace(
           _bikingRoute.legs.first.startLocation.lat,
