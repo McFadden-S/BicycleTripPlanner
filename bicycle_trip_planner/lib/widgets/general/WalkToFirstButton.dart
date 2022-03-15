@@ -8,15 +8,15 @@ import '../../constants.dart';
 import '../../managers/DialogManager.dart';
 import 'CircleButton.dart';
 
-class OptimisedButton extends StatefulWidget {
+class WalkToFirstButton extends StatefulWidget {
 
-  const OptimisedButton({ Key? key}) : super(key: key);
+  const WalkToFirstButton({ Key? key}) : super(key: key);
 
   @override
-  _OptimisedButtonState createState() => _OptimisedButtonState();
+  _WalkToFirstButtonState createState() => _WalkToFirstButtonState();
 }
 
-class _OptimisedButtonState extends State<OptimisedButton> {
+class _WalkToFirstButtonState extends State<WalkToFirstButton> {
 
   final DialogManager dialogManager = DialogManager();
   final RouteManager routeManager = RouteManager();
@@ -32,20 +32,20 @@ class _OptimisedButtonState extends State<OptimisedButton> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               CircleButton(
-                  iconIn: Icons.alt_route,
-                  onButtonClicked: () {
-                    dialogManager.setBinaryChoice(
-                      "Do you want to optimise your route?",
-                      "Yes",
-                          (){routeManager.setOptimised(true);},
-                      "No",
-                          (){routeManager.setOptimised(false);},
-                    );
+                iconIn: Icons.directions_walk,
+                onButtonClicked: () {
+                  dialogManager.setBinaryChoice(
+                    "Do you want to walk to start or be routed to it?",
+                    "Walk",
+                        (){routeManager.setWalkToFirstWaypoint(true);},
+                    "Route",
+                        (){routeManager.setWalkToFirstWaypoint(false);},
+                  );
 
-                    applicationBloc.showBinaryDialog();
+                  applicationBloc.showBinaryDialog();
 
-                  },
-                  iconColor: routeManager.ifOptimised() ? Colors.amber : ThemeStyle.primaryIconColor,
+                },
+                iconColor: routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
               ),
             ],
           ),

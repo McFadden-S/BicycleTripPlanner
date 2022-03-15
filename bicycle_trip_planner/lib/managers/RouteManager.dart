@@ -88,6 +88,12 @@ class RouteManager {
     _changed = true;
   }
 
+  void setWalkToFirstWaypoint(bool ifWalk){
+    _walkToFirstWaypoint = ifWalk;
+    _pathway.setHasFirstWaypoint(ifWalk);
+    _changed = true;
+  }
+
   bool getStartFromCurrentLocation() {
     return _startFromCurrentLocation;
   }

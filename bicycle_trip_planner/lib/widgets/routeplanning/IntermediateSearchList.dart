@@ -92,8 +92,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     List<Stop> stops = routeManager.getWaypoints();
     stops.forEach((stop) {_addStopWidget(applicationBloc, stop); });
 
-    print("Stops Length ${stops.length}");
-
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,

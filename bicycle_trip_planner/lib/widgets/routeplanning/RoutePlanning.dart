@@ -6,6 +6,7 @@ import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
@@ -72,11 +73,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             GroupSizeSelector(),
                             SizedBox(height: 10),
                             OptimisedButton(),
-                            CircleButton(
-                              iconIn: Icons.directions_walk,
-                              iconColor: _routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
-                              onButtonClicked: () => setState(() => {_routeManager.toggleWalkToFirstWaypoint()}),
-                            ),
+                            WalkToFirstButton(),
                           ],
                         ),
                       ),

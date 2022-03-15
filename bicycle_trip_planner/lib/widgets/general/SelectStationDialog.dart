@@ -84,6 +84,16 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                     ),
                   ),
                   const SizedBox(height: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromWidth(double.infinity)
+                        ),
+                        onPressed: () {applicationBloc.clearSelectedStationDialog();},
+                        child: const Text("Cancel")
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                 ],
               ),
             )
