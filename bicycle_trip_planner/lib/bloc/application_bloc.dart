@@ -45,9 +45,9 @@ class ApplicationBloc with ChangeNotifier {
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
+  final NavigationManager _navigationManager = NavigationManager();
 
   // TODO: Add calls to isNavigation from GUI
-  bool _isNavigating = false;
   bool _isDestinationReached = true;
 
   late Timer _stationTimer;
@@ -60,23 +60,23 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Dialog **********
 
-  void showBinaryDialog(){
+  void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
     notifyListeners();
   }
 
-  void showSelectedStationDialog(Station station){
+  void showSelectedStationDialog(Station station) {
     _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
     notifyListeners();
   }
 
-  void clearBinaryDialog(){
+  void clearBinaryDialog() {
     _dialogManager.clearBinaryChoice();
     notifyListeners();
   }
 
-  void clearSelectedStationDialog(){
+  void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
     notifyListeners();
   }
@@ -258,7 +258,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void filterStationMarkers() {
-    if (_directionManager.ifNavigating()) {
+    if (_navigationManager.ifNavigating()) {
       return;
     }
     List<Station> nearbyStations = filterNearbyStations();
@@ -301,7 +301,7 @@ class ApplicationBloc with ChangeNotifier {
 
   updateDirectionsPeriodically(Duration duration) {
     Timer.periodic(duration, (timer) async {
-      if (_isNavigating) {
+      if (_navigationManager.ifNavigating()) {
         if (await checkWaypointPassed()) {
           //TODO implement what happens once destination reached
           _isDestinationReached = true;
@@ -347,12 +347,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   Future<void> setNavigating(bool value) async {
-    _isNavigating = value;
-    // TODO: Temporarily here to prevent station markers from filtering during navigation
-    // + ensures navigation works as intended (this needs refactoring!)
-
-    _directionManager.setNavigating(value);
-    if (_isNavigating) {
+    _navigationManager.setNavigating(value);
+    if (_navigationManager.ifNavigating()) {
       startNavigation();
     }
   }
@@ -431,5 +427,6 @@ class ApplicationBloc with ChangeNotifier {
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
+    _navigationManager.clear();
   }
 }
