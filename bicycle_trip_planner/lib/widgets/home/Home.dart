@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:bicycle_trip_planner/widgets/home/StartIntermediateEndDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
+
+import '../../managers/DialogManager.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -16,6 +18,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late StreamSubscription connectivitySubscription;
+  final DialogManager _dialogManager = DialogManager();
 
   @override
   void initState() {
@@ -61,24 +64,11 @@ class _HomeState extends State<Home> {
               duration: const Duration(milliseconds: 300),
               child: applicationBloc.getSelectedScreen()
           ),
+          SelectStationDialog(),
+          BinaryChoiceDialog(),
         ],
       ),
     );
   }
 
-  void showStartIntermediateEndDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return StartIntermediateEndDialog();
-        });
-  }
-
-  void showBinaryChoiceDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return BinaryChoiceDialog();
-        });
-  }
 }

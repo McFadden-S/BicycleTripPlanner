@@ -1,10 +1,10 @@
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
-
 
 import '../models/place.dart';
 
@@ -81,9 +81,15 @@ class RouteManager {
     return _walkToFirstWaypoint;
   }
 
-  void toggleWalkToFirstWaypoint(){
+  void toggleWalkToFirstWaypoint() {
     _walkToFirstWaypoint = !_walkToFirstWaypoint;
     _pathway.toggleHasFirstWaypoint();
+    _changed = true;
+  }
+
+  void setWalkToFirstWaypoint(bool ifWalk){
+    _walkToFirstWaypoint = ifWalk;
+    _pathway.setHasFirstWaypoint(ifWalk);
     _changed = true;
   }
 
@@ -91,13 +97,18 @@ class RouteManager {
     return _startFromCurrentLocation;
   }
 
-  void toggleStartFromCurrentLocation(){
+  void toggleStartFromCurrentLocation() {
     _startFromCurrentLocation = !_startFromCurrentLocation;
     _changed = true;
   }
 
-  void setStartFromCurrentLocation(bool value){
+  void setStartFromCurrentLocation(bool value) {
     _startFromCurrentLocation = value;
+    _changed = true;
+  }
+
+  void setOptimised(bool optimised){
+    _optimised = optimised;
     _changed = true;
   }
 
@@ -130,11 +141,15 @@ class RouteManager {
 
   Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
 
-  bool ifStartSet() => _pathway.getStart().getStop() != const Place.placeNotFound();
+  bool ifStartSet() =>
+      _pathway.getStart().getStop() != const Place.placeNotFound();
 
-  bool ifDestinationSet() => _pathway.getDestination().getStop() != const Place.placeNotFound();
+  bool ifDestinationSet() =>
+      _pathway.getDestination().getStop() != const Place.placeNotFound();
 
-  bool ifFirstWaypointSet(){return _pathway.getFirstWaypoint().getStop() != const Place.placeNotFound();}
+  bool ifFirstWaypointSet() {
+    return _pathway.getFirstWaypoint().getStop() != const Place.placeNotFound();
+  }
 
   bool ifWaypointsSet() => getWaypoints().isNotEmpty;
 
@@ -196,7 +211,7 @@ class RouteManager {
   }
 
   // Adds a new waypoint at the beginning (before destination)
-  Stop addFirstWaypoint(Place waypoint){
+  Stop addFirstWaypoint(Place waypoint) {
     Stop waypointStop = Stop(waypoint);
     _pathway.addFirstWayPoint(waypointStop);
     //Adding a new waypoint with empty string implies no change
@@ -234,10 +249,10 @@ class RouteManager {
     _changed = true;
   }
 
-  void removeWaypoints(){
+  void removeWaypoints() {
     List<int> uids =
-      _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
-    for(int id in uids){
+        _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
+    for (int id in uids) {
       removeStop(id);
     }
   }

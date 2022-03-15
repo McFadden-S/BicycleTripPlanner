@@ -37,7 +37,7 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        stationClicked(applicationBloc, widget.stations[widget.index], context);
+        applicationBloc.showSelectedStationDialog(widget.stations[widget.index]);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -105,9 +105,4 @@ class _FavouriteStationCardState extends State<FavouriteStationCard> {
       ),
     );
   }
-}
-
-Future<void> stationClicked(ApplicationBloc appBloc, Station station, context) async {
-  appBloc.searchSelectedStation(station);
-  appBloc.setSelectedScreen('routePlanning');
 }

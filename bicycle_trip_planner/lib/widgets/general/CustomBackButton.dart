@@ -1,4 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,10 +14,13 @@ class CustomBackButton extends StatefulWidget {
   const CustomBackButton({ Key? key, required this.context, required this.backTo}) : super(key: key);
 
   @override
-  _StationCardState createState() => _StationCardState();
+  _CustomBackButtonState createState() => _CustomBackButtonState();
 }
 
-class _StationCardState extends State<CustomBackButton> {
+class _CustomBackButtonState extends State<CustomBackButton> {
+
+  final DialogManager dialogManager = DialogManager();
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -27,64 +32,22 @@ class _StationCardState extends State<CustomBackButton> {
           children: [
             CircleButton(
                 iconIn: Icons.arrow_back,
-                onButtonClicked: () => {
-                  showBackButtonBinaryDialog(applicationBloc),
+                onButtonClicked: () {
+                  dialogManager.setBinaryChoice(
+                      "Do you want to go back to the ${widget.backTo} screen?",
+                      "Yes",
+                      (){applicationBloc.goBack(widget.backTo);},
+                      "No",
+                      (){},
+                  );
+
+                  applicationBloc.showBinaryDialog();
+
                 }
             ),
           ],
         ),
       ]
-    );
-  }
-
-  void showBackButtonBinaryDialog(applicationBloc) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.circular(20.0)
-          ),
-          child: Container(
-              height: 200,
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(height: 10),
-                    Expanded(child: Text("Do you want to go back to the home screen?", textAlign: TextAlign.center)),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromWidth(double.infinity)
-                        ),
-                        // onPressed: (){},
-                        onPressed: () {
-                          applicationBloc.goBack(widget.backTo);
-                          Navigator.pop(context);
-                        },
-                        child: Text("Yes"),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromWidth(double.infinity)
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        child: Text("No"),
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                  ],
-                ),
-              )
-          ),
-        );
-      },
     );
   }
   

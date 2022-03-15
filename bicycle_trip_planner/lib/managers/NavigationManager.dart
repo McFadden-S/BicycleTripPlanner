@@ -30,7 +30,7 @@ class NavigationManager {
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
-    await setPartialRoutes([first.name], (intermediates.map((intermediate) => intermediate.name)).toList());
+    await setPartialRoutes([first.name], (intermediates.map((intermediate) => intermediate.placeId)).toList());
   }
 
 //TODO get rid of parameters since they are from ROUTEMANAGER()
@@ -40,7 +40,7 @@ class NavigationManager {
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
-    await setPartialRoutes([], (intermediates.map((intermediate) => intermediate.name)).toList());
+    await setPartialRoutes([], (intermediates.map((intermediate) => intermediate.placeId)).toList());
   }
 
   setNewRoute(Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
@@ -48,25 +48,25 @@ class NavigationManager {
   }
 
   Future<void> setPartialRoutes([List<String> first = const <String>[], List<String> intermediates = const <String>[]]) async {
-    String origin = RouteManager().getStart().getStop().name;
-    String destination = RouteManager().getDestination().getStop().name;
+    String originId = RouteManager().getStart().getStop().placeId;
+    String destinationId = RouteManager().getDestination().getStop().placeId;
 
-    String startStationName = getStationPlaceName(StationManager().getPickupStation());
-    String endStationName = getStationPlaceName(StationManager().getDropOffStation());
+    String startStationId = StationManager().getPickupStation().place.placeId;
+    String endStationId = StationManager().getDropOffStation().place.placeId;
 
     Rou.Route startWalkRoute = RouteManager().ifBeginning()
-        ? await _directionsService.getWalkingRoutes(origin, startStationName, first, false)
+        ? await _directionsService.getWalkingRoutes(originId, startStationId, first, false)
         : Rou.Route.routeNotFound();
 
     Rou.Route bikeRoute = RouteManager().ifBeginning()
-        ? await _directionsService.getRoutes(startStationName, endStationName, intermediates, RouteManager().ifOptimised())
+        ? await _directionsService.getRoutes(startStationId, endStationId, intermediates, RouteManager().ifOptimised())
         : RouteManager().ifCycling()
-        ? await _directionsService.getRoutes(origin, endStationName, intermediates, RouteManager().ifOptimised())
+        ? await _directionsService.getRoutes(originId, endStationId, intermediates, RouteManager().ifOptimised())
         : Rou.Route.routeNotFound();
 
     Rou.Route endWalkRoute = RouteManager().ifEndWalking()
-        ? await _directionsService.getWalkingRoutes(origin, destination)
-        : await _directionsService.getWalkingRoutes(endStationName, destination);
+        ? await _directionsService.getWalkingRoutes(originId, destinationId)
+        : await _directionsService.getWalkingRoutes(endStationId, destinationId);
 
     setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
   }
@@ -87,8 +87,6 @@ class NavigationManager {
   Future<Station> setNewDropOffStation(Location location, [int groupSize = 1]) async {
     return await StationManager().getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
   }
-
-  String getStationPlaceName(Station station) => station.place.name;
 
   Future<void> setInitialPickUpDropOffStations() async {
     setNewPickUpStation(RouteManager().getStart().getStop().geometry.location, RouteManager().getGroupSize());

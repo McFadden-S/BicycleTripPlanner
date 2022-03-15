@@ -8,7 +8,7 @@ class DirectionsService {
 
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination$waypoints&mode=bicycling&key=$key';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=bicycling&key=$key';
 
     var response = await http.get(Uri.parse(url));
 
@@ -23,7 +23,7 @@ class DirectionsService {
 
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=$origin&destination=$destination$waypoints&mode=walking&key=$key';
+        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';
 
     var response = await http.get(Uri.parse(url));
 
@@ -38,7 +38,7 @@ class DirectionsService {
     if(intermediates.isNotEmpty){
       waypoints += "&waypoints=optimize:$optimised";
       for(var intermediate in intermediates){
-        waypoints += "|$intermediate";
+        waypoints += "|place_id:$intermediate";
       }
     }
     return waypoints;

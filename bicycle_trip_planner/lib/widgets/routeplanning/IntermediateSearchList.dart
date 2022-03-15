@@ -30,12 +30,12 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget(ApplicationBloc applicationBloc) {
-    setState(() {
+  void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
       TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
 
-      Stop waypoint = routeManager.addWaypoint(const Place.placeNotFound());
+      Stop waypoint = routeManager.getWaypoints().firstWhere((stop) => stop == stopIn,
+          orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
       
       stopsList.add(
           ListTile(
@@ -58,6 +58,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                             applicationBloc.clearSelectedLocation(waypoint.getUID());
                             stopsList.removeAt(indexPressed);
                             intermediateSearchControllers.removeAt(indexPressed);
+                            routeManager.removeStop(waypoint.getUID());
                           });
                         },
                         icon: Icon(
@@ -74,7 +75,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
       );
 
       isShowingIntermediate = true;
-    });
   }
 
   void toggleShowingIntermediate() {
@@ -85,6 +85,13 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   Widget build(BuildContext context) {
     final applicationBloc =
     Provider.of<ApplicationBloc>(context, listen: false);
+
+    stopsList.clear();
+    intermediateSearchControllers.clear();
+
+    List<Stop> stops = routeManager.getWaypoints();
+    stops.forEach((stop) {_addStopWidget(applicationBloc, stop); });
+
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
@@ -100,7 +107,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: ThemeStyle.primaryTextColor,
                   ),
                 ),
-                onPressed: () => {_addStopWidget(applicationBloc)},
+                onPressed: () => setState(() {
+                  _addStopWidget(applicationBloc, Stop());
+                }),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
                       ThemeStyle.buttonPrimaryColor),
@@ -123,7 +132,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 }else {
                   // set up the AlertDialog
                   AlertDialog alert = AlertDialog(
-                    title: Text("Error"),
+                    title: const Text("Error"),
                     content: Text(
                         FirebaseAuth.instance.currentUser == null
                         ? "User not logged in!"
