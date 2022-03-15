@@ -20,13 +20,34 @@ class PolylineManager{
 
   //********** Private **********
 
+  void _addPolyline(List<PointLatLng> points, Color color){
+    final String polylineIdVal = 'polyline_$_polylineIdCounter';
+    _polylineIdCounter++;
+
+    _polylines.add(Polyline(
+      polylineId: PolylineId(polylineIdVal),
+      width: 6,
+      color: color,
+      points: points.map((point) => LatLng(point.latitude, point.longitude),)
+          .toList(),
+    ));
+  }
+
   //********** Public **********
 
   Set<Polyline> getPolyLines(){
     return _polylines;
   }
 
-  void setPolyline(List<PointLatLng> points) {
+  void addWalkingPolyline(List<PointLatLng> points){
+    _addPolyline(points, Colors.grey);
+  }
+
+  void addBikingPolyline(List<PointLatLng> points){
+    _addPolyline(points, Colors.red);
+  }
+
+  void setPolyline(List<PointLatLng> points, Color color) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
     _polylines.clear();
@@ -34,7 +55,7 @@ class PolylineManager{
     _polylines.add(Polyline(
       polylineId: PolylineId(polylineIdVal),
       width: 6,
-      color: Colors.red,
+      color: color,
       points: points.map((point) => LatLng(point.latitude, point.longitude),)
           .toList(),
     ));

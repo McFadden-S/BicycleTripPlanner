@@ -62,6 +62,31 @@ class DirectionManager {
     _isCycling = false;
   }
 
+  void showCombinedRoute([relocateMap = true]){
+    _polylineManager.clearPolyline();
+    _polylineManager.addWalkingPolyline(_startWalkingRoute.polyline.points);
+    _polylineManager.addBikingPolyline(_bikingRoute.polyline.points);
+    _polylineManager.addWalkingPolyline(_endWalkingRoute.polyline.points);
+
+    int duration = 0;
+    int distance = 0;
+
+    _startWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+    _bikingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+    _endWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+
+    setDuration(duration);
+    setDistance(distance);
+
+    if (relocateMap) {
+      _cameraManager.goToPlace(
+          _bikingRoute.legs.first.startLocation.lat,
+          _bikingRoute.legs.first.startLocation.lng,
+          _bikingRoute.bounds.northeast,
+          _bikingRoute.bounds.southwest);
+    }
+  }
+
   //********** Getting **********
 
   String getDuration() {
@@ -171,7 +196,7 @@ class DirectionManager {
         showEndRoute(relocateMap);
       }
     } else {
-      showBikeRoute(relocateMap);
+      showCombinedRoute(relocateMap);
     }
   }
 
@@ -201,7 +226,13 @@ class DirectionManager {
           route.bounds.southwest);
     }
 
-    _polylineManager.setPolyline(route.polyline.points);
+    Color polylineColor = Colors.red;
+
+    if(route != _bikingRoute){
+      polylineColor = Colors.grey;
+    }
+
+    _polylineManager.setPolyline(route.polyline.points, polylineColor);
   }
 
   void toggleCycling() {
