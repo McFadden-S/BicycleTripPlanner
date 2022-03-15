@@ -312,8 +312,8 @@ class ApplicationBloc with ChangeNotifier {
           endRoute();
           timer.cancel();
         }
-        if (RouteManager().ifWalkToFirstWaypoint() &&
-            RouteManager().ifFirstWaypointSet()) {
+        if (_routeManager.ifWalkToFirstWaypoint() &&
+            _routeManager.ifFirstWaypointSet()) {
           await _navigationManager.updateRouteWithWalking(_currentLocation);
         } else {
           await _navigationManager.updateRoute(_currentLocation);

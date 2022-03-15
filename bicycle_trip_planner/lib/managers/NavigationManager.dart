@@ -1,21 +1,22 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
+import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../models/place.dart';
-import '../models/station.dart';
-import '../services/directions_service.dart';
-import 'DirectionManager.dart';
-import 'RouteManager.dart';
-import 'StationManager.dart';
 
 class NavigationManager {
   final _directionsService = DirectionsService();
 
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
+  final _routeManager = RouteManager();
+  final _directionManager = DirectionManager();
 
   bool _isNavigating = false;
 
@@ -41,17 +42,17 @@ class NavigationManager {
 
   void start(Place currentLocation) async {
     _isNavigating = true;
-    if (RouteManager().ifStartFromCurrentLocation()) {
+    if (_routeManager.ifStartFromCurrentLocation()) {
       await setInitialPickUpDropOffStations();
     } else {
-      if (RouteManager().ifWalkToFirstWaypoint()) {
+      if (_routeManager.ifWalkToFirstWaypoint()) {
         await setInitialPickUpDropOffStations();
-        Place firstStop = RouteManager().getStart().getStop();
-        RouteManager().addFirstWaypoint(firstStop);
+        Place firstStop = _routeManager.getStart().getStop();
+        _routeManager.addFirstWaypoint(firstStop);
         updateRouteWithWalking(currentLocation);
       } else {
-        Place firstStop = RouteManager().getStart().getStop();
-        RouteManager().addFirstWaypoint(firstStop);
+        Place firstStop = _routeManager.getStart().getStop();
+        _routeManager.addFirstWaypoint(firstStop);
         await _updateRoute(currentLocation);
         await setInitialPickUpDropOffStations();
       }
@@ -63,30 +64,30 @@ class NavigationManager {
     await _changeRouteStartToCurrentLocation(currentLocation);
     checkPassedByPickUpDropOffStations(currentLocation);
     await _updateRoute(
-        RouteManager().getStart().getStop(),
-        RouteManager()
+        _routeManager.getStart().getStop(),
+        _routeManager
             .getWaypoints()
             .map((waypoint) => waypoint.getStop())
             .toList(),
-        RouteManager().getGroupSize());
+        _routeManager.getGroupSize());
   }
 
   Future<void> updateRouteWithWalking(Place currentLocation) async {
     await _changeRouteStartToCurrentLocation(currentLocation);
     checkPassedByPickUpDropOffStations(currentLocation);
     await walkToFirstLocation(
-        RouteManager().getStart().getStop(),
-        RouteManager().getFirstWaypoint().getStop(),
-        RouteManager()
+        _routeManager.getStart().getStop(),
+        _routeManager.getFirstWaypoint().getStop(),
+        _routeManager
             .getWaypoints()
             .sublist(1)
             .map((waypoint) => waypoint.getStop())
             .toList(),
-        RouteManager().getGroupSize());
+        _routeManager.getGroupSize());
   }
 
   Future<void> _changeRouteStartToCurrentLocation(Place currentLocation) async {
-    RouteManager().changeStart(currentLocation);
+    _routeManager.changeStart(currentLocation);
   }
 
   bool isWaypointPassed(LatLng waypoint, Place currentLocation) {
@@ -109,27 +110,27 @@ class NavigationManager {
   void checkPassedByPickUpDropOffStations(Place currentLocation) {
     Station startStation = _stationManager.getPickupStation();
     Station endStation = _stationManager.getDropOffStation();
-    passedStation(startStation, RouteManager().setIfBeginning,
-        RouteManager().setIfCycling, currentLocation);
-    passedStation(endStation, RouteManager().setIfCycling,
-        RouteManager().setIfEndWalking, currentLocation);
+    passedStation(startStation, _routeManager.setIfBeginning,
+        _routeManager.setIfCycling, currentLocation);
+    passedStation(endStation, _routeManager.setIfCycling,
+        _routeManager.setIfEndWalking, currentLocation);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
   Future<bool> checkWaypointPassed(Place currentLocation) async {
-    if (RouteManager().getWaypoints().isNotEmpty &&
+    if (_routeManager.getWaypoints().isNotEmpty &&
         isWaypointPassed(
-            RouteManager().getWaypoints().first.getStop().getLatLng(),
+            _routeManager.getWaypoints().first.getStop().getLatLng(),
             currentLocation)) {
-      RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
+      _routeManager.removeStop(_routeManager.getWaypoints().first.getUID());
     }
-    return (RouteManager().getStops().length <= 1);
+    return (_routeManager.getStops().length <= 1);
   }
 
   walkToFirstLocation(Place origin, Place first,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location firstLocation = first.geometry.location;
-    Location endLocation = RouteManager().getDestinationLocation();
+    Location endLocation = _routeManager.getDestinationLocation();
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
@@ -137,11 +138,11 @@ class NavigationManager {
         (intermediates.map((intermediate) => intermediate.placeId)).toList());
   }
 
-//TODO get rid of parameters since they are from ROUTEMANAGER()
+//TODO get rid of parameters since they are from _routeManager
   _updateRoute(Place origin,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location startLocation = origin.geometry.location;
-    Location endLocation = RouteManager().getDestinationLocation();
+    Location endLocation = _routeManager.getDestinationLocation();
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
@@ -149,50 +150,44 @@ class NavigationManager {
         (intermediates.map((intermediate) => intermediate.placeId)).toList());
   }
 
-  setNewRoute(
-      Rou.Route startWalkRoute, Rou.Route bikeRoute, Rou.Route endWalkRoute) {
-    DirectionManager()
-        .setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
-  }
-
   Future<void> setPartialRoutes(
       [List<String> first = const <String>[],
       List<String> intermediates = const <String>[]]) async {
-    String originId = RouteManager().getStart().getStop().placeId;
-    String destinationId = RouteManager().getDestination().getStop().placeId;
+    String originId = _routeManager.getStart().getStop().placeId;
+    String destinationId = _routeManager.getDestination().getStop().placeId;
 
-    String startStationId = StationManager().getPickupStation().place.placeId;
-    String endStationId = StationManager().getDropOffStation().place.placeId;
+    String startStationId = _stationManager.getPickupStation().place.placeId;
+    String endStationId = _stationManager.getDropOffStation().place.placeId;
 
-    Rou.Route startWalkRoute = RouteManager().ifBeginning()
+    Rou.Route startWalkRoute = _routeManager.ifBeginning()
         ? await _directionsService.getWalkingRoutes(
             originId, startStationId, first, false)
         : Rou.Route.routeNotFound();
 
-    Rou.Route bikeRoute = RouteManager().ifBeginning()
+    Rou.Route bikeRoute = _routeManager.ifBeginning()
         ? await _directionsService.getRoutes(startStationId, endStationId,
-            intermediates, RouteManager().ifOptimised())
-        : RouteManager().ifCycling()
+            intermediates, _routeManager.ifOptimised())
+        : _routeManager.ifCycling()
             ? await _directionsService.getRoutes(originId, endStationId,
-                intermediates, RouteManager().ifOptimised())
+                intermediates, _routeManager.ifOptimised())
             : Rou.Route.routeNotFound();
 
-    Rou.Route endWalkRoute = RouteManager().ifEndWalking()
+    Rou.Route endWalkRoute = _routeManager.ifEndWalking()
         ? await _directionsService.getWalkingRoutes(originId, destinationId)
         : await _directionsService.getWalkingRoutes(
             endStationId, destinationId);
 
-    setNewRoute(startWalkRoute, bikeRoute, endWalkRoute);
+    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
   Future<void> updatePickUpDropOffStations(
       Location startLocation, Location endLocation, int groupSize) async {
-    if (!StationManager().checkPickUpStationHasBikes(groupSize) &&
-        !StationManager().passedPickUpStation()) {
+    if (!_stationManager.checkPickUpStationHasBikes(groupSize) &&
+        !_stationManager.passedPickUpStation()) {
       await setNewPickUpStation(startLocation, groupSize);
     }
-    if (!StationManager().checkDropOffStationHasEmptyDocks(groupSize) &&
-        !StationManager().passedDropOffStation()) {
+    if (!_stationManager.checkDropOffStationHasEmptyDocks(groupSize) &&
+        !_stationManager.passedDropOffStation()) {
       await setNewDropOffStation(endLocation, groupSize);
     }
   }
@@ -201,22 +196,22 @@ class NavigationManager {
 
   Future<Station> setNewPickUpStation(Location location,
       [int groupSize = 1]) async {
-    return await StationManager()
-        .getPickupStationNear(LatLng(location.lat, location.lng), groupSize);
+    return await _stationManager.getPickupStationNear(
+        LatLng(location.lat, location.lng), groupSize);
   }
 
   Future<Station> setNewDropOffStation(Location location,
       [int groupSize = 1]) async {
-    return await StationManager()
-        .getDropoffStationNear(LatLng(location.lat, location.lng), groupSize);
+    return await _stationManager.getDropoffStationNear(
+        LatLng(location.lat, location.lng), groupSize);
   }
 
   Future<void> setInitialPickUpDropOffStations() async {
-    setNewPickUpStation(RouteManager().getStart().getStop().geometry.location,
-        RouteManager().getGroupSize());
+    setNewPickUpStation(_routeManager.getStart().getStop().geometry.location,
+        _routeManager.getGroupSize());
     setNewDropOffStation(
-        RouteManager().getDestination().getStop().geometry.location,
-        RouteManager().getGroupSize());
+        _routeManager.getDestination().getStop().geometry.location,
+        _routeManager.getGroupSize());
   }
 
   // TODO: Include in relevant places and clear up any left behidn variables
