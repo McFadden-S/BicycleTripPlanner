@@ -64,6 +64,9 @@ class LocationManager {
   }
 
   Future<double?> getHeading() async {
+    //geo.Position alternateLocation = await geo.Geolocator.getCurrentPosition();
+    //alternateLocation.heading;
+
     var currentLocation = await location.getLocation();
     return currentLocation.heading;
   }
