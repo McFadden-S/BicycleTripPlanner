@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +22,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
       return  const SizedBox.shrink();
     } else {
       return Dialog(
+          backgroundColor: ThemeStyle.cardColor,
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Container(
@@ -33,30 +35,38 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                     const SizedBox(height: 10),
                     Expanded(
                         child: Text(_dialogManager.getChoicePrompt(),
-                            textAlign: TextAlign.center)),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: ThemeStyle.primaryTextColor)
+                        )),
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromWidth(double.infinity)),
+                            minimumSize: const Size.fromWidth(double.infinity),
+                            primary: ThemeStyle.buttonPrimaryColor
+                        ),
                         onPressed: () {
                           (_dialogManager.getOptionOneFunction())();
                           applicationBloc.clearBinaryDialog();
                         },
                         // onPressed: YesOption();
-                        child: Text(_dialogManager.getOptionOneText()),
+                        child: Text(_dialogManager.getOptionOneText(),
+                            style: TextStyle(color: ThemeStyle.primaryTextColor)),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Expanded(
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromWidth(double.infinity)),
+                            minimumSize: const Size.fromWidth(double.infinity),
+                            primary: ThemeStyle.buttonPrimaryColor
+                            ),
                         onPressed: () {
                           (_dialogManager.getOptionTwoFunction())();
                           applicationBloc.clearBinaryDialog();
                         },
                         // onPressed: NoOption();
-                        child: Text(_dialogManager.getOptionTwoText()),
+                        child: Text(_dialogManager.getOptionTwoText(),
+                            style: TextStyle(color: ThemeStyle.primaryTextColor)),
                       ),
                     ),
                     const SizedBox(height: 10),

@@ -34,6 +34,7 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
       return const SizedBox.shrink();
     }else {
       return Dialog(
+        backgroundColor: ThemeStyle.cardColor,
         shape: RoundedRectangleBorder(
             borderRadius:
             BorderRadius.circular(20.0)
@@ -46,7 +47,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 10),
-                  const Expanded(child: Text("Set as:", textAlign: TextAlign.center)),
+                  Expanded(child: Text("Set as:", textAlign: TextAlign.center,
+                      style: TextStyle(color: ThemeStyle.primaryTextColor))),
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -55,7 +57,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                       onPressed: () async {
                        _setStation(applicationBloc, routeManager.getStart().getUID());
                       },
-                      child: const Text("Starting point"),
+                      child: Text("Starting point",
+                          style: TextStyle(color: ThemeStyle.primaryTextColor)),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -68,7 +71,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                           Stop waypoint = routeManager.addWaypoint(const Place.placeNotFound());
                           _setStation(applicationBloc, waypoint.getUID());
                         },
-                        child: const Text("Intermediate stop")
+                        child: Text("Intermediate stop",
+                            style: TextStyle(color: ThemeStyle.primaryTextColor))
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -80,7 +84,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                         onPressed: () {
                           _setStation(applicationBloc, routeManager.getDestination().getUID());
                         },
-                        child: const Text("Destination")
+                        child: Text("Destination",
+                        style: TextStyle(color: ThemeStyle.primaryTextColor))
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -90,7 +95,8 @@ class _SelectStationDialogState extends State<SelectStationDialog> {
                             minimumSize: const Size.fromWidth(double.infinity)
                         ),
                         onPressed: () {applicationBloc.clearSelectedStationDialog();},
-                        child: const Text("Cancel")
+                        child: Text("Cancel",
+                            style: TextStyle(color: ThemeStyle.primaryTextColor))
                     ),
                   ),
                   const SizedBox(height: 10),
