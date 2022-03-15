@@ -4,44 +4,70 @@ import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  FirebaseDatabase firebaseDatabase;
-  DatabaseManager databaseManager;
 
-  setUpAll(() {
-    firebaseDatabase = MockFirebaseDatabase.instance;
-    databaseManager = DatabaseManager(firebaseDatabase);
-  });
-
+  DatabaseManager databaseManager = DatabaseManager();
+  FirebaseDatabase firebaseDatabase = MockFirebaseDatabase.instance;
   // Put fake data
   const userId = 'userId';
   const userName = 'Elon musk';
+  const favouriteRouteId = "routeID";
+  const favouriteStationsID = "158";
+  const description = "description";
+  const routeID = "endRouteID";
+  const lat = "50.54631";
+  const lng = "-0.15413";
+  const name = "locationName";
+
   const fakeData = {
     'users': {
       userId: {
-        'name': userName,
-        'email': 'musk.email@tesla.com',
-        'photoUrl': 'url-to-photo.jpg',
-      },
-      'otherUserId': {
-        'name': 'userName',
-        'email': 'othermusk.email@tesla.com',
-        'photoUrl': 'other_url-to-photo.jpg',
+        'favouriteRoutes': {
+          favouriteRouteId: {
+            'end':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'start':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'stops':{
+              0: {
+                'description':{description},
+                'id':{routeID},
+                'lat': {lat},
+                'lng': {lng},
+                'name': {name}
+              }
+            }
+          },
+          'favouriteStations': {
+            favouriteStationsID: {favouriteStationsID}
+          }
+        }
       }
     }
   };
+
   MockFirebaseDatabase.instance.ref().set(fakeData);
 
 
-
-  test('Should get userName ...', () async {
-    final userNameFromFakeDatabase = await databaseManager.getUserName(userId);
-    expect(userNameFromFakeDatabase, equals(userName));
+  test('Get favourite station', () async {
+    final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
+    expect(stationFromFakeDatabase.first.toString(), equals(favouriteStationsID));
   });
 
-  test('Should get user ...', () async {
-    final userNameFromFakeDatabase = await databaseManager.getUser(userId);
+  test('Get favourite routes', () async {
+    final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
+    //Need to create the pathway object
     expect(
-      userNameFromFakeDatabase,
+      routeFromFakeDatabase,
       equals({
         'name': userName,
         'email': 'musk.email@tesla.com',
@@ -49,4 +75,6 @@ void main() {
       }),
     );
   });
+
+  test(,)
 }
