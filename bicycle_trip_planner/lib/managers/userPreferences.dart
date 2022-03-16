@@ -20,6 +20,24 @@ class UserPreferences {
 
 //********** Public **********
 
+  savePlace(Place place) async {
+    final SharedPreferences prefs = await _prefs;
+    // encode place as json String and add
+    // await prefs.setString(key, value);
+  }
+
+
+  saveRoute(Pathway pathway) async {
+    final SharedPreferences prefs = await _prefs;
+    // encode pathway as json String and add
+    // await prefs.setString(key, value);
+  }
+
+  darkModeToggle() async {
+    final SharedPreferences prefs = await _prefs;
+    bool darkMode = prefs.getBool('darkMode') ?? false;
+    prefs.setBool('darkMode', !darkMode);
+  }
 
 
 
