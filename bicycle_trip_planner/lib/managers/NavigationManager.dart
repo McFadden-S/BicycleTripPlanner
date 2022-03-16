@@ -19,6 +19,11 @@ class NavigationManager {
 
   bool _isNavigating = false;
 
+  Station _pickUpStation = Station.stationNotFound();
+  Station _dropOffStation = Station.stationNotFound();
+  bool _passedDropOffStation = false;
+  bool _passedPickUpStation = false;
+
   //********** Singleton **********
 
   static final NavigationManager _navigationManager =
@@ -90,6 +95,7 @@ class NavigationManager {
         30);
   }
 
+  // TODO: Check what isStationSet does
   void passedStation(Station station, void Function(bool) functionA,
       void Function(bool) functionB) {
     if (_stationManager.isStationSet(station) &&
@@ -102,12 +108,10 @@ class NavigationManager {
   }
 
   void checkPassedByPickUpDropOffStations() {
-    Station startStation = _stationManager.getPickupStation();
-    Station endStation = _stationManager.getDropOffStation();
-    passedStation(
-        startStation, _routeManager.setIfBeginning, _routeManager.setIfCycling);
-    passedStation(
-        endStation, _routeManager.setIfCycling, _routeManager.setIfEndWalking);
+    passedStation(_pickUpStation, _routeManager.setIfBeginning,
+        _routeManager.setIfCycling);
+    passedStation(_dropOffStation, _routeManager.setIfCycling,
+        _routeManager.setIfEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
@@ -151,8 +155,8 @@ class NavigationManager {
     String originId = _routeManager.getStart().getStop().placeId;
     String destinationId = _routeManager.getDestination().getStop().placeId;
 
-    String startStationId = _stationManager.getPickupStation().place.placeId;
-    String endStationId = _stationManager.getDropOffStation().place.placeId;
+    String startStationId = _pickUpStation.place.placeId;
+    String endStationId = _dropOffStation.place.placeId;
 
     Rou.Route startWalkRoute = _routeManager.ifBeginning()
         ? await _directionsService.getWalkingRoutes(
@@ -192,15 +196,15 @@ class NavigationManager {
 
   //TODO: Move pick up and drop off station variables in stationManager here...
 
-  Future<Station> setNewPickUpStation(Location location,
+  Future<void> setNewPickUpStation(Location location,
       [int groupSize = 1]) async {
-    return await _stationManager.getPickupStationNear(
+    _pickUpStation = await _stationManager.getPickupStationNear(
         LatLng(location.lat, location.lng), groupSize);
   }
 
-  Future<Station> setNewDropOffStation(Location location,
+  Future<void> setNewDropOffStation(Location location,
       [int groupSize = 1]) async {
-    return await _stationManager.getDropoffStationNear(
+    _dropOffStation = await _stationManager.getDropoffStationNear(
         LatLng(location.lat, location.lng), groupSize);
   }
 
