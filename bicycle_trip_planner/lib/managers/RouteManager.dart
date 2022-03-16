@@ -13,12 +13,12 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-  final PlacesService _placesService = PlacesService();
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
 
+  // TODO: These are variables tied during navigation
   bool _ifBeginning = true;
   bool _ifCycling = false;
   bool _ifEndWalking = false;
@@ -28,6 +28,7 @@ class RouteManager {
   bool _changed = false;
   bool _optimised = true;
 
+  // Remove this
   Location _destination = Location(lng: -1, lat: -1);
 
   //********** Singleton **********
@@ -77,7 +78,7 @@ class RouteManager {
     }
   }
 
-  bool getWalkToFirstWaypoint() {
+  bool ifWalkToFirstWaypoint() {
     return _walkToFirstWaypoint;
   }
 
@@ -87,13 +88,13 @@ class RouteManager {
     _changed = true;
   }
 
-  void setWalkToFirstWaypoint(bool ifWalk){
+  void setWalkToFirstWaypoint(bool ifWalk) {
     _walkToFirstWaypoint = ifWalk;
     _pathway.setHasFirstWaypoint(ifWalk);
     _changed = true;
   }
 
-  bool getStartFromCurrentLocation() {
+  bool ifStartFromCurrentLocation() {
     return _startFromCurrentLocation;
   }
 
@@ -107,7 +108,7 @@ class RouteManager {
     _changed = true;
   }
 
-  void setOptimised(bool optimised){
+  void setOptimised(bool optimised) {
     _optimised = optimised;
     _changed = true;
   }
@@ -176,10 +177,6 @@ class RouteManager {
   void swapStops(int stop1ID, int stop2ID) {
     _pathway.swapStops(stop1ID, stop2ID);
     _changed = true;
-  }
-
-  Future<void> setDestinationLocation() async {
-    _destination = getDestination().getStop().geometry.location;
   }
 
   // Overrides the old destination

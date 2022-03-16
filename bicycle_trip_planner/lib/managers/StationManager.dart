@@ -9,17 +9,27 @@ class StationManager {
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
-  Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  Station _pickUpStation = Station(
+      id: -1,
+      name: "",
+      lat: -1,
+      lng: -1,
+      bikes: -1,
+      emptyDocks: -1,
+      totalDocks: -1);
   bool _passedPickUpStation = false;
-  Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+  Station _dropOffStation = Station(
+      id: -1,
+      name: "",
+      lat: -1,
+      lng: -1,
+      bikes: -1,
+      emptyDocks: -1,
+      totalDocks: -1);
   bool _passedDropOffStation = false;
 
   // Used only for O(1) look up times for efficiency
   Set<Station> _stationsLookUp = <Station>{};
-
-  // List of dead stations from the PREVIOUS update
-  // TODO: ONLY USED FOR UPDATING MARKERS SO FAR
-  //List<Station> _deadStations = [];
 
   final LocationManager _locationManager = LocationManager();
 
@@ -72,10 +82,12 @@ class StationManager {
 
   Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
-    Station station =  nearPos.firstWhere((station) => station.bikes >= groupSize,
+    Station station = nearPos.firstWhere(
+        (station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
-    if(station.place == const Place.placeNotFound()){
-      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+    if (station.place == const Place.placeNotFound()) {
+      Place place = await PlacesService().getPlaceFromCoordinates(
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
     _pickUpStation = station;
@@ -84,10 +96,12 @@ class StationManager {
 
   Future<Station> getDropoffStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
-    Station station = nearPos.firstWhere((station) => station.emptyDocks >= groupSize,
+    Station station = nearPos.firstWhere(
+        (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
-    if(station.place == const Place.placeNotFound()){
-      Place place = await PlacesService().getPlaceFromCoordinates(station.lat, station.lng, "Santander Cycles: ${station.name}");
+    if (station.place == const Place.placeNotFound()) {
+      Place place = await PlacesService().getPlaceFromCoordinates(
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
     _dropOffStation = station;
@@ -103,7 +117,14 @@ class StationManager {
   }
 
   void clearPickUpStation() {
-    _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+    _pickUpStation = Station(
+        id: -1,
+        name: "",
+        lat: -1,
+        lng: -1,
+        bikes: -1,
+        emptyDocks: -1,
+        totalDocks: -1);
   }
 
   void setPassedPickUpStation(bool value) {
@@ -134,7 +155,14 @@ class StationManager {
   }
 
   void clearDropOffStation() {
-    _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
+    _dropOffStation = Station(
+        id: -1,
+        name: "",
+        lat: -1,
+        lng: -1,
+        bikes: -1,
+        emptyDocks: -1,
+        totalDocks: -1);
   }
 
   void setPassedDropOffStation(bool value) {
@@ -154,8 +182,7 @@ class StationManager {
   void clearStation(Station station) {
     if (_dropOffStation == station) {
       clearDropOffStation();
-    }
-    else if (_pickUpStation == station) {
+    } else if (_pickUpStation == station) {
       clearPickUpStation();
     }
   }
