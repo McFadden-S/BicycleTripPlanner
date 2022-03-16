@@ -181,10 +181,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           DropdownButton<int>(
+                            dropdownColor: ThemeStyle.cardColor,
                             value: stationsRefreshRate,
                             icon: const Icon(Icons.arrow_drop_down),
                             elevation: 16,
-                            style: TextStyle(color: ThemeStyle.primaryTextColor),
+                            style: TextStyle(
+                                color: ThemeStyle.mainFontColor,
+                                fontSize: 16
+                            ),
                             underline: Container(
                               height: 2,
                               // color: Colors.deepPurpleAccent,
@@ -197,7 +201,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .map<DropdownMenuItem<int>>((int value) {
                               return DropdownMenuItem<int>(
                                 value: value,
-                                child: Text(value.toString()),
+                                child: Text(
+                                    value.toString(),
+                                    style: TextStyle(
+                                      color: ThemeStyle.primaryTextColor,
+                                      fontSize: 16
+                                  ),
+                                ),
                               );
                             }).toList(),
                           )
@@ -224,10 +234,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           DropdownButton<double>(
+                            dropdownColor: ThemeStyle.cardColor,
                             value: nearbyStationsRange,
                             icon: const Icon(Icons.arrow_drop_down),
                             elevation: 16,
-                            style: TextStyle(color: ThemeStyle.primaryTextColor),
+                            style: TextStyle(
+                                color: ThemeStyle.mainFontColor,
+                                fontSize: 16
+                            ),
                             underline: Container(
                               height: 2,
                               // color: Colors.deepPurpleAccent,
@@ -240,7 +254,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .map<DropdownMenuItem<double>>((double value) {
                               return DropdownMenuItem<double>(
                                 value: value,
-                                child: Text(value.toString()),
+                                child: Text(value.toString(),
+                                    style: TextStyle(
+                                        color: ThemeStyle.primaryTextColor,
+                                        fontSize: 16),
+                                ),
                               );
                             }).toList(),
                           )
@@ -267,10 +285,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           DropdownButton<String>(
+                            dropdownColor: ThemeStyle.cardColor,
                             value: distanceUnit,
                             icon: const Icon(Icons.arrow_drop_down),
                             elevation: 16,
-                            style: TextStyle(color: ThemeStyle.primaryTextColor),
+                            style: TextStyle(
+                                color: ThemeStyle.mainFontColor,
+                                fontSize: 16
+                            ),
                             underline: Container(
                               height: 2,
                               // color: Colors.deepPurpleAccent,
@@ -283,7 +305,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 .map<DropdownMenuItem<String>>((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
-                                child: Text(value),
+                                child: Text(value,
+                                  style: TextStyle(
+                                      color: ThemeStyle.primaryTextColor,
+                                      fontSize: 16
+                                  ),
+                                ),
                               );
                             }).toList(),
                           )
