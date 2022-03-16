@@ -23,6 +23,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
 
+
+  @override
+  void initState() {
+    updateVariables();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _auth = FirebaseAuth.instance;
@@ -32,6 +38,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: ThemeStyle.cardColor,
       body: SafeArea(
         child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
@@ -156,22 +163,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     children: [
                       Row(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Stations update rate",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: ThemeStyle.primaryTextColor,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Stations update rate",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),
                                 ),
-                              ),
-                              Text("The time for which the stations list is updated in seconds",
-                                style: TextStyle(
-                                  color: ThemeStyle.primaryTextColor,
-                                ),),
-                            ],
+                                Text("The time for which the stations list is updated in seconds",
+                                  style: TextStyle(
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),),
+                              ],
+                            ),
                           ),
-                          Spacer(),
                           DropdownButton<int>(
                             value: stationsRefreshRate,
                             icon: const Icon(Icons.arrow_drop_down),
@@ -184,9 +192,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onChanged: (int? newValue) async {
                               userSettings.setStationsRefreshRate(newValue);
                               await updateVariables();
-                              setState(() {
-                                // update screen
-                              });
                             },
                             items: stationsRefreshRateOptions
                                 .map<DropdownMenuItem<int>>((int value) {
@@ -201,22 +206,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       SizedBox(height: 10),
                       Row(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Nearby Stations range",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: ThemeStyle.primaryTextColor,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Nearby Stations range",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),
                                 ),
-                              ),
-                              Text("The maximum distance range for nearby stations in miles/km",
-                                style: TextStyle(
-                                  color: ThemeStyle.primaryTextColor,
-                                ),),
-                            ],
+                                Text("The maximum distance range for nearby stations in miles/km",
+                                  style: TextStyle(
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),),
+                              ],
+                            ),
                           ),
-                          Spacer(),
                           DropdownButton<double>(
                             value: nearbyStationsRange,
                             icon: const Icon(Icons.arrow_drop_down),
@@ -229,9 +235,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onChanged: (double? newValue) async {
                               userSettings.setNearbyStationsRange(newValue);
                               await updateVariables();
-                              setState(() {
-                                // update screen
-                              });
                             },
                             items: nearbyStationsRangeOptions
                                 .map<DropdownMenuItem<double>>((double value) {
@@ -246,22 +249,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       SizedBox(height: 10),
                       Row(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Distance unit",
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: ThemeStyle.primaryTextColor,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Distance unit",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),
                                 ),
-                              ),
-                              Text("Distance unit to be used",
-                                style: TextStyle(
-                                  color: ThemeStyle.primaryTextColor,
-                                ),),
-                            ],
+                                Text("Distance unit to be used",
+                                  style: TextStyle(
+                                    color: ThemeStyle.primaryTextColor,
+                                  ),),
+                              ],
+                            ),
                           ),
-                          Spacer(),
                           DropdownButton<String>(
                             value: distanceUnit,
                             icon: const Icon(Icons.arrow_drop_down),
@@ -274,9 +278,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             onChanged: (String? newValue) async {
                               userSettings.setDistanceUnit(newValue);
                               await updateVariables();
-                              setState(() {
-                                // update screen
-                              });
                             },
                             items: distanceUnitOptions
                                 .map<DropdownMenuItem<String>>((String value) {
@@ -311,5 +312,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
     distanceUnit = await userSettings.distanceUnit();
+    setState(() {
+      // update screen
+    });
   }
 }
