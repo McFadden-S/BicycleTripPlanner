@@ -49,7 +49,20 @@ void main(){
               200));
 
       final answer = await StationsService().getStations(client);
+      expect(answer.first.id,1);
       expect(answer.first.emptyDocks, 10);
+      expect(answer.first.lat, 51.52916347);
+      expect(answer.first.lng, -0.109970527);
+      expect(answer.first.bikes, 9);
+      expect(answer.first.totalDocks,19);
+
+      expect(answer[1].id,2);
+      expect(answer[1].emptyDocks, 24);
+      expect(answer[1].lat,51.49960695);
+      expect(answer[1].lng, -0.197574246);
+      expect(answer[1].bikes, 13);
+      expect(answer[1].totalDocks,37);
+
     });
   });
 }
