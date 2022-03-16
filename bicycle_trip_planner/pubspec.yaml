@@ -58,6 +58,7 @@ dependencies:
   google_sign_in_mocks: ^0.2.1
   connectivity_plus: ^2.2.1
   firebase_database_mocks: ^0.3.2
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   flutter_test:
