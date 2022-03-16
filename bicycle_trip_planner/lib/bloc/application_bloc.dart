@@ -6,7 +6,8 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
+import 'package:bicycle_trip_planner/models/location.dart' as Loc;
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -20,6 +21,7 @@ import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
@@ -45,13 +47,15 @@ class ApplicationBloc with ChangeNotifier {
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
+  final NavigationManager _navigationManager = NavigationManager();
 
   // TODO: Add calls to isNavigation from GUI
-  bool _isNavigating = false;
-  bool _isDestinationReached = true;
 
   late Timer _stationTimer;
-  late Place _currentLocation;
+  late StreamSubscription<LocationData> _navigationSubscription;
+
+  // TODO: CurrentLocation should be in LocationManager
+  //late Place _currentLocation;
 
   ApplicationBloc() {
     fetchCurrentLocation();
@@ -60,23 +64,23 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Dialog **********
 
-  void showBinaryDialog(){
+  void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
     notifyListeners();
   }
 
-  void showSelectedStationDialog(Station station){
+  void showSelectedStationDialog(Station station) {
     _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
     notifyListeners();
   }
 
-  void clearBinaryDialog(){
+  void clearBinaryDialog() {
     _dialogManager.clearBinaryChoice();
     notifyListeners();
   }
 
-  void clearSelectedStationDialog(){
+  void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
     notifyListeners();
   }
@@ -92,8 +96,8 @@ class ApplicationBloc with ChangeNotifier {
     searchResults.insert(
         0,
         PlaceSearch(
-            description: "My current location",
-            placeId: _currentLocation.placeId));
+            description: SearchType.current.description,
+            placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
 
@@ -102,8 +106,8 @@ class ApplicationBloc with ChangeNotifier {
     searchResults.insert(
         0,
         PlaceSearch(
-            description: "My current location",
-            placeId: _currentLocation.placeId));
+            description: SearchType.current.description,
+            placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
 
@@ -122,19 +126,32 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  updateLocationLive() {
+    _navigationSubscription = _locationManager
+        .onUserLocationChange(5)
+        .listen((LocationData currentLocation) {
+      // Print this if you suspect that data is loading more than expected
+      //print("I loaded!");
+      CameraManager.instance.viewUser();
+      _updateDirections();
+    });
+  }
+
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
-    _currentLocation = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude, "My current location");
+    Place currentPlace = await _placesService.getPlaceFromCoordinates(
+        latLng.latitude, latLng.longitude, SearchType.current.description);
+    _locationManager.setCurrentLocation(currentPlace);
     notifyListeners();
   }
 
   setSelectedCurrentLocation() async {
     await fetchCurrentLocation();
 
-    // Currently will always set station as a start
-    setLocationMarker(_currentLocation, _routeManager.getStart().getUID());
-    setSelectedLocation(_currentLocation, _routeManager.getStart().getUID());
+    setLocationMarker(_locationManager.getCurrentLocation(),
+        _routeManager.getStart().getUID());
+    setSelectedLocation(_locationManager.getCurrentLocation(),
+        _routeManager.getStart().getUID());
 
     notifyListeners();
   }
@@ -179,8 +196,8 @@ class ApplicationBloc with ChangeNotifier {
 
   findRoute(Place origin, Place destination,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation = destination.geometry.location;
+    Loc.Location startLocation = origin.geometry.location;
+    Loc.Location endLocation = destination.geometry.location;
 
     Station startStation = await _stationManager.getPickupStationNear(
         LatLng(startLocation.lat, startLocation.lng), groupSize);
@@ -205,15 +222,13 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void endRoute() {
+    _navigationSubscription.cancel();
     Wakelock.disable();
     _stationManager.clear();
+    _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
     notifyListeners();
-  }
-
-  bool getIsDestinationReached() {
-    return _isDestinationReached;
   }
 
   // ********** Stations **********
@@ -258,7 +273,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void filterStationMarkers() {
-    if (_directionManager.ifNavigating()) {
+    if (_navigationManager.ifNavigating()) {
       return;
     }
     List<Station> nearbyStations = filterNearbyStations();
@@ -299,132 +314,31 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Navigation Management **********
 
-  updateDirectionsPeriodically(Duration duration) {
-    Timer.periodic(duration, (timer) async {
-      if (_isNavigating) {
-        if (await checkWaypointPassed()) {
-          //TODO implement what happens once destination reached
-          _isDestinationReached = true;
-          endRoute();
-          //_isDestinationReached = false;
-          timer.cancel();
-        }
-        if (RouteManager().getWalkToFirstWaypoint() &&
-            RouteManager().ifFirstWaypointSet()) {
-          await _updateRouteWithWalking();
-        } else {
-          await _updateRoute();
-        }
-        notifyListeners();
-      } else {
-        _isDestinationReached = true;
-        timer.cancel();
-        //_isDestinationReached = false;
-      }
-    });
-  }
-
   Future<void> startNavigation() async {
-    await RouteManager().setDestinationLocation();
-    if (RouteManager().getStartFromCurrentLocation()) {
-      await NavigationManager().setInitialPickUpDropOffStations();
-      updateDirectionsPeriodically(Duration(seconds: 20));
-    } else {
-      if (RouteManager().getWalkToFirstWaypoint()) {
-        await NavigationManager().setInitialPickUpDropOffStations();
-        Place firstStop = RouteManager().getStart().getStop();
-        RouteManager().addFirstWaypoint(firstStop);
-        _updateRouteWithWalking();
-        updateDirectionsPeriodically(Duration(seconds: 20));
-      } else {
-        Place firstStop = RouteManager().getStart().getStop();
-        RouteManager().addFirstWaypoint(firstStop);
-        await _updateRoute();
-        await NavigationManager().setInitialPickUpDropOffStations();
-        updateDirectionsPeriodically(Duration(seconds: 20));
-      }
-    }
-  }
-
-  Future<void> setNavigating(bool value) async {
-    _isNavigating = value;
-    // TODO: Temporarily here to prevent station markers from filtering during navigation
-    // + ensures navigation works as intended (this needs refactoring!)
-
-    _directionManager.setNavigating(value);
-    if (_isNavigating) {
-      startNavigation();
-    }
-  }
-
-  Future<void> _changeRouteStartToCurrentLocation() async {
     await fetchCurrentLocation();
-    RouteManager().changeStart(_currentLocation);
+    setSelectedScreen('navigation');
+    await _navigationManager.start();
+    _updateDirections();
+    updateLocationLive();
+    _directionManager.showStartRoute();
+    Wakelock.enable();
   }
 
-  Future<void> _updateRoute() async {
-    await _changeRouteStartToCurrentLocation();
-    checkPassedByPickUpDropOffStations();
-    await NavigationManager().updateRoute(
-        RouteManager().getStart().getStop(),
-        RouteManager()
-            .getWaypoints()
-            .map((waypoint) => waypoint.getStop())
-            .toList(),
-        RouteManager().getGroupSize());
-    notifyListeners();
-  }
+  _updateDirections() async {
+    if (!_navigationManager.ifNavigating()) return;
 
-  Future<void> _updateRouteWithWalking() async {
-    await _changeRouteStartToCurrentLocation();
-    checkPassedByPickUpDropOffStations();
-    await NavigationManager().walkToFirstLocation(
-        RouteManager().getStart().getStop(),
-        RouteManager().getFirstWaypoint().getStop(),
-        RouteManager()
-            .getWaypoints()
-            .sublist(1)
-            .map((waypoint) => waypoint.getStop())
-            .toList(),
-        RouteManager().getGroupSize());
-    notifyListeners();
-  }
-
-//
-  bool isWaypointPassed(LatLng waypoint) {
-    return (_locationManager.distanceFromToInMeters(
-            _currentLocation.getLatLng(), waypoint) <=
-        30);
-  }
-
-  void passedStation(Station station, void Function(bool) functionA,
-      void Function(bool) functionB) {
-    if (_stationManager.isStationSet(station) &&
-        isWaypointPassed(LatLng(station.lat, station.lng))) {
-      _stationManager.passedStation(station);
-      _stationManager.clearStation(station);
-      functionA(false);
-      functionB(true);
+    await fetchCurrentLocation();
+    if (await _navigationManager.checkWaypointPassed()) {
+      endRoute();
+      return;
     }
-  }
 
-  void checkPassedByPickUpDropOffStations() {
-    Station startStation = _stationManager.getPickupStation();
-    Station endStation = _stationManager.getDropOffStation();
-    passedStation(startStation, RouteManager().setIfBeginning,
-        RouteManager().setIfCycling);
-    passedStation(endStation, RouteManager().setIfCycling,
-        RouteManager().setIfEndWalking);
-  }
-
-  //remove waypoint once passed by it, return true if we reached the destination
-  Future<bool> checkWaypointPassed() async {
-    if (RouteManager().getWaypoints().isNotEmpty &&
-        isWaypointPassed(
-            RouteManager().getWaypoints().first.getStop().getLatLng())) {
-      RouteManager().removeStop(RouteManager().getWaypoints().first.getUID());
+    if (_routeManager.ifWalkToFirstWaypoint() &&
+        _routeManager.ifFirstWaypointSet()) {
+      await _navigationManager.updateRouteWithWalking();
+    } else {
+      await _navigationManager.updateRoute();
     }
-    return (RouteManager().getStops().length <= 1);
   }
 
   // Clears selected route and directions
