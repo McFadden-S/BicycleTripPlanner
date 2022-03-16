@@ -11,6 +11,7 @@ import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
@@ -23,6 +24,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
+
 
 class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
@@ -236,7 +238,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    await _stationManager.setStations(await _stationsService.getStations());
+    http.Client client = new http.Client();
+    await _stationManager.setStations(await _stationsService.getStations(client));
     notifyListeners();
   }
 
