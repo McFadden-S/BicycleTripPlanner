@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as Loc;
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
@@ -95,7 +96,7 @@ class ApplicationBloc with ChangeNotifier {
     searchResults.insert(
         0,
         PlaceSearch(
-            description: "My current location",
+            description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
@@ -105,7 +106,7 @@ class ApplicationBloc with ChangeNotifier {
     searchResults.insert(
         0,
         PlaceSearch(
-            description: "My current location",
+            description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
   }
@@ -127,10 +128,11 @@ class ApplicationBloc with ChangeNotifier {
 
   updateLocationLive() {
     _navigationSubscription = _locationManager
-        .onUserLocationChange(15)
+        .onUserLocationChange(5)
         .listen((LocationData currentLocation) {
       // Print this if you suspect that data is loading more than expected
       //print("I loaded!");
+      CameraManager.instance.viewUser();
       _updateDirections();
     });
   }
@@ -138,7 +140,7 @@ class ApplicationBloc with ChangeNotifier {
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude, "My current location");
+        latLng.latitude, latLng.longitude, SearchType.current.description);
     _locationManager.setCurrentLocation(currentPlace);
     notifyListeners();
   }
