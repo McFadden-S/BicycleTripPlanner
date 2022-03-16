@@ -3,14 +3,14 @@ import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/place.dart';
-class UserPreferences {
+class UserSettings {
 
   //********** Singleton **********
-  static final UserPreferences _userPreferences = UserPreferences._internal();
-  factory UserPreferences() {
-    return _userPreferences;
+  static final UserSettings _userSettings = UserSettings._internal();
+  factory UserSettings() {
+    return _userSettings;
   }
-  UserPreferences._internal();
+  UserSettings._internal();
 
 
 //********** Fields **********
@@ -67,11 +67,22 @@ class UserPreferences {
     return true;
   }
 
-  // distance unit is set as kilometers if returns true,
-  // otherwise the distance unit will be miles
-  distanceInKilometers() async {
+  distanceUnit() async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getBool('distanceInKilometers') ?? false;
+    return prefs.getString('distanceUnit') ?? 'miles';
+  }
+
+  setDistanceUnit(String? unit) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setString('distanceUnit', unit ?? "miles").then((_) {
+      // Data set successfully!
+      return true;
+    }).catchError((error) {
+      // error
+      return false;
+    });
+    //no error caught
+    return true;
   }
 
 
@@ -84,9 +95,28 @@ class UserPreferences {
 
   // returns a number representing the amount of time (in seconds)
   // between every API call for stations (default is 30 seconds)
-  setStationsRefreshRate(int seconds) async {
+  setStationsRefreshRate(int? seconds) async {
     final SharedPreferences prefs = await _prefs;
-    await prefs.setInt('stationsRefreshRate', seconds).then((_) {
+    await prefs.setInt('stationsRefreshRate', seconds ?? 30).then((_) {
+      // Data set successfully!
+      return true;
+    }).catchError((error) {
+      // error
+      return false;
+    });
+    //no error caught
+    return true;
+  }
+
+
+  nearbyStationsRange() async {
+    final SharedPreferences prefs = await _prefs;
+    return prefs.getDouble('nearbyStationsRange') ?? 0.5;
+  }
+
+  setNearbyStationsRange(double? value) async {
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setDouble('nearbyStationsRange', value ?? 30.5).then((_) {
       // Data set successfully!
       return true;
     }).catchError((error) {

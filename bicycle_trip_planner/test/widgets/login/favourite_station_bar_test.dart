@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/login/FavouriteBar.dart';
+import 'package:bicycle_trip_planner/widgets/settings/FavouriteBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../setUp.dart';
