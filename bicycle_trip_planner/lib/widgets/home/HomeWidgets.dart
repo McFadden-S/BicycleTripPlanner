@@ -1,8 +1,10 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../general/GroupSizeSelector.dart';
 
 class HomeWidgets extends StatefulWidget {
@@ -28,32 +30,31 @@ class _HomeWidgetsState extends State<HomeWidgets> {
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Search(
-                          labelTextIn: 'Search',
-                          searchController: TextEditingController(),
-                          uid: routeManager.getDestination().getUID(),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ThemeStyle.cardColor,
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Search(
+                            labelTextIn: 'Search',
+                            searchController: TextEditingController(),
+                            uid: routeManager.getDestination().getUID(),
+                          ),
                         ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.pushNamed(context, '/login'),
-                        child: Container(
-                          margin: EdgeInsets.only(top: 5),
-                            width: 60.0,
-                            height: 60.0,
-                            decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: AssetImage('assets/profile.png'),
-                                )
-                            )),
-                      )
-                    ],
+                        IconButton(
+                          icon: Icon(
+                              Icons.settings,
+                              color: ThemeStyle.buttonPrimaryColor,
+                          ),
+                          onPressed: () => Navigator.pushNamed(context, '/settings'),
+                          iconSize: 50,
+                        )
+                      ],
+                    ),
                   ),
                 ],
               ),
