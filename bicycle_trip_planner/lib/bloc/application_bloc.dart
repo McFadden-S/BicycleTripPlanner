@@ -7,6 +7,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
@@ -49,6 +50,7 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -251,8 +253,8 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStations({bool favourite = false}) async {
-    if(favourite) {
+  updateStations() async {
+    if(_userSettings.getIsIsFavouriteStationsSelected()) {
       List<Station> favouriteStations = await _stationsService.getStations();
       List<int> compare = await DatabaseManager().getFavouriteStations();
       favouriteStations.retainWhere((element) => compare.contains(element.id));
@@ -353,6 +355,9 @@ class ApplicationBloc with ChangeNotifier {
       await _navigationManager.updateRoute();
     }
   }
+
+  // ********** User Setting Management **********
+
 
   // Clears selected route and directions
   void clearMap() {

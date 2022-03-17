@@ -1,7 +1,9 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
@@ -123,7 +125,8 @@ class _StationBarState extends State<StationBar> {
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
                             setState(() {_isFavouriteStations = !_isFavouriteStations;});
-                            applicationBloc.updateStations(favourite: _isFavouriteStations);
+                            UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
+                            applicationBloc.updateStations();
                           },
                           icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
                         ),

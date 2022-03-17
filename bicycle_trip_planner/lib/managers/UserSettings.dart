@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/place.dart';
 class UserSettings {
+  //********** Singleton **********
+  bool _isFavouriteStationsSelected = false;
 
   //********** Singleton **********
   static final UserSettings _userSettings = UserSettings._internal();
@@ -127,6 +129,13 @@ class UserSettings {
     return true;
   }
 
+  setIsFavouriteStationsSelected(bool value) {
+    _isFavouriteStationsSelected = value;
+  }
+
+  getIsIsFavouriteStationsSelected() {
+    return _isFavouriteStationsSelected;
+  }
 
 //********** Private **********
 
