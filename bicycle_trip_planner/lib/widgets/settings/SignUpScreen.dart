@@ -80,7 +80,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           email: email,
                           password: password,
                         );
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                       else{
                         ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");

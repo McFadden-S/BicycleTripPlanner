@@ -113,19 +113,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         child: Text("Login"),
                                         onPressed: () async {
                                           if (_auth.currentUser == null) {
-                                            await Navigator.push(
+                                            // The result will be true when logged in successfully,
+                                            // False otherwise
+                                            bool sucess = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) {
                                                   return LoginScreen();
                                                 },
                                               ),
-                                            ).then(updateScreen());
-                                            // if (_auth.currentUser != null) {
-                                            //   setState(() {
-                                            //     // update screen
-                                            //   });
-                                            // }
+                                            );
+                                            if(sucess){
+                                              updateScreen();
+                                            }
                                           }
                                         },
                                     ),
@@ -137,14 +137,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       child: Text("Sign up"),
                                       onPressed: () async {
                                         if (_auth.currentUser == null) {
-                                          await Navigator.push(
+                                          // The result will be true when logged in successfully,
+                                          // False otherwise
+                                          bool sucess = await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) {
                                                 return SignUpScreen();
                                               },
                                             ),
-                                          ).then(updateScreen());
+                                          );
+                                          if(sucess){
+                                            updateScreen();
+                                          }
                                         }
                                       },
                                     ),

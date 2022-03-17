@@ -79,7 +79,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     try {
                       await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     } catch (e) {
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                     }
@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         await GoogleSignInProvider().googleLogin();
                         if(_auth.currentUser != null){
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         }
                       },
                       style: ElevatedButton.styleFrom(
