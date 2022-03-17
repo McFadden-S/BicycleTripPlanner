@@ -26,6 +26,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void initState() {
+    super.initState();
     updateVariables();
   }
 
@@ -110,12 +111,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                               return LoginScreen();
                                             },
                                           ),
-                                        );
-                                        if (_auth.currentUser != null) {
-                                          setState(() {
-                                            // update screen
-                                          });
-                                        }
+                                        ).then(updateScreen());
+                                        // if (_auth.currentUser != null) {
+                                        //   setState(() {
+                                        //     // update screen
+                                        //   });
+                                        // }
                                       }
                                     },
                                 ),
@@ -134,10 +135,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             return SignUpScreen();
                                           },
                                         ),
-                                      );
-                                      setState(() {
-                                        // update screen
-                                      });
+                                      ).then(updateScreen());
                                     }
                                   },
                                 ),
@@ -339,6 +337,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
     distanceUnit = await userSettings.distanceUnit();
+    updateScreen();
+  }
+
+  updateScreen(){
     setState(() {
       // update screen
     });
