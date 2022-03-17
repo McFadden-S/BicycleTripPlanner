@@ -196,6 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<int>(
+                                alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: stationsRefreshRate,
                                 icon: const Icon(Icons.arrow_drop_down),
@@ -250,6 +251,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<double>(
+                                alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: nearbyStationsRange,
                                 icon: const Icon(Icons.arrow_drop_down),
@@ -302,6 +304,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<String>(
+                                alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: distanceUnit,
                                 icon: const Icon(Icons.arrow_drop_down),
@@ -356,6 +359,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                               DropdownButton<String>(
                                 dropdownColor: ThemeStyle.cardColor,
+                                alignment: AlignmentDirectional.topEnd,
                                 value: styleMode,
                                 icon: const Icon(Icons.arrow_drop_down),
                                 elevation: 16,

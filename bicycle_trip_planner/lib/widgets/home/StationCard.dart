@@ -125,26 +125,5 @@ class _StationCardState extends State<StationCard> {
 
 Future<void> stationClicked(
     ApplicationBloc appBloc, Station station, context) async {
-
     appBloc.showSelectedStationDialog(station);
-
-  //TODO: The code below is for testing purposes and to be deleted later
-  final databaseManager = DatabaseManager();
-  bool successfullyAdded = await databaseManager.addToFavouriteStations(station.id);
-  if (successfullyAdded) {
-  }else {
-      // set up the AlertDialog
-      AlertDialog alert = const AlertDialog(
-        title: Text("No user"),
-        content: Text("Station won't be saved unless user is logged in!"),
-      );
-
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-  }
 }
