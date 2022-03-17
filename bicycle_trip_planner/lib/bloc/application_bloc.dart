@@ -217,7 +217,8 @@ class ApplicationBloc with ChangeNotifier {
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
 
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showAllRoutes();
     notifyListeners();
   }
 
@@ -319,7 +320,7 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     _updateDirections();
     updateLocationLive();
-    _directionManager.showStartRoute();
+    _routeManager.showStartRoute();
     Wakelock.enable();
     notifyListeners();
   }

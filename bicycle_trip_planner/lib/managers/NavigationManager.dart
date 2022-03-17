@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
@@ -114,9 +112,6 @@ class NavigationManager {
         30);
   }
 
-  // TODO: Check what isStationSet does
-  // Also why are functions passed in?
-  // Rename pass into at...
   void passedStation(Station station, void Function(bool) setFalse,
       void Function(bool) setTrue) {
     if (isWaypointPassed(LatLng(station.lat, station.lng))) {
@@ -200,10 +195,8 @@ class NavigationManager {
         : await _directionsService.getWalkingRoutes(
             endStationId, destinationId);
 
-    //Temporary change: Otherwise directionManager and navigationManager try to
-    //initialise each other (circular import where they infinitely initialise each other)
-    DirectionManager()
-        .setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showCurrentRoute(false);
   }
 
   Future<void> updatePickUpDropOffStations(

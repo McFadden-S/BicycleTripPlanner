@@ -1,20 +1,37 @@
 import 'package:bicycle_trip_planner/models/legs.dart';
 import 'package:bicycle_trip_planner/models/bounds.dart';
 import 'package:bicycle_trip_planner/models/overview_polyline.dart';
+import 'package:bicycle_trip_planner/models/route_types.dart';
+import 'package:bicycle_trip_planner/models/steps.dart';
 
 class Route {
   final Bounds bounds;
   final List<Legs> legs;
   final OverviewPolyline polyline;
+  final RouteType routeType;
+  List<Steps> directions = [];
+  int distance = 0;
+  int duration = 0;
 
-  Route({required this.bounds, required this.legs, required this.polyline});
+  Route(
+      {required this.bounds,
+      required this.legs,
+      required this.polyline,
+      required this.routeType}) {
+    for (Legs leg in legs) {
+      duration += leg.duration;
+      distance += leg.distance;
+      directions += leg.steps;
+    }
+  }
 
   Route.routeNotFound(
       {this.bounds = const Bounds.boundsNotFound(),
       this.legs = const <Legs>[],
+      this.routeType = RouteType.none,
       this.polyline = const OverviewPolyline.overviewPolylineNotFound()});
 
-  factory Route.fromJson(Map<String, dynamic> parsedJson) {
+  factory Route.fromJson(Map<String, dynamic> parsedJson, RouteType routeType) {
     //TODO Find more suitable name than substitute 'xLegs'
     List<Legs> xLegs = [];
     for (var x = 0; x < parsedJson['legs'].length; x++) {
@@ -22,10 +39,10 @@ class Route {
     }
 
     return Route(
-      bounds: Bounds.fromJson(parsedJson['bounds']),
-      legs: xLegs,
-      polyline: OverviewPolyline.fromJson(parsedJson['overview_polyline']),
-    );
+        bounds: Bounds.fromJson(parsedJson['bounds']),
+        legs: xLegs,
+        polyline: OverviewPolyline.fromJson(parsedJson['overview_polyline']),
+        routeType: routeType);
   }
 
   @override

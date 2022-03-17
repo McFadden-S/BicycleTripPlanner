@@ -3,8 +3,8 @@ import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/place.dart';
-class UserSettings {
 
+class UserSettings {
   //********** Singleton **********
   static final UserSettings _userSettings = UserSettings._internal();
   factory UserSettings() {
@@ -12,11 +12,8 @@ class UserSettings {
   }
   UserSettings._internal();
 
-
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-
 
 //********** Public **********
 
@@ -25,7 +22,6 @@ class UserSettings {
     // encode place as json String and add (make helper methods if needed)
     // await prefs.setString(key, value);
   }
-
 
   saveRoute(Pathway pathway) async {
     final SharedPreferences prefs = await _prefs;
@@ -46,7 +42,6 @@ class UserSettings {
     //no error caught
     return true;
   }
-
 
   isDarkModeOn() async {
     final SharedPreferences prefs = await _prefs;
@@ -85,7 +80,6 @@ class UserSettings {
     return true;
   }
 
-
   // returns a number representing the amount of time (in seconds)
   // between every API call for stations (default is 30 seconds)
   stationsRefreshRate() async {
@@ -108,7 +102,6 @@ class UserSettings {
     return true;
   }
 
-
   nearbyStationsRange() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getDouble('nearbyStationsRange') ?? 0.5;
@@ -126,7 +119,6 @@ class UserSettings {
     //no error caught
     return true;
   }
-
 
 //********** Private **********
 
