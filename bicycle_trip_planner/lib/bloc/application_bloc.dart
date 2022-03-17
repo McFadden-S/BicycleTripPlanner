@@ -50,6 +50,7 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
@@ -254,7 +255,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    if(_userSettings.getIsIsFavouriteStationsSelected()) {
+    if(isUserLogged() && _userSettings.getIsIsFavouriteStationsSelected()) {
       List<Station> favouriteStations = await _stationsService.getStations();
       List<int> compare = await DatabaseManager().getFavouriteStations();
       favouriteStations.retainWhere((element) => compare.contains(element.id));
@@ -358,6 +359,9 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** User Setting Management **********
 
+  bool isUserLogged() {
+    return _databaseManager.isUserLogged();
+  }
 
   // Clears selected route and directions
   void clearMap() {

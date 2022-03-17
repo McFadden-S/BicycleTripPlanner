@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

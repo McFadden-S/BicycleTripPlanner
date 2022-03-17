@@ -121,15 +121,16 @@ class _StationBarState extends State<StationBar> {
                           Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),):
                           Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                         const Spacer(),
-                        IconButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            setState(() {_isFavouriteStations = !_isFavouriteStations;});
-                            UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
-                            applicationBloc.updateStations();
-                          },
-                          icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
-                        ),
+                        if(applicationBloc.isUserLogged())
+                          IconButton(
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () {
+                              setState(() {_isFavouriteStations = !_isFavouriteStations;});
+                              UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
+                              applicationBloc.updateStations();
+                            },
+                            icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
+                          ),
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => stationsPageViewController.jumpTo(0),
