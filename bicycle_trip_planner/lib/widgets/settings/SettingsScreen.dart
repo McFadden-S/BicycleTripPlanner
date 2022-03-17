@@ -2,8 +2,8 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Login/LoginScreen.dart';
-import '../Login/SignUpScreen.dart';
+import '../settings/LoginScreen.dart';
+import '../settings/SignUpScreen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);

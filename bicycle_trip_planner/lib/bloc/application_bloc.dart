@@ -23,6 +23,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
+import 'package:bicycle_trip_planner/managers/SharedPreferenceManager.dart';
 
 class ApplicationBloc with ChangeNotifier {
   final _placesService = PlacesService();
@@ -45,6 +46,7 @@ class ApplicationBloc with ChangeNotifier {
   final LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
+  final SharedPreferenceManager _sharedPreferenceManager = SharedPreferenceManager();
 
   // TODO: Add calls to isNavigation from GUI
   bool _isNavigating = false;
@@ -119,6 +121,8 @@ class ApplicationBloc with ChangeNotifier {
 
     setSelectedLocation(station.place, uid);
 
+    // if the user is logged in
+    _sharedPreferenceManager.addRecentStart(station.name);
     notifyListeners();
   }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/ForgotPasswordScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/InputField.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/PasswordField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/ForgotPasswordScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SignUpScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../Login/GoogleSignIn.dart';
+import '../settings/GoogleSignIn.dart';
 import 'components/ErrorSnackbar.dart';
 
 class LoginScreen extends StatefulWidget {
