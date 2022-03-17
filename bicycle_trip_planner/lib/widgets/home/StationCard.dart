@@ -30,18 +30,6 @@ class _StationCardState extends State<StationCard> {
   final LocationManager locationManager = LocationManager();
   final StationManager stationManager = StationManager();
 
-  /*List<int> _favouriteStations = [];
-
-  getFavouriteStations() async{
-    _favouriteStations = await DatabaseManager().getFavouriteStations();
-  }*/
-
- /* @override
-  void initState() {
-    getFavouriteStations();  //call async function.
-    super.initState();
-  }*/
-
   @override
   Widget build(BuildContext context) {
     final applicationBloc =

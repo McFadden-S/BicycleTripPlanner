@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class _StationBarState extends State<StationBar> {
   StationManager stationManager = StationManager();
 
   bool _isFavouriteStations = false;
+  bool _isUserLogged = false;
 
   List<int> _favouriteStations = [];
 
@@ -43,6 +45,11 @@ class _StationBarState extends State<StationBar> {
   @override
   void initState() {
     getFavouriteStations();
+    FirebaseAuth.instance.authStateChanges().listen((event) {
+      setState(() {
+        _isUserLogged = event != null && !event.isAnonymous;
+      });
+    });
     super.initState();
   }
 
@@ -101,6 +108,10 @@ class _StationBarState extends State<StationBar> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
+    setState(() {
+      _isUserLogged = applicationBloc.isUserLogged();
+    });
+
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
@@ -114,14 +125,14 @@ class _StationBarState extends State<StationBar> {
             children: [
               Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
                         _isFavouriteStations ?
                           Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),):
                           Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                         const Spacer(),
-                        if(applicationBloc.isUserLogged())
+                        if(_isUserLogged)
                           IconButton(
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
@@ -145,7 +156,7 @@ class _StationBarState extends State<StationBar> {
                   )
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
+                height: MediaQuery.of(context).size.height * 0.16,
                 child: Row(
                   children: [
                     Flexible(
