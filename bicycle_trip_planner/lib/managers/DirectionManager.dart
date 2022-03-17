@@ -125,7 +125,7 @@ class DirectionManager {
     print("Toggle cycling called");
     if (_isCycling) {
       print("Showing bike route...");
-      RouteManager().showBikeRoute();
+      RouteManager();
     } else {
       RouteManager().showCurrentWalkingRoute();
     }

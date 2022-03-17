@@ -53,7 +53,32 @@ class NavigationManager {
     checkPassedByPickUpDropOffStations();
   }
 
+  Future<void> _changeRouteStartToCurrentLocation() async {
+    _routeManager.changeStart(_locationManager.getCurrentLocation());
+  }
+
+  //TODO get rid of parameters since they are from _routeManager
+  _updateRoute(Place origin,
+      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    Location startLocation = origin.geometry.location;
+    Location endLocation =
+        _routeManager.getDestination().getStop().geometry.location;
+
+    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
+
+    await setPartialRoutes([],
+        (intermediates.map((intermediate) => intermediate.placeId)).toList());
+  }
+
   //********** Public **********
+
+  Station getPickupStation() {
+    return _pickUpStation;
+  }
+
+  Station getDropoffStation() {
+    return _dropOffStation;
+  }
 
   bool ifNavigating() {
     return _isNavigating;
@@ -102,10 +127,6 @@ class NavigationManager {
         _routeManager.getGroupSize());
   }
 
-  Future<void> _changeRouteStartToCurrentLocation() async {
-    _routeManager.changeStart(_locationManager.getCurrentLocation());
-  }
-
   bool isWaypointPassed(LatLng waypoint) {
     return (_locationManager.distanceFromToInMeters(
             _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
@@ -152,19 +173,6 @@ class NavigationManager {
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
     await setPartialRoutes([first.name],
-        (intermediates.map((intermediate) => intermediate.placeId)).toList());
-  }
-
-//TODO get rid of parameters since they are from _routeManager
-  _updateRoute(Place origin,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
-
-    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
-
-    await setPartialRoutes([],
         (intermediates.map((intermediate) => intermediate.placeId)).toList());
   }
 

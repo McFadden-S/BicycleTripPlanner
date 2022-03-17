@@ -286,10 +286,6 @@ class ApplicationBloc with ChangeNotifier {
     _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
   }
 
-  clearStationMarkersWithoutUID() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-  }
-
   setStationMarkersWithoutUID() {
     _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
@@ -320,7 +316,7 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     _updateDirections();
     updateLocationLive();
-    _routeManager.showStartRoute();
+    _routeManager.showCurrentRoute();
     Wakelock.enable();
     notifyListeners();
   }
@@ -341,11 +337,19 @@ class ApplicationBloc with ChangeNotifier {
     } else {
       await _navigationManager.updateRoute();
     }
+    clearStationMarkersNotInRoute();
+  }
+
+  void clearStationMarkersNotInRoute() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+    Station pickupStation = _navigationManager.getPickupStation();
+    Station dropOffStation = _navigationManager.getDropoffStation();
+    _markerManager.setStationMarker(pickupStation, this);
+    _markerManager.setStationMarker(dropOffStation, this);
   }
 
   void toggleCycling() {
     _directionManager.toggleCycling();
-    print("Notifying listeners");
     notifyListeners();
   }
 

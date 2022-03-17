@@ -64,28 +64,32 @@ class RouteManager {
   // Only shows one of the walking route
   void showCurrentWalkingRoute([bool relocateMap = true]) {
     if (_startWalkingRoute != R.Route.routeNotFound()) {
-      showStartRoute(relocateMap);
+      setCurrentRoute(_startWalkingRoute, relocateMap);
     } else if (_endWalkingRoute != R.Route.routeNotFound()) {
-      showEndRoute(relocateMap);
+      setCurrentRoute(_endWalkingRoute, relocateMap);
     }
   }
 
   // Shows only one of the routes
   void showCurrentRoute([bool relocateMap = true]) {
     if (_startWalkingRoute != R.Route.routeNotFound()) {
-      showStartRoute();
+      setCurrentRoute(_startWalkingRoute, relocateMap);
       return;
     }
 
     if (_bikingRoute != R.Route.routeNotFound()) {
-      showBikeRoute();
+      setCurrentRoute(_bikingRoute, relocateMap);
       return;
     }
 
     if (_endWalkingRoute != R.Route.routeNotFound()) {
-      showEndRoute(relocateMap);
+      setCurrentRoute(_endWalkingRoute, relocateMap);
       return;
     }
+  }
+
+  void showBikeRoute([relocateMap = true]) {
+    setCurrentRoute(_bikingRoute, relocateMap);
   }
 
   void setDirectionsData(R.Route route) {
@@ -140,18 +144,6 @@ class RouteManager {
     return _startWalkingRoute != R.Route.routeNotFound() &&
         _endWalkingRoute != R.Route.routeNotFound() &&
         _bikingRoute != R.Route.routeNotFound();
-  }
-
-  void showStartRoute([relocateMap = true]) {
-    setCurrentRoute(_startWalkingRoute, relocateMap);
-  }
-
-  void showBikeRoute([relocateMap = true]) {
-    setCurrentRoute(_bikingRoute, relocateMap);
-  }
-
-  void showEndRoute([relocateMap = true]) {
-    setCurrentRoute(_endWalkingRoute, relocateMap);
   }
 
   int getGroupSize() {
