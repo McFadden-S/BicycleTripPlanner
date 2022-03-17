@@ -36,6 +36,20 @@ class NavigationManager {
 
   NavigationManager._internal();
 
+  //********** Private **********
+
+  void _setIfBeginning(bool isBeginning) {
+    _isBeginning = isBeginning;
+  }
+
+  void _setIfCycling(bool isCycling) {
+    _isCycling = isCycling;
+  }
+
+  void _setIfEndWalking(bool isEndWalking) {
+    _isEndWalking = isEndWalking;
+  }
+
   //********** Public **********
 
   bool ifNavigating() {
@@ -101,7 +115,8 @@ class NavigationManager {
   // TODO: Check what isStationSet does
   // Also why are functions passed in?
   // Rename pass into at...
-  void passedStation(Station station, bool setFalse, bool setTrue) {
+  void passedStation(Station station, void Function(bool) setFalse,
+      void Function(bool) setTrue) {
     // if (_stationManager.isStationSet(station) &&
     //     isWaypointPassed(LatLng(station.lat, station.lng))) {
     //   _stationManager.passedStation(station);
@@ -116,14 +131,14 @@ class NavigationManager {
         _passedDropOffStation = true;
       }
       station = Station.stationNotFound();
-      setFalse = false;
-      setTrue = true;
+      setFalse(false);
+      setTrue(true);
     }
   }
 
   void checkPassedByPickUpDropOffStations() {
-    passedStation(_pickUpStation, _isBeginning, _isCycling);
-    passedStation(_dropOffStation, _isCycling, _isEndWalking);
+    passedStation(_pickUpStation, _setIfBeginning, _setIfCycling);
+    passedStation(_dropOffStation, _setIfCycling, _setIfEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
