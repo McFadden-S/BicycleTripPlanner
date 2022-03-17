@@ -39,16 +39,17 @@ class _RouteCardState extends State<RouteCard> {
       startSearchController.text == "My current location"
           ? routeManager.setStartFromCurrentLocation(true)
           : routeManager.setStartFromCurrentLocation(false);
-      applicationBloc.findCostEfficientRoute(
-          routeManager.getStart().getStop(),
-          routeManager.getDestination().getStop()
-      );
-      // applicationBloc.findRoute(
+      // UNCOMMENT THIS AND COMMENT THE findRoute BELOW TO TEST BRANCH
+      // applicationBloc.findCostEfficientRoute(
       //     routeManager.getStart().getStop(),
-      //     routeManager.getDestination().getStop(),
-      //     routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
-      //     routeManager.getGroupSize()
+      //     routeManager.getDestination().getStop()
       // );
+      applicationBloc.findRoute(
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+          routeManager.getGroupSize()
+      );
       routeManager.clearChanged();
 
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
