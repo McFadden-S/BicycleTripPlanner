@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:http/http.dart' as http;
-import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:xml/xml.dart';
 
 class StationsService {

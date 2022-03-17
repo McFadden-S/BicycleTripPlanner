@@ -90,7 +90,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   searchPlaces(String searchTerm) async {
-    searchResults = await _placesService.getAutocomplete(searchTerm);
+    final client = http.Client();
+    searchResults = await _placesService.getAutocomplete(searchTerm, client);
     searchResults.insert(
         0,
         PlaceSearch(
@@ -395,10 +396,9 @@ class ApplicationBloc with ChangeNotifier {
 
 //
   bool isWaypointPassed(LatLng waypoint) {
-    return (_locationManager.distanceFromToInMeters(
-            _currentLocation.getLatLng(), waypoint) <=
-        30);
+    return (_locationManager.distanceFromToInMeters(_currentLocation.getLatLng(), waypoint) <= 30);
   }
+
 
   void passedStation(Station station, void Function(bool) functionA,
       void Function(bool) functionB) {

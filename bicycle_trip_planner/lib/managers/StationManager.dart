@@ -9,6 +9,7 @@ class StationManager {
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
+
   Station _pickUpStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
   bool _passedPickUpStation = false;
   Station _dropOffStation = Station(id: -1, name: "", lat: -1, lng: -1, bikes: -1, emptyDocks: -1, totalDocks: -1);
