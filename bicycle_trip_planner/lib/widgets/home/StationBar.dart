@@ -128,20 +128,23 @@ class _StationBarState extends State<StationBar> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       children: [
-                        _isFavouriteStations ?
-                          Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),):
-                          Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
-                        const Spacer(),
-                        if(_isUserLogged)
-                          IconButton(
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              setState(() {_isFavouriteStations = !_isFavouriteStations;});
+                        _isUserLogged ?
+                          DropdownButton(
+                            value: _isFavouriteStations ? "Favourite Stations" : "Nearby Stations",
+                            onChanged: (String? newValue){
+                              setState(() {
+                                newValue! == "Favourite Stations" ? _isFavouriteStations = true : _isFavouriteStations = false;
+                              });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
                             },
-                            icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
-                          ),
+                            items: [
+                              DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
+                              DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                            ],
+                          ) :
+                          Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
+                        const Spacer(),
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => stationsPageViewController.jumpTo(0),
