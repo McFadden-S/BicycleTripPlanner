@@ -73,10 +73,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
-
-    //Use a periodic timer to update the TFL Santander bike stations
-    //(Once every 30 seconds)
-    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   @override

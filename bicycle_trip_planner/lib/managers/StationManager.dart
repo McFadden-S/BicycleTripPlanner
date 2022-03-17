@@ -198,21 +198,21 @@ class StationManager {
     return filteredStations.where((station) => station.bikes <= 0).toList();
   }
 
-  List<Station> getFarStations() {
+  List<Station> getFarStations(double range) {
     List<Station> farStations = [];
 
     farStations =
-        _stationsLookUp.difference(getNearStations().toSet()).toList();
+        _stationsLookUp.difference(getNearStations(range).toSet()).toList();
     //print(farStations);
 
     return farStations;
   }
 
-  List<Station> getNearStations() {
+  List<Station> getNearStations(double range) {
     List<Station> nearbyStations = [];
 
     int lastIndex = _stations.lastIndexWhere((station) {
-      return station.distanceTo < 0.5;
+      return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
     //print(nearbyStations);

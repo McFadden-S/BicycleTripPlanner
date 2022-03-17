@@ -51,6 +51,7 @@ class UserSettings {
     return true;
   }
 
+  // returns String 'miles' or 'km'
   distanceUnit() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getString('distanceUnit') ?? 'miles';

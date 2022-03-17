@@ -18,18 +18,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<int> stationsRefreshRateOptions = <int>[30, 40, 50, 60];
   List<double> nearbyStationsRangeOptions = <double>[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
   List<String> distanceUnitOptions = <String>['miles', 'km'];
-  // 0 represents 'SystemMode', 1 represents darkMode, and 2 represents lightMode
   List<String> styleModeOptions = <String>['System', 'Dark', 'Light'];
 
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
   String styleMode = 'System'; // system mode as default
+  bool settingsChanged = false;
 
 
   @override
   void initState() {
     super.initState();
+    print('initial settingsChanged is: $settingsChanged');
     updateVariables();
   }
 
@@ -54,12 +55,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 5.0, left: 5.0),
-                      child: Text("Account",
-                          style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22,
-                          color: ThemeStyle.primaryTextColor,
-                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text("Account",
+                              style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                              color: ThemeStyle.primaryTextColor,
+                          ),
+                          ),
+                          IconButton(
+                              icon: Icon(Icons.info_outline, color: ThemeStyle.primaryIconColor),
+                              onPressed: (){
+                                // set up the AlertDialog
+                                AlertDialog alert = AlertDialog(
+                                  backgroundColor: ThemeStyle.cardColor,
+                                  title: Text("Account advantages",
+                                      style: TextStyle(
+                                        color: ThemeStyle.primaryTextColor,
+                                      )),
+                                  content: Text("Add your favourite stations and routes\n"
+                                               "to your account to start your journey faster\n"
+                                               "and from different devices!",
+                                      style: TextStyle(
+                                      color: ThemeStyle.primaryTextColor,
+                                  )),
+                                );
+
+                                // show the dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return alert;
+                                  },
+                                );
+
+                              },
+                          )
+                        ],
                       ),
                     ),
                     Divider(color: ThemeStyle.cardOutlineColor),
@@ -115,7 +149,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           if (_auth.currentUser == null) {
                                             // The result will be true when logged in successfully,
                                             // False otherwise
-                                            bool sucess = await Navigator.push(
+                                            bool success = await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) {
@@ -123,7 +157,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                 },
                                               ),
                                             );
-                                            if(sucess){
+                                            if(success){
                                               updateScreen();
                                             }
                                           }
@@ -139,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         if (_auth.currentUser == null) {
                                           // The result will be true when logged in successfully,
                                           // False otherwise
-                                          bool sucess = await Navigator.push(
+                                          bool success = await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) {
@@ -147,7 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                               },
                                             ),
                                           );
-                                          if(sucess){
+                                          if(success){
                                             updateScreen();
                                           }
                                         }
@@ -188,7 +222,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         color: ThemeStyle.primaryTextColor,
                                       ),
                                     ),
-                                    Text("The time for which the stations list is updated in seconds",
+                                    Text("The periodic time for which the stations\nlist will be updated"
+                                        " in seconds\n(lower values might consume more battery)",
                                       style: TextStyle(
                                         color: ThemeStyle.primaryTextColor,
                                       ),),
@@ -207,11 +242,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                                 underline: Container(
                                   height: 2,
-                                  // color: Colors.deepPurpleAccent,
                                 ),
                                 onChanged: (int? newValue) async {
                                   userSettings.setStationsRefreshRate(newValue);
                                   await updateVariables();
+                                  settingsChanged = true;
                                 },
                                 items: stationsRefreshRateOptions
                                     .map<DropdownMenuItem<int>>((int value) {
@@ -267,6 +302,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (double? newValue) async {
                                   userSettings.setNearbyStationsRange(newValue);
                                   await updateVariables();
+                                  settingsChanged = true;
                                 },
                                 items: nearbyStationsRangeOptions
                                     .map<DropdownMenuItem<double>>((double value) {
@@ -320,6 +356,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (String? newValue) async {
                                   userSettings.setDistanceUnit(newValue);
                                   await updateVariables();
+                                  settingsChanged = true;
                                 },
                                 items: distanceUnitOptions
                                     .map<DropdownMenuItem<String>>((String value) {
@@ -374,6 +411,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (String? newValue) async {
                                   userSettings.setStyleMode(newValue);
                                   await updateVariables();
+                                  settingsChanged = true;
                                 },
                                 items: styleModeOptions
                                     .map<DropdownMenuItem<String>>((String value) {
@@ -412,8 +450,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context, rootNavigator: true)
-              .pop(context);
+          Navigator.pop(context, settingsChanged);
     },
     backgroundColor: ThemeStyle.buttonPrimaryColor,
          child: Icon(Icons.arrow_back,
@@ -435,4 +472,5 @@ class _SettingsScreenState extends State<SettingsScreen> {
       // update screen
     });
   }
+
 }

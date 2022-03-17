@@ -63,7 +63,7 @@ class ApplicationBloc with ChangeNotifier {
 
   ApplicationBloc() {
     fetchCurrentLocation();
-    updateStationsPeriodically(const Duration(seconds: 30));
+    updateStationsPeriodically();
   }
 
   // ********** Dialog **********
@@ -241,8 +241,9 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer.cancel();
   }
 
-  updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) {
+  updateStationsPeriodically() async {
+    int duration = await _userSettings.stationsRefreshRate();
+    _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
       filterStationMarkers();
     });
@@ -271,9 +272,10 @@ class ApplicationBloc with ChangeNotifier {
 
   }*/
 
-  List<Station> filterNearbyStations() {
-    List<Station> notNearbyStations = _stationManager.getFarStations();
-    List<Station> nearbyStations = _stationManager.getNearStations();
+  Future<List<Station>> filterNearbyStations() async {
+    double range = await _userSettings.nearbyStationsRange();
+    List<Station> notNearbyStations = _stationManager.getFarStations(range);
+    List<Station> nearbyStations = _stationManager.getNearStations(range);
     _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
     return nearbyStations;
@@ -288,11 +290,11 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.clearStationMarkers(bikelessStations);
   }
 
-  void filterStationMarkers() {
+  Future<void> filterStationMarkers() async {
     if (_navigationManager.ifNavigating()) {
       return;
     }
-    List<Station> nearbyStations = filterNearbyStations();
+    List<Station> nearbyStations = await filterNearbyStations();
     filterStationsWithBikes(nearbyStations);
   }
 

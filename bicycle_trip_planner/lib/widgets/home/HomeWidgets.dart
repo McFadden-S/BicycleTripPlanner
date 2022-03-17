@@ -1,10 +1,12 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/application_bloc.dart';
 import '../general/GroupSizeSelector.dart';
 
 class HomeWidgets extends StatefulWidget {
@@ -20,6 +22,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -50,7 +53,20 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                               Icons.settings,
                               color: ThemeStyle.buttonPrimaryColor,
                           ),
-                          onPressed: () => Navigator.pushNamed(context, '/settings'),
+                          onPressed: () async {
+                            bool settingsChanged = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SettingsScreen();
+                                },
+                              ),
+                            );
+                            if(settingsChanged){
+                              applicationBloc.cancelStationTimer();
+                              applicationBloc.updateStationsPeriodically();
+                            }
+                          },
                           iconSize: 50,
                         )
                       ],
