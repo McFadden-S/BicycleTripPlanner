@@ -19,6 +19,8 @@ class _StationBarState extends State<StationBar> {
 
   StationManager stationManager = StationManager();
 
+  bool _isFavouriteStations = false;
+
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
         enableDrag: true,
@@ -89,8 +91,15 @@ class _StationBarState extends State<StationBar> {
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     child: Row(
                       children: [
-                        Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
+                        _isFavouriteStations ?
+                          Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),):
+                          Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                         const Spacer(),
+                        IconButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () => { setState(() {_isFavouriteStations = !_isFavouriteStations;}) },
+                          icon: _isFavouriteStations ? Icon(Icons.star, color: Colors.blue) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
+                        ),
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => stationsPageViewController.jumpTo(0),
