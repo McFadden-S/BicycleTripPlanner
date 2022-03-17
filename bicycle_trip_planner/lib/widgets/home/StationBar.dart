@@ -98,7 +98,7 @@ class _StationBarState extends State<StationBar> {
                         IconButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () => { setState(() {_isFavouriteStations = !_isFavouriteStations;}) },
-                          icon: _isFavouriteStations ? Icon(Icons.star, color: Colors.blue) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
+                          icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
                           padding: const EdgeInsets.all(0),
