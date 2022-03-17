@@ -16,8 +16,6 @@ class Directions extends StatefulWidget {
 }
 
 class _DirectionsState extends State<Directions> {
-  late final applicationBloc;
-
   final DirectionManager directionManager = DirectionManager();
 
   bool extendedNavigation = false;
@@ -27,7 +25,14 @@ class _DirectionsState extends State<Directions> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("Directions being buillt again");
+    Provider.of<ApplicationBloc>(context);
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
       onTap: () => _toggleExtendNavigationView(),

@@ -321,6 +321,7 @@ class ApplicationBloc with ChangeNotifier {
     updateLocationLive();
     _directionManager.showStartRoute();
     Wakelock.enable();
+    notifyListeners();
   }
 
   _updateDirections() async {
@@ -339,6 +340,12 @@ class ApplicationBloc with ChangeNotifier {
     } else {
       await _navigationManager.updateRoute();
     }
+  }
+
+  void toggleCycling() {
+    _directionManager.toggleCycling();
+    print("Notifying listeners");
+    notifyListeners();
   }
 
   // Clears selected route and directions

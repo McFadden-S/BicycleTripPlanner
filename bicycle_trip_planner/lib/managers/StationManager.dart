@@ -90,85 +90,6 @@ class StationManager {
     return station;
   }
 
-  // Station getPickupStation() {
-  //   return _pickUpStation;
-  // }
-
-  // bool isPickUpStationSet() {
-  //   return _pickUpStation.id != -1;
-  // }
-
-  // void clearPickUpStation() {
-  //   _pickUpStation = Station(
-  //       id: -1,
-  //       name: "",
-  //       lat: -1,
-  //       lng: -1,
-  //       bikes: -1,
-  //       emptyDocks: -1,
-  //       totalDocks: -1);
-  // }
-
-  // void setPassedPickUpStation(bool value) {
-  //   _passedPickUpStation = value;
-  // }
-
-  // bool passedPickUpStation() => _passedPickUpStation;
-
-  // void passedStation(Station station) {
-  //   if (station == _pickUpStation) {
-  //     setPassedPickUpStation(true);
-  //   }
-  //   if (station == _dropOffStation) {
-  //     setPassedDropOffStation(true);
-  //   }
-  // }
-
-  // bool checkPickUpStationHasBikes(int groupSize) {
-  //   return _pickUpStation.bikes >= groupSize;
-  // }
-
-  // Station getDropOffStation() {
-  //   return _dropOffStation;
-  // }
-
-  // bool isDropOffStationSet() {
-  //   return _dropOffStation.id != -1;
-  // }
-
-  // void clearDropOffStation() {
-  //   _dropOffStation = Station(
-  //       id: -1,
-  //       name: "",
-  //       lat: -1,
-  //       lng: -1,
-  //       bikes: -1,
-  //       emptyDocks: -1,
-  //       totalDocks: -1);
-  // }
-
-  // void setPassedDropOffStation(bool value) {
-  //   _passedDropOffStation = value;
-  // }
-
-  // bool passedDropOffStation() => _passedDropOffStation;
-
-  // bool checkDropOffStationHasEmptyDocks(int groupSize) {
-  //   return _dropOffStation.emptyDocks >= groupSize;
-  // }
-
-  // bool isStationSet(Station station) {
-  //   return (_dropOffStation == station || _pickUpStation == station);
-  // }
-
-  // void clearStation(Station station) {
-  //   if (_dropOffStation == station) {
-  //     clearDropOffStation();
-  //   } else if (_pickUpStation == station) {
-  //     clearPickUpStation();
-  //   }
-  // }
-
   // TODO: Find a better method name
   List<Station> getStationsWithAtLeastXBikes(
       int bikes, List<Station> filteredStations) {
@@ -220,11 +141,4 @@ class StationManager {
     _stations.sort((stationA, stationB) =>
         stationA.distanceTo.compareTo(stationB.distanceTo));
   }
-
-  // void clear() {
-  //   clearPickUpStation();
-  //   clearDropOffStation();
-  //   _passedPickUpStation = false;
-  //   _passedDropOffStation = false;
-  // }
 }

@@ -23,9 +23,6 @@ class RouteManager {
   bool _changed = false;
   bool _optimised = true;
 
-  // Remove this
-  Location _destination = Location(lng: -1, lat: -1);
-
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
@@ -96,8 +93,6 @@ class RouteManager {
   Stop getStart() => _pathway.getStart();
 
   Stop getDestination() => _pathway.getDestination();
-
-  Location getDestinationLocation() => _destination;
 
   List<Stop> getWaypoints() => _pathway.getWaypoints();
 
@@ -196,7 +191,6 @@ class RouteManager {
 
   void clearDestination() {
     _pathway.changeDestination(const Place.placeNotFound());
-    _destination = Location(lng: -1, lat: -1);
     _changed = true;
   }
 

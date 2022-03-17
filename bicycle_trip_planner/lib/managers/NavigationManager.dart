@@ -50,6 +50,11 @@ class NavigationManager {
     _isEndWalking = isEndWalking;
   }
 
+  Future<void> _updateStartLocationAndStations() async {
+    await _changeRouteStartToCurrentLocation();
+    checkPassedByPickUpDropOffStations();
+  }
+
   //********** Public **********
 
   bool ifNavigating() {
@@ -76,9 +81,7 @@ class NavigationManager {
   }
 
   Future<void> updateRoute() async {
-    //TODO: Duplicated code here anbd below
-    await _changeRouteStartToCurrentLocation();
-    checkPassedByPickUpDropOffStations();
+    await _updateStartLocationAndStations();
     await _updateRoute(
         _routeManager.getStart().getStop(),
         _routeManager
@@ -89,8 +92,7 @@ class NavigationManager {
   }
 
   Future<void> updateRouteWithWalking() async {
-    await _changeRouteStartToCurrentLocation();
-    checkPassedByPickUpDropOffStations();
+    await _updateStartLocationAndStations();
     await walkToFirstLocation(
         _routeManager.getStart().getStop(),
         _routeManager.getFirstWaypoint().getStop(),
@@ -117,22 +119,15 @@ class NavigationManager {
   // Rename pass into at...
   void passedStation(Station station, void Function(bool) setFalse,
       void Function(bool) setTrue) {
-    // if (_stationManager.isStationSet(station) &&
-    //     isWaypointPassed(LatLng(station.lat, station.lng))) {
-    //   _stationManager.passedStation(station);
-    //   _stationManager.clearStation(station);
-    //   functionA(false);
-    //   functionB(true);
-    // }
     if (isWaypointPassed(LatLng(station.lat, station.lng))) {
       if (station == _pickUpStation) {
         _passedPickUpStation = true;
       } else {
         _passedDropOffStation = true;
       }
-      station = Station.stationNotFound();
       setFalse(false);
       setTrue(true);
+      station = Station.stationNotFound();
     }
   }
 
@@ -156,7 +151,8 @@ class NavigationManager {
   walkToFirstLocation(Place origin, Place first,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location firstLocation = first.geometry.location;
-    Location endLocation = _routeManager.getDestinationLocation();
+    Location endLocation =
+        _routeManager.getDestination().getStop().geometry.location;
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
 
@@ -168,8 +164,8 @@ class NavigationManager {
   _updateRoute(Place origin,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location startLocation = origin.geometry.location;
-    //TODO: Change this...
-    Location endLocation = _routeManager.getDestinationLocation();
+    Location endLocation =
+        _routeManager.getDestination().getStop().geometry.location;
 
     updatePickUpDropOffStations(startLocation, endLocation, groupSize);
 
