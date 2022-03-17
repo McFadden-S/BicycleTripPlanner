@@ -18,11 +18,6 @@ class RouteManager {
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
 
-  // TODO: These are variables tied during navigation
-  bool _ifBeginning = true;
-  bool _ifCycling = false;
-  bool _ifEndWalking = false;
-
   int _groupsize = 1;
 
   bool _changed = false;
@@ -42,30 +37,6 @@ class RouteManager {
   //********** Private **********
 
   //********** Public **********
-
-  bool ifBeginning() {
-    return _ifBeginning;
-  }
-
-  void setIfBeginning(bool value) {
-    _ifBeginning = value;
-  }
-
-  bool ifCycling() {
-    return _ifCycling;
-  }
-
-  void setIfCycling(bool value) {
-    _ifCycling = value;
-  }
-
-  bool ifEndWalking() {
-    return _ifEndWalking;
-  }
-
-  void setIfEndWalking(bool value) {
-    _ifEndWalking = value;
-  }
 
   int getGroupSize() {
     return _groupsize;
@@ -265,9 +236,6 @@ class RouteManager {
 
   void clear() {
     _polylineManager.clearPolyline();
-    _ifBeginning = true;
-    _ifCycling = false;
-    _ifEndWalking = false;
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     clearRouteMarkers();

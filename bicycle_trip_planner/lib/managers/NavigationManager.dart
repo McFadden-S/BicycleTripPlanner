@@ -18,6 +18,9 @@ class NavigationManager {
   final _routeManager = RouteManager();
 
   bool _isNavigating = false;
+  bool _isBeginning = true;
+  bool _isCycling = false;
+  bool _isEndWalking = false;
 
   Station _pickUpStation = Station.stationNotFound();
   Station _dropOffStation = Station.stationNotFound();
@@ -98,8 +101,7 @@ class NavigationManager {
   // TODO: Check what isStationSet does
   // Also why are functions passed in?
   // Rename pass into at...
-  void passedStation(Station station, void Function(bool) functionA,
-      void Function(bool) functionB) {
+  void passedStation(Station station, bool setFalse, bool setTrue) {
     // if (_stationManager.isStationSet(station) &&
     //     isWaypointPassed(LatLng(station.lat, station.lng))) {
     //   _stationManager.passedStation(station);
@@ -114,16 +116,14 @@ class NavigationManager {
         _passedDropOffStation = true;
       }
       station = Station.stationNotFound();
-      functionA(false);
-      functionB(true);
+      setFalse = false;
+      setTrue = true;
     }
   }
 
   void checkPassedByPickUpDropOffStations() {
-    passedStation(_pickUpStation, _routeManager.setIfBeginning,
-        _routeManager.setIfCycling);
-    passedStation(_dropOffStation, _routeManager.setIfCycling,
-        _routeManager.setIfEndWalking);
+    passedStation(_pickUpStation, _isBeginning, _isCycling);
+    passedStation(_dropOffStation, _isCycling, _isEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
@@ -171,20 +171,20 @@ class NavigationManager {
     String startStationId = _pickUpStation.place.placeId;
     String endStationId = _dropOffStation.place.placeId;
 
-    Rou.Route startWalkRoute = _routeManager.ifBeginning()
+    Rou.Route startWalkRoute = _isBeginning
         ? await _directionsService.getWalkingRoutes(
             originId, startStationId, first, false)
         : Rou.Route.routeNotFound();
 
-    Rou.Route bikeRoute = _routeManager.ifBeginning()
+    Rou.Route bikeRoute = _isBeginning
         ? await _directionsService.getRoutes(startStationId, endStationId,
             intermediates, _routeManager.ifOptimised())
-        : _routeManager.ifCycling()
+        : _isCycling
             ? await _directionsService.getRoutes(originId, endStationId,
                 intermediates, _routeManager.ifOptimised())
             : Rou.Route.routeNotFound();
 
-    Rou.Route endWalkRoute = _routeManager.ifEndWalking()
+    Rou.Route endWalkRoute = _isEndWalking
         ? await _directionsService.getWalkingRoutes(originId, destinationId)
         : await _directionsService.getWalkingRoutes(
             endStationId, destinationId);
@@ -228,6 +228,9 @@ class NavigationManager {
 
   // TODO: Include in relevant places and clear up any left behidn variables
   void clear() {
+    _isBeginning = true;
+    _isCycling = false;
+    _isEndWalking = false;
     _isNavigating = false;
     _passedDropOffStation = false;
     _passedPickUpStation = false;
