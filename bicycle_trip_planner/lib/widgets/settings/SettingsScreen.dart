@@ -18,10 +18,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   List<int> stationsRefreshRateOptions = <int>[30, 40, 50, 60];
   List<double> nearbyStationsRangeOptions = <double>[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
   List<String> distanceUnitOptions = <String>['miles', 'km'];
+  // 0 represents 'SystemMode', 1 represents darkMode, and 2 represents lightMode
+  List<String> styleModeOptions = <String>['System', 'Dark', 'Light'];
 
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
+  String styleMode = 'System'; // system mode as default
 
 
   @override
@@ -49,14 +52,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Account",
-                        style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: ThemeStyle.primaryTextColor,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0, left: 5.0),
+                      child: Text("Account",
+                          style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: ThemeStyle.primaryTextColor,
+                      ),
+                      ),
                     ),
-                    ),
-                    Divider(),
+                    Divider(color: ThemeStyle.cardOutlineColor),
                     Center(
                       child: Column(
                         children: [
@@ -151,13 +157,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       ),
                     ),
                     SizedBox(height:20),
-                    Text("Settings",
-                      style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: ThemeStyle.primaryTextColor,
-                    ),),
-                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5.0, left: 5.0),
+                      child: Text("Settings",
+                        style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                        color: ThemeStyle.primaryTextColor,
+                      ),),
+                    ),
+                    Divider(color: ThemeStyle.cardOutlineColor),
                     Padding(
                       padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
                       child: Column(
@@ -214,6 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               )
                             ],
                           ),
+                          Divider(color: ThemeStyle.cardOutlineColor),
                           SizedBox(height: 10),
                           Row(
                             children: [
@@ -265,6 +275,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               )
                             ],
                           ),
+                          Divider(color: ThemeStyle.cardOutlineColor),
                           SizedBox(height: 10),
                           Row(
                             children: [
@@ -317,6 +328,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               )
                             ],
                           ),
+                          Divider(color: ThemeStyle.cardOutlineColor),
+                          SizedBox(height: 10),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("Style",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        color: ThemeStyle.primaryTextColor,
+                                      ),
+                                    ),
+                                    Text("App color mode",
+                                      style: TextStyle(
+                                        color: ThemeStyle.primaryTextColor,
+                                      ),),
+                                  ],
+                                ),
+                              ),
+                              DropdownButton<String>(
+                                dropdownColor: ThemeStyle.cardColor,
+                                value: styleMode,
+                                icon: const Icon(Icons.arrow_drop_down),
+                                elevation: 16,
+                                style: TextStyle(
+                                    color: ThemeStyle.mainFontColor,
+                                    fontSize: 16
+                                ),
+                                underline: Container(
+                                  height: 2,
+                                  // color: Colors.deepPurpleAccent,
+                                ),
+                                onChanged: (String? newValue) async {
+                                  userSettings.setStyleMode(newValue);
+                                  await updateVariables();
+                                },
+                                items: styleModeOptions
+                                    .map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value,
+                                      style: TextStyle(
+                                          color: ThemeStyle.primaryTextColor,
+                                          fontSize: 16
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              )
+                            ],
+                          ),
+                          Divider(color: ThemeStyle.cardOutlineColor),
+                          SizedBox(height: 10),
                         ],
                       ),
                     )
@@ -341,7 +407,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
               .pop(context);
     },
     backgroundColor: ThemeStyle.buttonPrimaryColor,
-         child: const Icon(Icons.arrow_back),
+         child: Icon(Icons.arrow_back,
+                        color: ThemeStyle.primaryIconColor),
     ),
     );
   }
@@ -350,6 +417,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
     distanceUnit = await userSettings.distanceUnit();
+    styleMode = await userSettings.styleMode();
     updateScreen();
   }
 
