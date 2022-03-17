@@ -83,7 +83,7 @@ class _StationBarState extends State<StationBar> {
           boxShadow: [ BoxShadow(color: ThemeStyle.stationShadow, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
       ),
       child: SizedBox(
-          height: 180.0,
+          height: MediaQuery.of(context).size.height * 0.2,
           child: Column(
             children: [
               Expanded(
@@ -114,7 +114,7 @@ class _StationBarState extends State<StationBar> {
                   )
               ),
               SizedBox(
-                height: 120,
+                height: MediaQuery.of(context).size.height * 0.13,
                 child: Row(
                   children: [
                     Flexible(
