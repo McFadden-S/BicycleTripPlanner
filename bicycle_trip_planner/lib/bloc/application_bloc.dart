@@ -121,8 +121,6 @@ class ApplicationBloc with ChangeNotifier {
 
     setSelectedLocation(station.place, uid);
 
-    // if the user is logged in
-    _sharedPreferenceManager.addRecentStart(station.name);
     notifyListeners();
   }
 
@@ -190,9 +188,18 @@ class ApplicationBloc with ChangeNotifier {
         LatLng(startLocation.lat, startLocation.lng), groupSize);
     Station endStation = await _stationManager.getDropoffStationNear(
         LatLng(endLocation.lat, endLocation.lng), groupSize);
-
     List<String> intermediatePlaceId =
         intermediates.map((place) => place.placeId).toList();
+
+    // if logged in & route can be found
+    // _sharedPreferenceManager.addRecentStart(startStation.name);
+    // _sharedPreferenceManager.addRecentEnd(endStation.name);
+    //_sharedPreferenceManager.addRecentIntermediary(intermediatePlaceId);
+    _sharedPreferenceManager.addToStartList(startStation.name);
+    _sharedPreferenceManager.addToEndList(endStation.name);
+
+    _sharedPreferenceManager.addRecentStart();
+    _sharedPreferenceManager.addRecentEnd();
 
     Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
         origin.placeId, startStation.place.placeId);
