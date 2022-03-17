@@ -224,7 +224,6 @@ class ApplicationBloc with ChangeNotifier {
   void endRoute() {
     _navigationSubscription.cancel();
     Wakelock.disable();
-    _stationManager.clear();
     _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
@@ -322,9 +321,11 @@ class ApplicationBloc with ChangeNotifier {
     updateLocationLive();
     _directionManager.showStartRoute();
     Wakelock.enable();
+    notifyListeners();
   }
 
   _updateDirections() async {
+    // End subscription if not navigating?
     if (!_navigationManager.ifNavigating()) return;
 
     await fetchCurrentLocation();
@@ -339,6 +340,12 @@ class ApplicationBloc with ChangeNotifier {
     } else {
       await _navigationManager.updateRoute();
     }
+  }
+
+  void toggleCycling() {
+    _directionManager.toggleCycling();
+    print("Notifying listeners");
+    notifyListeners();
   }
 
   // Clears selected route and directions

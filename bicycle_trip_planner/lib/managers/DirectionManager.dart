@@ -234,15 +234,18 @@ class DirectionManager {
     }
 
     _polylineManager.setPolyline(route.polyline.points, polylineColor);
+    print("Finish setting new route");
   }
 
   void toggleCycling() {
     _isCycling = !_isCycling;
-
+    print("Toggle cycling called");
     if (_isCycling) {
+      print("Showing bike route...");
       showBikeRoute();
     } else {
       if (_startWalkingRoute != R.Route.routeNotFound()) {
+        print("Showing start route...");
         showStartRoute();
       } else if (_endWalkingRoute != R.Route.routeNotFound()) {
         showEndRoute();
