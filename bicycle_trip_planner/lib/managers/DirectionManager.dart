@@ -122,10 +122,9 @@ class DirectionManager {
 
   void toggleCycling() {
     _isCycling = !_isCycling;
-    print("Toggle cycling called");
     if (_isCycling) {
       print("Showing bike route...");
-      RouteManager();
+      RouteManager().showBikeRoute();
     } else {
       RouteManager().showCurrentWalkingRoute();
     }
@@ -134,6 +133,7 @@ class DirectionManager {
   //********** Clearing **********
 
   void clear() {
+    _isCycling = false;
     clearDuration();
     clearDistance();
     clearCurrentDirection();

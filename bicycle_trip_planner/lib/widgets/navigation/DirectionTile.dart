@@ -19,8 +19,6 @@ class DirectionTile extends StatefulWidget {
 class _DirectionTileState extends State<DirectionTile> {
   @override
   Widget build(BuildContext context) {
-    print("DirectionsTile being bult agaib");
-
     return ListTile(
         leading: widget.directionManager.directionIcon(
             widget.directionManager.getDirection(widget.index).instruction),
