@@ -156,7 +156,7 @@ class _StationBarState extends State<StationBar> {
                   )
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.16,
+                height: MediaQuery.of(context).size.height * 0.165,
                 child: Row(
                   children: [
                     Flexible(

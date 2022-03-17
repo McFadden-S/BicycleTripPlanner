@@ -64,6 +64,7 @@ class _StationCardState extends State<StationCard> {
                       ),
                       const Spacer(flex: 1),
                       if(applicationBloc.isUserLogged())
+                        if(widget.isFavourite != null)
                         IconButton(
                           constraints: BoxConstraints(maxHeight: 25),
                           padding: EdgeInsets.all(0),
