@@ -96,12 +96,24 @@ class NavigationManager {
   }
 
   // TODO: Check what isStationSet does
+  // Also why are functions passed in?
+  // Rename pass into at...
   void passedStation(Station station, void Function(bool) functionA,
       void Function(bool) functionB) {
-    if (_stationManager.isStationSet(station) &&
-        isWaypointPassed(LatLng(station.lat, station.lng))) {
-      _stationManager.passedStation(station);
-      _stationManager.clearStation(station);
+    // if (_stationManager.isStationSet(station) &&
+    //     isWaypointPassed(LatLng(station.lat, station.lng))) {
+    //   _stationManager.passedStation(station);
+    //   _stationManager.clearStation(station);
+    //   functionA(false);
+    //   functionB(true);
+    // }
+    if (isWaypointPassed(LatLng(station.lat, station.lng))) {
+      if (station == _pickUpStation) {
+        _passedPickUpStation = true;
+      } else {
+        _passedDropOffStation = true;
+      }
+      station = Station.stationNotFound();
       functionA(false);
       functionB(true);
     }
@@ -115,6 +127,7 @@ class NavigationManager {
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
+  // Change name to removeWaypointIfPassed
   Future<bool> checkWaypointPassed() async {
     if (_routeManager.getWaypoints().isNotEmpty &&
         isWaypointPassed(
@@ -184,17 +197,14 @@ class NavigationManager {
 
   Future<void> updatePickUpDropOffStations(
       Location startLocation, Location endLocation, int groupSize) async {
-    if (!_stationManager.checkPickUpStationHasBikes(groupSize) &&
-        !_stationManager.passedPickUpStation()) {
+    // Looks like some code duplication here too??
+    if (_pickUpStation.bikes < groupSize && !_passedPickUpStation) {
       await setNewPickUpStation(startLocation, groupSize);
     }
-    if (!_stationManager.checkDropOffStationHasEmptyDocks(groupSize) &&
-        !_stationManager.passedDropOffStation()) {
+    if (_dropOffStation.bikes < groupSize && !_passedDropOffStation) {
       await setNewDropOffStation(endLocation, groupSize);
     }
   }
-
-  //TODO: Move pick up and drop off station variables in stationManager here...
 
   Future<void> setNewPickUpStation(Location location,
       [int groupSize = 1]) async {
@@ -219,6 +229,10 @@ class NavigationManager {
   // TODO: Include in relevant places and clear up any left behidn variables
   void clear() {
     _isNavigating = false;
+    _passedDropOffStation = false;
+    _passedPickUpStation = false;
+    _pickUpStation = Station.stationNotFound();
+    _dropOffStation = Station.stationNotFound();
     _locationManager.locationSettings();
   }
 }
