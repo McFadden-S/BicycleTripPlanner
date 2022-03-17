@@ -34,12 +34,15 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
+    Widget txt = Text("HI");
+
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       startSearchController.text == "My current location"
           ? routeManager.setStartFromCurrentLocation(true)
           : routeManager.setStartFromCurrentLocation(false);
       // UNCOMMENT THIS AND COMMENT THE findRoute BELOW TO TEST BRANCH
+
       // applicationBloc.findCostEfficientRoute(
       //     routeManager.getStart().getStop(),
       //     routeManager.getDestination().getStop()
