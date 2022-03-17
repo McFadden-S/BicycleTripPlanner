@@ -118,7 +118,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                   ],
                 ),
                 BackButton(
-                  color: ThemeStyle.primaryIconColor,
+                  color: ThemeStyle.secondaryIconColor,
                   key: Key("back"),
                 )
               ],

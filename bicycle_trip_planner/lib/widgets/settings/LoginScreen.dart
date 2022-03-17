@@ -85,7 +85,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     }
                   },
                 ),
-                Text("OR"),
+                Text("OR",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: ThemeStyle.primaryTextColor,
+                  ),),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   width: size.width * 0.6,
@@ -158,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: size.height * 0.02),
                 BackButton(
-                  color: ThemeStyle.primaryIconColor,
+                  color: ThemeStyle.secondaryIconColor,
                   key: Key("back"),
                 )
               ],
