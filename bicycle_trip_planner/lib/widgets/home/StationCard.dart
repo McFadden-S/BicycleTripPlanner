@@ -15,8 +15,10 @@ import '../../managers/DatabaseManager.dart';
 
 class StationCard extends StatefulWidget {
   final int index;
+  final bool?  isFavourite;
+  final Function(int)? toggleFavourite;
 
-  const StationCard({Key? key, required this.index}) : super(key: key);
+  const StationCard({Key? key, required this.index, this.isFavourite, this.toggleFavourite}) : super(key: key);
 
   @override
   _StationCardState createState() => _StationCardState();
@@ -27,6 +29,18 @@ class _StationCardState extends State<StationCard> {
 
   final LocationManager locationManager = LocationManager();
   final StationManager stationManager = StationManager();
+
+  /*List<int> _favouriteStations = [];
+
+  getFavouriteStations() async{
+    _favouriteStations = await DatabaseManager().getFavouriteStations();
+  }*/
+
+ /* @override
+  void initState() {
+    getFavouriteStations();  //call async function.
+    super.initState();
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +75,16 @@ class _StationCardState extends State<StationCard> {
                                 color: ThemeStyle.secondaryTextColor)),
                       ),
                       const Spacer(flex: 1),
+                      if(widget.isFavourite != null)
+                        IconButton(
+                          constraints: BoxConstraints(maxHeight: 25),
+                          padding: EdgeInsets.all(0),
+                          iconSize: 20,
+                          onPressed: () {widget.toggleFavourite!(widget.index);},
+                          icon: widget.isFavourite!
+                              ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor)
+                              : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
+                        ),
                     ],
                   ),
                   const Divider(),

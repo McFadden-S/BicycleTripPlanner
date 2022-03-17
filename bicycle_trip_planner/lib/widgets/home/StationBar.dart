@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
+import '../../managers/DatabaseManager.dart';
 
 class StationBar extends StatefulWidget {
   const StationBar({ Key? key }) : super(key: key);
@@ -20,6 +21,28 @@ class _StationBarState extends State<StationBar> {
   StationManager stationManager = StationManager();
 
   bool _isFavouriteStations = false;
+
+  List<int> _favouriteStations = [];
+
+  getFavouriteStations() async {
+    DatabaseManager().getFavouriteStations().then((value) =>  setState((){
+      _favouriteStations = value;
+    }));
+  }
+
+  toggleFavouriteStation(int index) {
+    if(!_favouriteStations.contains(StationManager().getStationByIndex(index).id)){
+      DatabaseManager().addToFavouriteStations(stationManager.getStationByIndex(index).id).then((value) => getFavouriteStations());
+    } else {
+      DatabaseManager().removeFavouriteStation(stationManager.getStationByIndex(index).id.toString()).then((value) => getFavouriteStations());
+    }
+  }
+
+  @override
+  void initState() {
+    getFavouriteStations();
+    super.initState();
+  }
 
   void showExpandedList(List<Station> stations) {
     showModalBottomSheet(
@@ -58,7 +81,8 @@ class _StationBarState extends State<StationBar> {
                                   itemCount: stations.length,
                                   itemBuilder:
                                       (BuildContext context, int index) =>
-                                      StationCard(index: index)),
+                                      StationCard(index: index)
+                              ),
                             ),
                           ],
                         )
@@ -129,7 +153,11 @@ class _StationBarState extends State<StationBar> {
                               scrollDirection: Axis.horizontal,
                               itemCount: stationManager.getNumberOfStations(),
                               itemBuilder: (BuildContext context, int index) =>
-                                  StationCard(index: index)
+                                  StationCard(
+                                    index: index,
+                                    isFavourite: _favouriteStations.contains(StationManager().getStationByIndex(index).id),
+                                    toggleFavourite: toggleFavouriteStation
+                                  )
                           ),
                         ),
                     ),
