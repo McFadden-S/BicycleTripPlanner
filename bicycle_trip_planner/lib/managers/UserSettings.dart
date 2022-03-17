@@ -32,31 +32,15 @@ class UserSettings {
     // await prefs.setString(key, value);
   }
 
-  darkModeToggle() async {
+  styleMode() async {
     final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('darkMode') ?? false;
-    await prefs.setBool('darkMode', !darkMode).then((_) {
-      // Data removed successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
+    return prefs.getString('styleMode') ?? 'System';
   }
 
-
-  isDarkModeOn() async {
+  setStyleMode(String? newMode) async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getBool('darkMode') ?? false;
-  }
-
-  distanceUnitToggle() async {
-    final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('distanceInKilometers') ?? false;
-    await prefs.setBool('distanceInKilometers', !darkMode).then((_) {
-      // Data removed successfully!
+    await prefs.setString('styleMode', newMode ?? 'System').then((_) {
+      // Data added successfully!
       return true;
     }).catchError((error) {
       // error
@@ -73,7 +57,7 @@ class UserSettings {
 
   setDistanceUnit(String? unit) async {
     final SharedPreferences prefs = await _prefs;
-    await prefs.setString('distanceUnit', unit ?? "miles").then((_) {
+    await prefs.setString('distanceUnit', unit ?? 'miles').then((_) {
       // Data set successfully!
       return true;
     }).catchError((error) {
