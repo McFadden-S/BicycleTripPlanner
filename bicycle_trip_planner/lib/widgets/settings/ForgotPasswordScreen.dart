@@ -63,7 +63,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                     press: resetPassword, // to be modified...
                   ),
                   BackButton(
-                    color: ThemeStyle.primaryIconColor,
+                    color: ThemeStyle.secondaryIconColor,
                     key: Key("back"),
                   ),
                 ],
