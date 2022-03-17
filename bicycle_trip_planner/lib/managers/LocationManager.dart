@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/models/locator.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
@@ -8,7 +9,7 @@ class LocationManager {
 
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
-  final Location location = Location();
+  Place _currentPlace = const Place.placeNotFound();
 
   //********** Singleton **********
 
@@ -31,17 +32,17 @@ class LocationManager {
   Future<PermissionStatus> requestPermission() async {
     await checkServiceEnabled();
     await checkPermission();
-    PermissionStatus _permissionGranted = await location.hasPermission();
+    PermissionStatus _permissionGranted = await Location().hasPermission();
     return _permissionGranted;
   }
 
   Future<bool> checkServiceEnabled() async {
     bool _serviceEnabled = true;
     // Device is on
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await Location().serviceEnabled();
     if (!_serviceEnabled) {
       // GPS Device is turned on
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await Location().requestService();
       if (!_serviceEnabled) {
         _serviceEnabled = false;
       }
@@ -52,14 +53,11 @@ class LocationManager {
   // returns true or false based on user accepting or rejecting location services
   Future<bool> checkPermission() async {
     bool grantedPermission = true;
-    PermissionStatus _permissionGranted = await location.hasPermission();
+    PermissionStatus _permissionGranted = await Location().hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await Location().requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
-        // TODO: Using geolocator to openLocationSettings causes another
-        // permission dialogue to pop up. Perhaps rely on only one location package
-        // geo.Geolocator.openLocationSettings();
       }
     }
     return grantedPermission;
@@ -78,10 +76,18 @@ class LocationManager {
   }
 
   Future<bool> locationSettings([double distanceFilter = 0]) {
-    return location.changeSettings(
-        accuracy: LocationAccuracy.high,
+    return Location().changeSettings(
+        accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
+  }
+
+  void setCurrentLocation(Place currentPlace) {
+    _currentPlace = currentPlace;
+  }
+
+  Place getCurrentLocation() {
+    return _currentPlace;
   }
 
   //********** private *********
@@ -96,7 +102,10 @@ class LocationManager {
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
-  Stream<LocationData> onUserLocationChange() {
+  Stream<LocationData> onUserLocationChange([double distanceFilter = 0]) {
+    Location location = Location();
+    print(distanceFilter);
+    locationSettings(distanceFilter);
     return location.onLocationChanged;
   }
 }

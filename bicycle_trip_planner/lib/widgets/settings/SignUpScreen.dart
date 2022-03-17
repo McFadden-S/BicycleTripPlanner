@@ -1,8 +1,8 @@
-import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/LoginScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/PasswordField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'components/ErrorSnackbar.dart';
 import 'package:bicycle_trip_planner/constants.dart';

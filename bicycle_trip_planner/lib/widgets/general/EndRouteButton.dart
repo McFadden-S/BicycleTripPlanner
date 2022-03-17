@@ -9,15 +9,13 @@ import '../../managers/DialogManager.dart';
 import 'CircleButton.dart';
 
 class EndRouteButton extends StatefulWidget {
-
-  const EndRouteButton({ Key? key}) : super(key: key);
+  const EndRouteButton({Key? key}) : super(key: key);
 
   @override
   _EndRouteButtonState createState() => _EndRouteButtonState();
 }
 
 class _EndRouteButtonState extends State<EndRouteButton> {
-
   final DialogManager dialogManager = DialogManager();
   final RouteManager routeManager = RouteManager();
 
@@ -30,13 +28,12 @@ class _EndRouteButtonState extends State<EndRouteButton> {
           dialogManager.setBinaryChoice(
             "Would you like to end your route?",
             "Yes",
-                () {
+            () {
               applicationBloc.endRoute();
-              applicationBloc.setNavigating(false);
               applicationBloc.setSelectedScreen('home');
             },
             "No",
-                () {
+            () {
               routeManager.setWalkToFirstWaypoint(false);
             },
           );
@@ -48,18 +45,11 @@ class _EndRouteButtonState extends State<EndRouteButton> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
-              Text("End",
-                  style: TextStyle(color: Colors.white)),
+              Text("End", style: TextStyle(color: Colors.white)),
             ],
           ),
         ),
         style: ButtonStyle(
-            backgroundColor:
-            MaterialStateProperty.all<Color>(
-                Colors.red)
-        )
-    );
-
+            backgroundColor: MaterialStateProperty.all<Color>(Colors.red)));
   }
-
 }

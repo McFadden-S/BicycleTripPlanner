@@ -9,15 +9,13 @@ import '../../managers/DialogManager.dart';
 import 'CircleButton.dart';
 
 class WalkToFirstButton extends StatefulWidget {
-
-  const WalkToFirstButton({ Key? key}) : super(key: key);
+  const WalkToFirstButton({Key? key}) : super(key: key);
 
   @override
   _WalkToFirstButtonState createState() => _WalkToFirstButtonState();
 }
 
 class _WalkToFirstButtonState extends State<WalkToFirstButton> {
-
   final DialogManager dialogManager = DialogManager();
   final RouteManager routeManager = RouteManager();
 
@@ -25,32 +23,33 @@ class _WalkToFirstButtonState extends State<WalkToFirstButton> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    return Column(
+    return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Row(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CircleButton(
-                iconIn: Icons.directions_walk,
-                onButtonClicked: () {
-                  dialogManager.setBinaryChoice(
-                    "Do you want to walk to start or be routed to it?",
-                    "Walk",
-                        (){routeManager.setWalkToFirstWaypoint(true);},
-                    "Route",
-                        (){routeManager.setWalkToFirstWaypoint(false);},
-                  );
-
-                  applicationBloc.showBinaryDialog();
-
+          CircleButton(
+            iconIn: Icons.directions_walk,
+            onButtonClicked: () {
+              dialogManager.setBinaryChoice(
+                "Do you want to walk to start or be routed to it?",
+                "Walk",
+                () {
+                  routeManager.setWalkToFirstWaypoint(true);
                 },
-                iconColor: routeManager.getWalkToFirstWaypoint() ? Colors.amber : ThemeStyle.primaryIconColor,
-              ),
-            ],
-          ),
-        ]
-    );
-  }
+                "Route",
+                () {
+                  routeManager.setWalkToFirstWaypoint(false);
+                },
+              );
 
+              applicationBloc.showBinaryDialog();
+            },
+            iconColor: routeManager.ifWalkToFirstWaypoint()
+                ? Colors.amber
+                : ThemeStyle.primaryIconColor,
+          ),
+        ],
+      ),
+    ]);
+  }
 }

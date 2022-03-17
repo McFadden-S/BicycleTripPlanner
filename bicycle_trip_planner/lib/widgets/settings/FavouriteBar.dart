@@ -3,7 +3,7 @@ import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/login/FavouriteStationCard.dart';
+import 'package:bicycle_trip_planner/widgets/settings/FavouriteStationCard.dart';
 
 class FavouriteBar extends StatefulWidget {
   const FavouriteBar({ Key? key }) : super(key: key);
@@ -27,7 +27,6 @@ class _FavouriteBarState extends State<FavouriteBar> {
 
     for(int id in stationIDs){
       stations.add(stationManager.getStationById(id));
-      print(stationManager.getStationById(id).toString());
     }
 
     return stations;
