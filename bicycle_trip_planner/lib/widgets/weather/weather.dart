@@ -22,29 +22,32 @@ class _WeatherState extends State<Weather> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if(_response != null)
-                Column(
-                  children: [
-                    Text('London', style: TextStyle(fontSize: 30)),
-                    Image.network(_response.iconUrl),
-                    Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
-                    Text(_response.weatherInfo.description)
-                  ],
-                ),
-            ],
+  Widget build(BuildContext context) => WillPopScope(
+    onWillPop: () async {
+      return true;
+    },
+    child:
+    Scaffold(
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if(_response != null)
+                    Column(
+                      children: [
+                        Text('London', style: TextStyle(fontSize: 30)),
+                        Image.network(_response.iconUrl),
+                        Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
+                        Text(_response.weatherInfo.description),
+                        BackButton()
+                      ],
+                    ),
+                ],
 
+              ),
+            ),
           ),
-        ),
-      ),
-    );
-  }
+  );
 
   void _search() async{
     final response = await _weatherService.getWeather("london");
