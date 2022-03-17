@@ -34,8 +34,6 @@ class _RouteCardState extends State<RouteCard> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
-    Widget txt = Text("HI");
-
     if(routeManager.ifStartSet() && routeManager.ifDestinationSet() && routeManager.ifChanged()){
       polylineManager.clearPolyline();
       startSearchController.text == "My current location"
@@ -43,16 +41,16 @@ class _RouteCardState extends State<RouteCard> {
           : routeManager.setStartFromCurrentLocation(false);
       // UNCOMMENT THIS AND COMMENT THE findRoute BELOW TO TEST BRANCH
 
-      // applicationBloc.findCostEfficientRoute(
-      //     routeManager.getStart().getStop(),
-      //     routeManager.getDestination().getStop()
-      // );
-      applicationBloc.findRoute(
+      applicationBloc.findCostEfficientRoute(
           routeManager.getStart().getStop(),
-          routeManager.getDestination().getStop(),
-          routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
-          routeManager.getGroupSize()
+          routeManager.getDestination().getStop()
       );
+      // applicationBloc.findRoute(
+      //     routeManager.getStart().getStop(),
+      //     routeManager.getDestination().getStop(),
+      //     routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList(),
+      //     routeManager.getGroupSize()
+      // );
       routeManager.clearChanged();
 
     } else if((!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) && routeManager.ifChanged()){
