@@ -1,13 +1,13 @@
-import 'package:bicycle_trip_planner/widgets/Login/UserProfile.dart';
+import 'package:bicycle_trip_planner/widgets/settings/UserProfile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/LoginScreen.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SignUpScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/widgets/Login/GoogleSignIn.dart';
+import 'package:bicycle_trip_planner/widgets/settings/GoogleSignIn.dart';
 import '../../bloc/application_bloc.dart';
 
 class AuthenticationScreen extends StatefulWidget {

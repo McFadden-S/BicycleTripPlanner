@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/Login/ForgotPasswordScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login/SignUpScreen.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/InputField.dart';
-import 'package:bicycle_trip_planner/widgets/Login//components/PasswordField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/ForgotPasswordScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SignUpScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../settings/GoogleSignIn.dart';
 import 'components/ErrorSnackbar.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -82,6 +84,30 @@ class _LoginScreenState extends State<LoginScreen> {
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                     }
                   },
+                ),
+                Text("OR"),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10),
+                  width: size.width * 0.6,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(30),
+                    child: ElevatedButton.icon(
+                      key: Key("googleLogin"),
+                      icon: FaIcon(FontAwesomeIcons.google),
+                      label: Text("Login with Google"),
+                      onPressed: () async {
+                        await GoogleSignInProvider().googleLogin();
+                        if(_auth.currentUser != null){
+                          Navigator.pop(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          primary: ThemeStyle.buttonPrimaryColor,
+                          padding: EdgeInsets.symmetric(vertical: 15),
+                          textStyle: TextStyle(
+                              color: ThemeStyle.primaryTextColor, fontSize: 14, fontWeight: FontWeight.w500)),
+                    ),
+                  ),
                 ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

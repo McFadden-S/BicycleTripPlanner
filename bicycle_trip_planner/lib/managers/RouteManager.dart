@@ -13,22 +13,15 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
-  final PlacesService _placesService = PlacesService();
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
 
-  bool _ifBeginning = true;
-  bool _ifCycling = false;
-  bool _ifEndWalking = false;
-
   int _groupsize = 1;
 
   bool _changed = false;
   bool _optimised = true;
-
-  Location _destination = Location(lng: -1, lat: -1);
 
   //********** Singleton **********
 
@@ -42,30 +35,6 @@ class RouteManager {
 
   //********** Public **********
 
-  bool ifBeginning() {
-    return _ifBeginning;
-  }
-
-  void setIfBeginning(bool value) {
-    _ifBeginning = value;
-  }
-
-  bool ifCycling() {
-    return _ifCycling;
-  }
-
-  void setIfCycling(bool value) {
-    _ifCycling = value;
-  }
-
-  bool ifEndWalking() {
-    return _ifEndWalking;
-  }
-
-  void setIfEndWalking(bool value) {
-    _ifEndWalking = value;
-  }
-
   int getGroupSize() {
     return _groupsize;
   }
@@ -77,7 +46,7 @@ class RouteManager {
     }
   }
 
-  bool getWalkToFirstWaypoint() {
+  bool ifWalkToFirstWaypoint() {
     return _walkToFirstWaypoint;
   }
 
@@ -87,13 +56,13 @@ class RouteManager {
     _changed = true;
   }
 
-  void setWalkToFirstWaypoint(bool ifWalk){
+  void setWalkToFirstWaypoint(bool ifWalk) {
     _walkToFirstWaypoint = ifWalk;
     _pathway.setHasFirstWaypoint(ifWalk);
     _changed = true;
   }
 
-  bool getStartFromCurrentLocation() {
+  bool ifStartFromCurrentLocation() {
     return _startFromCurrentLocation;
   }
 
@@ -107,7 +76,7 @@ class RouteManager {
     _changed = true;
   }
 
-  void setOptimised(bool optimised){
+  void setOptimised(bool optimised) {
     _optimised = optimised;
     _changed = true;
   }
@@ -124,8 +93,6 @@ class RouteManager {
   Stop getStart() => _pathway.getStart();
 
   Stop getDestination() => _pathway.getDestination();
-
-  Location getDestinationLocation() => _destination;
 
   List<Stop> getWaypoints() => _pathway.getWaypoints();
 
@@ -178,10 +145,6 @@ class RouteManager {
     _changed = true;
   }
 
-  Future<void> setDestinationLocation() async {
-    _destination = getDestination().getStop().geometry.location;
-  }
-
   // Overrides the old destination
   void addDestination(Place destination) {
     Stop destinationStop = Stop(destination);
@@ -228,7 +191,6 @@ class RouteManager {
 
   void clearDestination() {
     _pathway.changeDestination(const Place.placeNotFound());
-    _destination = Location(lng: -1, lat: -1);
     _changed = true;
   }
 
@@ -268,9 +230,6 @@ class RouteManager {
 
   void clear() {
     _polylineManager.clearPolyline();
-    _ifBeginning = true;
-    _ifCycling = false;
-    _ifEndWalking = false;
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     clearRouteMarkers();

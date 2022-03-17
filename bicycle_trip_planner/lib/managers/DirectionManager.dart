@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,13 @@ class DirectionManager {
 
   final CameraManager _cameraManager = CameraManager.instance;
   final PolylineManager _polylineManager = PolylineManager();
+  final NavigationManager _navigationManager = NavigationManager();
 
   R.Route _startWalkingRoute = R.Route.routeNotFound();
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
 
   bool _isCycling = false;
-  bool _isNavigating = false;
 
   String _duration = "No data";
   String _distance = "No data";
@@ -62,7 +63,7 @@ class DirectionManager {
     _isCycling = false;
   }
 
-  void showCombinedRoute([relocateMap = true]){
+  void showCombinedRoute([relocateMap = true]) {
     _polylineManager.clearPolyline();
     _polylineManager.addWalkingPolyline(_startWalkingRoute.polyline.points);
     _polylineManager.addBikingPolyline(_bikingRoute.polyline.points);
@@ -71,9 +72,18 @@ class DirectionManager {
     int duration = 0;
     int distance = 0;
 
-    _startWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
-    _bikingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
-    _endWalkingRoute.legs.forEach((leg) { duration += leg.duration; distance += leg.distance;});
+    _startWalkingRoute.legs.forEach((leg) {
+      duration += leg.duration;
+      distance += leg.distance;
+    });
+    _bikingRoute.legs.forEach((leg) {
+      duration += leg.duration;
+      distance += leg.distance;
+    });
+    _endWalkingRoute.legs.forEach((leg) {
+      duration += leg.duration;
+      distance += leg.distance;
+    });
 
     setDuration(duration);
     setDistance(distance);
@@ -101,10 +111,6 @@ class DirectionManager {
     return _startWalkingRoute != R.Route.routeNotFound() &&
         _endWalkingRoute != R.Route.routeNotFound() &&
         _bikingRoute != R.Route.routeNotFound();
-  }
-
-  bool ifNavigating() {
-    return _isNavigating;
   }
 
   bool ifCycling() {
@@ -176,18 +182,13 @@ class DirectionManager {
     _distance = "$miles mi";
   }
 
-  //TODO: Temporary fix, should be refactored
-  void setNavigating(bool isNavigating) {
-    _isNavigating = isNavigating;
-  }
-
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
       [relocateMap = true]) {
     _startWalkingRoute = startWalk;
     _bikingRoute = bike;
     _endWalkingRoute = endWalk;
 
-    if (_isNavigating) {
+    if (_navigationManager.ifNavigating()) {
       if (_startWalkingRoute != R.Route.routeNotFound()) {
         showStartRoute(relocateMap);
       } else if (_bikingRoute != R.Route.routeNotFound()) {
@@ -228,20 +229,23 @@ class DirectionManager {
 
     Color polylineColor = Colors.red;
 
-    if(route != _bikingRoute){
+    if (route != _bikingRoute) {
       polylineColor = Colors.grey;
     }
 
     _polylineManager.setPolyline(route.polyline.points, polylineColor);
+    print("Finish setting new route");
   }
 
   void toggleCycling() {
     _isCycling = !_isCycling;
-
+    print("Toggle cycling called");
     if (_isCycling) {
+      print("Showing bike route...");
       showBikeRoute();
     } else {
       if (_startWalkingRoute != R.Route.routeNotFound()) {
+        print("Showing start route...");
         showStartRoute();
       } else if (_endWalkingRoute != R.Route.routeNotFound()) {
         showEndRoute();
@@ -260,8 +264,6 @@ class DirectionManager {
     clearDirections();
 
     clearRoutes();
-
-    _isNavigating = false;
   }
 
   void clearDuration() {

@@ -1,5 +1,5 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/login': (context) => const AuthenticationScreen(),
+        '/settings': (context) => const SettingsScreen(),
         '/loading': (context) => const Loading(),
         '/': (context) => const Home(),
         '/navigation': (context) => const Navigation(),

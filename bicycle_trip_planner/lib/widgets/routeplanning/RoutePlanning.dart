@@ -112,10 +112,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           buttonColor: ThemeStyle.goButtonColor,
                           onButtonClicked: () {
                             if (_directionManager.ifRouteSet()) {
-                              applicationBloc.setNavigating(true);
-                              applicationBloc.setSelectedScreen('navigation');
-                              _directionManager.showStartRoute();
-                              Wakelock.enable();
+                              applicationBloc.startNavigation();
                             } else {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
@@ -133,5 +130,4 @@ class _RoutePlanningState extends State<RoutePlanning> {
       ),
     );
   }
-
 }
