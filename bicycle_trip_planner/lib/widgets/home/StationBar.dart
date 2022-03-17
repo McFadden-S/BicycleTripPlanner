@@ -97,7 +97,10 @@ class _StationBarState extends State<StationBar> {
                         const Spacer(),
                         IconButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () => { setState(() {_isFavouriteStations = !_isFavouriteStations;}) },
+                          onPressed: () {
+                            setState(() {_isFavouriteStations = !_isFavouriteStations;});
+                            applicationBloc.updateStations(favourite: _isFavouriteStations);
+                          },
                           icon: _isFavouriteStations ? Icon(Icons.star, color: ThemeStyle.buttonPrimaryColor) : Icon(Icons.star, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(

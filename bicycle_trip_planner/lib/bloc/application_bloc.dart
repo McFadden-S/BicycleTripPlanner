@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
@@ -250,10 +251,22 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateStations() async {
-    await _stationManager.setStations(await _stationsService.getStations());
+  updateStations({bool favourite = false}) async {
+    if(favourite) {
+      List<Station> favouriteStations = await _stationsService.getStations();
+      List<int> compare = await DatabaseManager().getFavouriteStations();
+      favouriteStations.retainWhere((element) => compare.contains(element.id));
+      await _stationManager.setStations(favouriteStations, clear: true);
+    } else {
+      await _stationManager.setStations(await _stationsService.getStations(), clear: true);
+    }
+    filterStationMarkers();
     notifyListeners();
   }
+
+  /*reloadStations(bool favourite) {
+
+  }*/
 
   List<Station> filterNearbyStations() {
     List<Station> notNearbyStations = _stationManager.getFarStations();

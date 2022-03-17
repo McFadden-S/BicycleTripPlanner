@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -219,7 +220,11 @@ class StationManager {
     return nearbyStations;
   }
 
-  Future<void> setStations(List<Station> newStations) async {
+  Future<void> setStations(List<Station> newStations, {clear = false}) async {
+    if(clear) {
+      _stationsLookUp = {};
+      _stations = [];
+    }
     LatLng currentPos = await _locationManager.locate();
 
     for (Station newStation in newStations) {
