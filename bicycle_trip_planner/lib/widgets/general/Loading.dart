@@ -38,10 +38,15 @@ class _LoadingState extends State<Loading> {
     },
     child: Scaffold(
       backgroundColor: Colors.grey[900],
-      body: const Center(
-        child: SpinKitFadingCube(
-          color: Colors.white,
-          size: 50.0,
+      body: Center(
+        child: Column(
+          children: [
+            SpinKitFadingCube(
+              color: Colors.white,
+              size: 50.0,
+            ),
+            Text('No connection... Please wait')
+          ],
         ),
       ),
     ),
