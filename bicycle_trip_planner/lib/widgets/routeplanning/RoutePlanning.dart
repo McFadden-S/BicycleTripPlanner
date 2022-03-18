@@ -111,7 +111,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           iconIn: Icons.directions_bike,
                           buttonColor: ThemeStyle.goButtonColor,
                           onButtonClicked: () {
-                            if (_directionManager.ifRouteSet()) {
+                            if (_routeManager.ifRouteSet()) {
                               applicationBloc.startNavigation();
                             } else {
                               ScaffoldMessenger.of(context)

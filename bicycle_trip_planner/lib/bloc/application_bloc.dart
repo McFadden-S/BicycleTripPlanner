@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
@@ -48,6 +51,8 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final DatabaseManager _databaseManager = DatabaseManager();
+  final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -58,8 +63,10 @@ class ApplicationBloc with ChangeNotifier {
   //late Place _currentLocation;
 
   ApplicationBloc() {
+    // Note: not async
+    changeUnits();
     fetchCurrentLocation();
-    updateStationsPeriodically(const Duration(seconds: 30));
+    updateStationsPeriodically();
   }
 
   // ********** Dialog **********
@@ -217,14 +224,14 @@ class ApplicationBloc with ChangeNotifier {
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
 
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showAllRoutes();
     notifyListeners();
   }
 
   void endRoute() {
     _navigationSubscription.cancel();
     Wakelock.disable();
-    _stationManager.clear();
     _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
@@ -237,8 +244,9 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer.cancel();
   }
 
-  updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) {
+  updateStationsPeriodically() async {
+    int duration = await _userSettings.stationsRefreshRate();
+    _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
       filterStationMarkers();
     });
@@ -251,13 +259,27 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    await _stationManager.setStations(await _stationsService.getStations());
+    if (isUserLogged() && _userSettings.getIsIsFavouriteStationsSelected()) {
+      List<Station> favouriteStations = await _stationsService.getStations();
+      List<int> compare = await DatabaseManager().getFavouriteStations();
+      favouriteStations.retainWhere((element) => compare.contains(element.id));
+      await _stationManager.setStations(favouriteStations, clear: true);
+    } else {
+      await _stationManager.setStations(await _stationsService.getStations(),
+          clear: true);
+    }
+    filterStationMarkers();
     notifyListeners();
   }
 
-  List<Station> filterNearbyStations() {
-    List<Station> notNearbyStations = _stationManager.getFarStations();
-    List<Station> nearbyStations = _stationManager.getNearStations();
+  /*reloadStations(bool favourite) {
+
+  }*/
+
+  Future<List<Station>> filterNearbyStations() async {
+    double range = await _userSettings.nearbyStationsRange();
+    List<Station> notNearbyStations = _stationManager.getFarStations(range);
+    List<Station> nearbyStations = _stationManager.getNearStations(range);
     _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
     return nearbyStations;
@@ -272,11 +294,11 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.clearStationMarkers(bikelessStations);
   }
 
-  void filterStationMarkers() {
+  Future<void> filterStationMarkers() async {
     if (_navigationManager.ifNavigating()) {
       return;
     }
-    List<Station> nearbyStations = filterNearbyStations();
+    List<Station> nearbyStations = await filterNearbyStations();
     filterStationsWithBikes(nearbyStations);
   }
 
@@ -284,10 +306,6 @@ class ApplicationBloc with ChangeNotifier {
     // Do this in case station marker is not on the map
     _markerManager.setStationMarkerWithUID(station, this, uid);
     _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
-  }
-
-  clearStationMarkersWithoutUID() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
   }
 
   setStationMarkersWithoutUID() {
@@ -320,11 +338,13 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     _updateDirections();
     updateLocationLive();
-    _directionManager.showStartRoute();
+    _routeManager.showCurrentRoute();
     Wakelock.enable();
+    notifyListeners();
   }
 
   _updateDirections() async {
+    // End subscription if not navigating?
     if (!_navigationManager.ifNavigating()) return;
 
     await fetchCurrentLocation();
@@ -336,14 +356,93 @@ class ApplicationBloc with ChangeNotifier {
     if (_routeManager.ifWalkToFirstWaypoint() &&
         _routeManager.ifFirstWaypointSet()) {
       await _navigationManager.updateRouteWithWalking();
+      setPartialRoutes(
+          [_routeManager.getFirstWaypoint().getStop().placeId],
+          _routeManager
+              .getWaypoints()
+              .sublist(1)
+              .map((waypoint) => waypoint.getStop().placeId)
+              .toList());
     } else {
       await _navigationManager.updateRoute();
+      setPartialRoutes(
+          [],
+          _routeManager
+              .getWaypoints()
+              .map((waypoint) => waypoint.getStop().placeId)
+              .toList());
     }
+    clearStationMarkersNotInRoute();
+  }
+
+  Future<void> setPartialRoutes(
+      [List<String> first = const <String>[],
+      List<String> intermediates = const <String>[]]) async {
+    String originId = _routeManager.getStart().getStop().placeId;
+    String destinationId = _routeManager.getDestination().getStop().placeId;
+
+    String startStationId = _navigationManager.getPickupStation().place.placeId;
+    String endStationId = _navigationManager.getDropoffStation().place.placeId;
+
+    Rou.Route startWalkRoute = _navigationManager.ifBeginning()
+        ? await _directionsService.getWalkingRoutes(
+            originId, startStationId, first, false)
+        : Rou.Route.routeNotFound();
+
+    Rou.Route bikeRoute = _navigationManager.ifBeginning()
+        ? await _directionsService.getRoutes(startStationId, endStationId,
+            intermediates, _routeManager.ifOptimised())
+        : _navigationManager.ifCycling()
+            ? await _directionsService.getRoutes(originId, endStationId,
+                intermediates, _routeManager.ifOptimised())
+            : Rou.Route.routeNotFound();
+
+    Rou.Route endWalkRoute = _navigationManager.ifEndWalking()
+        ? await _directionsService.getWalkingRoutes(originId, destinationId)
+        : await _directionsService.getWalkingRoutes(
+            endStationId, destinationId);
+
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showCurrentRoute(false);
+  }
+
+  void clearStationMarkersNotInRoute() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+    Station pickupStation = _navigationManager.getPickupStation();
+    Station dropOffStation = _navigationManager.getDropoffStation();
+    _markerManager.setStationMarker(pickupStation, this);
+    _markerManager.setStationMarker(dropOffStation, this);
+  }
+
+  // ********** User Setting Management **********
+
+  bool isUserLogged() {
+    return _databaseManager.isUserLogged();
+  }
+
+  void toggleCycling() {
+    _directionManager.toggleCycling();
+    notifyListeners();
   }
 
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
+  }
+
+  void changeUnits() async {
+    DistanceType units = await _userSettings.distanceUnit();
+    _locationManager.setUnits(units);
+    updateStations();
+    notifyListeners();
+  }
+
+  void updateSettings() {
+    cancelStationTimer();
+    updateStationsPeriodically();
+    changeUnits();
+    filterStationMarkers();
+    notifyListeners();
   }
 }

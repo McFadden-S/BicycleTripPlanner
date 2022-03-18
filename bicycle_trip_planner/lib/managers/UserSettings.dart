@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/place.dart';
-class UserSettings {
 
+class UserSettings {
   //********** Singleton **********
   static final UserSettings _userSettings = UserSettings._internal();
   factory UserSettings() {
@@ -12,11 +14,9 @@ class UserSettings {
   }
   UserSettings._internal();
 
-
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-
-
+  bool _isFavouriteStationsSelected = false;
 
 //********** Public **********
 
@@ -26,55 +26,26 @@ class UserSettings {
     // await prefs.setString(key, value);
   }
 
-
   saveRoute(Pathway pathway) async {
     final SharedPreferences prefs = await _prefs;
     // encode pathway as json String and add
     // await prefs.setString(key, value);
   }
 
-  darkModeToggle() async {
-    final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('darkMode') ?? false;
-    await prefs.setBool('darkMode', !darkMode).then((_) {
-      // Data removed successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
-  }
 
-
-  isDarkModeOn() async {
+  // returns String 'miles' or 'km'
+  Future<DistanceType> distanceUnit() async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getBool('darkMode') ?? false;
-  }
-
-  distanceUnitToggle() async {
-    final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('distanceInKilometers') ?? false;
-    await prefs.setBool('distanceInKilometers', !darkMode).then((_) {
-      // Data removed successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
-  }
-
-  distanceUnit() async {
-    final SharedPreferences prefs = await _prefs;
-    return prefs.getString('distanceUnit') ?? 'miles';
+    String distanceUnit = prefs.getString('distanceUnit') ?? 'miles';
+    if (distanceUnit == "miles") {
+      return DistanceType.miles;
+    }
+    return DistanceType.km;
   }
 
   setDistanceUnit(String? unit) async {
     final SharedPreferences prefs = await _prefs;
-    await prefs.setString('distanceUnit', unit ?? "miles").then((_) {
+    await prefs.setString('distanceUnit', unit ?? 'miles').then((_) {
       // Data set successfully!
       return true;
     }).catchError((error) {
@@ -84,7 +55,6 @@ class UserSettings {
     //no error caught
     return true;
   }
-
 
   // returns a number representing the amount of time (in seconds)
   // between every API call for stations (default is 30 seconds)
@@ -108,7 +78,6 @@ class UserSettings {
     return true;
   }
 
-
   nearbyStationsRange() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getDouble('nearbyStationsRange') ?? 0.5;
@@ -127,6 +96,13 @@ class UserSettings {
     return true;
   }
 
+  setIsFavouriteStationsSelected(bool value) {
+    _isFavouriteStationsSelected = value;
+  }
+
+  getIsIsFavouriteStationsSelected() {
+    return _isFavouriteStationsSelected;
+  }
 
 //********** Private **********
 

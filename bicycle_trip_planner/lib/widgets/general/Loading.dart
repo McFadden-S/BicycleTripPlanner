@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,11 +17,12 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   void setUpMap() async {
+    await Home();
+    await HomeWidgets();
     await MapWidget();
     await LocationManager().getCurrentLocation() != const Place.placeNotFound();
     await StationManager().getNumberOfStations() > 0;
     await StationBar();
-    await Home();
     await Future.delayed(const Duration(seconds: 3));
     Navigator.pushReplacementNamed(context, '/home');
   }

@@ -1,9 +1,12 @@
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:http/http.dart' as http;
 import 'package:bicycle_trip_planner/models/route.dart';
 import 'dart:convert' as convert;
 
 class DirectionsService {
-  Future<Route> getRoutes(String origin, String destination, [List<String> intermediates = const <String>[], bool optimised = true]) async {
+  Future<Route> getRoutes(String origin, String destination,
+      [List<String> intermediates = const <String>[],
+      bool optimised = true]) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
     var waypoints = _generateWaypoints(intermediates, optimised);
@@ -15,10 +18,12 @@ class DirectionsService {
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
 
-    return Route.fromJson(jsonResults);
+    return Route.fromJson(jsonResults, RouteType.bike);
   }
 
-  Future<Route> getWalkingRoutes(String origin, String destination, [List<String> intermediates = const <String>[], bool optimised = true]) async {
+  Future<Route> getWalkingRoutes(String origin, String destination,
+      [List<String> intermediates = const <String>[],
+      bool optimised = true]) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
     var waypoints = _generateWaypoints(intermediates, optimised);
@@ -30,14 +35,15 @@ class DirectionsService {
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
 
-    return Route.fromJson(jsonResults);
+    return Route.fromJson(jsonResults, RouteType.walk);
   }
 
-  String _generateWaypoints(List<String> intermediates, [bool optimised = true]){
+  String _generateWaypoints(List<String> intermediates,
+      [bool optimised = true]) {
     String waypoints = "";
-    if(intermediates.isNotEmpty){
+    if (intermediates.isNotEmpty) {
       waypoints += "&waypoints=optimize:$optimised";
-      for(var intermediate in intermediates){
+      for (var intermediate in intermediates) {
         waypoints += "|place_id:$intermediate";
       }
     }

@@ -48,7 +48,7 @@ class _NavigationState extends State<Navigation> {
     //   });
     // });
 
-    applicationBloc.clearStationMarkersWithoutUID();
+    applicationBloc.clearStationMarkersNotInRoute();
   }
 
   @override
@@ -60,6 +60,7 @@ class _NavigationState extends State<Navigation> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ApplicationBloc>(context);
     return SafeArea(
       bottom: false,
       child: Stack(

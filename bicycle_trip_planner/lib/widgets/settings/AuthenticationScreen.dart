@@ -18,7 +18,6 @@ class AuthenticationScreen extends StatefulWidget {
 }
 
 class _WelcomeScreen extends State<AuthenticationScreen> {
-  // final databaseManager = DatabaseManager();
   final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
