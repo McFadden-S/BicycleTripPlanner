@@ -48,7 +48,7 @@ class _NavigationState extends State<Navigation> {
     //   });
     // });
 
-    applicationBloc.clearStationMarkersWithoutUID();
+    applicationBloc.clearStationMarkersNotInRoute();
   }
 
   @override

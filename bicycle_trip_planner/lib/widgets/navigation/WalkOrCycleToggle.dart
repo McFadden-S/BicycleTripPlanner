@@ -19,8 +19,6 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
   late final ApplicationBloc appBloc;
 
   void setCycling() {
-    // print("SetCycling called");
-    // setState(() => {widget.directionManager.toggleCycling()});
     setState(() => {appBloc.toggleCycling()});
   }
 

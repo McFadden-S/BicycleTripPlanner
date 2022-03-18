@@ -1,10 +1,16 @@
+import 'dart:ui';
+
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as R;
+import 'package:bicycle_trip_planner/models/route_types.dart';
+import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
-import 'package:bicycle_trip_planner/services/places_service.dart';
+import 'package:flutter/material.dart';
 
 import '../models/place.dart';
 
@@ -13,6 +19,8 @@ class RouteManager {
 
   final PolylineManager _polylineManager = PolylineManager();
   final MarkerManager _markerManager = MarkerManager();
+  final DirectionManager _directionManager = DirectionManager();
+  final CameraManager _cameraManager = CameraManager.instance;
   final Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
@@ -22,6 +30,10 @@ class RouteManager {
 
   bool _changed = false;
   bool _optimised = true;
+
+  R.Route _startWalkingRoute = R.Route.routeNotFound();
+  R.Route _bikingRoute = R.Route.routeNotFound();
+  R.Route _endWalkingRoute = R.Route.routeNotFound();
 
   //********** Singleton **********
 
@@ -33,7 +45,106 @@ class RouteManager {
 
   //********** Private **********
 
+  void _moveCameraTo(R.Route route) {
+    _cameraManager.goToPlace(
+        route.legs.first.startLocation.lat,
+        route.legs.first.startLocation.lng,
+        route.bounds.northeast,
+        route.bounds.southwest);
+  }
+
   //********** Public **********
+
+  void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk) {
+    _startWalkingRoute = startWalk;
+    _bikingRoute = bike;
+    _endWalkingRoute = endWalk;
+  }
+
+  // Only shows one of the walking route
+  void showCurrentWalkingRoute([bool relocateMap = true]) {
+    if (_startWalkingRoute != R.Route.routeNotFound()) {
+      setCurrentRoute(_startWalkingRoute, relocateMap);
+    } else if (_endWalkingRoute != R.Route.routeNotFound()) {
+      setCurrentRoute(_endWalkingRoute, relocateMap);
+    }
+  }
+
+  // Shows only one of the routes
+  void showCurrentRoute([bool relocateMap = true]) {
+    if (_startWalkingRoute != R.Route.routeNotFound()) {
+      setCurrentRoute(_startWalkingRoute, relocateMap);
+      return;
+    }
+
+    if (_bikingRoute != R.Route.routeNotFound()) {
+      setCurrentRoute(_bikingRoute, relocateMap);
+      return;
+    }
+
+    if (_endWalkingRoute != R.Route.routeNotFound()) {
+      setCurrentRoute(_endWalkingRoute, relocateMap);
+      return;
+    }
+  }
+
+  void showBikeRoute([relocateMap = true]) {
+    setCurrentRoute(_bikingRoute, relocateMap);
+  }
+
+  void setDirectionsData(R.Route route) {
+    List<Steps> directionsPassByValue = [];
+    for (var step in route.directions) {
+      directionsPassByValue.add(Steps.from(step));
+    }
+    _directionManager.setDirections(directionsPassByValue);
+    _directionManager.setDuration(route.duration);
+    _directionManager.setDistance(route.distance);
+  }
+
+  void showAllRoutes([bool relocateMap = true]) {
+    _polylineManager.clearPolyline();
+    _polylineManager.addPolyline(_startWalkingRoute.polyline.points,
+        _startWalkingRoute.routeType.polylineColor);
+    _polylineManager.addPolyline(
+        _bikingRoute.polyline.points, _bikingRoute.routeType.polylineColor);
+    _polylineManager.addPolyline(_endWalkingRoute.polyline.points,
+        _endWalkingRoute.routeType.polylineColor);
+
+    int duration = 0;
+    double distance = 0;
+
+    duration += _startWalkingRoute.duration;
+    distance += _startWalkingRoute.distance;
+
+    duration += _bikingRoute.duration;
+    distance += _bikingRoute.distance;
+
+    duration += _endWalkingRoute.duration;
+    distance += _endWalkingRoute.distance;
+
+    _directionManager.setDuration(duration);
+    _directionManager.setDistance(distance);
+
+    if (relocateMap) {
+      _moveCameraTo(_bikingRoute);
+    }
+  }
+
+  void setCurrentRoute(R.Route route, [relocateMap = true]) {
+    setDirectionsData(route);
+    _polylineManager.setPolyline(
+        route.polyline.points, route.routeType.polylineColor);
+    if (relocateMap) {
+      _moveCameraTo(route);
+    }
+  }
+
+  bool ifRouteSet() {
+    return _startWalkingRoute != R.Route.routeNotFound() &&
+        _endWalkingRoute != R.Route.routeNotFound() &&
+        _bikingRoute != R.Route.routeNotFound();
+  }
 
   int getGroupSize() {
     return _groupsize;
@@ -228,8 +339,15 @@ class RouteManager {
 
   void clearChanged() => _changed = false;
 
+  void clearRoutes() {
+    _startWalkingRoute = R.Route.routeNotFound();
+    _bikingRoute = R.Route.routeNotFound();
+    _endWalkingRoute = R.Route.routeNotFound();
+  }
+
   void clear() {
     _polylineManager.clearPolyline();
+    clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     clearRouteMarkers();

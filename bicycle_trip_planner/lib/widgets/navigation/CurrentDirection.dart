@@ -28,7 +28,6 @@ class _CurrentDirectionState extends State<CurrentDirection> {
 
   @override
   Widget build(BuildContext context) {
-    print("Current directions being buillt again");
     return Container(
       margin: const EdgeInsets.only(top: 10),
       child: ConstrainedBox(
