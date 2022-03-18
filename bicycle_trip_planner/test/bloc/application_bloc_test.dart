@@ -4,7 +4,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:bicycle_trip_planner/services/places_service.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:mockito/annotations.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:mockito/mockito.dart';
