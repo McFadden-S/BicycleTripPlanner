@@ -3,23 +3,18 @@
 // Do not manually edit this file.
 
 import 'dart:async' as _i8;
-import 'dart:convert' as _i11;
-import 'dart:typed_data' as _i12;
-import 'dart:ui' as _i10;
+import 'dart:convert' as _i10;
+import 'dart:typed_data' as _i11;
+import 'dart:ui' as _i9;
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart' as _i4;
 import 'package:bicycle_trip_planner/models/place.dart' as _i7;
 import 'package:bicycle_trip_planner/models/place_search.dart' as _i5;
 import 'package:bicycle_trip_planner/models/station.dart' as _i6;
-import 'package:bicycle_trip_planner/services/places_service.dart' as placeService;
 import 'package:flutter/material.dart' as _i2;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i9;
 import 'package:http/http.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:bicycle_trip_planner/managers/DialogManager.dart' as dialog;
-import 'package:http/http.dart' as http;
 
-import 'package:bicycle_trip_planner/managers/LocationManager.dart' as location;
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
 // ignore_for_file: avoid_setters_without_getters
@@ -44,8 +39,7 @@ class _FakeStreamedResponse_2 extends _i1.Fake implements _i3.StreamedResponse {
 /// A class which mocks [ApplicationBloc].
 ///
 /// See the documentation for Mockito's code generation for more information.
-/// 
-class MockApplicationBloc extends _i1.Mock {
+class MockApplicationBloc extends _i1.Mock implements _i4.ApplicationBloc {
   MockApplicationBloc() {
     _i1.throwOnMissingStub(this);
   }
@@ -62,60 +56,44 @@ class MockApplicationBloc extends _i1.Mock {
   Map<String, _i2.Widget> get screens =>
       (super.noSuchMethod(Invocation.getter(#screens),
           returnValue: <String, _i2.Widget>{}) as Map<String, _i2.Widget>);
-
-  late List<_i5.PlaceSearch> searchResults =[];
-  late _i7.Place _currentLocation;
-
+  @override
+  List<_i5.PlaceSearch> get searchResults =>
+      (super.noSuchMethod(Invocation.getter(#searchResults),
+          returnValue: <_i5.PlaceSearch>[]) as List<_i5.PlaceSearch>);
+  @override
+  set searchResults(List<_i5.PlaceSearch>? _searchResults) =>
+      super.noSuchMethod(Invocation.setter(#searchResults, _searchResults),
+          returnValueForMissingStub: null);
   @override
   bool get hasListeners =>
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
-      as bool);
+          as bool);
   @override
-  void showBinaryDialog(dialog.DialogManager dialogManager) =>
-      dialogManager.showBinaryChoice();
+  void showBinaryDialog() =>
+      super.noSuchMethod(Invocation.method(#showBinaryDialog, []),
+          returnValueForMissingStub: null);
   @override
-  void showSelectedStationDialog(_i6.Station station, dialog.DialogManager dialogManager) {
-    dialogManager.setSelectedStation(station);
-    dialogManager.showSelectedStation();
-  }
+  void showSelectedStationDialog(_i6.Station? station) => super.noSuchMethod(
+      Invocation.method(#showSelectedStationDialog, [station]),
+      returnValueForMissingStub: null);
   @override
-  void clearBinaryDialog(dialog.DialogManager dialogManager) =>
-      dialogManager.clearBinaryChoice();
+  void clearBinaryDialog() =>
+      super.noSuchMethod(Invocation.method(#clearBinaryDialog, []),
+          returnValueForMissingStub: null);
   @override
-  void clearSelectedStationDialog(dialog.DialogManager dialogManager) =>
-      dialogManager.clearSelectedStation();
+  void clearSelectedStationDialog() =>
+      super.noSuchMethod(Invocation.method(#clearSelectedStationDialog, []),
+          returnValueForMissingStub: null);
   @override
   bool ifSearchResult() =>
-      searchResults.isNotEmpty;
+      (super.noSuchMethod(Invocation.method(#ifSearchResult, []),
+          returnValue: false) as bool);
   @override
-  dynamic searchPlaces(String searchTerm, http.Client client, placeService.PlacesService placesService) async {
-
-     return await placesService.getAutocomplete(searchTerm, client);
-  }
-
-  getDefaultSearchResult() async {
-    searchResults = [];
-    searchResults.insert(
-        0,
-        _i5.PlaceSearch(
-            description: "My current location",
-            placeId: _currentLocation.placeId));
-  }
-
-  searchSelectedStation(_i6.Station station, int uid, placeService.PlacesService placesService) async {
-    // Do not set new location marker. Use the station marker
-    viewStationMarker(station, uid);
-
-    if (station.place == const _i7.Place.placeNotFound()) {
-      var client = http.Client();
-      _i7.Place place = await placesService.getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
-      station.place = place;
-    }
-
-    setSelectedLocation(station.place, uid);
-  }
-
+  dynamic searchPlaces(String? searchTerm) =>
+      super.noSuchMethod(Invocation.method(#searchPlaces, [searchTerm]));
+  @override
+  dynamic searchSelectedStation(_i6.Station? station, int? uid) => super
+      .noSuchMethod(Invocation.method(#searchSelectedStation, [station, uid]));
   @override
   dynamic setSelectedSearch(int? searchIndex, int? uid) => super
       .noSuchMethod(Invocation.method(#setSelectedSearch, [searchIndex, uid]));
@@ -136,31 +114,26 @@ class MockApplicationBloc extends _i1.Mock {
       super.noSuchMethod(Invocation.method(#removeSelectedLocation, [uid]));
   @override
   dynamic findRoute(_i7.Place? origin, _i7.Place? destination,
-      [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
+          [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
       super.noSuchMethod(Invocation.method(
           #findRoute, [origin, destination, intermediates, groupSize]));
   @override
   void endRoute() => super.noSuchMethod(Invocation.method(#endRoute, []),
       returnValueForMissingStub: null);
   @override
-  bool getIsDestinationReached() =>
-      (super.noSuchMethod(Invocation.method(#getIsDestinationReached, []),
-          returnValue: false) as bool);
-  @override
-  dynamic updateStationsPeriodically(Duration? duration) => super
-      .noSuchMethod(Invocation.method(#updateStationsPeriodically, [duration]));
-  @override
-  List<_i6.Station> filterNearbyStations() =>
+  _i8.Future<List<_i6.Station>> filterNearbyStations() =>
       (super.noSuchMethod(Invocation.method(#filterNearbyStations, []),
-          returnValue: <_i6.Station>[]) as List<_i6.Station>);
+              returnValue: Future<List<_i6.Station>>.value(<_i6.Station>[]))
+          as _i8.Future<List<_i6.Station>>);
   @override
   dynamic filterStationsWithBikes(List<_i6.Station>? filteredStations) =>
       super.noSuchMethod(
           Invocation.method(#filterStationsWithBikes, [filteredStations]));
   @override
-  void filterStationMarkers() =>
-      super.noSuchMethod(Invocation.method(#filterStationMarkers, []),
-          returnValueForMissingStub: null);
+  _i8.Future<void> filterStationMarkers() =>
+      (super.noSuchMethod(Invocation.method(#filterStationMarkers, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i8.Future<void>);
   @override
   dynamic viewStationMarker(_i6.Station? station, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#viewStationMarker, [station, uid]));
@@ -177,48 +150,46 @@ class MockApplicationBloc extends _i1.Mock {
       super.noSuchMethod(Invocation.method(#goBack, [backTo]),
           returnValueForMissingStub: null);
   @override
-  dynamic updateDirectionsPeriodically(Duration? duration) =>
-      super.noSuchMethod(
-          Invocation.method(#updateDirectionsPeriodically, [duration]));
-  @override
   _i8.Future<void> startNavigation() =>
       (super.noSuchMethod(Invocation.method(#startNavigation, []),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i8.Future<void>);
   @override
-  _i8.Future<void> setNavigating(bool? value) =>
-      (super.noSuchMethod(Invocation.method(#setNavigating, [value]),
+  _i8.Future<void> setPartialRoutes(
+          [List<String>? first = const [],
+          List<String>? intermediates = const []]) =>
+      (super.noSuchMethod(
+          Invocation.method(#setPartialRoutes, [first, intermediates]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i8.Future<void>);
   @override
-  bool isWaypointPassed(_i9.LatLng waypoint, _i9.LatLng currentLocation, location.LocationManager locationManager) {
-
-    print((locationManager.distanceFromToInMeters(currentLocation, waypoint)));
-    return (locationManager.distanceFromToInMeters(currentLocation, waypoint) <= 30);
-  }
-  @override
-  void passedStation(_i6.Station? station, void Function(bool)? functionA,
-      void Function(bool)? functionB) =>
-      super.noSuchMethod(
-          Invocation.method(#passedStation, [station, functionA, functionB]),
+  void clearStationMarkersNotInRoute() =>
+      super.noSuchMethod(Invocation.method(#clearStationMarkersNotInRoute, []),
           returnValueForMissingStub: null);
   @override
-  void checkPassedByPickUpDropOffStations() => super.noSuchMethod(
-      Invocation.method(#checkPassedByPickUpDropOffStations, []),
-      returnValueForMissingStub: null);
+  bool isUserLogged() =>
+      (super.noSuchMethod(Invocation.method(#isUserLogged, []),
+          returnValue: false) as bool);
   @override
-  _i8.Future<bool> checkWaypointPassed() =>
-      (super.noSuchMethod(Invocation.method(#checkWaypointPassed, []),
-          returnValue: Future<bool>.value(false)) as _i8.Future<bool>);
+  void toggleCycling() =>
+      super.noSuchMethod(Invocation.method(#toggleCycling, []),
+          returnValueForMissingStub: null);
   @override
   void clearMap() => super.noSuchMethod(Invocation.method(#clearMap, []),
       returnValueForMissingStub: null);
   @override
-  void addListener(_i10.VoidCallback? listener) =>
+  void changeUnits() => super.noSuchMethod(Invocation.method(#changeUnits, []),
+      returnValueForMissingStub: null);
+  @override
+  void updateSettings() =>
+      super.noSuchMethod(Invocation.method(#updateSettings, []),
+          returnValueForMissingStub: null);
+  @override
+  void addListener(_i9.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#addListener, [listener]),
           returnValueForMissingStub: null);
   @override
-  void removeListener(_i10.VoidCallback? listener) =>
+  void removeListener(_i9.VoidCallback? listener) =>
       super.noSuchMethod(Invocation.method(#removeListener, [listener]),
           returnValueForMissingStub: null);
   @override
@@ -252,7 +223,7 @@ class MockClient extends _i1.Mock implements _i3.Client {
   _i8.Future<_i3.Response> post(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i11.Encoding? encoding}) =>
+          _i10.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#post, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -262,7 +233,7 @@ class MockClient extends _i1.Mock implements _i3.Client {
   _i8.Future<_i3.Response> put(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i11.Encoding? encoding}) =>
+          _i10.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#put, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -272,7 +243,7 @@ class MockClient extends _i1.Mock implements _i3.Client {
   _i8.Future<_i3.Response> patch(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i11.Encoding? encoding}) =>
+          _i10.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#patch, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -282,7 +253,7 @@ class MockClient extends _i1.Mock implements _i3.Client {
   _i8.Future<_i3.Response> delete(Uri? url,
           {Map<String, String>? headers,
           Object? body,
-          _i11.Encoding? encoding}) =>
+          _i10.Encoding? encoding}) =>
       (super.noSuchMethod(
               Invocation.method(#delete, [url],
                   {#headers: headers, #body: body, #encoding: encoding}),
@@ -293,12 +264,12 @@ class MockClient extends _i1.Mock implements _i3.Client {
       (super.noSuchMethod(Invocation.method(#read, [url], {#headers: headers}),
           returnValue: Future<String>.value('')) as _i8.Future<String>);
   @override
-  _i8.Future<_i12.Uint8List> readBytes(Uri? url,
+  _i8.Future<_i11.Uint8List> readBytes(Uri? url,
           {Map<String, String>? headers}) =>
       (super.noSuchMethod(
               Invocation.method(#readBytes, [url], {#headers: headers}),
-              returnValue: Future<_i12.Uint8List>.value(_i12.Uint8List(0)))
-          as _i8.Future<_i12.Uint8List>);
+              returnValue: Future<_i11.Uint8List>.value(_i11.Uint8List(0)))
+          as _i8.Future<_i11.Uint8List>);
   @override
   _i8.Future<_i3.StreamedResponse> send(_i3.BaseRequest? request) =>
       (super.noSuchMethod(Invocation.method(#send, [request]),

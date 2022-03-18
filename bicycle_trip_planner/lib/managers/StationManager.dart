@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/place.dart';
 import '../services/places_service.dart';
@@ -63,14 +64,15 @@ class StationManager {
         orElse: Station.stationNotFound);
   }
 
-  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
+  Future<Station> getPickupStationNear(LatLng pos,[int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
     Station station = nearPos.firstWhere(
         (station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
+      var client = http.Client();
       Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
+          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
       station.place = place;
     }
     //_pickUpStation = station;
@@ -83,8 +85,10 @@ class StationManager {
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
+
+      var client = http.Client();
       Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
+          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
       station.place = place;
     }
     //_dropOffStation = station;

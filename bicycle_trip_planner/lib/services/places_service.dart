@@ -25,11 +25,11 @@ class PlacesService {
     return Place.fromJson(jsonResults, description);
   }
 
-  Future<Place> getPlaceFromCoordinates(double lat, double lng, String description) async {
+  Future<Place> getPlaceFromCoordinates(double lat, double lng, String description, http.Client client) async {
     const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
     var url =
         'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
-    var response = await http.get(Uri.parse(url));
+    var response = await client.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['results'][0] as Map<String, dynamic>;
     return Place.fromJson(jsonResults, description);

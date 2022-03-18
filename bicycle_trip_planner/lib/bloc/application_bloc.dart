@@ -126,8 +126,9 @@ class ApplicationBloc with ChangeNotifier {
     viewStationMarker(station, uid);
 
     if (station.place == const Place.placeNotFound()) {
+      var client = http.Client();
       Place place = await _placesService.getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
+          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
       station.place = place;
     }
 
@@ -148,9 +149,10 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   fetchCurrentLocation() async {
+    var client = http.Client();
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude, SearchType.current.description);
+        latLng.latitude, latLng.longitude, SearchType.current.description, client);
     _locationManager.setCurrentLocation(currentPlace);
     notifyListeners();
   }

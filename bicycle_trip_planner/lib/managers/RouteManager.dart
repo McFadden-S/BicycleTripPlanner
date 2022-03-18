@@ -21,7 +21,7 @@ class RouteManager {
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
   final CameraManager _cameraManager = CameraManager.instance;
-  final Pathway _pathway = Pathway();
+  Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
@@ -357,4 +357,10 @@ class RouteManager {
     clearDestination();
     _pathway.initial();
   }
+
+  @visibleForTesting
+  void setPathway(Pathway pathway){
+    _pathway = pathway;
+  }
+
 }

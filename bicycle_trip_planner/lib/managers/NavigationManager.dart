@@ -4,7 +4,10 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class NavigationManager {
   final _locationManager = LocationManager();
@@ -32,16 +35,29 @@ class NavigationManager {
 
   //********** Private **********
 
-  void _setIfBeginning(bool isBeginning) {
+  @visibleForTesting
+  void setIfBeginning(bool isBeginning) {
     _isBeginning = isBeginning;
   }
 
-  void _setIfCycling(bool isCycling) {
+  @visibleForTesting
+  void setIfCycling(bool isCycling) {
     _isCycling = isCycling;
   }
 
-  void _setIfEndWalking(bool isEndWalking) {
+  @visibleForTesting
+  void setIfEndWalking(bool isEndWalking) {
     _isEndWalking = isEndWalking;
+  }
+
+  @visibleForTesting
+  void setPickupStation(Station station){
+    _pickUpStation = station;
+  }
+
+  @visibleForTesting
+  void setDropoffStation(Station station){
+    _dropOffStation = station;
   }
 
   Future<void> _updateStartLocationAndStations() async {
@@ -140,8 +156,7 @@ class NavigationManager {
         30);
   }
 
-  void passedStation(Station station, void Function(bool) setFalse,
-      void Function(bool) setTrue) {
+  void passedStation(Station station, void Function(bool) setFalse,void Function(bool) setTrue) {
     if (isWaypointPassed(LatLng(station.lat, station.lng))) {
       if (station == _pickUpStation) {
         _passedPickUpStation = true;
@@ -155,8 +170,8 @@ class NavigationManager {
   }
 
   void checkPassedByPickUpDropOffStations() {
-    passedStation(_pickUpStation, _setIfBeginning, _setIfCycling);
-    passedStation(_dropOffStation, _setIfCycling, _setIfEndWalking);
+    passedStation(_pickUpStation, setIfBeginning, setIfCycling);
+    passedStation(_dropOffStation, setIfCycling, setIfEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
@@ -190,6 +205,7 @@ class NavigationManager {
       await setNewDropOffStation(endLocation, groupSize);
     }
   }
+
 
   Future<void> setNewPickUpStation(Location location,
       [int groupSize = 1]) async {
