@@ -32,23 +32,6 @@ class UserSettings {
     // await prefs.setString(key, value);
   }
 
-  styleMode() async {
-    final SharedPreferences prefs = await _prefs;
-    return prefs.getString('styleMode') ?? 'System';
-  }
-
-  setStyleMode(String? newMode) async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setString('styleMode', newMode ?? 'System').then((_) {
-      // Data added successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
-  }
 
   // returns String 'miles' or 'km'
   Future<DistanceType> distanceUnit() async {

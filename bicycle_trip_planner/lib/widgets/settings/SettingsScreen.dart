@@ -30,25 +30,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
     5.0
   ];
   List<String> distanceUnitOptions = <String>['miles', 'kilometres'];
-  List<String> styleModeOptions = <String>['System', 'Dark', 'Light'];
 
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
-  String styleMode = 'System'; // system mode as default
   bool settingsChanged = false;
 
   @override
   void initState() {
     super.initState();
-    print('initial settingsChanged is: $settingsChanged');
     updateVariables();
   }
 
   @override
   Widget build(BuildContext context) {
     final _auth = FirebaseAuth.instance;
-    Size size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: ThemeStyle.cardColor,
@@ -404,64 +400,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           Divider(color: ThemeStyle.cardOutlineColor),
                           SizedBox(height: 10),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Style",
-                                      style: TextStyle(
-                                        fontSize: 20,
-                                        color: ThemeStyle.primaryTextColor,
-                                      ),
-                                    ),
-                                    Text(
-                                      "App color mode",
-                                      style: TextStyle(
-                                        color: ThemeStyle.primaryTextColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              DropdownButton<String>(
-                                dropdownColor: ThemeStyle.cardColor,
-                                alignment: AlignmentDirectional.topEnd,
-                                value: styleMode,
-                                icon: const Icon(Icons.arrow_drop_down),
-                                elevation: 16,
-                                style: TextStyle(
-                                    color: ThemeStyle.mainFontColor,
-                                    fontSize: 16),
-                                underline: Container(
-                                  height: 2,
-                                  // color: Colors.deepPurpleAccent,
-                                ),
-                                onChanged: (String? newValue) async {
-                                  userSettings.setStyleMode(newValue);
-                                  await updateVariables();
-                                  settingsChanged = true;
-                                },
-                                items: styleModeOptions
-                                    .map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(
-                                      value,
-                                      style: TextStyle(
-                                          color: ThemeStyle.primaryTextColor,
-                                          fontSize: 16),
-                                    ),
-                                  );
-                                }).toList(),
-                              )
-                            ],
-                          ),
-                          Divider(color: ThemeStyle.cardOutlineColor),
-                          SizedBox(height: 10),
                         ],
                       ),
                     )
@@ -494,7 +432,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
     distanceUnit = (await userSettings.distanceUnit()).unitsLong;
-    styleMode = await userSettings.styleMode();
     updateScreen();
   }
 
