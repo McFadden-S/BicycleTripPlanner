@@ -79,7 +79,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           IconButton(
                             icon: Icon(Icons.info_outline,
-                                color: ThemeStyle.primaryIconColor),
+                                color: ThemeStyle.secondaryIconColor),
                             onPressed: () {
                               // set up the AlertDialog
                               AlertDialog alert = AlertDialog(

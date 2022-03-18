@@ -24,6 +24,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Container(
             color: ThemeStyle.cardColor,

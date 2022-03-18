@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Container(
             color: ThemeStyle.cardColor,
