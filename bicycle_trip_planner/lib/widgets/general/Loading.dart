@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -21,7 +22,6 @@ class _LoadingState extends State<Loading> {
     await StationManager().getNumberOfStations() > 0;
     await StationBar();
     await Future.delayed(Duration(seconds: 3));
-
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -32,8 +32,11 @@ class _LoadingState extends State<Loading> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context)  => WillPopScope(
+    onWillPop: () async {
+      return false;
+    },
+    child: Scaffold(
       backgroundColor: Colors.grey[900],
       body: const Center(
         child: SpinKitFadingCube(
@@ -41,9 +44,10 @@ class _LoadingState extends State<Loading> {
           size: 50.0,
         ),
       ),
-    );
+    ),
+  );
   }
-}
+
 
 
 
