@@ -14,12 +14,15 @@ class _State extends State<Error> {
       backgroundColor: Colors.grey[900],
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SpinKitFadingCube(
               color: Colors.white,
               size: 50.0,
             ),
-            Text('No connection...'),
+            SizedBox(height: 25),
+            Text('No connection...', style: TextStyle(color: Colors.white)),
           ],
         ),
       ),
