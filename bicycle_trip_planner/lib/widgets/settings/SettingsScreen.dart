@@ -3,6 +3,8 @@ import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/application_bloc.dart';
 import '../../managers/UserSettings.dart';
 import '../settings/LoginScreen.dart';
 import '../settings/SignUpScreen.dart';
@@ -34,7 +36,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
-  bool settingsChanged = false;
 
   @override
   void initState() {
@@ -45,6 +46,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final _auth = FirebaseAuth.instance;
+    final applicationBloc =
+    Provider.of<ApplicationBloc>(context, listen: false);
 
     return Scaffold(
       backgroundColor: ThemeStyle.cardColor,
@@ -265,7 +268,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (int? newValue) async {
                                   userSettings.setStationsRefreshRate(newValue);
                                   await updateVariables();
-                                  settingsChanged = true;
+                                  applicationBloc.updateSettings();
                                 },
                                 items: stationsRefreshRateOptions
                                     .map<DropdownMenuItem<int>>((int value) {
@@ -322,7 +325,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (double? newValue) async {
                                   userSettings.setNearbyStationsRange(newValue);
                                   await updateVariables();
-                                  settingsChanged = true;
+                                  applicationBloc.updateSettings();
                                 },
                                 items: nearbyStationsRangeOptions
                                     .map<DropdownMenuItem<double>>(
@@ -380,7 +383,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 onChanged: (String? newValue) async {
                                   userSettings.setDistanceUnit(newValue);
                                   await updateVariables();
-                                  settingsChanged = true;
+                                  applicationBloc.updateSettings();
                                 },
                                 items: distanceUnitOptions
                                     .map<DropdownMenuItem<String>>(
@@ -420,7 +423,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pop(context, settingsChanged);
+          Navigator.pop(context);
         },
         backgroundColor: ThemeStyle.buttonPrimaryColor,
         child: Icon(Icons.arrow_back, color: ThemeStyle.primaryIconColor),

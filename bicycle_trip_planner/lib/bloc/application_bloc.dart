@@ -437,4 +437,12 @@ class ApplicationBloc with ChangeNotifier {
     updateStations();
     notifyListeners();
   }
+
+  void updateSettings() {
+    cancelStationTimer();
+    updateStationsPeriodically();
+    changeUnits();
+    filterStationMarkers();
+    notifyListeners();
+  }
 }

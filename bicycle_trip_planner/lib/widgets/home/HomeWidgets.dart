@@ -4,8 +4,6 @@ import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart'
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:provider/provider.dart';
-import '../../bloc/application_bloc.dart';
 import '../general/GroupSizeSelector.dart';
 import '../settings/SettingsScreen.dart';
 
@@ -21,8 +19,6 @@ class _HomeWidgetsState extends State<HomeWidgets> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -54,7 +50,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                             color: ThemeStyle.buttonPrimaryColor,
                           ),
                           onPressed: () async {
-                            bool settingsChanged = await Navigator.push(
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) {
@@ -62,11 +58,6 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                 },
                               ),
                             );
-                            if (settingsChanged) {
-                              applicationBloc.cancelStationTimer();
-                              applicationBloc.updateStationsPeriodically();
-                              applicationBloc.changeUnits();
-                            }
                           },
                           iconSize: 50,
                         )
