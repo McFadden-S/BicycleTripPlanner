@@ -21,7 +21,13 @@ class PolylineManager {
 
   //********** Private **********
 
-  void _addPolyline(List<PointLatLng> points, Color color) {
+  //********** Public **********
+
+  Set<Polyline> getPolyLines() {
+    return _polylines;
+  }
+
+  void addPolyline(List<PointLatLng> points, Color color) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
 
@@ -35,20 +41,6 @@ class PolylineManager {
           )
           .toList(),
     ));
-  }
-
-  //********** Public **********
-
-  Set<Polyline> getPolyLines() {
-    return _polylines;
-  }
-
-  void addWalkingPolyline(List<PointLatLng> points) {
-    _addPolyline(points, Colors.grey);
-  }
-
-  void addBikingPolyline(List<PointLatLng> points) {
-    _addPolyline(points, Colors.red);
   }
 
   void setPolyline(List<PointLatLng> points, Color color) {

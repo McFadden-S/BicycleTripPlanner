@@ -94,6 +94,7 @@ flutter:
     - assets/reset_password_image.png
     - assets/signup_image.png
     - assets/profile.png
+    - assets/weather.png
 
   fonts:
     - family: Outfit

@@ -31,7 +31,6 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    print("Directions being buillt again");
     Provider.of<ApplicationBloc>(context);
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
