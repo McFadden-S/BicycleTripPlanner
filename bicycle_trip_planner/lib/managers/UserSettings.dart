@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/place.dart';
+
 class UserSettings {
   //********** Singleton **********
   static final UserSettings _userSettings = UserSettings._internal();
@@ -12,11 +14,9 @@ class UserSettings {
   }
   UserSettings._internal();
 
-
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   bool _isFavouriteStationsSelected = false;
-
 
 //********** Public **********
 
@@ -25,7 +25,6 @@ class UserSettings {
     // encode place as json String and add (make helper methods if needed)
     // await prefs.setString(key, value);
   }
-
 
   saveRoute(Pathway pathway) async {
     final SharedPreferences prefs = await _prefs;
@@ -52,9 +51,13 @@ class UserSettings {
   }
 
   // returns String 'miles' or 'km'
-  distanceUnit() async {
+  Future<DistanceType> distanceUnit() async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getString('distanceUnit') ?? 'miles';
+    String distanceUnit = prefs.getString('distanceUnit') ?? 'miles';
+    if (distanceUnit == "miles") {
+      return DistanceType.miles;
+    }
+    return DistanceType.km;
   }
 
   setDistanceUnit(String? unit) async {
@@ -69,7 +72,6 @@ class UserSettings {
     //no error caught
     return true;
   }
-
 
   // returns a number representing the amount of time (in seconds)
   // between every API call for stations (default is 30 seconds)
@@ -92,7 +94,6 @@ class UserSettings {
     //no error caught
     return true;
   }
-
 
   nearbyStationsRange() async {
     final SharedPreferences prefs = await _prefs;

@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
@@ -14,6 +16,7 @@ class DirectionManager {
   final CameraManager _cameraManager = CameraManager.instance;
   final PolylineManager _polylineManager = PolylineManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final LocationManager _locationManager = LocationManager();
 
   R.Route _startWalkingRoute = R.Route.routeNotFound();
   R.Route _bikingRoute = R.Route.routeNotFound();
@@ -70,7 +73,7 @@ class DirectionManager {
     _polylineManager.addWalkingPolyline(_endWalkingRoute.polyline.points);
 
     int duration = 0;
-    int distance = 0;
+    double distance = 0;
 
     _startWalkingRoute.legs.forEach((leg) {
       duration += leg.duration;
@@ -177,9 +180,10 @@ class DirectionManager {
     _duration = "$minutes min";
   }
 
-  void setDistance(int metre) {
-    int miles = (metre / 1609.34).ceil();
-    _distance = "$miles mi";
+  void setDistance(double metre) {
+    DistanceType units = _locationManager.getUnits();
+    int distance = units.convert(metre).ceil();
+    _distance = "$distance ${units.units}";
   }
 
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk,
@@ -203,7 +207,7 @@ class DirectionManager {
 
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     int duration = 0;
-    int distance = 0;
+    double distance = 0;
     _directions.clear();
 
     for (var i = 0; i < route.legs.length; i++) {

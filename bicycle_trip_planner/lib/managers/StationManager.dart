@@ -124,7 +124,7 @@ class StationManager {
   }
 
   Future<void> setStations(List<Station> newStations, {clear = false}) async {
-    if(clear) {
+    if (clear) {
       _stationsLookUp = {};
       _stations = [];
     }

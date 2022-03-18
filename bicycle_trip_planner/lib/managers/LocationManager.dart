@@ -1,3 +1,5 @@
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,6 +12,7 @@ class LocationManager {
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
   Place _currentPlace = const Place.placeNotFound();
+  DistanceType _units = DistanceType.miles; // default
 
   //********** Singleton **********
 
@@ -68,7 +71,7 @@ class LocationManager {
   }
 
   double distanceFromTo(LatLng posFrom, LatLng posTo) {
-    return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
+    return _units.convert(_calculateDistance(posFrom, posTo));
   }
 
   double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
@@ -90,11 +93,11 @@ class LocationManager {
     return _currentPlace;
   }
 
-  //********** private *********
-
-  double _convertMetresToMiles(double distance) {
-    return distance * 0.000621;
+  DistanceType getUnits() {
+    return _units;
   }
+
+  //********** private *********
 
   // Returns the distance between the two points in metres
   double _calculateDistance(LatLng pos1, LatLng pos2) {
@@ -107,5 +110,9 @@ class LocationManager {
     print(distanceFilter);
     locationSettings(distanceFilter);
     return location.onLocationChanged;
+  }
+
+  void setUnits(DistanceType units) {
+    _units = units;
   }
 }

@@ -21,7 +21,8 @@ class _HomeWidgetsState extends State<HomeWidgets> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -61,9 +62,10 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                 },
                               ),
                             );
-                            if(settingsChanged){
+                            if (settingsChanged) {
                               applicationBloc.cancelStationTimer();
                               applicationBloc.updateStationsPeriodically();
+                              applicationBloc.changeUnits();
                             }
                           },
                           iconSize: 50,

@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,19 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   UserSettings userSettings = UserSettings();
   List<int> stationsRefreshRateOptions = <int>[30, 40, 50, 60];
-  List<double> nearbyStationsRangeOptions = <double>[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0];
-  List<String> distanceUnitOptions = <String>['miles', 'km'];
+  List<double> nearbyStationsRangeOptions = <double>[
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    2.5,
+    3.0,
+    3.5,
+    4.0,
+    4.5,
+    5.0
+  ];
+  List<String> distanceUnitOptions = <String>['miles', 'kilometres'];
   List<String> styleModeOptions = <String>['System', 'Dark', 'Light'];
 
   int stationsRefreshRate = 30;
@@ -25,7 +37,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   String distanceUnit = 'miles';
   String styleMode = 'System'; // system mode as default
   bool settingsChanged = false;
-
 
   @override
   void initState() {
@@ -58,40 +69,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text("Account",
-                              style: TextStyle(
+                          Text(
+                            "Account",
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
                               color: ThemeStyle.primaryTextColor,
-                          ),
+                            ),
                           ),
                           IconButton(
-                              icon: Icon(Icons.info_outline, color: ThemeStyle.primaryIconColor),
-                              onPressed: (){
-                                // set up the AlertDialog
-                                AlertDialog alert = AlertDialog(
-                                  backgroundColor: ThemeStyle.cardColor,
-                                  title: Text("Account advantages",
-                                      style: TextStyle(
-                                        color: ThemeStyle.primaryTextColor,
-                                      )),
-                                  content: Text("Add your favourite stations and routes\n"
-                                               "to your account to start your journey faster\n"
-                                               "and from different devices!",
-                                      style: TextStyle(
+                            icon: Icon(Icons.info_outline,
+                                color: ThemeStyle.primaryIconColor),
+                            onPressed: () {
+                              // set up the AlertDialog
+                              AlertDialog alert = AlertDialog(
+                                backgroundColor: ThemeStyle.cardColor,
+                                title: Text("Account advantages",
+                                    style: TextStyle(
                                       color: ThemeStyle.primaryTextColor,
-                                  )),
-                                );
+                                    )),
+                                content: Text(
+                                    "Add your favourite stations and routes\n"
+                                    "to your account to start your journey faster\n"
+                                    "and from different devices!",
+                                    style: TextStyle(
+                                      color: ThemeStyle.primaryTextColor,
+                                    )),
+                              );
 
-                                // show the dialog
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return alert;
-                                  },
-                                );
-
-                              },
+                              // show the dialog
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return alert;
+                                },
+                              );
+                            },
                           )
                         ],
                       ),
@@ -110,104 +123,112 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   image: DecorationImage(
                                     fit: BoxFit.fill,
                                     image: AssetImage('assets/profile.png'),
-                                  )
-                              )
-                          ),
+                                  ))),
                           SizedBox(height: 10),
                           _auth.currentUser != null
-                          ? Column(
-                            children: [
-                              Text(_auth.currentUser?.email ?? "USER IS NULL",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: ThemeStyle.primaryTextColor,
-                                ),
-                              ),
-                              SizedBox(height: 10),
-                              ElevatedButton(
-                                child: Text("Log out"),
-                                onPressed: () async {
-                                  await _auth.signOut();
-                                  setState(() {
-                                  });
-                                },
-                              ),
-                            ],
-                          )
-                          : Padding(
-                            padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0, right: 5.0),
-                                    child: ElevatedButton(
-                                        child: Text("Login"),
-                                        onPressed: () async {
-                                          if (_auth.currentUser == null) {
-                                            // The result will be true when logged in successfully,
-                                            // False otherwise
-                                            bool success = await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return LoginScreen();
-                                                },
-                                              ),
-                                            );
-                                            if(success){
-                                              updateScreen();
-                                            }
-                                          }
-                                        },
+                              ? Column(
+                                  children: [
+                                    Text(
+                                      _auth.currentUser?.email ??
+                                          "USER IS NULL",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                        color: ThemeStyle.primaryTextColor,
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(left: 10.0, right: 5.0),                            child: ElevatedButton(
-                                      child: Text("Sign up"),
+                                    SizedBox(height: 10),
+                                    ElevatedButton(
+                                      child: Text("Log out"),
                                       onPressed: () async {
-                                        if (_auth.currentUser == null) {
-                                          // The result will be true when logged in successfully,
-                                          // False otherwise
-                                          bool success = await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return SignUpScreen();
-                                              },
-                                            ),
-                                          );
-                                          if(success){
-                                            updateScreen();
-                                          }
-                                        }
+                                        await _auth.signOut();
+                                        setState(() {});
                                       },
                                     ),
+                                  ],
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(
+                                      right: 10.0, left: 10.0, top: 10.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10.0, right: 5.0),
+                                          child: ElevatedButton(
+                                            child: Text("Login"),
+                                            onPressed: () async {
+                                              if (_auth.currentUser == null) {
+                                                // The result will be true when logged in successfully,
+                                                // False otherwise
+                                                bool success =
+                                                    await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return LoginScreen();
+                                                    },
+                                                  ),
+                                                );
+                                                if (success) {
+                                                  updateScreen();
+                                                }
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10.0, right: 5.0),
+                                          child: ElevatedButton(
+                                            child: Text("Sign up"),
+                                            onPressed: () async {
+                                              if (_auth.currentUser == null) {
+                                                // The result will be true when logged in successfully,
+                                                // False otherwise
+                                                bool success =
+                                                    await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) {
+                                                      return SignUpScreen();
+                                                    },
+                                                  ),
+                                                );
+                                                if (success) {
+                                                  updateScreen();
+                                                }
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
+                                )
                         ],
                       ),
                     ),
-                    SizedBox(height:20),
+                    SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.only(top: 5.0, left: 5.0),
-                      child: Text("Settings",
+                      child: Text(
+                        "Settings",
                         style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                        color: ThemeStyle.primaryTextColor,
-                      ),),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22,
+                          color: ThemeStyle.primaryTextColor,
+                        ),
+                      ),
                     ),
                     Divider(color: ThemeStyle.cardOutlineColor),
                     Padding(
-                      padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 10.0),
+                      padding: const EdgeInsets.only(
+                          right: 10.0, left: 10.0, top: 10.0),
                       child: Column(
                         children: [
                           Row(
@@ -216,17 +237,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Stations update rate",
+                                    Text(
+                                      "Stations update rate",
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: ThemeStyle.primaryTextColor,
                                       ),
                                     ),
-                                    Text("The periodic time for which the stations\nlist will be updated"
-                                        " in seconds\n(lower values might consume more battery)",
+                                    Text(
+                                      "The periodic time for which the stations\nlist will be updated"
+                                      " in seconds\n(lower values might consume more battery)",
                                       style: TextStyle(
                                         color: ThemeStyle.primaryTextColor,
-                                      ),),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -238,8 +262,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 elevation: 16,
                                 style: TextStyle(
                                     color: ThemeStyle.mainFontColor,
-                                    fontSize: 16
-                                ),
+                                    fontSize: 16),
                                 underline: Container(
                                   height: 2,
                                 ),
@@ -253,11 +276,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   return DropdownMenuItem<int>(
                                     value: value,
                                     child: Text(
-                                        value.toString(),
-                                        style: TextStyle(
+                                      value.toString(),
+                                      style: TextStyle(
                                           color: ThemeStyle.primaryTextColor,
-                                          fontSize: 16
-                                      ),
+                                          fontSize: 16),
                                     ),
                                   );
                                 }).toList(),
@@ -272,16 +294,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Nearby Stations range",
+                                    Text(
+                                      "Nearby Stations range",
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: ThemeStyle.primaryTextColor,
                                       ),
                                     ),
-                                    Text("The maximum distance range for nearby stations in miles/km",
+                                    Text(
+                                      "The maximum distance range for nearby stations in miles/km",
                                       style: TextStyle(
                                         color: ThemeStyle.primaryTextColor,
-                                      ),),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -293,8 +318,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 elevation: 16,
                                 style: TextStyle(
                                     color: ThemeStyle.mainFontColor,
-                                    fontSize: 16
-                                ),
+                                    fontSize: 16),
                                 underline: Container(
                                   height: 2,
                                   // color: Colors.deepPurpleAccent,
@@ -305,13 +329,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   settingsChanged = true;
                                 },
                                 items: nearbyStationsRangeOptions
-                                    .map<DropdownMenuItem<double>>((double value) {
+                                    .map<DropdownMenuItem<double>>(
+                                        (double value) {
                                   return DropdownMenuItem<double>(
                                     value: value,
-                                    child: Text(value.toString(),
-                                        style: TextStyle(
-                                            color: ThemeStyle.primaryTextColor,
-                                            fontSize: 16),
+                                    child: Text(
+                                      value.toString(),
+                                      style: TextStyle(
+                                          color: ThemeStyle.primaryTextColor,
+                                          fontSize: 16),
                                     ),
                                   );
                                 }).toList(),
@@ -326,16 +352,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Distance unit",
+                                    Text(
+                                      "Distance unit",
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: ThemeStyle.primaryTextColor,
                                       ),
                                     ),
-                                    Text("Distance unit to be used",
+                                    Text(
+                                      "Distance unit to be used",
                                       style: TextStyle(
                                         color: ThemeStyle.primaryTextColor,
-                                      ),),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -347,8 +376,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 elevation: 16,
                                 style: TextStyle(
                                     color: ThemeStyle.mainFontColor,
-                                    fontSize: 16
-                                ),
+                                    fontSize: 16),
                                 underline: Container(
                                   height: 2,
                                   // color: Colors.deepPurpleAccent,
@@ -359,14 +387,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   settingsChanged = true;
                                 },
                                 items: distanceUnitOptions
-                                    .map<DropdownMenuItem<String>>((String value) {
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(value,
+                                    child: Text(
+                                      value,
                                       style: TextStyle(
                                           color: ThemeStyle.primaryTextColor,
-                                          fontSize: 16
-                                      ),
+                                          fontSize: 16),
                                     ),
                                   );
                                 }).toList(),
@@ -381,16 +410,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("Style",
+                                    Text(
+                                      "Style",
                                       style: TextStyle(
                                         fontSize: 20,
                                         color: ThemeStyle.primaryTextColor,
                                       ),
                                     ),
-                                    Text("App color mode",
+                                    Text(
+                                      "App color mode",
                                       style: TextStyle(
                                         color: ThemeStyle.primaryTextColor,
-                                      ),),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -402,8 +434,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 elevation: 16,
                                 style: TextStyle(
                                     color: ThemeStyle.mainFontColor,
-                                    fontSize: 16
-                                ),
+                                    fontSize: 16),
                                 underline: Container(
                                   height: 2,
                                   // color: Colors.deepPurpleAccent,
@@ -414,14 +445,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   settingsChanged = true;
                                 },
                                 items: styleModeOptions
-                                    .map<DropdownMenuItem<String>>((String value) {
+                                    .map<DropdownMenuItem<String>>(
+                                        (String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
-                                    child: Text(value,
+                                    child: Text(
+                                      value,
                                       style: TextStyle(
                                           color: ThemeStyle.primaryTextColor,
-                                          fontSize: 16
-                                      ),
+                                          fontSize: 16),
                                     ),
                                   );
                                 }).toList(),
@@ -451,26 +483,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.pop(context, settingsChanged);
-    },
-    backgroundColor: ThemeStyle.buttonPrimaryColor,
-         child: Icon(Icons.arrow_back,
-                        color: ThemeStyle.primaryIconColor),
-    ),
+        },
+        backgroundColor: ThemeStyle.buttonPrimaryColor,
+        child: Icon(Icons.arrow_back, color: ThemeStyle.primaryIconColor),
+      ),
     );
   }
 
   updateVariables() async {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
-    distanceUnit = await userSettings.distanceUnit();
+    distanceUnit = (await userSettings.distanceUnit()).unitsLong;
     styleMode = await userSettings.styleMode();
     updateScreen();
   }
 
-  updateScreen(){
+  updateScreen() {
     setState(() {
       // update screen
     });
   }
-
 }

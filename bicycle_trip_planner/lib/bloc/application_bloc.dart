@@ -8,6 +8,7 @@ import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
@@ -62,6 +63,8 @@ class ApplicationBloc with ChangeNotifier {
   //late Place _currentLocation;
 
   ApplicationBloc() {
+    // Note: not async
+    changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
   }
@@ -255,13 +258,14 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    if(isUserLogged() && _userSettings.getIsIsFavouriteStationsSelected()) {
+    if (isUserLogged() && _userSettings.getIsIsFavouriteStationsSelected()) {
       List<Station> favouriteStations = await _stationsService.getStations();
       List<int> compare = await DatabaseManager().getFavouriteStations();
       favouriteStations.retainWhere((element) => compare.contains(element.id));
       await _stationManager.setStations(favouriteStations, clear: true);
     } else {
-      await _stationManager.setStations(await _stationsService.getStations(), clear: true);
+      await _stationManager.setStations(await _stationsService.getStations(),
+          clear: true);
     }
     filterStationMarkers();
     notifyListeners();
@@ -360,7 +364,6 @@ class ApplicationBloc with ChangeNotifier {
     }
   }
 
-
   // ********** User Setting Management **********
 
   bool isUserLogged() {
@@ -377,5 +380,12 @@ class ApplicationBloc with ChangeNotifier {
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
+  }
+
+  void changeUnits() async {
+    DistanceType units = await _userSettings.distanceUnit();
+    _locationManager.setUnits(units);
+    updateStations();
+    notifyListeners();
   }
 }
