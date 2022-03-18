@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         // '/': (context) => const NavigateWindow(),
         '/settings': (context) => const SettingsScreen(),
         '/loading': (context) => const Loading(),
-        '/': (context) => const Home(),
+        '/home': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),

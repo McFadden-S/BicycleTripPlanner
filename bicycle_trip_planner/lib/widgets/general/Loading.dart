@@ -1,4 +1,6 @@
-import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
@@ -14,19 +16,21 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-
   void setUpMap() async {
     await Home();
     await HomeWidgets();
     await MapWidget();
+    await LocationManager().getCurrentLocation() != const Place.placeNotFound();
+    await StationManager().getNumberOfStations() > 0;
     await StationBar();
-    Navigator.of(context).pop();
+    await Future.delayed(const Duration(seconds: 3));
+    Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    //setUpMap();
+    setUpMap();
   }
 
   @override
@@ -42,8 +46,3 @@ class _LoadingState extends State<Loading> {
     );
   }
 }
-
-
-
-
-
