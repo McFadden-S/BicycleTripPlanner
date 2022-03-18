@@ -60,18 +60,33 @@ class StationManager {
     return nearbyStations;
   }
 
+  Future<void> cachePlaceId(Station station) async {
+    if (station == Station.stationNotFound()) return;
+    if (station.place == const Place.placeNotFound()) {
+      Place place = await PlacesService().getPlaceFromCoordinates(
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
+      station.place = place;
+    }
+  }
+
   Station getStationByIndex(int stationIndex) {
+    cachePlaceId(_stations[stationIndex]);
     return _stations[stationIndex];
   }
 
   Station getStationById(int stationId) {
-    return _stations.firstWhere((station) => station.id == stationId,
+    Station station = _stations.firstWhere((station) => station.id == stationId,
         orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
   }
 
   Station getStationByName(String stationName) {
-    return _stations.singleWhere((station) => station.name == stationName,
+    Station station = _stations.singleWhere(
+        (station) => station.name == stationName,
         orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
   }
 
   Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
@@ -79,12 +94,7 @@ class StationManager {
     Station station = nearPos.firstWhere(
         (station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
-    if (station.place == const Place.placeNotFound()) {
-      Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
-      station.place = place;
-    }
-    //_pickUpStation = station;
+    await cachePlaceId(station);
     return station;
   }
 
@@ -93,11 +103,7 @@ class StationManager {
     Station station = nearPos.firstWhere(
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
-    if (station.place == const Place.placeNotFound()) {
-      Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
-      station.place = place;
-    }
+    await cachePlaceId(station);
     //_dropOffStation = station;
     return station;
   }

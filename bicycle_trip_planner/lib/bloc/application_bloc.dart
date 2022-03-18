@@ -199,6 +199,15 @@ class ApplicationBloc with ChangeNotifier {
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
 
+    await setRoutes(origin, destination, startStation, endStation,
+        intermediates, groupSize);
+    _routeManager.showAllRoutes();
+    notifyListeners();
+  }
+
+  setRoutes(
+      Place origin, Place destination, Station startStation, Station endStation,
+      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     List<String> intermediatePlaceId =
         intermediates.map((place) => place.placeId).toList();
 
@@ -213,8 +222,6 @@ class ApplicationBloc with ChangeNotifier {
         endStation.place.placeId, destination.placeId);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
-    _routeManager.showAllRoutes();
-    notifyListeners();
   }
 
   Future<int> _getDurationFromToStation(
@@ -269,31 +276,20 @@ class ApplicationBloc with ChangeNotifier {
             .compareTo(
                 _costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
-          if (nearbyStations[i].place == const Place.placeNotFound()) {
-            Place place = await PlacesService().getPlaceFromCoordinates(
-                nearbyStations[i].lat,
-                nearbyStations[i].lng,
-                "Santander Cycles: ${nearbyStations[i].name}");
-            nearbyStations[i].place = place;
-          }
+          _stationManager.cachePlaceId(nearbyStations[i]);
           if ((await _getDurationFromToStation(
                   curStation, nearbyStations[i])) <=
               25) {
             intermediateStations.add(nearbyStations[i]);
             curStation = nearbyStations[i];
-            if (curStation.place == const Place.placeNotFound()) {
-              Place place = await PlacesService().getPlaceFromCoordinates(
-                  curStation.lat,
-                  curStation.lng,
-                  "Santander Cycles: ${curStation.name}");
-              curStation.place = place;
-            }
             _markerManager.setStationMarker(curStation, this);
             break;
           }
         }
       }
     }
+
+    // TODO: Remove code duplication (in find routes as well)
     List<String> intermediatePlaceId =
         intermediateStations.map((station) => station.place.placeId).toList();
 
