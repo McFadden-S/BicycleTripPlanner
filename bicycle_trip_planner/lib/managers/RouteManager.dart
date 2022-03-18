@@ -350,6 +350,7 @@ class RouteManager {
     clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
+    _optimised = true;
     clearRouteMarkers();
 
     removeWaypoints();
@@ -359,8 +360,22 @@ class RouteManager {
   }
 
   @visibleForTesting
-  void setPathway(Pathway pathway){
+  void setPathway(Pathway pathway) {
     _pathway = pathway;
   }
 
+  @visibleForTesting
+  R.Route getStartWalkingRoute() {
+    return _startWalkingRoute;
+  }
+
+  @visibleForTesting
+  R.Route getBikingRoute() {
+    return _bikingRoute;
+  }
+
+  @visibleForTesting
+  R.Route getEndWalkingRoute() {
+    return _endWalkingRoute;
+  }
 }

@@ -24,12 +24,6 @@ void main() {
         geometry: Geometry(location: Location(lng: lng, lat: lat))));
   }
 
-  void setWalkingBikingEnd(bool walk, bool bike, bool end) {
-    navigationManager.setIfBeginning(walk);
-    navigationManager.setIfCycling(bike);
-    navigationManager.setIfEndWalking(end);
-  }
-
   void expectWalkingBikingEnd(bool walk, bool bike, bool end) {
     expect(navigationManager.ifBeginning(), walk);
     expect(navigationManager.ifCycling(), bike);
