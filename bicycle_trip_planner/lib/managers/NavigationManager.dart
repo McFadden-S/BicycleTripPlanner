@@ -8,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 class NavigationManager {
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
@@ -51,12 +50,12 @@ class NavigationManager {
   }
 
   @visibleForTesting
-  void setPickupStation(Station station){
+  void setPickupStation(Station station) {
     _pickUpStation = station;
   }
 
   @visibleForTesting
-  void setDropoffStation(Station station){
+  void setDropoffStation(Station station) {
     _dropOffStation = station;
   }
 
@@ -156,7 +155,8 @@ class NavigationManager {
         30);
   }
 
-  void passedStation(Station station, void Function(bool) setFalse,void Function(bool) setTrue) {
+  void passedStation(Station station, void Function(bool) setFalse,
+      void Function(bool) setTrue) {
     if (isWaypointPassed(LatLng(station.lat, station.lng))) {
       if (station == _pickUpStation) {
         _passedPickUpStation = true;
@@ -206,7 +206,6 @@ class NavigationManager {
     }
   }
 
-
   Future<void> setNewPickUpStation(Location location,
       [int groupSize = 1]) async {
     _pickUpStation = await _stationManager.getPickupStationNear(
@@ -238,5 +237,17 @@ class NavigationManager {
     _pickUpStation = Station.stationNotFound();
     _dropOffStation = Station.stationNotFound();
     _locationManager.locationSettings();
+  }
+
+  @visibleForTesting
+  void reset() {
+    _isBeginning = true;
+    _isCycling = false;
+    _isEndWalking = false;
+    _isNavigating = false;
+    _passedDropOffStation = false;
+    _passedPickUpStation = false;
+    _pickUpStation = Station.stationNotFound();
+    _dropOffStation = Station.stationNotFound();
   }
 }

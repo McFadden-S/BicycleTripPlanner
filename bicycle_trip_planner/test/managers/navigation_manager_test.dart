@@ -1,36 +1,80 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
-import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 
-import 'navigation_manager_test.mocks.dart';
-
 @GenerateMocks([Locator])
-void main(){
-  final navigationManager =  NavigationManager();
+void main() {
+  final navigationManager = NavigationManager();
   final locationManager = LocationManager();
 
-  
-  test("Navigation Start",(){
+  // ************ Helper functions ***************
 
+  void setCurrentLocation(double lat, double lng) {
+    locationManager.setCurrentLocation(Place(
+        placeId: 'place',
+        name: 'name',
+        description: 'description',
+        geometry: Geometry(location: Location(lng: lng, lat: lat))));
+  }
+
+  void setWalkingBikingEnd(bool walk, bool bike, bool end) {
+    navigationManager.setIfBeginning(walk);
+    navigationManager.setIfCycling(bike);
+    navigationManager.setIfEndWalking(end);
+  }
+
+  void expectWalkingBikingEnd(bool walk, bool bike, bool end) {
+    expect(navigationManager.ifBeginning(), walk);
+    expect(navigationManager.ifCycling(), bike);
+    expect(navigationManager.ifEndWalking(), end);
+  }
+
+  Station createStation(int id, String name, double lat, double lng) {
+    return Station(
+        id: id,
+        name: name,
+        lat: lat,
+        lng: lng,
+        bikes: 10,
+        emptyDocks: 0,
+        totalDocks: 10,
+        distanceTo: 0,
+        place: Place(
+            placeId: 'place',
+            name: 'name',
+            description: 'description',
+            geometry: Geometry(location: Location(lng: lng, lat: lat))));
+  }
+
+  // ************ SetUp ***************
+
+  // Resets navigation manager
+  setUp(() {
+    setCurrentLocation(0, 0);
+    navigationManager.reset();
+  });
+
+  // ************ Tests ***************
+
+  test("Ensure navigation initialises correctly", () {
     expect(navigationManager.getPickupStation(), Station.stationNotFound());
     expect(navigationManager.getDropoffStation(), Station.stationNotFound());
     expect(navigationManager.ifNavigating(), false);
     expect(navigationManager.ifBeginning(), true);
     expect(navigationManager.ifCycling(), false);
     expect(navigationManager.ifEndWalking(), false);
+  });
 
-    final station = Station(id: 1,name: "station_1", lat:  51.511800, lng: -0.118960,bikes: 10,emptyDocks: 0,totalDocks: 10,distanceTo: 0, place:Place(placeId: 'start', name: 'Start', description: 'start', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.511800))));
+  test("Ensure navigation setters work correctly", () {
+    final station = createStation(1, "station_1", 51.511800, -0.118960);
+
     navigationManager.setDropoffStation(station);
     navigationManager.setPickupStation(station);
     navigationManager.setIfEndWalking(true);
@@ -39,109 +83,76 @@ void main(){
 
     expect(navigationManager.getPickupStation(), station);
     expect(navigationManager.getDropoffStation(), station);
-    expect(navigationManager.ifNavigating(), false);
-    expect(navigationManager.ifBeginning(), false);
-    expect(navigationManager.ifCycling(), true);
-    expect(navigationManager.ifEndWalking(), true);
-
+    expectWalkingBikingEnd(false, true, true);
   });
 
-  test("Is waypoint passed",(){
+  test(
+      "Ensure that boolean's don't change when user is not within 30 meters radius",
+      () {
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final station_2 = createStation(2, "station_2", 51.5120, -0.118800);
+
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
+
+    expectWalkingBikingEnd(true, false, false);
+
+    //Checks if current location indicates if first stop has been passed, should return no change
+    navigationManager.checkPassedByPickUpDropOffStations();
+
+    expectWalkingBikingEnd(true, false, false);
+  });
+
+  test("Ensure isWaypointPassed is true when user is in 30m radius", () {
     LatLng waypoint = const LatLng(51.511589, -0.118960);
-    locationManager.setCurrentLocation(Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.5118))));
+    setCurrentLocation(51.5118, -0.118960);
 
-    expect(navigationManager.isWaypointPassed(waypoint),true);
+    expect(navigationManager.isWaypointPassed(waypoint), true);
+  });
 
+  test("Ensure isWaypointPassed is false when user is not in 30m radius", () {
+    LatLng waypoint = const LatLng(50, -0.118960);
+    setCurrentLocation(51.5118, -0.118960);
 
-    waypoint = const LatLng(50, -0.118960);
-    locationManager.setCurrentLocation(Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.5118))));
-
-    expect(navigationManager.isWaypointPassed(waypoint),false);
-
+    expect(navigationManager.isWaypointPassed(waypoint), false);
   });
 
   //This test shows that there is a bug where you will skip the cycling section when the stops are within 30 meters of each other
   //Stations could be a maximum of 60 meters away, however both will disappear once the user is within the radius for both
-  test("Pass waypoints when user is within 30 meters of both at the same time",(){
-
-    locationManager.setCurrentLocation(Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: 0, lat: 0))));
-
+  test("Pass waypoints when user is within 30 meters of both at the same time",
+      () {
     //Creating start and end stations
-    final station_1 = Station(id: 1,name: "station_1", lat:  51.511800, lng: -0.118960,bikes: 10,emptyDocks: 0,totalDocks: 10,distanceTo: 0, place:Place(placeId: 'start', name: 'Start', description: 'start', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.511800))));
-
-    final station_2 = Station(id: 2,name: "station_2", lat: 51.5120, lng: -0.118800,bikes: 10,emptyDocks: 0,totalDocks: 10,distanceTo: 0, place:Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: -0.128800, lat: 51.5120))));
-
-    //Setting the beginning to be true at first, the rest are false
-    navigationManager.setIfBeginning(true);
-    navigationManager.setIfCycling(false);
-    navigationManager.setIfEndWalking(false);
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final station_2 = createStation(2, "station_2", 51.5120, -0.118800);
 
     //Setting pickup and dropoff stations
     navigationManager.setPickupStation(station_1);
     navigationManager.setDropoffStation(station_2);
 
-    expect(navigationManager.ifBeginning(), true);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), false);
-
-    locationManager.setCurrentLocation(Place(placeId: 'currentLocation', name: 'currentLocation', description: 'currentLocation', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.511805))));
+    setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
 
-    expect(navigationManager.ifBeginning(), false);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), true);
+    expectWalkingBikingEnd(false, false, true);
   });
 
-  test("Pass waypoints when user is not within 30 meters of both at the same time", (){
-
-    locationManager.setCurrentLocation(Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: 0, lat: 0))));
-
-    //Creating start and end stations
-    final station_1 = Station(id: 1,name: "station_1", lat:  51.511800, lng: -0.118960,bikes: 10,emptyDocks: 0,totalDocks: 10,distanceTo: 0, place:Place(placeId: 'start', name: 'Start', description: 'start', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.511800))));
-
-    final station_3 = Station(id: 2,name: "station_2", lat: 60.5120, lng: -0.128800,bikes: 10,emptyDocks: 0,totalDocks: 10,distanceTo: 0, place:Place(placeId: 'destination', name: 'Destination', description: 'destination', geometry: Geometry(location: Location(lng: -0.128800, lat: 60.5120))));
-
-        //Setting the beginning to be true at first, the rest are false
-    navigationManager.setIfBeginning(true);
-    navigationManager.setIfCycling(false);
-    navigationManager.setIfEndWalking(false);
+  test(
+      "Pass waypoints when user is not within 30 meters of both at the same time",
+      () {
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final station_2 = createStation(2, "station_2", 60.5120, -0.128800);
 
     //Setting pickup and dropoff stations
     navigationManager.setPickupStation(station_1);
-    navigationManager.setDropoffStation(station_3);
+    navigationManager.setDropoffStation(station_2);
 
-    expect(navigationManager.ifBeginning(), true);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), false);
-
-    locationManager.setCurrentLocation(Place(placeId: 'currentLocation', name: 'currentLocation', description: 'currentLocation', geometry: Geometry(location: Location(lng: -0.118960, lat: 51.511805))));
+    setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
 
-    expect(navigationManager.ifBeginning(), false);
-    expect(navigationManager.ifCycling(), true);
-    expect(navigationManager.ifEndWalking(), false);
+    expectWalkingBikingEnd(false, true, false);
 
-    locationManager.setCurrentLocation(Place(placeId: 'currentLocation', name: 'currentLocation', description: 'currentLocation', geometry: Geometry(location: Location(lng: -0.128800, lat: 60.5120))));
+    setCurrentLocation(60.5120, -0.128800);
     navigationManager.checkPassedByPickUpDropOffStations();
 
-    expect(navigationManager.ifBeginning(), false);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), true);
-   });
-
-  test("Ensure that boolean's don't change when user is not within 30 meters radius", (){
-    expect(navigationManager.ifBeginning(), true);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), false);
-
-    //Checks if current location indicates if first stop has been passed, should return no change
-    navigationManager.checkPassedByPickUpDropOffStations();
-
-    expect(navigationManager.ifBeginning(), true);
-    expect(navigationManager.ifCycling(), false);
-    expect(navigationManager.ifEndWalking(), false);
+    expectWalkingBikingEnd(false, false, true);
   });
-
-
 }
-
