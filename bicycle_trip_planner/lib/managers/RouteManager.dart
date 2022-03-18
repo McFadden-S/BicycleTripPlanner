@@ -30,6 +30,7 @@ class RouteManager {
 
   bool _changed = false;
   bool _optimised = true;
+  bool _costOptimised = false;
 
   R.Route _startWalkingRoute = R.Route.routeNotFound();
   R.Route _bikingRoute = R.Route.routeNotFound();
@@ -200,6 +201,21 @@ class RouteManager {
   bool ifOptimised() {
     return _optimised;
   }
+
+  void setCostOptimised(bool optimised) {
+    _costOptimised = optimised;
+    _changed = true;
+  }
+
+  void toggleCostOptimised() {
+    _costOptimised = !_costOptimised;
+    _changed = true;
+  }
+
+  bool ifCostOptimised() {
+    return _costOptimised;
+  }
+
 
   Stop getStart() => _pathway.getStart();
 

@@ -276,7 +276,7 @@ class ApplicationBloc with ChangeNotifier {
             .compareTo(
                 _costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
-          _stationManager.cachePlaceId(nearbyStations[i]);
+          await _stationManager.cachePlaceId(nearbyStations[i]);
           if ((await _getDurationFromToStation(
                   curStation, nearbyStations[i])) <=
               25) {

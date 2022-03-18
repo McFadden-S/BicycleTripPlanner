@@ -45,7 +45,7 @@ class _RouteCardState extends State<RouteCard> {
       print("Start: ${routeManager.getStart().getStop()}");
       print(
           "destination: ${routeManager.getDestination().getStop().description}");
-      routeManager.getWaypoints().isEmpty
+      routeManager.ifCostOptimised()
           ? applicationBloc.findCostEfficientRoute(
               routeManager.getStart().getStop(),
               routeManager.getDestination().getStop())
