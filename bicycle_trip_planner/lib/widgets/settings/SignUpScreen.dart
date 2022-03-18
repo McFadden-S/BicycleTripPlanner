@@ -24,6 +24,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Container(
             color: ThemeStyle.cardColor,
@@ -80,7 +81,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           email: email,
                           password: password,
                         );
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                       else{
                         ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
@@ -118,7 +119,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                   ],
                 ),
                 BackButton(
-                  color: ThemeStyle.primaryIconColor,
+                  color: ThemeStyle.secondaryIconColor,
                   key: Key("back"),
                 )
               ],

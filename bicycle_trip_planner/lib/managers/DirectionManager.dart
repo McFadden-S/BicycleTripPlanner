@@ -1,10 +1,14 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 
 class DirectionManager {
   //********** Fields **********
+
+  final LocationManager _locationManager = LocationManager();
 
   bool _isCycling = false;
 
@@ -109,9 +113,10 @@ class DirectionManager {
     _duration = "$minutes min";
   }
 
-  void setDistance(int metre) {
-    int miles = (metre / 1609.34).ceil();
-    _distance = "$miles mi";
+  void setDistance(double metre) {
+    DistanceType units = _locationManager.getUnits();
+    int distance = units.convert(metre).ceil();
+    _distance = "$distance ${units.units}";
   }
 
   void setDirections(List<Steps> directions) {

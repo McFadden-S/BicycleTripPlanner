@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import '../general/GroupSizeSelector.dart';
+import '../settings/SettingsScreen.dart';
 
 class HomeWidgets extends StatefulWidget {
   const HomeWidgets({Key? key}) : super(key: key);
@@ -48,8 +49,16 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                             Icons.settings,
                             color: ThemeStyle.buttonPrimaryColor,
                           ),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/settings'),
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SettingsScreen();
+                                },
+                              ),
+                            );
+                          },
                           iconSize: 50,
                         )
                       ],

@@ -10,7 +10,7 @@ class Route {
   final OverviewPolyline polyline;
   final RouteType routeType;
   List<Steps> directions = [];
-  int distance = 0;
+  double distance = 0;
   int duration = 0;
 
   Route(

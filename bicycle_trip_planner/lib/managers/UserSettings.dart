@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,6 +16,7 @@ class UserSettings {
 
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  bool _isFavouriteStationsSelected = false;
 
 //********** Public **********
 
@@ -29,47 +32,20 @@ class UserSettings {
     // await prefs.setString(key, value);
   }
 
-  darkModeToggle() async {
-    final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('darkMode') ?? false;
-    await prefs.setBool('darkMode', !darkMode).then((_) {
-      // Data removed successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
-  }
 
-  isDarkModeOn() async {
+  // returns String 'miles' or 'km'
+  Future<DistanceType> distanceUnit() async {
     final SharedPreferences prefs = await _prefs;
-    return prefs.getBool('darkMode') ?? false;
-  }
-
-  distanceUnitToggle() async {
-    final SharedPreferences prefs = await _prefs;
-    bool darkMode = prefs.getBool('distanceInKilometers') ?? false;
-    await prefs.setBool('distanceInKilometers', !darkMode).then((_) {
-      // Data removed successfully!
-      return true;
-    }).catchError((error) {
-      // error
-      return false;
-    });
-    //no error caught
-    return true;
-  }
-
-  distanceUnit() async {
-    final SharedPreferences prefs = await _prefs;
-    return prefs.getString('distanceUnit') ?? 'miles';
+    String distanceUnit = prefs.getString('distanceUnit') ?? 'miles';
+    if (distanceUnit == "miles") {
+      return DistanceType.miles;
+    }
+    return DistanceType.km;
   }
 
   setDistanceUnit(String? unit) async {
     final SharedPreferences prefs = await _prefs;
-    await prefs.setString('distanceUnit', unit ?? "miles").then((_) {
+    await prefs.setString('distanceUnit', unit ?? 'miles').then((_) {
       // Data set successfully!
       return true;
     }).catchError((error) {
@@ -118,6 +94,14 @@ class UserSettings {
     });
     //no error caught
     return true;
+  }
+
+  setIsFavouriteStationsSelected(bool value) {
+    _isFavouriteStationsSelected = value;
+  }
+
+  getIsIsFavouriteStationsSelected() {
+    return _isFavouriteStationsSelected;
   }
 
 //********** Private **********
