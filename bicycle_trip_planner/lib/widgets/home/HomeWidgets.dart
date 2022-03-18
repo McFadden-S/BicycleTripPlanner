@@ -4,7 +4,6 @@ import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart'
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../general/GroupSizeSelector.dart';
 
 class HomeWidgets extends StatefulWidget {
@@ -15,8 +14,7 @@ class HomeWidgets extends StatefulWidget {
 }
 
 class _HomeWidgetsState extends State<HomeWidgets> {
-
-  final RouteManager routeManager = RouteManager(); 
+  final RouteManager routeManager = RouteManager();
 
   @override
   Widget build(BuildContext context) {
@@ -47,20 +45,37 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         ),
                         IconButton(
                           icon: Icon(
-                              Icons.settings,
-                              color: ThemeStyle.buttonPrimaryColor,
+                            Icons.settings,
+                            color: ThemeStyle.buttonPrimaryColor,
                           ),
-                          onPressed: () => Navigator.pushNamed(context, '/settings'),
+                          onPressed: () =>
+                              Navigator.pushNamed(context, '/settings'),
                           iconSize: 50,
                         )
                       ],
                     ),
                   ),
+                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, '/weather'),
+                      child: Container(
+                          margin: EdgeInsets.only(top: 5),
+                          width: 60.0,
+                          height: 60.0,
+                          decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: AssetImage('assets/weather.png'),
+                              ))),
+                    )
+                  ]),
                 ],
               ),
             ),
           ),
-           Align(
+          Align(
               alignment: FractionalOffset.bottomCenter,
               child: Wrap(
                 children: [
@@ -84,8 +99,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                   ),
                   StationBar(),
                 ],
-              )
-          ),
+              )),
         ],
       ),
     );
