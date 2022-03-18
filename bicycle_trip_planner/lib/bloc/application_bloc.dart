@@ -217,7 +217,8 @@ class ApplicationBloc with ChangeNotifier {
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
 
-    _directionManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showAllRoutes();
     notifyListeners();
   }
 
@@ -285,10 +286,6 @@ class ApplicationBloc with ChangeNotifier {
     _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
   }
 
-  clearStationMarkersWithoutUID() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-  }
-
   setStationMarkersWithoutUID() {
     _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
@@ -319,7 +316,7 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     _updateDirections();
     updateLocationLive();
-    _directionManager.showStartRoute();
+    _routeManager.showCurrentRoute();
     Wakelock.enable();
     notifyListeners();
   }
@@ -337,14 +334,66 @@ class ApplicationBloc with ChangeNotifier {
     if (_routeManager.ifWalkToFirstWaypoint() &&
         _routeManager.ifFirstWaypointSet()) {
       await _navigationManager.updateRouteWithWalking();
+      setPartialRoutes(
+          [_routeManager.getFirstWaypoint().getStop().placeId],
+          _routeManager
+              .getWaypoints()
+              .sublist(1)
+              .map((waypoint) => waypoint.getStop().placeId)
+              .toList());
     } else {
       await _navigationManager.updateRoute();
+      setPartialRoutes(
+          [],
+          _routeManager
+              .getWaypoints()
+              .map((waypoint) => waypoint.getStop().placeId)
+              .toList());
     }
+    clearStationMarkersNotInRoute();
+  }
+
+  Future<void> setPartialRoutes(
+      [List<String> first = const <String>[],
+      List<String> intermediates = const <String>[]]) async {
+    String originId = _routeManager.getStart().getStop().placeId;
+    String destinationId = _routeManager.getDestination().getStop().placeId;
+
+    String startStationId = _navigationManager.getPickupStation().place.placeId;
+    String endStationId = _navigationManager.getDropoffStation().place.placeId;
+
+    Rou.Route startWalkRoute = _navigationManager.ifBeginning()
+        ? await _directionsService.getWalkingRoutes(
+            originId, startStationId, first, false)
+        : Rou.Route.routeNotFound();
+
+    Rou.Route bikeRoute = _navigationManager.ifBeginning()
+        ? await _directionsService.getRoutes(startStationId, endStationId,
+            intermediates, _routeManager.ifOptimised())
+        : _navigationManager.ifCycling()
+            ? await _directionsService.getRoutes(originId, endStationId,
+                intermediates, _routeManager.ifOptimised())
+            : Rou.Route.routeNotFound();
+
+    Rou.Route endWalkRoute = _navigationManager.ifEndWalking()
+        ? await _directionsService.getWalkingRoutes(originId, destinationId)
+        : await _directionsService.getWalkingRoutes(
+            endStationId, destinationId);
+
+    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showCurrentRoute(false);
+  }
+
+  void clearStationMarkersNotInRoute() {
+    _markerManager.clearStationMarkers(_stationManager.getStations());
+    Station pickupStation = _navigationManager.getPickupStation();
+    Station dropOffStation = _navigationManager.getDropoffStation();
+    _markerManager.setStationMarker(pickupStation, this);
+    _markerManager.setStationMarker(dropOffStation, this);
   }
 
   void toggleCycling() {
     _directionManager.toggleCycling();
-    print("Notifying listeners");
     notifyListeners();
   }
 

@@ -19,6 +19,11 @@ class Steps {
     );
   }
 
+  factory Steps.from(Steps other) {
+    return Steps(instruction: other.instruction, distance: other.distance,
+        duration: other.duration);
+  }
+
   @override
   String toString() {
     return instruction;

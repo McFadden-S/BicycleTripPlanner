@@ -12,7 +12,6 @@ import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
 
 import '../widgets/home/Home.dart';
 
-
 class MarkerManager {
   //********** Fields **********
 
@@ -134,6 +133,9 @@ class MarkerManager {
 
   void setStationMarkerWithUID(Station station, ApplicationBloc appBloc,
       [int uid = -1]) {
+    if (station == Station.stationNotFound()) {
+      return;
+    }
     _markers
         .add(_createStationMarker(station, appBloc, _generateMarkerID(uid)));
   }
@@ -166,6 +168,10 @@ class MarkerManager {
       return;
     }
 
+    if (station == Station.stationNotFound()) {
+      return;
+    }
+
     _markers.add(_createStationMarker(station, appBloc));
   }
 
@@ -180,5 +186,4 @@ class MarkerManager {
       _removeMarker(station.name);
     }
   }
-
 }

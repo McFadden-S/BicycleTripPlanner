@@ -1,18 +1,12 @@
-import 'dart:async';
-import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NavigationManager {
-  final _directionsService = DirectionsService();
-
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
   final _routeManager = RouteManager();
@@ -55,10 +49,47 @@ class NavigationManager {
     checkPassedByPickUpDropOffStations();
   }
 
+  Future<void> _changeRouteStartToCurrentLocation() async {
+    _routeManager.changeStart(_locationManager.getCurrentLocation());
+  }
+
+  //TODO get rid of parameters since they are from _routeManager
+  _updateRoute(Place origin,
+      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    Location startLocation = origin.geometry.location;
+    Location endLocation =
+        _routeManager.getDestination().getStop().geometry.location;
+
+    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
+
+    // await setPartialRoutes([],
+    //     (intermediates.map((intermediate) => intermediate.placeId)).toList());
+  }
+
   //********** Public **********
+
+  Station getPickupStation() {
+    return _pickUpStation;
+  }
+
+  Station getDropoffStation() {
+    return _dropOffStation;
+  }
 
   bool ifNavigating() {
     return _isNavigating;
+  }
+
+  bool ifBeginning() {
+    return _isBeginning;
+  }
+
+  bool ifCycling() {
+    return _isCycling;
+  }
+
+  bool ifEndWalking() {
+    return _isEndWalking;
   }
 
   Future<void> start() async {
@@ -94,7 +125,6 @@ class NavigationManager {
   Future<void> updateRouteWithWalking() async {
     await _updateStartLocationAndStations();
     await walkToFirstLocation(
-        _routeManager.getStart().getStop(),
         _routeManager.getFirstWaypoint().getStop(),
         _routeManager
             .getWaypoints()
@@ -104,19 +134,12 @@ class NavigationManager {
         _routeManager.getGroupSize());
   }
 
-  Future<void> _changeRouteStartToCurrentLocation() async {
-    _routeManager.changeStart(_locationManager.getCurrentLocation());
-  }
-
   bool isWaypointPassed(LatLng waypoint) {
     return (_locationManager.distanceFromToInMeters(
             _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
         30);
   }
 
-  // TODO: Check what isStationSet does
-  // Also why are functions passed in?
-  // Rename pass into at...
   void passedStation(Station station, void Function(bool) setFalse,
       void Function(bool) setTrue) {
     if (isWaypointPassed(LatLng(station.lat, station.lng))) {
@@ -148,62 +171,13 @@ class NavigationManager {
     return (_routeManager.getStops().length <= 1);
   }
 
-  walkToFirstLocation(Place origin, Place first,
+  walkToFirstLocation(Place first,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location firstLocation = first.geometry.location;
     Location endLocation =
         _routeManager.getDestination().getStop().geometry.location;
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
-
-    await setPartialRoutes([first.name],
-        (intermediates.map((intermediate) => intermediate.placeId)).toList());
-  }
-
-//TODO get rid of parameters since they are from _routeManager
-  _updateRoute(Place origin,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
-
-    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
-
-    await setPartialRoutes([],
-        (intermediates.map((intermediate) => intermediate.placeId)).toList());
-  }
-
-  Future<void> setPartialRoutes(
-      [List<String> first = const <String>[],
-      List<String> intermediates = const <String>[]]) async {
-    String originId = _routeManager.getStart().getStop().placeId;
-    String destinationId = _routeManager.getDestination().getStop().placeId;
-
-    String startStationId = _pickUpStation.place.placeId;
-    String endStationId = _dropOffStation.place.placeId;
-
-    Rou.Route startWalkRoute = _isBeginning
-        ? await _directionsService.getWalkingRoutes(
-            originId, startStationId, first, false)
-        : Rou.Route.routeNotFound();
-
-    Rou.Route bikeRoute = _isBeginning
-        ? await _directionsService.getRoutes(startStationId, endStationId,
-            intermediates, _routeManager.ifOptimised())
-        : _isCycling
-            ? await _directionsService.getRoutes(originId, endStationId,
-                intermediates, _routeManager.ifOptimised())
-            : Rou.Route.routeNotFound();
-
-    Rou.Route endWalkRoute = _isEndWalking
-        ? await _directionsService.getWalkingRoutes(originId, destinationId)
-        : await _directionsService.getWalkingRoutes(
-            endStationId, destinationId);
-
-    //Temporary change: Otherwise directionManager and navigationManager try to
-    //initialise each other (circular import where they infinitely initialise each other)
-    DirectionManager()
-        .setRoutes(startWalkRoute, bikeRoute, endWalkRoute, false);
   }
 
   Future<void> updatePickUpDropOffStations(
