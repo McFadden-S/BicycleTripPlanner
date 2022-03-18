@@ -52,8 +52,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    locationManager.locationSettings();
-
     final applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
 
@@ -75,10 +73,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
 
     // Get the initial update for the markers
     applicationBloc.updateStations();
-
-    //Use a periodic timer to update the TFL Santander bike stations
-    //(Once every 30 seconds)
-    applicationBloc.updateStationsPeriodically(const Duration(seconds: 30));
   }
 
   @override
@@ -87,7 +81,8 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
       final applicationBloc =
           Provider.of<ApplicationBloc>(context, listen: false);
       applicationBloc.cancelStationTimer();
-    } catch (e) {};
+    } catch (e) {}
+    ;
 
     if (cameraManager != null) {
       cameraManager?.dispose();
@@ -101,7 +96,8 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   void setState(fn) {
     try {
       super.setState(fn);
-    } catch (e) {};
+    } catch (e) {}
+    ;
   }
 
   @override

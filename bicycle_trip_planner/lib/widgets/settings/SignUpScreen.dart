@@ -1,8 +1,8 @@
-import 'package:bicycle_trip_planner/widgets/Login/LoginScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/LoginScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/PasswordField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/PasswordField.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'components/ErrorSnackbar.dart';
 import 'package:bicycle_trip_planner/constants.dart';
@@ -24,6 +24,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Container(
             color: ThemeStyle.cardColor,
@@ -80,7 +81,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           email: email,
                           password: password,
                         );
-                        Navigator.pop(context);
+                        Navigator.pop(context, true);
                       }
                       else{
                         ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
@@ -118,7 +119,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                   ],
                 ),
                 BackButton(
-                  color: ThemeStyle.primaryIconColor,
+                  color: ThemeStyle.secondaryIconColor,
                   key: Key("back"),
                 )
               ],

@@ -1,4 +1,7 @@
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
@@ -8,7 +11,8 @@ class LocationManager {
 
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
-  final Location location = Location();
+  Place _currentPlace = const Place.placeNotFound();
+  DistanceType _units = DistanceType.miles; // default
 
   //********** Singleton **********
 
@@ -31,17 +35,17 @@ class LocationManager {
   Future<PermissionStatus> requestPermission() async {
     await checkServiceEnabled();
     await checkPermission();
-    PermissionStatus _permissionGranted = await location.hasPermission();
+    PermissionStatus _permissionGranted = await Location().hasPermission();
     return _permissionGranted;
   }
 
   Future<bool> checkServiceEnabled() async {
     bool _serviceEnabled = true;
     // Device is on
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await Location().serviceEnabled();
     if (!_serviceEnabled) {
       // GPS Device is turned on
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await Location().requestService();
       if (!_serviceEnabled) {
         _serviceEnabled = false;
       }
@@ -52,14 +56,11 @@ class LocationManager {
   // returns true or false based on user accepting or rejecting location services
   Future<bool> checkPermission() async {
     bool grantedPermission = true;
-    PermissionStatus _permissionGranted = await location.hasPermission();
+    PermissionStatus _permissionGranted = await Location().hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await Location().requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
-        // TODO: Using geolocator to openLocationSettings causes another
-        // permission dialogue to pop up. Perhaps rely on only one location package
-        // geo.Geolocator.openLocationSettings();
       }
     }
     return grantedPermission;
@@ -70,7 +71,7 @@ class LocationManager {
   }
 
   double distanceFromTo(LatLng posFrom, LatLng posTo) {
-    return _convertMetresToMiles(_calculateDistance(posFrom, posTo));
+    return _units.convert(_calculateDistance(posFrom, posTo));
   }
 
   double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
@@ -78,17 +79,25 @@ class LocationManager {
   }
 
   Future<bool> locationSettings([double distanceFilter = 0]) {
-    return location.changeSettings(
-        accuracy: LocationAccuracy.high,
+    return Location().changeSettings(
+        accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
   }
 
-  //********** private *********
-
-  double _convertMetresToMiles(double distance) {
-    return distance * 0.000621;
+  void setCurrentLocation(Place currentPlace) {
+    _currentPlace = currentPlace;
   }
+
+  Place getCurrentLocation() {
+    return _currentPlace;
+  }
+
+  DistanceType getUnits() {
+    return _units;
+  }
+
+  //********** private *********
 
   // Returns the distance between the two points in metres
   double _calculateDistance(LatLng pos1, LatLng pos2) {
@@ -96,7 +105,14 @@ class LocationManager {
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
-  Stream<LocationData> onUserLocationChange() {
+  Stream<LocationData> onUserLocationChange([double distanceFilter = 0]) {
+    Location location = Location();
+    print(distanceFilter);
+    locationSettings(distanceFilter);
     return location.onLocationChanged;
+  }
+
+  void setUnits(DistanceType units) {
+    _units = units;
   }
 }

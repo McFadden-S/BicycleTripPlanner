@@ -77,6 +77,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             GroupSizeSelector(),
                             SizedBox(height: 10),
                             OptimisedButton(),
+                            SizedBox(height: 10),
                             WalkToFirstButton(),
                           ],
                         ),
@@ -110,11 +111,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           iconIn: Icons.directions_bike,
                           buttonColor: ThemeStyle.goButtonColor,
                           onButtonClicked: () {
-                            if (_directionManager.ifRouteSet()) {
-                              applicationBloc.setNavigating(true);
-                              applicationBloc.setSelectedScreen('navigation');
-                              _directionManager.showStartRoute();
-                              Wakelock.enable();
+                            if (_routeManager.ifRouteSet()) {
+                              applicationBloc.startNavigation();
                             } else {
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
@@ -132,5 +130,4 @@ class _RoutePlanningState extends State<RoutePlanning> {
       ),
     );
   }
-
 }

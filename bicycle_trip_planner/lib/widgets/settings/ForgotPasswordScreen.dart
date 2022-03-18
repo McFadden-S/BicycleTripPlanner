@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/RoundedTextButton.dart';
-import 'package:bicycle_trip_planner/widgets/Login/components/InputField.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
+import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'components/ErrorSnackbar.dart';
 
@@ -63,7 +63,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
                     press: resetPassword, // to be modified...
                   ),
                   BackButton(
-                    color: ThemeStyle.primaryIconColor,
+                    color: ThemeStyle.secondaryIconColor,
                     key: Key("back"),
                   ),
                 ],
