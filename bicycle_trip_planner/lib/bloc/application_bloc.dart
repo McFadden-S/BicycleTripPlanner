@@ -197,12 +197,14 @@ class ApplicationBloc with ChangeNotifier {
     List<String> intermediatePlaceId =
         intermediates.map((place) => place.placeId).toList();
 
-    // if logged in & route can be found
-    // _sharedPreferenceManager.addRecentStart(startStation.name);
-    // _sharedPreferenceManager.addRecentEnd(endStation.name);
-    //_sharedPreferenceManager.addRecentIntermediary(intermediatePlaceId);
-    _sharedPreferenceManager.addToStartList(startStation.name);
-    _sharedPreferenceManager.addToEndList(endStation.name);
+    // if route can be found
+    List<String> middleStops = [];
+    for(var middleStop in intermediates) {
+      middleStops.add(middleStop.name);
+    }
+    _sharedPreferenceManager.addRecentIntermediary(middleStops);
+    _sharedPreferenceManager.addToStartList(origin.name);
+    _sharedPreferenceManager.addToEndList(destination.name);
 
     _sharedPreferenceManager.addRecentStart();
     _sharedPreferenceManager.addRecentEnd();

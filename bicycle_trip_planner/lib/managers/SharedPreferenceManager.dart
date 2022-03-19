@@ -1,10 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class SharedPreferenceManager {
-  //final prefs = await SharedPreferences.getInstance();
-  List<Map<String, String>> recentSearch= [];
+  List<Map<String, String>> recentSearch = [];
   List<String> startStops = [];
   List<String> endStops = [];
+  var recentSearchesJson = "";
 
   //********** Singleton **********
 
@@ -37,7 +38,8 @@ class SharedPreferenceManager {
   addRecentIntermediary(middleStops) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('middle', middleStops);
-    final List<String>? middle = prefs.getStringList('end');
+    final List<String>? middle = prefs.getStringList('middle');
+    // print("///////////////////////////middle//////////////////////////////");
     // print(middle);
   }
 
@@ -51,10 +53,20 @@ class SharedPreferenceManager {
     endStops.add(endStop);
   }
 
-  addToRecentSearchList(placeId, name) {
+  addToRecentSearchList(placeId, name) async {
     Map<String, String> recentSearchMap = {};
     recentSearchMap[placeId] = name;
     recentSearch.add(recentSearchMap);
-    // print(recentSearch);
+    convertToJson(recentSearch);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('recentSearches', recentSearchesJson);
+    String? encodedMap = prefs.getString('recentSearches');
+    List<dynamic> decodedMap = json.decode(encodedMap!);
+    // print("//////////////////////////////////////////////////////////////////");
+    // print(decodedMap);
+  }
+
+  convertToJson(toBeConverted) {
+    recentSearchesJson = json.encode(toBeConverted);
   }
 }
