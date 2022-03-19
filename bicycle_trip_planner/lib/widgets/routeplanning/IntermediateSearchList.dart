@@ -38,32 +38,32 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         (stop) => stop == stopIn,
         orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
 
-    if (routeManager.ifCostOptimised()){
+    if (routeManager.ifCostOptimised()) {
       searchController.text = stopIn.getStop().description;
       stopsList.add(ListTile(
-        key: Key("Stop ${stopsList.length + 1}"),
-        // title: Text(stopIn.getStop().description)
-        title: TextField(
-          controller: searchController,
-          readOnly: true,
-          enabled: false,
-          maxLines: null,
-        ),
-        leading: Wrap(spacing: 12, children: <Widget>[
-          RotatedBox(
-            quarterTurns: 1,
-            child: IconButton(
-              icon: Icon(
-                Icons.airline_stops,
-              ),
-              onPressed: null,
-            ),
+          key: Key("Stop ${stopsList.length + 1}"),
+          // title: Text(stopIn.getStop().description)
+          title: TextField(
+            controller: searchController,
+            readOnly: true,
+            enabled: false,
+            maxLines: null,
           ),
-        ],
-        )
-      ));
-    }
-    else {
+          leading: Wrap(
+            spacing: 12,
+            children: <Widget>[
+              RotatedBox(
+                quarterTurns: 1,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.airline_stops,
+                  ),
+                  onPressed: null,
+                ),
+              ),
+            ],
+          )));
+    } else {
       stopsList.add(ListTile(
           key: Key("Stop ${stopsList.length + 1}"),
           title: Search(
@@ -101,6 +101,69 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
+  List<Widget> _createAddAndSaveButton(
+      BuildContext context, ApplicationBloc applicationBloc) {
+    return [
+      TextButton(
+        child: Text(
+          'Add Stop(s)',
+          style: TextStyle(
+            fontFamily: 'Outfit',
+            fontSize: 16.0,
+            color: ThemeStyle.primaryTextColor,
+          ),
+        ),
+        onPressed: () =>
+            setState(() => _addStopWidget(applicationBloc, Stop())),
+        style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(ThemeStyle.buttonPrimaryColor),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+          ),
+        ),
+      ),
+      //TODO: the button below is for testing purposes
+      TextButton(
+        onPressed: () async {
+          final databaseManager = DatabaseManager();
+          bool successfullyAdded = await databaseManager.addToFavouriteRoutes(
+              routeManager.getStart().getStop(),
+              routeManager.getDestination().getStop(),
+              routeManager
+                  .getWaypoints()
+                  .map((waypoint) => waypoint.getStop())
+                  .toList());
+          if (successfullyAdded) {
+            print('route added');
+          } else {
+            // set up the AlertDialog
+            AlertDialog alert = AlertDialog(
+              title: const Text("Error"),
+              content: Text(FirebaseAuth.instance.currentUser == null
+                  ? "User not logged in!"
+                  : "Invalid start/end"),
+            );
+
+            // show the dialog
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return alert;
+              },
+            );
+          }
+        },
+        child: Text("save"),
+        style: TextButton.styleFrom(
+          primary: ThemeStyle.buttonPrimaryColor,
+        ),
+      )
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc =
@@ -121,84 +184,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         onTap: toggleShowingIntermediate,
         child: Column(children: [
           Wrap(
-            children: [
-              TextButton(
-                child: Text(
-                  'Add Stop(s)',
-                  style: TextStyle(
-                    fontFamily: 'Outfit',
-                    fontSize: 16.0,
-                    color: ThemeStyle.primaryTextColor,
-                  ),
-                ),
-                onPressed: () {
-                  RouteManager().ifCostOptimised()
-                    ? null
-                    : setState(() => _addStopWidget(applicationBloc, Stop()));
-                },
-                style: ButtonStyle(
-                  backgroundColor: RouteManager().ifCostOptimised()
-                      ?  MaterialStateProperty.all<Color>(
-                      ThemeStyle.buttonSecondaryColor)
-                      : MaterialStateProperty.all<Color>(
-                      ThemeStyle.buttonPrimaryColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: RouteManager().ifCostOptimised()
-                          ? BorderSide(color: ThemeStyle.buttonSecondaryColor)
-                          : BorderSide(color: ThemeStyle.buttonPrimaryColor)
-                    ),
-                  ),
-                ),
-              ),
-              //TODO: the button below is for testing purposes
-              TextButton(
-                onPressed: () async {
-                  if (RouteManager().ifCostOptimised()) {
-                    null;
-                  } else {
-                      final databaseManager = DatabaseManager();
-                    bool successfullyAdded =
-                    await databaseManager.addToFavouriteRoutes(
-                        routeManager.getStart().getStop(),
-                        routeManager.getDestination().getStop(),
-                        routeManager
-                            .getWaypoints()
-                            .map((waypoint) => waypoint.getStop())
-                            .toList());
-                    if (successfullyAdded) {
-                      print('route added');
-                    } else {
-                      // set up the AlertDialog
-                      AlertDialog alert = AlertDialog(
-                        title: const Text("Error"),
-                        content: Text(
-                            FirebaseAuth.instance.currentUser == null
-                                ? "User not logged in!"
-                                : "Invalid start/end"),
-                      );
-
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    }
-                  }
-                },
-                child: Text("save"),
-                style: RouteManager().ifCostOptimised()
-                    ? TextButton.styleFrom(
-                      primary: Colors.grey,
-                    )
-                    : TextButton.styleFrom(
-                       primary: ThemeStyle.buttonPrimaryColor,
-                    ),
-              ),
-            ],
+            children: RouteManager().ifCostOptimised()
+                ? []
+                : _createAddAndSaveButton(context, applicationBloc),
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.2,
@@ -207,26 +195,29 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               sizeDuration: const Duration(milliseconds: 300),
               child: isShowingIntermediate && stopsList.isNotEmpty
                   ? routeManager.ifCostOptimised()
-                    ? ListView(
-                        shrinkWrap: true,
-                        children: stopsList.toList(growable: true),
-                      )
-                    : ReorderableListView(
-                        shrinkWrap: true,
-                        children: stopsList.toList(growable: true),
-                        onReorder: (oldIndex, newIndex) => setState(() {
-                          final index =
-                              newIndex > oldIndex ? newIndex - 1 : newIndex;
+                      ? ListView(
+                          shrinkWrap: true,
+                          children: stopsList.toList(growable: true),
+                        )
+                      : ReorderableListView(
+                          shrinkWrap: true,
+                          children: stopsList.toList(growable: true),
+                          onReorder: (oldIndex, newIndex) => setState(() {
+                            final index =
+                                newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-                          final stop = stopsList.removeAt(oldIndex);
-                          stopsList.insert(index, stop);
+                            final stop = stopsList.removeAt(oldIndex);
+                            stopsList.insert(index, stop);
 
-                          routeManager.swapStops(
-                              routeManager.getStopByIndex(oldIndex + 1).getUID(),
-                              routeManager.getStopByIndex(newIndex + 1).getUID());
-                        }),
-                      )
-
+                            routeManager.swapStops(
+                                routeManager
+                                    .getStopByIndex(oldIndex + 1)
+                                    .getUID(),
+                                routeManager
+                                    .getStopByIndex(newIndex + 1)
+                                    .getUID());
+                          }),
+                        )
                   : SizedBox.shrink(),
             ),
           ),
