@@ -34,21 +34,18 @@ class _LoadingState extends State<Loading> {
   }
 
   @override
-  Widget build(BuildContext context)  => WillPopScope(
-    onWillPop: () async {
-      return false;
-    },
-    child: Scaffold(
-      backgroundColor: Colors.grey[900],
-      body: Center(
-        child:
-            SpinKitFadingCube(
+  Widget build(BuildContext context) => WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Scaffold(
+          backgroundColor: Colors.grey[900],
+          body: Center(
+            child: SpinKitFadingCube(
               color: Colors.white,
               size: 50.0,
             ),
-      ),
-    ),
-  );
-  }
+          ),
+        ),
+      );
 }
-
