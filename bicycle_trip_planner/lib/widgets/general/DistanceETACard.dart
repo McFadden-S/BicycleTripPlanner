@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,14 +32,16 @@ class _StationCardState extends State<DistanceETACard> {
           padding: const EdgeInsets.all(5.0),
           child: Row(
             children: [
-              Column(children: [
-                Icon(Icons.access_time_outlined,
-                    color: ThemeStyle.secondaryIconColor),
-                Text(
-                  _directionManager.getDuration(),
-                  style: TextStyle(color: ThemeStyle.secondaryTextColor),
-                )
-              ]),
+              RouteManager().ifLoading()
+                  ? CircularProgressIndicator(color: Colors.white)
+                  : Column(children: [
+                      Icon(Icons.access_time_outlined,
+                          color: ThemeStyle.secondaryIconColor),
+                      Text(
+                        _directionManager.getDuration(),
+                        style: TextStyle(color: ThemeStyle.secondaryTextColor),
+                      )
+                    ]),
               Text(_directionManager.getDistance(),
                   style: TextStyle(color: ThemeStyle.secondaryTextColor))
             ],
