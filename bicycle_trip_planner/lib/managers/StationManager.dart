@@ -29,7 +29,7 @@ class StationManager {
   //********** Private **********
 
   List<Station> _getOrderedToFromStationList(LatLng pos) {
-    List<Station> nearPos = List.castFrom(_stations);
+    List<Station> nearPos = List.from(_stations);
 
     nearPos.sort((stationA, stationB) => _locationManager
         .distanceFromTo(LatLng(stationA.lat, stationA.lng), pos)
