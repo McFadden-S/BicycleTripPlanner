@@ -70,9 +70,8 @@ class StationManager {
         (station) => station.bikes >= groupSize,
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
-      var client = http.Client();
       Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
     //_pickUpStation = station;
@@ -86,9 +85,8 @@ class StationManager {
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
 
-      var client = http.Client();
       Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
     //_dropOffStation = station;

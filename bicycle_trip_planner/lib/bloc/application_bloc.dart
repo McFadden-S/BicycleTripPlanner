@@ -32,7 +32,7 @@ import '../managers/NavigationManager.dart';
 
 
 class ApplicationBloc with ChangeNotifier {
-  final _placesService = PlacesService();
+  var _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
 
@@ -49,12 +49,12 @@ class ApplicationBloc with ChangeNotifier {
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
   final RouteManager _routeManager = RouteManager();
-  final LocationManager _locationManager = LocationManager();
+  LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-  final DatabaseManager _databaseManager = DatabaseManager();
-  final UserSettings _userSettings = UserSettings();
+  // final DatabaseManager _databaseManager = DatabaseManager();
+  // final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -66,6 +66,16 @@ class ApplicationBloc with ChangeNotifier {
 
   ApplicationBloc() {
     // Note: not async
+    changeUnits();
+    fetchCurrentLocation();
+    updateStationsPeriodically();
+  }
+
+  @visibleForTesting
+  ApplicationBloc.forMock(LocationManager locationManager, PlacesService placesService){
+    _locationManager = locationManager;
+    _placesService = placesService;
+
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
@@ -102,7 +112,7 @@ class ApplicationBloc with ChangeNotifier {
 
   searchPlaces(String searchTerm) async {
     final client = http.Client();
-    searchResults = await _placesService.getAutocomplete(searchTerm, client);
+    searchResults = await _placesService.getAutocomplete(searchTerm);
     searchResults.insert(
         0,
         PlaceSearch(
@@ -128,7 +138,7 @@ class ApplicationBloc with ChangeNotifier {
     if (station.place == const Place.placeNotFound()) {
       var client = http.Client();
       Place place = await _placesService.getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
 
@@ -149,11 +159,11 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   fetchCurrentLocation() async {
-    var client = http.Client();
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
-        latLng.latitude, latLng.longitude, SearchType.current.description, client);
+        latLng.latitude, latLng.longitude, SearchType.current.description);
     _locationManager.setCurrentLocation(currentPlace);
+
     notifyListeners();
   }
 
@@ -250,7 +260,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStationsPeriodically() async {
-    int duration = await _userSettings.stationsRefreshRate();
+    int duration = await UserSettings().stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
       filterStationMarkers();
@@ -275,7 +285,7 @@ class ApplicationBloc with ChangeNotifier {
   }*/
 
   Future<List<Station>> filterNearbyStations() async {
-    double range = await _userSettings.nearbyStationsRange();
+    double range = await UserSettings().nearbyStationsRange();
     List<Station> notNearbyStations = _stationManager.getFarStations(range);
     List<Station> nearbyStations = _stationManager.getNearStations(range);
     _markerManager.setStationMarkers(nearbyStations, this);
@@ -414,7 +424,7 @@ class ApplicationBloc with ChangeNotifier {
   // ********** User Setting Management **********
 
   bool isUserLogged() {
-    return _databaseManager.isUserLogged();
+    return DatabaseManager().isUserLogged();
   }
 
   void toggleCycling() {
@@ -428,7 +438,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void changeUnits() async {
-    DistanceType units = await _userSettings.distanceUnit();
+    DistanceType units = await UserSettings().distanceUnit();
     _locationManager.setUnits(units);
     updateStations();
     notifyListeners();

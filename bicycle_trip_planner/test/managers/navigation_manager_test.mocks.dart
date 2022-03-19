@@ -4,9 +4,9 @@
 
 import 'dart:async' as _i5;
 
-import 'package:bicycle_trip_planner/models/locator.dart' as _i3;
-import 'package:geolocator/geolocator.dart' as _i4;
-import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
+import 'package:bicycle_trip_planner/models/locator.dart' as _i4;
+import 'package:geolocator/geolocator.dart' as _i2;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -19,26 +19,28 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakeLatLng_0 extends _i1.Fake implements _i2.LatLng {}
+class _FakeGeolocator_0 extends _i1.Fake implements _i2.Geolocator {}
+
+class _FakeLatLng_1 extends _i1.Fake implements _i3.LatLng {}
 
 /// A class which mocks [Locator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLocator extends _i1.Mock implements _i3.Locator {
+class MockLocator extends _i1.Mock implements _i4.Locator {
   MockLocator() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  set settings(_i4.LocationSettings? _settings) =>
+  set settings(_i2.LocationSettings? _settings) =>
       super.noSuchMethod(Invocation.setter(#settings, _settings),
           returnValueForMissingStub: null);
   @override
-  _i4.LocationAccuracy get accuracy =>
+  _i2.LocationAccuracy get accuracy =>
       (super.noSuchMethod(Invocation.getter(#accuracy),
-          returnValue: _i4.LocationAccuracy.lowest) as _i4.LocationAccuracy);
+          returnValue: _i2.LocationAccuracy.lowest) as _i2.LocationAccuracy);
   @override
-  set accuracy(_i4.LocationAccuracy? _accuracy) =>
+  set accuracy(_i2.LocationAccuracy? _accuracy) =>
       super.noSuchMethod(Invocation.setter(#accuracy, _accuracy),
           returnValueForMissingStub: null);
   @override
@@ -50,8 +52,16 @@ class MockLocator extends _i1.Mock implements _i3.Locator {
       super.noSuchMethod(Invocation.setter(#distanceFilter, _distanceFilter),
           returnValueForMissingStub: null);
   @override
-  _i5.Future<_i2.LatLng> locate() =>
-      (super.noSuchMethod(Invocation.method(#locate, [geolocator]),
-              returnValue: Future<_i2.LatLng>.value(_FakeLatLng_0()))
-          as _i5.Future<_i2.LatLng>);
+  _i2.Geolocator get geolocator =>
+      (super.noSuchMethod(Invocation.getter(#geolocator),
+          returnValue: _FakeGeolocator_0()) as _i2.Geolocator);
+  @override
+  set geolocator(_i2.Geolocator? _geolocator) =>
+      super.noSuchMethod(Invocation.setter(#geolocator, _geolocator),
+          returnValueForMissingStub: null);
+  @override
+  _i5.Future<_i3.LatLng> locate() =>
+      (super.noSuchMethod(Invocation.method(#locate, []),
+              returnValue: Future<_i3.LatLng>.value(_FakeLatLng_1()))
+          as _i5.Future<_i3.LatLng>);
 }
