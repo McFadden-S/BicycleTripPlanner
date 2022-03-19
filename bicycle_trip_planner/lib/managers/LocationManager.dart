@@ -2,9 +2,12 @@ import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
+
+
 
 class LocationManager {
   //********** Fields **********
@@ -29,6 +32,8 @@ class LocationManager {
   //********** Public *********
 
   Future<LatLng> locate() async {
+
+    final geolocator = geo.Geolocator();
     return _locator.locate();
   }
 
@@ -115,4 +120,12 @@ class LocationManager {
   void setUnits(DistanceType units) {
     _units = units;
   }
+
+  @visibleForTesting
+  void isTest(geo.Geolocator geolocator){
+    _locator.locate();
+
+  }
+
+
 }

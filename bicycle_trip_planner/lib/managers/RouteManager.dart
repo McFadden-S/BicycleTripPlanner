@@ -21,7 +21,7 @@ class RouteManager {
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
   final CameraManager _cameraManager = CameraManager.instance;
-  final Pathway _pathway = Pathway();
+  Pathway _pathway = Pathway();
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
@@ -350,11 +350,32 @@ class RouteManager {
     clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
+    _optimised = true;
     clearRouteMarkers();
-
     removeWaypoints();
     clearStart();
     clearDestination();
     _pathway.initial();
+    _changed = false;
+  }
+
+  @visibleForTesting
+  void setPathway(Pathway pathway) {
+    _pathway = pathway;
+  }
+
+  @visibleForTesting
+  R.Route getStartWalkingRoute() {
+    return _startWalkingRoute;
+  }
+
+  @visibleForTesting
+  R.Route getBikingRoute() {
+    return _bikingRoute;
+  }
+
+  @visibleForTesting
+  R.Route getEndWalkingRoute() {
+    return _endWalkingRoute;
   }
 }
