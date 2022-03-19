@@ -283,22 +283,23 @@ class ApplicationBloc with ChangeNotifier {
               25) {
             intermediateStations.add(nearbyStations[i]);
             curStation = nearbyStations[i];
-            _markerManager.setStationMarker(curStation, this);
             break;
           }
         }
       }
     }
 
-    // TODO: Remove code duplication (in find routes as well)
     List<Place> intermediates =
         intermediateStations.map((station) => station.place).toList();
 
     for (Place station in intermediates) {
-      _routeManager.addCostWaypoint(station);
+      setLocationMarker(
+          station, _routeManager.addCostWaypoint(station).getUID());
     }
+    clearStationMarkersNotInRoute();
 
-    await _setRoutes(origin, destination, startStation, endStation, intermediates);
+    await _setRoutes(
+        origin, destination, startStation, endStation, intermediates);
     notifyListeners();
   }
 
