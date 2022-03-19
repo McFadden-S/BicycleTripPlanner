@@ -10,7 +10,7 @@ class WeatherService{
     final queryParameters = {
       'q': city,
       'appid': 'f90aaab58a10ed03221dca9dc35bc0bc',
-      'units': 'imperial',
+      'units': 'metric',
     };
 
     final uri = Uri.https('api.openweathermap.org', '/data/2.5/weather', queryParameters);
