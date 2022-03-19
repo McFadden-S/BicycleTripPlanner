@@ -2,9 +2,9 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -34,15 +34,21 @@ class _LoadingState extends State<Loading> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context)  => WillPopScope(
+    onWillPop: () async {
+      return false;
+    },
+    child: Scaffold(
       backgroundColor: Colors.grey[900],
-      body: const Center(
-        child: SpinKitFadingCube(
-          color: Colors.white,
-          size: 50.0,
-        ),
+      body: Center(
+        child:
+            SpinKitFadingCube(
+              color: Colors.white,
+              size: 50.0,
+            ),
       ),
-    );
+    ),
+  );
   }
 }
+
