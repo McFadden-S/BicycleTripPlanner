@@ -112,7 +112,7 @@ class RouteManager {
         _endWalkingRoute.routeType.polylineColor);
 
     int duration = 0;
-    int distance = 0;
+    double distance = 0;
 
     duration += _startWalkingRoute.duration;
     distance += _startWalkingRoute.distance;

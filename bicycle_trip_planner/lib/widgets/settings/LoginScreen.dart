@@ -34,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Container(
             color: ThemeStyle.cardColor,
@@ -79,13 +80,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     try {
                       await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
-                      Navigator.pop(context);
+                      Navigator.pop(context, true);
                     } catch (e) {
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                     }
                   },
                 ),
-                Text("OR"),
+                Text("OR",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: ThemeStyle.primaryTextColor,
+                  ),),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 10),
                   width: size.width * 0.6,
@@ -98,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         await GoogleSignInProvider().googleLogin();
                         if(_auth.currentUser != null){
-                          Navigator.pop(context);
+                          Navigator.pop(context, true);
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -158,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(height: size.height * 0.02),
                 BackButton(
-                  color: ThemeStyle.primaryIconColor,
+                  color: ThemeStyle.secondaryIconColor,
                   key: Key("back"),
                 )
               ],

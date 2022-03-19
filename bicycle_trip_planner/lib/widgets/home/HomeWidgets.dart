@@ -1,10 +1,14 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:provider/provider.dart';
 import '../general/GroupSizeSelector.dart';
+import '../settings/SettingsScreen.dart';
 
 class HomeWidgets extends StatefulWidget {
   const HomeWidgets({Key? key}) : super(key: key);
@@ -18,6 +22,8 @@ class _HomeWidgetsState extends State<HomeWidgets> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -48,8 +54,16 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                             Icons.settings,
                             color: ThemeStyle.buttonPrimaryColor,
                           ),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/settings'),
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SettingsScreen();
+                                },
+                              ),
+                            );
+                          },
                           iconSize: 50,
                         )
                       ],
@@ -91,6 +105,11 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                   CurrentLocationButton(),
                                   SizedBox(height: 10),
                                   GroupSizeSelector(),
+                                  SizedBox(height: 10),
+                                  CircleButton(
+                                      iconIn: Icons.assistant_direction,
+                                      onButtonClicked: () => applicationBloc.setSelectedScreen('routePlanning'),
+                                  ),
                                 ],
                               )),
                         ],

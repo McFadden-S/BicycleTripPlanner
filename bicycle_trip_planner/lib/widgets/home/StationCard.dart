@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,8 +16,12 @@ import '../../managers/DatabaseManager.dart';
 
 class StationCard extends StatefulWidget {
   final int index;
+  final bool? isFavourite;
+  final Function(int)? toggleFavourite;
 
-  const StationCard({Key? key, required this.index}) : super(key: key);
+  const StationCard(
+      {Key? key, required this.index, this.isFavourite, this.toggleFavourite})
+      : super(key: key);
 
   @override
   _StationCardState createState() => _StationCardState();
@@ -61,6 +66,21 @@ class _StationCardState extends State<StationCard> {
                                 color: ThemeStyle.secondaryTextColor)),
                       ),
                       const Spacer(flex: 1),
+                      if (applicationBloc.isUserLogged())
+                        if (widget.isFavourite != null)
+                          IconButton(
+                            constraints: BoxConstraints(maxHeight: 25),
+                            padding: EdgeInsets.all(0),
+                            iconSize: 20,
+                            onPressed: () {
+                              widget.toggleFavourite!(widget.index);
+                            },
+                            icon: widget.isFavourite!
+                                ? Icon(Icons.star,
+                                    color: ThemeStyle.buttonPrimaryColor)
+                                : Icon(Icons.star,
+                                    color: ThemeStyle.secondaryIconColor),
+                          ),
                     ],
                   ),
                   const Divider(),
@@ -95,7 +115,7 @@ class _StationCardState extends State<StationCard> {
                       const Spacer(),
                       Container(
                         child: Text(
-                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}mi",
+                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontSize: 12.0, color: Colors.blueAccent)),
@@ -112,26 +132,5 @@ class _StationCardState extends State<StationCard> {
 
 Future<void> stationClicked(
     ApplicationBloc appBloc, Station station, context) async {
-
-    appBloc.showSelectedStationDialog(station);
-
-  //TODO: The code below is for testing purposes and to be deleted later
-  final databaseManager = DatabaseManager();
-  bool successfullyAdded = await databaseManager.addToFavouriteStations(station.id);
-  if (successfullyAdded) {
-  }else {
-      // set up the AlertDialog
-      AlertDialog alert = const AlertDialog(
-        title: Text("No user"),
-        content: Text("Station won't be saved unless user is logged in!"),
-      );
-
-      // show the dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return alert;
-        },
-      );
-  }
+  appBloc.showSelectedStationDialog(station);
 }

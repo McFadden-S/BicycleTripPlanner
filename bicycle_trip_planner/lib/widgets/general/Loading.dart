@@ -16,7 +16,6 @@ class Loading extends StatefulWidget {
 }
 
 class _LoadingState extends State<Loading> {
-
   void setUpMap() async {
     await Home();
     await HomeWidgets();
@@ -24,14 +23,14 @@ class _LoadingState extends State<Loading> {
     await LocationManager().getCurrentLocation() != const Place.placeNotFound();
     await StationManager().getNumberOfStations() > 0;
     await StationBar();
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     Navigator.pushReplacementNamed(context, '/home');
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    //setUpMap();
+    setUpMap();
   }
 
   @override
@@ -51,9 +50,5 @@ class _LoadingState extends State<Loading> {
     ),
   );
   }
-
-
-
-
-
+}
 
