@@ -39,14 +39,7 @@ class _WeatherState extends State<Weather> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 25),),
-                      Row(
-                        children: [
-                          Text('London', style: TextStyle(fontSize: 15)),
-                          SizedBox(width: 10,),
-                          Text(_response.weatherInfo.description),
-                        ],
-                      ),
+                      Text('${_response.tempInfo.temperature}°C', style: TextStyle(fontSize: 25),),
                     ],
                   ),
                 ],

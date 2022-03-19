@@ -84,7 +84,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Weather(),
-                          SizedBox(width: 100,),
+                          SizedBox(width: 150,),
                           Container(
                               margin: EdgeInsets.only(bottom: 20),
                               child: Column(
