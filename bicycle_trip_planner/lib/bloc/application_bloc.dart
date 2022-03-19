@@ -199,13 +199,12 @@ class ApplicationBloc with ChangeNotifier {
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
 
-    await setRoutes(origin, destination, startStation, endStation,
+    await _setRoutes(origin, destination, startStation, endStation,
         intermediates, groupSize);
-    _routeManager.showAllRoutes();
     notifyListeners();
   }
 
-  setRoutes(
+  _setRoutes(
       Place origin, Place destination, Station startStation, Station endStation,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     List<String> intermediatePlaceId =
@@ -222,6 +221,7 @@ class ApplicationBloc with ChangeNotifier {
         endStation.place.placeId, destination.placeId);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
+    _routeManager.showAllRoutes();
   }
 
   Future<int> _getDurationFromToStation(
@@ -290,21 +290,10 @@ class ApplicationBloc with ChangeNotifier {
     }
 
     // TODO: Remove code duplication (in find routes as well)
-    List<String> intermediatePlaceId =
-        intermediateStations.map((station) => station.place.placeId).toList();
+    List<Place> intermediates =
+        intermediateStations.map((station) => station.place).toList();
 
-    Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
-        origin.placeId, startStation.place.placeId);
-    Rou.Route bikeRoute = await _directionsService.getRoutes(
-        startStation.place.placeId,
-        endStation.place.placeId,
-        intermediatePlaceId,
-        _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
-        endStation.place.placeId, destination.placeId);
-
-    _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
-    _routeManager.showAllRoutes();
+    await _setRoutes(origin, destination, startStation, endStation, intermediates);
     notifyListeners();
   }
 
