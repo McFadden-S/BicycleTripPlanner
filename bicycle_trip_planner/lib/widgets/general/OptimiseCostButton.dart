@@ -30,7 +30,7 @@ class _OptimiseCostButtonState extends State<OptimiseCostButton> {
         children: [
           CircleButton(
             onButtonClicked: () {
-              if (RouteManager().getWaypoints().isNotEmpty) {
+              if (RouteManager().getWaypoints().isNotEmpty && !RouteManager().ifCostOptimised()) {
                 null;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
@@ -60,7 +60,7 @@ class _OptimiseCostButtonState extends State<OptimiseCostButton> {
             iconIn: RouteManager().ifCostOptimised()
                 ? Icons.attach_money
                 : Icons.money_off,
-            iconColor: RouteManager().getWaypoints().isNotEmpty
+            iconColor: RouteManager().getWaypoints().isNotEmpty && !RouteManager().ifCostOptimised()
                 ? ThemeStyle.primaryIconColor.withOpacity(0.2)
                 : RouteManager().ifCostOptimised()
                     ? Colors.amber

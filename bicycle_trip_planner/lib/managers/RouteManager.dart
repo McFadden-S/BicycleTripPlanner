@@ -25,6 +25,7 @@ class RouteManager {
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
+  bool _loading = false;
 
   int _groupsize = 1;
 
@@ -130,6 +131,15 @@ class RouteManager {
     if (relocateMap) {
       _moveCameraTo(_bikingRoute);
     }
+  }
+
+
+  void setLoading(bool isLoading){
+    _loading = isLoading;
+  }
+
+  bool ifLoading(){
+    return _loading;
   }
 
   void setCurrentRoute(R.Route route, [relocateMap = true]) {

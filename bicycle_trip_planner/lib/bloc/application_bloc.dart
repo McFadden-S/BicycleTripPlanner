@@ -196,11 +196,13 @@ class ApplicationBloc with ChangeNotifier {
 
   findRoute(Place origin, Place destination,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    _routeManager.setLoading(true);
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
 
     await _setRoutes(origin, destination, startStation, endStation,
         intermediates, groupSize);
+    _routeManager.setLoading(false);
     notifyListeners();
   }
 
@@ -259,6 +261,7 @@ class ApplicationBloc with ChangeNotifier {
   Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
     _routeManager.removeWaypoints();
+    _routeManager.setLoading(true);
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
 
@@ -300,6 +303,7 @@ class ApplicationBloc with ChangeNotifier {
 
     await _setRoutes(
         origin, destination, startStation, endStation, intermediates);
+    _routeManager.setLoading(false);
     notifyListeners();
   }
 
