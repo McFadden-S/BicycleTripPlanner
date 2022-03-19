@@ -126,14 +126,14 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  updateLocationLive() {
+  Future<void> updateLocationLive() async {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
-        .listen((LocationData currentLocation) {
+        .listen((LocationData currentLocation) async {
       // Print this if you suspect that data is loading more than expected
       //print("I loaded!");
       CameraManager.instance.viewUser();
-      _updateDirections();
+      await _updateDirections();
     });
   }
 
@@ -256,8 +256,9 @@ class ApplicationBloc with ChangeNotifier {
         LatLng(endLocation.lat, endLocation.lng), groupSize);
   }
 
-  findCostEfficientRoute(Place origin, Place destination,
+  Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
+    _routeManager.removeWaypoints();
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
 
@@ -292,6 +293,10 @@ class ApplicationBloc with ChangeNotifier {
     // TODO: Remove code duplication (in find routes as well)
     List<Place> intermediates =
         intermediateStations.map((station) => station.place).toList();
+
+    for (Place station in intermediates) {
+      _routeManager.addCostWaypoint(station);
+    }
 
     await _setRoutes(origin, destination, startStation, endStation, intermediates);
     notifyListeners();
@@ -389,14 +394,14 @@ class ApplicationBloc with ChangeNotifier {
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
     await _navigationManager.start();
-    _updateDirections();
-    updateLocationLive();
+    await _updateDirections();
+    await updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     notifyListeners();
   }
 
-  _updateDirections() async {
+  Future<void> _updateDirections() async {
     // End subscription if not navigating?
     if (!_navigationManager.ifNavigating()) return;
 
@@ -409,7 +414,7 @@ class ApplicationBloc with ChangeNotifier {
     if (_routeManager.ifWalkToFirstWaypoint() &&
         _routeManager.ifFirstWaypointSet()) {
       await _navigationManager.updateRouteWithWalking();
-      setPartialRoutes(
+      await setPartialRoutes(
           [_routeManager.getFirstWaypoint().getStop().placeId],
           _routeManager
               .getWaypoints()
@@ -418,7 +423,7 @@ class ApplicationBloc with ChangeNotifier {
               .toList());
     } else {
       await _navigationManager.updateRoute();
-      setPartialRoutes(
+      await setPartialRoutes(
           [],
           _routeManager
               .getWaypoints()

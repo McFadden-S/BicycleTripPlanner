@@ -300,6 +300,14 @@ class RouteManager {
     return waypointStop;
   }
 
+  Stop addCostWaypoint(Place waypoint) {
+    Stop destination = getDestination();
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addStop(waypointStop);
+    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    return waypointStop;
+  }
+
   // Adds a new waypoint at the beginning (before destination)
   Stop addFirstWaypoint(Place waypoint) {
     Stop waypointStop = Stop(waypoint);
