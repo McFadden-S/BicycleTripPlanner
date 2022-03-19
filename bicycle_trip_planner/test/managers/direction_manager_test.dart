@@ -83,6 +83,11 @@ void main() {
             .toString());
   });
 
+  test("Test bike directions", (){
+
+
+  });
+
   // Test that showing bike directions works... (Make dummy route... and then check own directions are the same as route...)
 
   // void toggleCycling() {

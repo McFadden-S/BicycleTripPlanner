@@ -334,7 +334,6 @@ class ApplicationBloc with ChangeNotifier {
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
     await _navigationManager.start();
-    _updateDirections();
     updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();

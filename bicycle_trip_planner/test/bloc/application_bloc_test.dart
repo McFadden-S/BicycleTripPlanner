@@ -295,20 +295,6 @@ void main() {
           true);
     });
 
-    test("Passed station", () {
-      final stationManager = StationManager();
-
-      final pickupStation = LatLng(51.511589, -0.118960);
-      final dropoffStation = LatLng(51.499430, -0.106290);
-
-      stationManager.getPickupStationNear(pickupStation);
-      stationManager.getDropoffStationNear(dropoffStation);
-
-      final appBloc = MockApplicationBloc();
-      //appBloc.passedStation(station, (p0) { }, (p0) { });
-    });
-  });
-
   //  Future<void> startNavigation() async {
   //   await fetchCurrentLocation();
   //   setSelectedScreen('navigation');
@@ -382,4 +368,5 @@ void main() {
   //   _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   //   _routeManager.showCurrentRoute(false);
   // }
+});
 }

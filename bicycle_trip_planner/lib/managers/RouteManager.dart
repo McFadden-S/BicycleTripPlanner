@@ -352,11 +352,11 @@ class RouteManager {
     _startFromCurrentLocation = false;
     _optimised = true;
     clearRouteMarkers();
-
     removeWaypoints();
     clearStart();
     clearDestination();
     _pathway.initial();
+    _changed = false;
   }
 
   @visibleForTesting
