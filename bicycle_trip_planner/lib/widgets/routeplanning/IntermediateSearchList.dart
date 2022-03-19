@@ -104,40 +104,52 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     color: ThemeStyle.primaryTextColor,
                   ),
                 ),
-                onPressed: () => setState(() {
-                  _addStopWidget(applicationBloc, Stop());
-                }),
+                onPressed: () {
+                  RouteManager().ifCostOptimised()
+                    ? null
+                    : setState(() => _addStopWidget(applicationBloc, Stop()));
+                },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
+                  backgroundColor: RouteManager().ifCostOptimised()
+                      ?  MaterialStateProperty.all<Color>(
+                      ThemeStyle.buttonSecondaryColor)
+                      : MaterialStateProperty.all<Color>(
                       ThemeStyle.buttonPrimaryColor),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+                        side: RouteManager().ifCostOptimised()
+                          ? BorderSide(color: ThemeStyle.buttonSecondaryColor)
+                          : BorderSide(color: ThemeStyle.buttonPrimaryColor)
+                    ),
                   ),
                 ),
               ),
               //TODO: the button below is for testing purposes
               TextButton(
-                  onPressed: () async {
-                    final databaseManager = DatabaseManager();
+                onPressed: () async {
+                  if (RouteManager().ifCostOptimised()) {
+                    null;
+                  } else {
+                      final databaseManager = DatabaseManager();
                     bool successfullyAdded =
-                        await databaseManager.addToFavouriteRoutes(
-                            routeManager.getStart().getStop(),
-                            routeManager.getDestination().getStop(),
-                            routeManager
-                                .getWaypoints()
-                                .map((waypoint) => waypoint.getStop())
-                                .toList());
+                    await databaseManager.addToFavouriteRoutes(
+                        routeManager.getStart().getStop(),
+                        routeManager.getDestination().getStop(),
+                        routeManager
+                            .getWaypoints()
+                            .map((waypoint) => waypoint.getStop())
+                            .toList());
                     if (successfullyAdded) {
                       print('route added');
                     } else {
                       // set up the AlertDialog
                       AlertDialog alert = AlertDialog(
                         title: const Text("Error"),
-                        content: Text(FirebaseAuth.instance.currentUser == null
-                            ? "User not logged in!"
-                            : "Invalid start/end"),
+                        content: Text(
+                            FirebaseAuth.instance.currentUser == null
+                                ? "User not logged in!"
+                                : "Invalid start/end"),
                       );
 
                       // show the dialog
@@ -148,8 +160,17 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                         },
                       );
                     }
-                  },
-                  child: Text("save")),
+                  }
+                },
+                child: Text("save"),
+                style: RouteManager().ifCostOptimised()
+                    ? TextButton.styleFrom(
+                      primary: Colors.grey,
+                    )
+                    : TextButton.styleFrom(
+                       primary: ThemeStyle.buttonPrimaryColor,
+                    ),
+              ),
             ],
           ),
           LimitedBox(
