@@ -9,8 +9,11 @@ class Error extends StatefulWidget {
 
 class _State extends State<Error> {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => WillPopScope(
+    onWillPop: () async {
+      return false;
+    },
+    child: Scaffold(
       backgroundColor: Colors.grey[900],
       body: Center(
         child: Column(
@@ -27,5 +30,6 @@ class _State extends State<Error> {
         ),
       ),
     );
-  }
+  );
+
 }
