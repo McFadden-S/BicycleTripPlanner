@@ -1,4 +1,4 @@
-import 'package:bicycle_trip_planner/widgets/Login/AuthenticationScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/AuthenticationScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../../constants.dart';

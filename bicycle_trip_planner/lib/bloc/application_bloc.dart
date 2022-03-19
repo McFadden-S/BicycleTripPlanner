@@ -142,10 +142,16 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   setSelectedSearch(int searchIndex, int uid) async {
+    String placeId = searchResults[searchIndex].placeId;
+    String description = searchResults[searchIndex].description;
+
     Place place = await _placesService.getPlace(
-        searchResults[searchIndex].placeId,
-        searchResults[searchIndex].description);
+        placeId,
+        description);
     setLocationMarker(place, uid);
+
+    _sharedPreferenceManager.addToRecentSearchList(placeId, description);
+
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }

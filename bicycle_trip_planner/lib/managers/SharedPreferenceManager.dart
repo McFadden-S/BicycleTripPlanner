@@ -2,7 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferenceManager {
   //final prefs = await SharedPreferences.getInstance();
-
+  List<Map<String, String>> recentSearch= [];
   List<String> startStops = [];
   List<String> endStops = [];
 
@@ -49,5 +49,12 @@ class SharedPreferenceManager {
 
   addToEndList(endStop) {
     endStops.add(endStop);
+  }
+
+  addToRecentSearchList(placeId, name) {
+    Map<String, String> recentSearchMap = {};
+    recentSearchMap[placeId] = name;
+    recentSearch.add(recentSearchMap);
+    // print(recentSearch);
   }
 }
