@@ -113,13 +113,13 @@ class DirectionManager {
         directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
   }
 
-  void toggleCycling() {
+  void toggleCycling([bool relocateMap = true]) {
     _isCycling = !_isCycling;
     if (_isCycling) {
       print("Showing bike route...");
-      RouteManager().showBikeRoute();
+      RouteManager().showBikeRoute(relocateMap);
     } else {
-      RouteManager().showCurrentWalkingRoute();
+      RouteManager().showCurrentWalkingRoute(relocateMap);
     }
   }
 
