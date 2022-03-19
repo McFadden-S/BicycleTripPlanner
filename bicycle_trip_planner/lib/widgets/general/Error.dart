@@ -29,7 +29,7 @@ class _State extends State<Error> {
           ],
         ),
       ),
-    );
+    ),
   );
 
 }
