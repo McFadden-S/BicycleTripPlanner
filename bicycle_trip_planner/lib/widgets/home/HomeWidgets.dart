@@ -65,22 +65,6 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       ],
                     ),
                   ),
-                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/weather'),
-                      child: Container(
-                          margin: EdgeInsets.only(top: 5),
-                          width: 60.0,
-                          height: 60.0,
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage('assets/weather.png'),
-                              ))),
-                    )
-                  ]),
                 ],
               ),
             ),
