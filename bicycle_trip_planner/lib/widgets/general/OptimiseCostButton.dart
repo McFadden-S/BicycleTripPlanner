@@ -30,27 +30,41 @@ class _OptimiseCostButtonState extends State<OptimiseCostButton> {
         children: [
           CircleButton(
             onButtonClicked: () {
-              if (!RouteManager().ifCostOptimised()){
-                dialogManager.setBinaryChoice(
-                  "Are you sure you want to optimise your cost for this route?",
-                  "Yes", () => RouteManager().setCostOptimised(true),
-                  "No", () {},
-                );
+              if (RouteManager().getWaypoints().isNotEmpty) {
+                null;
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                      "Cost Efficiency can't be used with intermediate stops!"),
+                ));
               } else {
-                dialogManager.setBinaryChoice(
-                  "Are you sure you want to stop optimising your cost for this route?",
-                  "Yes", () => RouteManager().setCostOptimised(false),
-                  "No", () {},
-                );
+                if (!RouteManager().ifCostOptimised()) {
+                  dialogManager.setBinaryChoice(
+                    "Are you sure you want to optimise your cost for this route?",
+                    "Yes",
+                    () => RouteManager().setCostOptimised(true),
+                    "No",
+                    () {},
+                  );
+                } else {
+                  dialogManager.setBinaryChoice(
+                    "Are you sure you want to stop optimising your cost for this route?",
+                    "Yes",
+                    () => RouteManager().setCostOptimised(false),
+                    "No",
+                    () {},
+                  );
+                }
+                applicationBloc.showBinaryDialog();
               }
-              applicationBloc.showBinaryDialog();
             },
             iconIn: RouteManager().ifCostOptimised()
-                ?Icons.attach_money
+                ? Icons.attach_money
                 : Icons.money_off,
-            iconColor: RouteManager().ifCostOptimised()
-                ? Colors.amber
-                : ThemeStyle.primaryIconColor,
+            iconColor: RouteManager().getWaypoints().isNotEmpty
+                ? ThemeStyle.primaryIconColor.withOpacity(0.2)
+                : RouteManager().ifCostOptimised()
+                    ? Colors.amber
+                    : ThemeStyle.primaryIconColor,
           ),
         ],
       ),
