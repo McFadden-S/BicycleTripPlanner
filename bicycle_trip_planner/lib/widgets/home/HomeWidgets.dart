@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
@@ -91,8 +92,10 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                   Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
+                          Weather(),
+                          SizedBox(width: 100,),
                           Container(
                               margin: EdgeInsets.only(bottom: 20),
                               child: Column(
@@ -101,7 +104,8 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                   SizedBox(height: 10),
                                   GroupSizeSelector(),
                                 ],
-                              )),
+                              ),
+                          ),
                         ],
                       ),
                     ],

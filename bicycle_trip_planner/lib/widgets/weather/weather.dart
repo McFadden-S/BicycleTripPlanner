@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather_model.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
 import 'package:flutter/material.dart';
@@ -22,42 +23,45 @@ class _WeatherState extends State<Weather> {
   }
 
   @override
-  Widget build(BuildContext context) => WillPopScope(
-    onWillPop: () async {
-      return true;
-    },
-    child:
-    Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) {
+    return Card(
+      color: ThemeStyle.cardColor,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if(_response != null)
+              Row(
                 children: [
-                  if(_response != null)
-                    Row(
-                      children: [
-                        Image.network(_response.iconUrl),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
-                            Row(
-                              children: [
-                                Text('London', style: TextStyle(fontSize: 20)),
-                                SizedBox(width: 10,),
-                                Text(_response.weatherInfo.description),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                  Image.network(_response.iconUrl, scale: 1.5,),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 25),),
+                      Row(
+                        children: [
+                          Text('London', style: TextStyle(fontSize: 15)),
+                          SizedBox(width: 10,),
+                          Text(_response.weatherInfo.description),
+                        ],
+                      ),
+                    ],
+                  ),
                 ],
-
               ),
-            ),
-          ),
-  );
+          ],
+        ),
+      ),
+    );
+
+
+
+
+
+  }
+
 
   void _search() async{
     final response = await _weatherService.getWeather("london");
