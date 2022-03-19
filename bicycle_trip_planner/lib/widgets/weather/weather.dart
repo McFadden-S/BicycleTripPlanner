@@ -33,13 +33,23 @@ class _WeatherState extends State<Weather> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if(_response != null)
-                    Column(
+                    Row(
                       children: [
-                        Text('London', style: TextStyle(fontSize: 30)),
                         Image.network(_response.iconUrl),
-                        Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
-                        Text(_response.weatherInfo.description),
-                        BackButton()
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
+                            Row(
+                              children: [
+                                Text('London', style: TextStyle(fontSize: 20)),
+                                SizedBox(width: 10,),
+                                Text(_response.weatherInfo.description),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                 ],
