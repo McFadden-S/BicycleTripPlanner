@@ -76,37 +76,38 @@ class _HomeWidgetsState extends State<HomeWidgets> {
             ),
           ),
           Align(
-              alignment: FractionalOffset.bottomCenter,
+              alignment: Alignment.bottomCenter,
               child: Wrap(
                 children: [
                   Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Column(
-                            children: [
-                              SizedBox(
-                                height: size.height * 0.07,
-                              ),
-                              Weather(),
-                            ],
-                          ),
                           SizedBox(
-                            width: size.width * 0.60,
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(bottom: 20),
-                            child: Column(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                CurrentLocationButton(),
-                                SizedBox(height: 10),
-                                GroupSizeSelector(),
-                                SizedBox(height: 10),
-                                CircleButton(
-                                  iconIn: Icons.assistant_direction,
-                                  onButtonClicked: () => applicationBloc
-                                      .setSelectedScreen('routePlanning'),
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Weather()),
+                                Spacer(),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Column(
+                                    children: [
+                                      CurrentLocationButton(),
+                                      SizedBox(height: 10),
+                                      CircleButton(
+                                        iconIn: Icons.assistant_direction,
+                                        onButtonClicked: () => applicationBloc
+                                            .setSelectedScreen('routePlanning'),
+                                      ),
+                                      SizedBox(height: 10),
+                                      GroupSizeSelector(),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

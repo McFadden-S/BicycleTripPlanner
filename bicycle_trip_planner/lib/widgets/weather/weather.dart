@@ -26,22 +26,19 @@ class _WeatherState extends State<Weather> {
   Widget build(BuildContext context) {
     return Card(
       color: ThemeStyle.cardColor,
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-        child: Column(
+      child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if(_response != null)
               Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.network(_response.iconUrl, scale: 1.7,),
-                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(fontSize: 20),),
+                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 10)
                 ],
               ),
           ],
-        ),
       ),
     );
 
