@@ -9,6 +9,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
@@ -97,6 +98,7 @@ class _NavigationState extends State<Navigation> {
               ],
             ),
           ),
+          EndOfRouteDialog(),
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
@@ -126,4 +128,7 @@ class _NavigationState extends State<Navigation> {
       ),
     );
   }
+
+
+
 }

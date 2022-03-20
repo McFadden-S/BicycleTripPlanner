@@ -83,6 +83,11 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Dialog **********
 
+  void showEndOfRouteDialog() {
+    _dialogManager.showEndOfRouteDialog();
+    notifyListeners();
+  }
+
   void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
     notifyListeners();
@@ -91,6 +96,11 @@ class ApplicationBloc with ChangeNotifier {
   void showSelectedStationDialog(Station station) {
     _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
+    notifyListeners();
+  }
+
+  void clearEndOfRouteDialog(){
+    _dialogManager.clearEndOfRouteDialog();
     notifyListeners();
   }
 
@@ -356,6 +366,8 @@ class ApplicationBloc with ChangeNotifier {
 
     await fetchCurrentLocation();
     if (await _navigationManager.checkWaypointPassed()) {
+      // dialog box informing user that they have arrived at their destination
+      showEndOfRouteDialog();
       endRoute();
       return;
     }

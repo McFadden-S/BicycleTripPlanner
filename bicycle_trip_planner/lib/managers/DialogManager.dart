@@ -15,6 +15,12 @@ class DialogManager {
 
   bool _isShowingBinaryChoice = false;
 
+  String _endOfRouteText = "";
+  String _okButtonText = "";
+  Function _okButtonFunction = (){};
+
+  bool _isShowingEndOfRouteDialog = false;
+
   Station _selectedStation = Station.stationNotFound();
 
   bool _isShowingSelectStation = false;
@@ -34,12 +40,28 @@ class DialogManager {
 
   //********** Public **********
 
+  bool ifShowingEndOfRouteDialog(){
+    return _isShowingEndOfRouteDialog;
+  }
+
   bool ifShowingBinaryChoice(){
     return _isShowingBinaryChoice;
   }
 
   bool ifShowingSelectStation(){
     return _isShowingSelectStation;
+  }
+
+  String getEndOfRouteDialogText(){
+    return _endOfRouteText;
+  }
+
+  Function getEndOfRouteFunction(){
+    return _okButtonFunction;
+  }
+
+  String getOkButtonText(){
+    return _okButtonText;
   }
 
   String getChoicePrompt(){
@@ -68,6 +90,22 @@ class DialogManager {
     _optionOneFunction = optionOneFunction;
     _optionTwoText = optionTwoText;
     _optionTwoFunction = optionTwoFunction;
+  }
+
+  void setEndOfRouteDialog(){
+    _endOfRouteText = "You have reached your destination!";
+    _okButtonText = "Ok";
+    _okButtonFunction = (){
+      clearEndOfRouteDialog();
+    };
+  }
+
+  void showEndOfRouteDialog(){
+    _isShowingEndOfRouteDialog = true;
+  }
+
+  void clearEndOfRouteDialog(){
+    _isShowingEndOfRouteDialog = false;
   }
 
   void showBinaryChoice(){
