@@ -27,21 +27,17 @@ class _WeatherState extends State<Weather> {
     return Card(
       color: ThemeStyle.cardColor,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if(_response != null)
-              Row(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.network(_response.iconUrl, scale: 1.5,),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('${_response.tempInfo.temperature}°C', style: TextStyle(fontSize: 25),),
-                    ],
-                  ),
+                  Image.network(_response.iconUrl, scale: 1.7,),
+                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(fontSize: 20),),
                 ],
               ),
           ],

@@ -24,6 +24,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    Size size = MediaQuery.of(context).size;
 
     return SafeArea(
       bottom: false,
@@ -83,22 +84,32 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Weather(),
-                          SizedBox(width: 150,),
-                          Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Column(
-                                children: [
-                                  CurrentLocationButton(),
-                                  SizedBox(height: 10),
-                                  GroupSizeSelector(),
-                                  SizedBox(height: 10),
-                                  CircleButton(
-                                      iconIn: Icons.assistant_direction,
-                                      onButtonClicked: () => applicationBloc.setSelectedScreen('routePlanning'),
-                                  ),
-                                ],
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: size.height * 0.07,
                               ),
+                              Weather(),
+                            ],
+                          ),
+                          SizedBox(
+                            width: size.width * 0.60,
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: Column(
+                              children: [
+                                CurrentLocationButton(),
+                                SizedBox(height: 10),
+                                GroupSizeSelector(),
+                                SizedBox(height: 10),
+                                CircleButton(
+                                  iconIn: Icons.assistant_direction,
+                                  onButtonClicked: () => applicationBloc
+                                      .setSelectedScreen('routePlanning'),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
