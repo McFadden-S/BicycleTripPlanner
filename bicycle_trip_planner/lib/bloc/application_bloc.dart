@@ -83,6 +83,11 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Dialog **********
 
+  void showWalkBikeToggleDialog() {
+    _dialogManager.showWalkBikeToggleDialog();
+    notifyListeners();
+  }
+
   void showEndOfRouteDialog() {
     _dialogManager.showEndOfRouteDialog();
     notifyListeners();
@@ -111,6 +116,11 @@ class ApplicationBloc with ChangeNotifier {
 
   void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
+    notifyListeners();
+  }
+
+  void clearWalkBikeToggleDialog() {
+    _dialogManager.clearWalkBikeToggleDialog();
     notifyListeners();
   }
 

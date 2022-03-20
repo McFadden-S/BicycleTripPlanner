@@ -59,8 +59,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         ],
       ),
       onPressed: () {
-        print("Toggle button pressed");
-        setCycling();
+        appBloc.showWalkBikeToggleDialog();
       },
     );
   }
