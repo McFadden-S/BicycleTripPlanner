@@ -13,6 +13,13 @@ class EndOfRouteDialog extends StatefulWidget {
 
 class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
   final DialogManager _dialogManager = DialogManager();
+  late final ApplicationBloc appBloc;
+
+  @override
+  void initState() {
+    appBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
