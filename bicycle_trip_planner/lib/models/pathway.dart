@@ -11,7 +11,10 @@ class Pathway {
 
   // NOTE: TODO ADD EDGE CASE (Pathway MUST have 2 stops at least)
   Pathway() {
-    initial();
+    _stops.add(_start);
+    _stops.add(_destination);
+    size = 2;
+    _updatePointers();
   }
 
   //********** Getters **********
@@ -144,13 +147,6 @@ class Pathway {
   void changeStop(int id, Place newStop) {
     Stop stop = getStop(id);
     stop.setStop(newStop);
-  }
-
-  void initial() {
-    _stops.add(_start);
-    _stops.add(_destination);
-    size = 2;
-    _updatePointers();
   }
 
   @override
