@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
-        '/error' : (context) => Error(),
+        '/error': (context) => Error(),
       },
       theme: ThemeData(
         brightness: Brightness.light,
