@@ -166,6 +166,8 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                         routeManager.swapStops(
                             routeManager.getStopByIndex(oldIndex + 1).getUID(),
                             routeManager.getStopByIndex(newIndex + 1).getUID());
+
+                        applicationBloc.notifyListeningWidgets();
                       }),
                     )
                   : SizedBox.shrink(),

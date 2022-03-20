@@ -30,7 +30,6 @@ import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
 
-
 class ApplicationBloc with ChangeNotifier {
   var _placesService = PlacesService();
   final _directionsService = DirectionsService();
@@ -72,7 +71,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(LocationManager locationManager, PlacesService placesService){
+  ApplicationBloc.forMock(
+      LocationManager locationManager, PlacesService placesService) {
     _locationManager = locationManager;
     _placesService = placesService;
 
@@ -99,7 +99,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearEndOfRouteDialog(){
+  void clearEndOfRouteDialog() {
     _dialogManager.clearEndOfRouteDialog();
     notifyListeners();
   }
@@ -285,7 +285,8 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     http.Client client = new http.Client();
-    await _stationManager.setStations(await _stationsService.getStations(client));
+    await _stationManager
+        .setStations(await _stationsService.getStations(client));
 
     notifyListeners();
   }
@@ -443,6 +444,7 @@ class ApplicationBloc with ChangeNotifier {
     _directionManager.toggleCycling();
     notifyListeners();
   }
+
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
@@ -461,6 +463,10 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically();
     changeUnits();
     filterStationMarkers();
+    notifyListeners();
+  }
+
+  void notifyListeningWidgets() {
     notifyListeners();
   }
 }
