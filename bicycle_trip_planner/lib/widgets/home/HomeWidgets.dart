@@ -86,25 +86,30 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         children: [
                           Column(
                             children: [
-                              SizedBox(height: size.height * 0.07,),
+                              SizedBox(
+                                height: size.height * 0.07,
+                              ),
                               Weather(),
                             ],
                           ),
-                          SizedBox(width: size.width * 0.65,),
+                          SizedBox(
+                            width: size.width * 0.60,
+                          ),
                           Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Column(
-                                children: [
-                                  CurrentLocationButton(),
-                                  SizedBox(height: 10),
-                                  GroupSizeSelector(),
-                                  SizedBox(height: 10),
-                                  CircleButton(
-                                      iconIn: Icons.assistant_direction,
-                                      onButtonClicked: () => applicationBloc.setSelectedScreen('routePlanning'),
-                                  ),
-                                ],
-                              ),
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: Column(
+                              children: [
+                                CurrentLocationButton(),
+                                SizedBox(height: 10),
+                                GroupSizeSelector(),
+                                SizedBox(height: 10),
+                                CircleButton(
+                                  iconIn: Icons.assistant_direction,
+                                  onButtonClicked: () => applicationBloc
+                                      .setSelectedScreen('routePlanning'),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
