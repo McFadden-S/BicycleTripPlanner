@@ -20,6 +20,12 @@ class _WalkBikeToggleDialogState extends State<WalkBikeToggleDialog> {
   }
 
   @override
+  void initState() {
+    appBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: true);
 
