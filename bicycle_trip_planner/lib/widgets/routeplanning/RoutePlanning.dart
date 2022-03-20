@@ -44,7 +44,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
             alignment: Alignment.topCenter,
             child: Column(
               children: [
-                showRouteCard ? RouteCard() : Container(),
+                Visibility(
+                    child: RouteCard(),
+                    maintainState: true,
+                    visible: showRouteCard),
                 GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
