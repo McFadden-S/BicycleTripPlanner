@@ -1,16 +1,9 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
-import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
-import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
