@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/weather',
+      initialRoute: '/home',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
         '/settings': (context) => const SettingsScreen(),
