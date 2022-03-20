@@ -53,7 +53,7 @@ class ThemeStyle {
   static Color stationShadow = Colors.grey;
   static Color? directionTileColor = Colors.grey[100];
 
-  static Color primaryTextColor = Colors.white;
+  static Color primaryTextColor = Colors.black;
   static Color secondaryTextColor = Colors.black;
   static Color boxShadow = Colors.black45;
   static Color cardColor = Colors.white;

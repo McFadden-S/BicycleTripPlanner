@@ -25,4 +25,24 @@ class Legs {
       duration: parsedJson['duration']['value'],
     );
   }
+
+  @override
+  String toString() {
+    return steps.toString();
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Legs &&
+        other.steps == steps &&
+        other.startLocation == startLocation &&
+        other.duration == duration &&
+        other.endLocation == endLocation &&
+        other.distance == distance;
+  }
+
+  @override
+  // TODO: implement hashCode
+  int get hashCode =>
+      Object.hash(steps, startLocation, endLocation, duration, distance);
 }

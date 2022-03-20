@@ -4,10 +4,15 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -37,26 +42,27 @@ class _NavigationState extends State<Navigation> {
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
 
-    locatorSubscription = locationManager.location.onLocationChanged
-        .listen((LocationData currentLocation) {
-      // Use current location
-      setState(() {
-        CameraManager.instance.viewUser();
-      });
-    });
+    // locatorSubscription = locationManager
+    //     .onUserLocationChange()
+    //     .listen((LocationData currentLocation) {
+    //   setState(() {
+    //     CameraManager.instance.viewUser();
+    //   });
+    // });
 
-    applicationBloc.clearStationMarkersWithoutUID();
+    applicationBloc.clearStationMarkersNotInRoute();
   }
 
   @override
   void dispose() {
-    applicationBloc.setStationMarkersWithoutUID();
-    locatorSubscription.cancel();
+    applicationBloc.filterStationMarkers();
+    //locatorSubscription.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ApplicationBloc>(context);
     return SafeArea(
       bottom: false,
       child: Stack(
@@ -93,6 +99,8 @@ class _NavigationState extends State<Navigation> {
               ],
             ),
           ),
+          EndOfRouteDialog(),
+          WalkBikeToggleDialog(),
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
@@ -103,25 +111,7 @@ class _NavigationState extends State<Navigation> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: ElevatedButton(
-                              onPressed: () {
-                                applicationBloc.endRoute();
-                                applicationBloc.setSelectedScreen('home');
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("End",
-                                        style: TextStyle(color: Colors.white)),
-                                  ],
-                                ),
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.red))),
+                          child: EndRouteButton(),
                         ),
                         Expanded(
                             child: Padding(
@@ -140,4 +130,7 @@ class _NavigationState extends State<Navigation> {
       ),
     );
   }
+
+
+
 }

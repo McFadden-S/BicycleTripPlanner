@@ -1,3 +1,5 @@
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,9 +10,9 @@ import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/Login/login_home.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/Error.dart';
 
 Future<void> main() async {
   ThemeStyle();
@@ -20,11 +22,15 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  }catch(e){};
+  } catch (e) {}
+  ;
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
-      .then((value) => runApp(ChangeNotifierProvider(
-      create: (context) => ApplicationBloc(), child: const MyApp())));
+  LocationManager locationManager = LocationManager();
+  await locationManager.requestPermission();
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
@@ -33,15 +39,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/loading',
+      initialRoute: '/home',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/login': (context) => const LoginHomeScreen(),
+        '/settings': (context) => const SettingsScreen(),
         '/loading': (context) => const Loading(),
-        '/': (context) => const Home(),
+        '/home': (context) => const Home(),
         '/navigation': (context) => const Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
+        '/error': (context) => Error(),
       },
       theme: ThemeData(
         brightness: Brightness.light,

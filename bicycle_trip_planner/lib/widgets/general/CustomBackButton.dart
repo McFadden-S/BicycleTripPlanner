@@ -1,4 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,14 +9,18 @@ import 'CircleButton.dart';
 class CustomBackButton extends StatefulWidget {
 
   final String backTo;
+  final BuildContext context;
 
-  const CustomBackButton({ Key? key, required this.backTo}) : super(key: key);
+  const CustomBackButton({ Key? key, required this.context, required this.backTo}) : super(key: key);
 
   @override
-  _StationCardState createState() => _StationCardState();
+  _CustomBackButtonState createState() => _CustomBackButtonState();
 }
 
-class _StationCardState extends State<CustomBackButton> {
+class _CustomBackButtonState extends State<CustomBackButton> {
+
+  final DialogManager dialogManager = DialogManager();
+
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -26,11 +32,23 @@ class _StationCardState extends State<CustomBackButton> {
           children: [
             CircleButton(
                 iconIn: Icons.arrow_back,
-                onButtonClicked: () => applicationBloc.goBack(widget.backTo)
+                onButtonClicked: () {
+                  dialogManager.setBinaryChoice(
+                      "Do you want to go back to the ${widget.backTo} screen?",
+                      "Yes",
+                      (){applicationBloc.goBack(widget.backTo);},
+                      "No",
+                      (){},
+                  );
+
+                  applicationBloc.showBinaryDialog();
+
+                }
             ),
           ],
         ),
       ]
     );
   }
+  
 }

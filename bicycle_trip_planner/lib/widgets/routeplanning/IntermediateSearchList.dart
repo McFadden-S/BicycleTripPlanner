@@ -2,11 +2,14 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
+import '../../managers/DatabaseManager.dart';
+import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
   const IntermediateSearchList({
@@ -19,7 +22,7 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers =
-      <TextEditingController>[];
+  <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
 
@@ -27,37 +30,51 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget(ApplicationBloc applicationBloc) {
-    setState(() {
+  void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
       TextEditingController searchController = TextEditingController();
       intermediateSearchControllers.add(searchController);
-      Stop waypoint = routeManager.addWaypoint("");
 
-      stopsList.add(ListTile(
+      Stop waypoint = routeManager.getWaypoints().firstWhere((stop) => stop == stopIn,
+          orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
+      
+      stopsList.add(
+          ListTile(
+            key: Key("Stop ${stopsList.length+1}"),
           title: Search(
               labelTextIn: "Stop",
               searchController: searchController,
               uid: waypoint.getUID()),
-          trailing: IconButton(
-              color: ThemeStyle.secondaryIconColor,
-              key: Key("Remove ${intermediateSearchControllers.length}"),
-              onPressed: () {
-                setState(() {
-                  int indexPressed =
-                      intermediateSearchControllers.indexOf(searchController);
-                  applicationBloc.clearLocationMarker(waypoint.getUID());
-                  applicationBloc.clearSelectedLocation(waypoint.getUID());
-                  stopsList.removeAt(indexPressed);
-                  intermediateSearchControllers.removeAt(indexPressed);
-                });
-              },
-              icon: Icon(
-                Icons.remove_circle_outline,
-                color: ThemeStyle.secondaryIconColor,
-              ))));
+              trailing:
+              Wrap(
+                  spacing: 12,
+                  children: <Widget> [
+                    IconButton(
+                        color: ThemeStyle.secondaryIconColor,
+                        key: Key("Remove ${intermediateSearchControllers.length}"),
+                        onPressed: (){
+                          setState(() {
+                            int indexPressed = intermediateSearchControllers.indexOf(searchController);
+                            applicationBloc.clearLocationMarker(waypoint.getUID());
+                            applicationBloc.clearSelectedLocation(waypoint.getUID());
+                            stopsList.removeAt(indexPressed);
+                            intermediateSearchControllers.removeAt(indexPressed);
+                            routeManager.removeStop(waypoint.getUID());
+                          });
+                        },
+                        icon: Icon(
+                            Icons.remove_circle_outline,
+                            color: ThemeStyle.secondaryIconColor
+                        )
+                    ),
+                    Icon(
+                      Icons.drag_handle,
+                      color: ThemeStyle.secondaryIconColor,
+                    ),
+                  ])
+          )
+      );
 
       isShowingIntermediate = true;
-    });
   }
 
   void toggleShowingIntermediate() {
@@ -67,30 +84,73 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    Provider.of<ApplicationBloc>(context, listen: false);
+
+    stopsList.clear();
+    intermediateSearchControllers.clear();
+
+    List<Stop> stops = routeManager.getWaypoints();
+    stops.forEach((stop) {_addStopWidget(applicationBloc, stop); });
+
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
         child: Column(children: [
-          TextButton(
-            child: Text(
-              'Add Stop(s)',
-              style: TextStyle(
-                fontFamily: 'Outfit',
-                fontSize: 16.0,
-                color: ThemeStyle.primaryTextColor,
+          Wrap(
+            children: [
+              TextButton(
+                child: Text(
+                  'Add Stop(s)',
+                  style: TextStyle(
+                    fontFamily: 'Outfit',
+                    fontSize: 16.0,
+                    color: ThemeStyle.primaryTextColor,
+                  ),
+                ),
+                onPressed: () => setState(() {
+                  _addStopWidget(applicationBloc, Stop());
+                }),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      ThemeStyle.buttonPrimaryColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+                  ),
+                ),
               ),
-            ),
-            onPressed: () => {_addStopWidget(applicationBloc)},
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                  ThemeStyle.buttonPrimaryColor),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
-              ),
-            ),
+              //TODO: the button below is for testing purposes
+              TextButton(
+              onPressed: () async {
+                final databaseManager = DatabaseManager();
+                bool successfullyAdded = await databaseManager.addToFavouriteRoutes(routeManager.getStart().getStop(),
+                    routeManager.getDestination().getStop(),
+                    routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList());
+                if (successfullyAdded){
+                  print('route added');
+                }else {
+                  // set up the AlertDialog
+                  AlertDialog alert = AlertDialog(
+                    title: const Text("Error"),
+                    content: Text(
+                        FirebaseAuth.instance.currentUser == null
+                        ? "User not logged in!"
+                        : "Invalid start/end"
+                    ),
+                  );
+
+                  // show the dialog
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return alert;
+                    },
+                  );
+                }
+              },
+              child: Text("save")),
+            ],
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.2,
@@ -98,20 +158,29 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               fadeDuration: const Duration(milliseconds: 300),
               sizeDuration: const Duration(milliseconds: 300),
               child: isShowingIntermediate && stopsList.isNotEmpty
-                  ? ListView(
-                      shrinkWrap: true,
-                      children: stopsList.toList(growable: true),
-                    )
+                  ? ReorderableListView(
+                shrinkWrap: true,
+                children: stopsList.toList(growable: true),
+                onReorder: (oldIndex, newIndex) => setState(() {
+                  final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+
+                  final stop = stopsList.removeAt(oldIndex);
+                  stopsList.insert(index, stop);
+
+                  routeManager.swapStops(routeManager.getStopByIndex(oldIndex+1).getUID(), routeManager.getStopByIndex(newIndex+1).getUID());
+
+                }),
+              )
                   : SizedBox.shrink(),
             ),
           ),
           stopsList.isNotEmpty && isShowingIntermediate
               ? Icon(Icons.keyboard_arrow_up,
-                  color: ThemeStyle.secondaryIconColor)
+              color: ThemeStyle.secondaryIconColor)
               : stopsList.isNotEmpty
-                  ? Icon(Icons.keyboard_arrow_down,
-                      color: ThemeStyle.secondaryIconColor)
-                  : SizedBox.shrink(),
+              ? Icon(Icons.keyboard_arrow_down,
+              color: ThemeStyle.secondaryIconColor)
+              : SizedBox.shrink(),
         ]));
   }
 }

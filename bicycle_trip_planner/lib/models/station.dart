@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:xml/xml.dart';
 
 class Station {
@@ -9,6 +10,7 @@ class Station {
   int emptyDocks;
   int totalDocks;
   double distanceTo;
+  Place place;
 
   Station(
       {required this.id,
@@ -18,7 +20,9 @@ class Station {
       required this.bikes,
       required this.emptyDocks,
       required this.totalDocks,
-      this.distanceTo = 0.0});
+      this.distanceTo = 0.0,
+      this.place = const Place.placeNotFound()
+      });
 
   Station.stationNotFound(
       {this.id = 0,
@@ -28,7 +32,9 @@ class Station {
       this.bikes = 0,
       this.emptyDocks = 0,
       this.totalDocks = 0,
-      this.distanceTo = 0.0});
+      this.distanceTo = 0.0,
+      this.place = const Place.placeNotFound()
+      });
 
   factory Station.fromXml(XmlElement element) {
     return Station(
@@ -44,6 +50,13 @@ class Station {
 
   double calculateStationAvailability() {
     return (bikes / totalDocks) * 50;
+  }
+
+  void update(Station station, double distance) {
+    bikes = station.bikes;
+    emptyDocks = station.emptyDocks;
+    totalDocks = station.totalDocks;
+    distanceTo = distance;
   }
 
   @override

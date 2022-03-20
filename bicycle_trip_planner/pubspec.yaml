@@ -32,7 +32,7 @@ dependencies:
 
   firebase_core: ^1.11.0
   firebase_database: ^9.0.5
-  flutter_svg: ^0.22.0
+  flutter_svg: ^0.23.0+1
   firebase_auth: ^3.3.6
   cloud_firestore: ^3.1.7
   google_sign_in: ^5.0.3
@@ -54,7 +54,11 @@ dependencies:
   vector_math: ^2.1.1
   sunrise_sunset_calc: ^2.2.0
   animated_size_and_fade: ^3.0.0
-
+  firebase_auth_mocks: ^0.8.2
+  google_sign_in_mocks: ^0.2.1
+  connectivity_plus: ^2.2.1
+  firebase_database_mocks: ^0.3.2
+  shared_preferences: ^2.0.13
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +73,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^1.0.0
   test: ^1.17.12
+  mockito: ^5.1.0
+  build_runner: ^2.1.8
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -90,6 +96,7 @@ flutter:
     - assets/reset_password_image.png
     - assets/signup_image.png
     - assets/profile.png
+    - assets/weather.png
 
   fonts:
     - family: Outfit
