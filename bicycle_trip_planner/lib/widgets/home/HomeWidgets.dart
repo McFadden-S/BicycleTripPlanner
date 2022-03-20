@@ -24,6 +24,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    Size size = MediaQuery.of(context).size;
 
     return SafeArea(
       bottom: false,
@@ -85,11 +86,11 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                         children: [
                           Column(
                             children: [
-                              SizedBox(height: 50,),
+                              SizedBox(height: size.height * 0.07,),
                               Weather(),
                             ],
                           ),
-                          SizedBox(width: 250,),
+                          SizedBox(width: size.width * 0.65,),
                           Container(
                               margin: EdgeInsets.only(bottom: 20),
                               child: Column(
