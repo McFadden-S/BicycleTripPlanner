@@ -1,11 +1,15 @@
+import 'dart:collection';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 class SharedPreferenceManager {
-  List<Map<String, String>> recentSearch = [];
+  LinkedHashMap recentSearch = new LinkedHashMap<String, String>();
   List<String> startStops = [];
   List<String> endStops = [];
-  var recentSearchesJson = "";
+
+  List<Map<List<String>, List<String>>> recentRoute = [];
+
 
   //********** Singleton **********
 
@@ -18,6 +22,20 @@ class SharedPreferenceManager {
   SharedPreferenceManager._internal();
 
   //********** Public **********
+
+  addRecentRoute(start, end, intermediateStops) async {
+    Map<List<String>, List<String>> recentRouteMap = {};
+    recentRouteMap[[start, end]] = intermediateStops;
+    recentRoute.add(recentRouteMap);
+
+    String encodedMap = json.encode(recentRoute);
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('recentRoutes', encodedMap);
+    String? encodedMapRoute = prefs.getString('recentRoutes');
+    List<dynamic> decodedMap = json.decode(encodedMapRoute!);
+    // print("/////////////////////////////////////////");
+    // print(decodedMap);
+  }
 
   addRecentStart() async {
     final prefs = await SharedPreferences.getInstance();
@@ -54,19 +72,22 @@ class SharedPreferenceManager {
   }
 
   addToRecentSearchList(placeId, name) async {
-    Map<String, String> recentSearchMap = {};
-    recentSearchMap[placeId] = name;
-    recentSearch.add(recentSearchMap);
-    convertToJson(recentSearch);
+    recentSearch[placeId] = name;
+
+    String encodedMap = json.encode(recentSearch);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('recentSearches', recentSearchesJson);
-    String? encodedMap = prefs.getString('recentSearches');
-    List<dynamic> decodedMap = json.decode(encodedMap!);
+    await prefs.setString('recentSearches', encodedMap);
+    String? encodedMapRecent = prefs.getString('recentSearches');
+    var decodedMap = json.decode(encodedMapRecent!);
     // print("//////////////////////////////////////////////////////////////////");
     // print(decodedMap);
   }
 
-  convertToJson(toBeConverted) {
-    recentSearchesJson = json.encode(toBeConverted);
+  getRecentSearchPlaceID() {
+    return recentSearch.keys;
+  }
+
+  getRecentSearchNames() {
+    return recentSearch.values;
   }
 }

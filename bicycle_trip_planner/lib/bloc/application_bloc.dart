@@ -106,6 +106,23 @@ class ApplicationBloc with ChangeNotifier {
         PlaceSearch(
             description: "My current location",
             placeId: _currentLocation.placeId));
+
+    // reversed so list is in order of recency
+    var placeIds = _sharedPreferenceManager.getRecentSearchPlaceID().toList().reversed.toList();
+    var names = _sharedPreferenceManager.getRecentSearchNames().toList().reversed.toList();
+
+    if (names.isNotEmpty && placeIds.isNotEmpty) {
+      // only show 4 drop downs
+      for(int i = 1; i<5; i++){
+        searchResults.insert(
+            i,
+            PlaceSearch(
+                description: names[i],
+                placeId: placeIds[i]
+            ));
+      }
+    }
+
     notifyListeners();
   }
 
@@ -198,16 +215,18 @@ class ApplicationBloc with ChangeNotifier {
         intermediates.map((place) => place.placeId).toList();
 
     // if route can be found
+    // Refactor!!
     List<String> middleStops = [];
     for(var middleStop in intermediates) {
       middleStops.add(middleStop.name);
     }
-    _sharedPreferenceManager.addRecentIntermediary(middleStops);
-    _sharedPreferenceManager.addToStartList(origin.name);
-    _sharedPreferenceManager.addToEndList(destination.name);
+    // _sharedPreferenceManager.addRecentIntermediary(middleStops);
+    // _sharedPreferenceManager.addToStartList(origin.name);
+    // _sharedPreferenceManager.addToEndList(destination.name);
 
-    _sharedPreferenceManager.addRecentStart();
-    _sharedPreferenceManager.addRecentEnd();
+    // _sharedPreferenceManager.addRecentStart();
+    // _sharedPreferenceManager.addRecentEnd();
+    _sharedPreferenceManager.addRecentRoute(origin.name, destination.name, middleStops);
 
     Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
         origin.placeId, startStation.place.placeId);
