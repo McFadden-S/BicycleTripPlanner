@@ -22,7 +22,7 @@ class IntermediateSearchList extends StatefulWidget {
 
 class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers =
-  <TextEditingController>[];
+      <TextEditingController>[];
 
   RouteManager routeManager = RouteManager();
 
@@ -31,50 +31,43 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   bool isShowingIntermediate = false;
 
   void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
-      TextEditingController searchController = TextEditingController();
-      intermediateSearchControllers.add(searchController);
+    TextEditingController searchController = TextEditingController();
+    intermediateSearchControllers.add(searchController);
 
-      Stop waypoint = routeManager.getWaypoints().firstWhere((stop) => stop == stopIn,
-          orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
-      
-      stopsList.add(
-          ListTile(
-            key: Key("Stop ${stopsList.length+1}"),
-          title: Search(
-              labelTextIn: "Stop",
-              searchController: searchController,
-              uid: waypoint.getUID()),
-              trailing:
-              Wrap(
-                  spacing: 12,
-                  children: <Widget> [
-                    IconButton(
-                        color: ThemeStyle.secondaryIconColor,
-                        key: Key("Remove ${intermediateSearchControllers.length}"),
-                        onPressed: (){
-                          setState(() {
-                            int indexPressed = intermediateSearchControllers.indexOf(searchController);
-                            applicationBloc.clearLocationMarker(waypoint.getUID());
-                            applicationBloc.clearSelectedLocation(waypoint.getUID());
-                            stopsList.removeAt(indexPressed);
-                            intermediateSearchControllers.removeAt(indexPressed);
-                            routeManager.removeStop(waypoint.getUID());
-                          });
-                        },
-                        icon: Icon(
-                            Icons.remove_circle_outline,
-                            color: ThemeStyle.secondaryIconColor
-                        )
-                    ),
-                    Icon(
-                      Icons.drag_handle,
-                      color: ThemeStyle.secondaryIconColor,
-                    ),
-                  ])
-          )
-      );
+    Stop waypoint = routeManager.getWaypoints().firstWhere(
+        (stop) => stop == stopIn,
+        orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
 
-      isShowingIntermediate = true;
+    stopsList.add(ListTile(
+        key: Key("Stop ${stopsList.length + 1}"),
+        title: Search(
+            labelTextIn: "Stop",
+            searchController: searchController,
+            uid: waypoint.getUID()),
+        trailing: Wrap(spacing: 12, children: <Widget>[
+          IconButton(
+              color: ThemeStyle.secondaryIconColor,
+              key: Key("Remove ${intermediateSearchControllers.length}"),
+              onPressed: () {
+                setState(() {
+                  int indexPressed =
+                      intermediateSearchControllers.indexOf(searchController);
+                  applicationBloc.clearLocationMarker(waypoint.getUID());
+                  applicationBloc.clearSelectedLocation(waypoint.getUID());
+                  stopsList.removeAt(indexPressed);
+                  intermediateSearchControllers.removeAt(indexPressed);
+                  routeManager.removeStop(waypoint.getUID());
+                });
+              },
+              icon: Icon(Icons.remove_circle_outline,
+                  color: ThemeStyle.secondaryIconColor)),
+          Icon(
+            Icons.drag_handle,
+            color: ThemeStyle.secondaryIconColor,
+          ),
+        ])));
+
+    isShowingIntermediate = true;
   }
 
   void toggleShowingIntermediate() {
@@ -84,13 +77,15 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc =
-    Provider.of<ApplicationBloc>(context, listen: false);
+        Provider.of<ApplicationBloc>(context, listen: false);
 
     stopsList.clear();
     intermediateSearchControllers.clear();
 
     List<Stop> stops = routeManager.getWaypoints();
-    stops.forEach((stop) {_addStopWidget(applicationBloc, stop); });
+    stops.forEach((stop) {
+      _addStopWidget(applicationBloc, stop);
+    });
 
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),
@@ -122,34 +117,37 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               ),
               //TODO: the button below is for testing purposes
               TextButton(
-              onPressed: () async {
-                final databaseManager = DatabaseManager();
-                bool successfullyAdded = await databaseManager.addToFavouriteRoutes(routeManager.getStart().getStop(),
-                    routeManager.getDestination().getStop(),
-                    routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList());
-                if (successfullyAdded){
-                  print('route added');
-                }else {
-                  // set up the AlertDialog
-                  AlertDialog alert = AlertDialog(
-                    title: const Text("Error"),
-                    content: Text(
-                        FirebaseAuth.instance.currentUser == null
-                        ? "User not logged in!"
-                        : "Invalid start/end"
-                    ),
-                  );
+                  onPressed: () async {
+                    final databaseManager = DatabaseManager();
+                    bool successfullyAdded =
+                        await databaseManager.addToFavouriteRoutes(
+                            routeManager.getStart().getStop(),
+                            routeManager.getDestination().getStop(),
+                            routeManager
+                                .getWaypoints()
+                                .map((waypoint) => waypoint.getStop())
+                                .toList());
+                    if (successfullyAdded) {
+                      print('route added');
+                    } else {
+                      // set up the AlertDialog
+                      AlertDialog alert = AlertDialog(
+                        title: const Text("Error"),
+                        content: Text(FirebaseAuth.instance.currentUser == null
+                            ? "User not logged in!"
+                            : "Invalid start/end"),
+                      );
 
-                  // show the dialog
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return alert;
-                    },
-                  );
-                }
-              },
-              child: Text("save")),
+                      // show the dialog
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return alert;
+                        },
+                      );
+                    }
+                  },
+                  child: Text("save")),
             ],
           ),
           LimitedBox(
@@ -159,28 +157,27 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               sizeDuration: const Duration(milliseconds: 300),
               child: isShowingIntermediate && stopsList.isNotEmpty
                   ? ReorderableListView(
-                shrinkWrap: true,
-                children: stopsList.toList(growable: true),
-                onReorder: (oldIndex, newIndex) => setState(() {
-                  final index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+                      shrinkWrap: true,
+                      children: stopsList.toList(growable: true),
+                      onReorder: (oldIndex, newIndex) => setState(() {
+                        newIndex =
+                            newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-                  final stop = stopsList.removeAt(oldIndex);
-                  stopsList.insert(index, stop);
-
-                  routeManager.swapStops(routeManager.getStopByIndex(oldIndex+1).getUID(), routeManager.getStopByIndex(newIndex+1).getUID());
-
-                }),
-              )
+                        routeManager.swapStops(
+                            routeManager.getStopByIndex(oldIndex + 1).getUID(),
+                            routeManager.getStopByIndex(newIndex + 1).getUID());
+                      }),
+                    )
                   : SizedBox.shrink(),
             ),
           ),
           stopsList.isNotEmpty && isShowingIntermediate
               ? Icon(Icons.keyboard_arrow_up,
-              color: ThemeStyle.secondaryIconColor)
+                  color: ThemeStyle.secondaryIconColor)
               : stopsList.isNotEmpty
-              ? Icon(Icons.keyboard_arrow_down,
-              color: ThemeStyle.secondaryIconColor)
-              : SizedBox.shrink(),
+                  ? Icon(Icons.keyboard_arrow_down,
+                      color: ThemeStyle.secondaryIconColor)
+                  : SizedBox.shrink(),
         ]));
   }
 }

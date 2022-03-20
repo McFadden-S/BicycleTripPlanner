@@ -1,9 +1,8 @@
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 
-class Pathway{
-
-  Stop _start = Stop(); 
+class Pathway {
+  Stop _start = Stop();
   Stop _destination = Stop();
   bool _hasFirstWaypoint = false;
   Stop _firstWaypoint = Stop();
@@ -21,23 +20,24 @@ class Pathway{
 
   Stop getDestination() => _destination;
 
-  Stop getStop(int id){
-    if(id == -1){return Stop();}
-    return _stops.firstWhere((stop) => stop.getUID() == id, orElse: () => Stop()); 
+  Stop getStop(int id) {
+    if (id == -1) {
+      return Stop();
+    }
+    return _stops.firstWhere((stop) => stop.getUID() == id,
+        orElse: () => Stop());
   }
 
   List<Stop> getWaypoints() =>
-      _stops.isEmpty
-          ? []
-          : _stops.sublist(1, size - 1);
+      _stops.isEmpty ? [] : _stops.sublist(1, size - 1);
 
   Stop getFirstWaypoint() => _firstWaypoint;
 
-  Stop getStopByIndex(int index){
+  Stop getStopByIndex(int index) {
     return _stops[index];
   }
 
-  List<Stop> getStops() => _stops; 
+  List<Stop> getStops() => _stops;
 
   //********** Private: Update Pointers **********
 
@@ -66,13 +66,13 @@ class Pathway{
     _updateDestination();
   }
 
-  void addStart(Stop stop){
+  void addStart(Stop stop) {
     _stops.insert(0, stop);
     size = size + 1;
     _updateStart();
   }
 
-  void addFirstWayPoint(Stop stop){
+  void addFirstWayPoint(Stop stop) {
     _firstWaypoint = stop;
     _stops.insert(1, stop);
     size = size + 1;
@@ -151,5 +151,10 @@ class Pathway{
     _stops.add(_destination);
     size = 2;
     _updatePointers();
+  }
+
+  @override
+  String toString() {
+    return _stops.toString();
   }
 }
