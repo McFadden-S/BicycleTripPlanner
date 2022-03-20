@@ -94,18 +94,6 @@ class DirectionManager {
     return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
-  //TODO: Useful for testing. Should no longer be here
-  List<Steps> createDummyDirections() {
-    List<Steps> steps = [];
-    steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    return steps;
-  }
-
   //********** Setting **********
 
   void setDuration(int seconds) {
@@ -125,13 +113,13 @@ class DirectionManager {
         directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
   }
 
-  void toggleCycling() {
+  void toggleCycling([bool relocateMap = true]) {
     _isCycling = !_isCycling;
     if (_isCycling) {
       print("Showing bike route...");
-      RouteManager().showBikeRoute();
+      RouteManager().showBikeRoute(relocateMap);
     } else {
-      RouteManager().showCurrentWalkingRoute();
+      RouteManager().showCurrentWalkingRoute(relocateMap);
     }
   }
 

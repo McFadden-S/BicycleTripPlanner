@@ -35,7 +35,7 @@ class _OptimisedButtonState extends State<OptimisedButton> {
                   iconIn: Icons.alt_route,
                   onButtonClicked: () {
                     dialogManager.setBinaryChoice(
-                      "Do you want to optimise your route?",
+                      "Do you want to optimise your route? Warning: Optimising route means stops will no longer be reorderable",
                       "Yes",
                           (){routeManager.setOptimised(true);},
                       "No",

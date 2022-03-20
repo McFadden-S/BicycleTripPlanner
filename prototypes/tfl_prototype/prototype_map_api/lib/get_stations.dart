@@ -4,9 +4,9 @@ import 'package:xml/xml.dart';
 
 import 'station.dart';
 
-Future<String> retrieveRawData() async {
-  var url = Uri.parse('https://tfl.gov.uk/tfl/syndication/feeds/cycle-hire/livecyclehireupdates.xml');
-  var response = await http.get(url);
+Future<String> retrieveRawData(http.Client client) async {
+  var response = await client.get(Uri.parse('https://tfl.gov.uk/tfl/syndication/feeds/cycle-hire/livecyclehireupdates.xml'));
+  print(response.body);
   return response.body;
 }
 
@@ -29,8 +29,8 @@ Iterable<Station> getStationsFromXML(XmlDocument data){
   });
 }
 
-Future<Iterable<Station>> getStations() async {
-  String context = await retrieveRawData();
+Future<Iterable<Station>> getStations(http.Client client) async {
+  String context = await retrieveRawData(client);
   XmlDocument data = convertToXML(context);
   return getStationsFromXML(data);
 }
