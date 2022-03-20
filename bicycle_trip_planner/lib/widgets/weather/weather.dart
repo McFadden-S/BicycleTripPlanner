@@ -27,7 +27,7 @@ class _WeatherState extends State<Weather> {
     return Card(
       color: ThemeStyle.cardColor,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
