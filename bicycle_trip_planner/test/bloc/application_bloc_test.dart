@@ -38,7 +38,8 @@ void main() {
   var stationManager = MockStationManager();
 
   final routeManager = RouteManager();
-  final navigationManager = NavigationManager.forMock(stationManager, routeManager);
+  final navigationManager =
+      NavigationManager.forMock(stationManager, routeManager, locationManager);
 
   var currentLocationLatLng = LatLng(51.513206, -0.117373);
   var currentPlace = Place(
@@ -51,6 +52,15 @@ void main() {
       description: SearchType.current.description);
 
   when(locationManager.locate()).thenAnswer((_) async => currentLocationLatLng);
+
+  when(locationManager.getCurrentLocation()).thenAnswer((_) => Place(
+      geometry: Geometry(
+          location: loc.Location(
+              lat: currentLocationLatLng.latitude,
+              lng: currentLocationLatLng.longitude)),
+      name: "currentLocation",
+      placeId: "MyCurrentLocation",
+      description: "myCurrentLocation"));
 
   when(placesServices.getPlaceFromCoordinates(currentLocationLatLng.latitude,
           currentLocationLatLng.longitude, SearchType.current.description))
@@ -68,10 +78,7 @@ void main() {
           emptyDocks: 0,
           bikes: 10));
 
-
-  when(stationManager.getDropoffStationNear(LatLng(
-      51.512856,
-      -0.118404), 1))
+  when(stationManager.getDropoffStationNear(LatLng(51.512856, -0.118404), 1))
       .thenAnswer((_) async => Station(
           lat: 51.512856,
           lng: -0.118404,
@@ -83,7 +90,8 @@ void main() {
 
   when(stationManager.getDropoffStationNear(
           LatLng(routeManager.getDestination().getStop().geometry.location.lat,
-              routeManager.getDestination().getStop().geometry.location.lng), 1))
+              routeManager.getDestination().getStop().geometry.location.lng),
+          1))
       .thenAnswer((_) async => Station(
           lat: routeManager.getDestination().getStop().geometry.location.lat,
           lng: routeManager.getDestination().getStop().geometry.location.lng,
@@ -322,14 +330,14 @@ void main() {
     when(locationManager.onUserLocationChange(5.0))
         .thenAnswer((_) => stream as Stream<LocationData>);
 
-    routeManager.addStart(Place(
+    routeManager.changeStart(Place(
         geometry:
             Geometry(location: loc.Location(lat: 51.513160, lng: -0.117254)),
         name: "Start",
         placeId: "start",
         description: "start"));
 
-    routeManager.addDestination(Place(
+    routeManager.changeDestination(Place(
         geometry:
             Geometry(location: loc.Location(lat: 51.512856, lng: -0.118404)),
         name: "Destination",
@@ -346,23 +354,19 @@ void main() {
     //   print(stop.getStop().getLatLng());
     // }
 
-
     //routeManager.setRoutes(route_1, route_2, route_3);
-
-
-    print(routeManager.ifStartSet());
-    print(routeManager.ifDestinationSet());
 
     await untilCalled(locationManager.onUserLocationChange(5.0));
     verify(locationManager.onUserLocationChange(5.0)).called(1);
 
-    await untilCalled(stationManager.getPickupStationNear(LatLng(51.513160, -0.117254)));
-    verify(stationManager.getPickupStationNear(LatLng(51.513160, -0.117254))).called(1);
+    await untilCalled(
+        stationManager.getPickupStationNear(LatLng(51.513160, -0.117254)));
+    verify(stationManager.getPickupStationNear(LatLng(51.513160, -0.117254)))
+        .called(1);
 
     print("hi");
 
     //appBloc.updateDirections();
-
 
     //
     // verify(locationManager.locate());

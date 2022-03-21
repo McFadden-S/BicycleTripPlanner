@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NavigationManager {
-  final _locationManager = LocationManager();
+  var _locationManager = LocationManager();
   var _stationManager = StationManager();
   var _routeManager = RouteManager();
 
@@ -32,9 +32,10 @@ class NavigationManager {
 
   NavigationManager._internal();
 
-  NavigationManager.forMock(StationManager stationManager, RouteManager routeManager){
+  NavigationManager.forMock(StationManager stationManager, RouteManager routeManager, LocationManager locationManager){
     _stationManager = stationManager;
     _routeManager = routeManager;
+    _locationManager = locationManager;
   }
 
   //********** Private **********
@@ -77,6 +78,8 @@ class NavigationManager {
   _updateRoute(Place origin,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location startLocation = origin.geometry.location;
+    print(origin.getLatLng());
+    print(_routeManager.getDestination().getStop().geometry.location);
     Location endLocation =
         _routeManager.getDestination().getStop().geometry.location;
 
@@ -132,7 +135,6 @@ class NavigationManager {
   }
 
   Future<void> updateRoute() async {
-    print(_routeManager.ifStartSet());
     await _updateStartLocationAndStations();
     //print(_routeManager.ifStartSet());
     await _updateRoute(
@@ -226,6 +228,8 @@ class NavigationManager {
   }
 
   Future<void> setInitialPickUpDropOffStations() async {
+    print(_routeManager.getStart().getStop().geometry.location);
+    print(_routeManager.getDestination().getStop().geometry.location);
     setNewPickUpStation(_routeManager.getStart().getStop().geometry.location,
         _routeManager.getGroupSize());
     setNewDropOffStation(
