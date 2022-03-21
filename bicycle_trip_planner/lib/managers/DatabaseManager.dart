@@ -119,11 +119,6 @@ class DatabaseManager {
     return pathways;
   }
 
-  Future<List<Pathway>> getFavouriteRoutesList() async {
-    final routes = await getFavouriteRoutes();
-    return routes.values.toList();
-  }
-
   Future<bool> removeFavouriteRoute(String routeKey) async {
     var uid = FirebaseAuth.instance.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
