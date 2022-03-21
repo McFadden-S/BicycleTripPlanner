@@ -53,13 +53,6 @@ class _RouteCardState extends State<RouteCard> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  /*Row(
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                    ],
-                  ),*/
-                  //const Divider(),
                   Row(
                     children: [
                       Icon(
@@ -67,7 +60,8 @@ class _RouteCardState extends State<RouteCard> {
                         size: 20.0,
                         color: ThemeStyle.secondaryIconColor,
                       ),
-                      Expanded(
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
                         child: Text(
                           "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getStart().getStop().name}",
                           overflow: TextOverflow.ellipsis,
@@ -86,12 +80,15 @@ class _RouteCardState extends State<RouteCard> {
                         SizedBox(width: 8.0,),
                         Icon(Icons.circle, size: 4.0),
                         SizedBox(width: 8.0,),
-                        Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().map((e) => e.getStop().name).join(", ")}",
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
-                        )
-                      ]
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
+                          child:
+                            Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
+                            )
+                          )
+                        ]
                   ),
                   Spacer(),
                   Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0)]),
@@ -103,7 +100,8 @@ class _RouteCardState extends State<RouteCard> {
                         size: 20.0,
                         color: ThemeStyle.secondaryIconColor,
                       ),
-                      Expanded(
+                      SizedBox(
+                        width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
                         child: Text(
                           "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
