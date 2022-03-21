@@ -651,7 +651,6 @@ void main() {
     expect(routeManager.ifRouteSet(), true);
   });
 
-  // TODO: test all functions below
   test("Set directions data", () {
     final route = R.Route.fromJson(convert.jsonDecode(r"""
 {

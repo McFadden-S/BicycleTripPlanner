@@ -256,18 +256,17 @@ class RouteManager {
     _changed = true;
   }
 
-  // Overrides the old destination
+  @visibleForTesting
   void addDestination(Place destination) {
     Stop destinationStop = Stop(destination);
-    _pathway.addStop(destinationStop);
+    _pathway.changeDestination(destination);
     _changed = true;
   }
 
-  // Overrides the new stop
+  @visibleForTesting
   void addStart(Place start) {
     Stop startStop = Stop(start);
-    _pathway.addStop(startStop);
-    _pathway.moveStop(startStop.getUID(), 0);
+    _pathway.changeStart(start);
     _changed = true;
   }
 

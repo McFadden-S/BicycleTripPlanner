@@ -147,6 +147,7 @@ class Pathway{
   }
 
   void initial() {
+    _stops.clear();
     _stops.add(_start);
     _stops.add(_destination);
     size = 2;

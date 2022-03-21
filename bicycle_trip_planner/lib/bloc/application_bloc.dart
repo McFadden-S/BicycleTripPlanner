@@ -33,7 +33,7 @@ import '../managers/NavigationManager.dart';
 
 class ApplicationBloc with ChangeNotifier {
   var _placesService = PlacesService();
-  final _directionsService = DirectionsService();
+  var _directionsService = DirectionsService();
   final _stationsService = StationsService();
 
   Widget selectedScreen = HomeWidgets();
@@ -45,16 +45,16 @@ class ApplicationBloc with ChangeNotifier {
 
   late List<PlaceSearch> searchResults = [];
 
-  final StationManager _stationManager = StationManager();
+  StationManager _stationManager = StationManager();
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
-  final RouteManager _routeManager = RouteManager();
+  RouteManager _routeManager = RouteManager();
   LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
-  final NavigationManager _navigationManager = NavigationManager();
-  // final DatabaseManager _databaseManager = DatabaseManager();
-  // final UserSettings _userSettings = UserSettings();
+  NavigationManager _navigationManager = NavigationManager();
+  //final DatabaseManager _databaseManager = DatabaseManager();
+  //final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -72,9 +72,13 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(LocationManager locationManager, PlacesService placesService){
+  ApplicationBloc.forMock(LocationManager locationManager, PlacesService placesService, RouteManager routeManager, NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager){
     _locationManager = locationManager;
     _placesService = placesService;
+    _routeManager = routeManager;
+    _navigationManager = navigationManager;
+    _directionsService = directionsService;
+    _stationManager = stationManager;
 
     changeUnits();
     fetchCurrentLocation();
@@ -153,8 +157,10 @@ class ApplicationBloc with ChangeNotifier {
         .listen((LocationData currentLocation) {
       // Print this if you suspect that data is loading more than expected
       //print("I loaded!");
-      CameraManager.instance.viewUser();
-      _updateDirections();
+      _cameraManager.viewUser();
+      print("hi");
+      updateDirections();
+      print("hi2");
     });
   }
 
@@ -274,8 +280,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    http.Client client = new http.Client();
-    await _stationManager.setStations(await _stationsService.getStations(client));
+    await _stationManager.setStations(await _stationsService.getStations());
 
     notifyListeners();
   }
@@ -344,14 +349,16 @@ class ApplicationBloc with ChangeNotifier {
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
     await _navigationManager.start();
+
     updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     notifyListeners();
   }
 
-  _updateDirections() async {
+  updateDirections() async {
     // End subscription if not navigating?
+    print("hi there");
     if (!_navigationManager.ifNavigating()) return;
 
     await fetchCurrentLocation();
@@ -371,6 +378,8 @@ class ApplicationBloc with ChangeNotifier {
               .map((waypoint) => waypoint.getStop().placeId)
               .toList());
     } else {
+//      print(_routeManager.ifStartSet());
+
       await _navigationManager.updateRoute();
       setPartialRoutes(
           [],
@@ -385,16 +394,19 @@ class ApplicationBloc with ChangeNotifier {
   Future<void> setPartialRoutes(
       [List<String> first = const <String>[],
       List<String> intermediates = const <String>[]]) async {
+
     String originId = _routeManager.getStart().getStop().placeId;
     String destinationId = _routeManager.getDestination().getStop().placeId;
 
     String startStationId = _navigationManager.getPickupStation().place.placeId;
+    print(startStationId);
     String endStationId = _navigationManager.getDropoffStation().place.placeId;
-
+    print(endStationId);
     Rou.Route startWalkRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getWalkingRoutes(
             originId, startStationId, first, false)
         : Rou.Route.routeNotFound();
+
 
     Rou.Route bikeRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getRoutes(startStationId, endStationId,

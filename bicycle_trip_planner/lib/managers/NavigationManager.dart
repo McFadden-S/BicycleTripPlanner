@@ -10,8 +10,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NavigationManager {
   final _locationManager = LocationManager();
-  final _stationManager = StationManager();
-  final _routeManager = RouteManager();
+  var _stationManager = StationManager();
+  var _routeManager = RouteManager();
 
   bool _isNavigating = false;
   bool _isBeginning = true;
@@ -31,6 +31,11 @@ class NavigationManager {
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
+
+  NavigationManager.forMock(StationManager stationManager, RouteManager routeManager){
+    _stationManager = stationManager;
+    _routeManager = routeManager;
+  }
 
   //********** Private **********
 
@@ -127,7 +132,9 @@ class NavigationManager {
   }
 
   Future<void> updateRoute() async {
+    print(_routeManager.ifStartSet());
     await _updateStartLocationAndStations();
+    //print(_routeManager.ifStartSet());
     await _updateRoute(
         _routeManager.getStart().getStop(),
         _routeManager
