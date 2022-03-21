@@ -46,13 +46,23 @@ class _StationBarState extends State<StationBar> {
 
   @override
   void initState() {
-    getFavouriteStations();
     FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         _isUserLogged = event != null && !event.isAnonymous;
       });
+
       if(_appBloc != null){
         _appBloc!.updateStations();
+      }
+
+      if(_isUserLogged == false) {
+        setState(() {
+          _isFavouriteStations = false;
+        });
+      }
+
+      if(_isUserLogged != false) {
+        getFavouriteStations();
       }
     });
     super.initState();
