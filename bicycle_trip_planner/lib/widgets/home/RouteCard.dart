@@ -98,16 +98,20 @@ class _RouteCardState extends State<RouteCard> {
 
 Future<void> routeClicked(
     ApplicationBloc appBloc, Pathway pathway, context) async {
-    RouteManager().getStart().setStop(pathway.getStart().getStop());
-    RouteManager().getDestination().setStop(pathway.getDestination().getStop());
-    appBloc.setSelectedScreen('routePlanning');
-    RouteManager routeManager = RouteManager();
-    appBloc.findRoute(
-        routeManager.getStart().getStop(),
-        routeManager.getDestination().getStop(),
-        routeManager
-            .getWaypoints()
-            .map((waypoint) => waypoint.getStop())
-            .toList(),
-        routeManager.getGroupSize());
+      RouteManager routeManager = RouteManager();
+      routeManager.getStart().setStop(pathway.getStart().getStop());
+      routeManager.getDestination().setStop(pathway.getDestination().getStop());
+      routeManager.getWaypoints().clear();
+      routeManager.getWaypoints().addAll(pathway.getWaypoints());
+
+      appBloc.setSelectedScreen('routePlanning');
+
+      appBloc.findRoute(
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager
+              .getWaypoints()
+              .map((waypoint) => waypoint.getStop())
+              .toList(),
+          routeManager.getGroupSize());
 }
