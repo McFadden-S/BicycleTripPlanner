@@ -108,9 +108,13 @@ class _StationBarState extends State<StationBar> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
+
     setState(() {
       _isUserLogged = applicationBloc.isUserLogged();
     });
+    applicationBloc.updateStations();
+
+
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
