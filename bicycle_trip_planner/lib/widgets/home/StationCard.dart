@@ -74,6 +74,7 @@ class _StationCardState extends State<StationCard> {
                             iconSize: 20,
                             onPressed: () {
                               widget.toggleFavourite!(widget.index);
+                              applicationBloc.updateStations();
                             },
                             icon: widget.isFavourite!
                                 ? Icon(Icons.star,
