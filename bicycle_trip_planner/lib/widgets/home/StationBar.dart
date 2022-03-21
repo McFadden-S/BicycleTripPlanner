@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
+import 'RouteCard.dart';
 
 class StationBar extends StatefulWidget {
   const StationBar({ Key? key }) : super(key: key);
@@ -24,6 +25,7 @@ class _StationBarState extends State<StationBar> {
   StationManager stationManager = StationManager();
 
   bool _isFavouriteStations = false;
+  bool _isFavouriteRoutes = false;
   bool _isUserLogged = false;
 
   List<int> _favouriteStations = [];
@@ -217,10 +219,11 @@ class _StationBarState extends State<StationBar> {
                         _isUserLogged ?
                           DropdownButton(
                             dropdownColor: ThemeStyle.cardColor,
-                            value: _isFavouriteStations ? "Favourite Stations" : "Nearby Stations",
+                            value: _isFavouriteStations ? "Favourite Stations" : _isFavouriteRoutes ? "Favourite Routes" : "Nearby Stations",
                             onChanged: (String? newValue){
                               setState(() {
                                 newValue! == "Favourite Stations" ? _isFavouriteStations = true : _isFavouriteStations = false;
+                                newValue == "Favourite Routes" ? _isFavouriteRoutes = true : _isFavouriteRoutes = false;
                               });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
@@ -229,6 +232,7 @@ class _StationBarState extends State<StationBar> {
                             items: [
                               DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
                               DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                              DropdownMenuItem(child: Text("Favourite Routes", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Routes"),
                             ],
                           ) :
                           Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
@@ -255,6 +259,14 @@ class _StationBarState extends State<StationBar> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: stationManager.getNumberOfStations() > 0 ?
+                          _isFavouriteRoutes ?
+                          ListView.builder(
+                            controller: stationsPageViewController,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: stationManager.getNumberOfStations(),
+                            itemBuilder: (BuildContext context, int index) =>
+                                RouteCard(index: index)
+                          ) :
                           ListView.builder(
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
