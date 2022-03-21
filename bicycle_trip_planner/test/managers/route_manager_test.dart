@@ -1617,10 +1617,9 @@ void main() {
         .map((e) => LatLng(e.latitude, e.longitude))
         .toList());
     expect(listLatLng, listRoute);
-
   });
 
-  test("Toggle walk to first waypoint", (){
+  test("Toggle walk to first waypoint", () {
     expect(routeManager.ifChanged(), false);
     expect(routeManager.ifWalkToFirstWaypoint(), false);
     routeManager.toggleWalkToFirstWaypoint();
@@ -1629,11 +1628,23 @@ void main() {
     expect(routeManager.ifChanged(), true);
   });
 
-  test("Set walk to first waypoint",(){
+  test("Set walk to first waypoint", () {
     expect(routeManager.ifWalkToFirstWaypoint(), false);
     expect(routeManager.ifChanged(), false);
     routeManager.setWalkToFirstWaypoint(true);
     expect(routeManager.ifWalkToFirstWaypoint(), true);
     expect(routeManager.ifChanged(), true);
+  });
+
+  test("Swap any two stops should swap their positions in pathway", () {
+    Place place1 = createPlace("place1", "1");
+    Place place2 = createPlace("place2", "2");
+    Stop waypoint1 = routeManager.addWaypoint(place1);
+    Stop waypoint2 = routeManager.addWaypoint(place2);
+    expect(routeManager.getStopByIndex(1), waypoint1);
+    expect(routeManager.getStopByIndex(2), waypoint2);
+    routeManager.swapStops(waypoint1.getUID(), waypoint2.getUID());
+    expect(routeManager.getStopByIndex(1), waypoint2);
+    expect(routeManager.getStopByIndex(2), waypoint1);
   });
 }

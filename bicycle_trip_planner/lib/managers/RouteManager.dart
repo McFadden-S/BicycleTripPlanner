@@ -355,7 +355,6 @@ class RouteManager {
     removeWaypoints();
     clearStart();
     clearDestination();
-    _pathway.initial();
     _changed = false;
   }
 
