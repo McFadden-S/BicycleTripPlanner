@@ -37,10 +37,19 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(int index) {
-    if(!_favouriteStations.contains(StationManager().getStationByIndex(index).id)){
-      DatabaseManager().addToFavouriteStations(stationManager.getStationByIndex(index).id).then((value) => getFavouriteStations());
-    } else {
-      DatabaseManager().removeFavouriteStation(stationManager.getStationByIndex(index).id.toString()).then((value) => getFavouriteStations());
+    if(index < stationManager.getNumberOfStations()) {
+      if (!_favouriteStations.contains(StationManager()
+          .getStationByIndex(index)
+          .id)) {
+        DatabaseManager().addToFavouriteStations(stationManager
+            .getStationByIndex(index)
+            .id).then((value) => getFavouriteStations());
+      } else {
+        DatabaseManager().removeFavouriteStation(stationManager
+            .getStationByIndex(index)
+            .id
+            .toString()).then((value) => getFavouriteStations());
+      }
     }
   }
 
@@ -108,7 +117,11 @@ class _StationBarState extends State<StationBar> {
                                   itemCount: stations.length,
                                   itemBuilder:
                                       (BuildContext context, int index) =>
-                                      StationCard(index: index)
+                                      StationCard(
+                                          index: index,
+                                          isFavourite: _favouriteStations.contains(StationManager().getStationByIndex(index).id),
+                                          toggleFavourite: toggleFavouriteStation
+                                      )
                               ),
                             ),
                           ],
