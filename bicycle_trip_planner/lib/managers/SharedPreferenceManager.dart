@@ -5,11 +5,11 @@ import 'dart:convert';
 
 class SharedPreferenceManager {
   LinkedHashMap recentSearch = new LinkedHashMap<String, String>();
-  List<String> startStops = [];
-  List<String> endStops = [];
 
-  List<Map<List<String>, List<String>>> recentRoute = [];
-
+  LinkedHashMap recentStartRoute = new LinkedHashMap<String, String>();
+  LinkedHashMap recentEndRoute = new LinkedHashMap<String, String>();
+  LinkedHashMap recentMiddleRoute = new LinkedHashMap<String, String>();
+  List<LinkedHashMap> recentRoute = [];
 
   //********** Singleton **********
 
@@ -23,52 +23,25 @@ class SharedPreferenceManager {
 
   //********** Public **********
 
-  addRecentRoute(start, end, intermediateStops) async {
-    Map<List<String>, List<String>> recentRouteMap = {};
-    recentRouteMap[[start, end]] = intermediateStops;
-    recentRoute.add(recentRouteMap);
+  // create map with placeid and name for each start stop and intermediary
+  // use linkedhashmap
 
-    String encodedMap = json.encode(recentRoute);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('recentRoutes', encodedMap);
-    String? encodedMapRoute = prefs.getString('recentRoutes');
-    List<dynamic> decodedMap = json.decode(encodedMapRoute!);
-    // print("/////////////////////////////////////////");
-    // print(decodedMap);
+  addToRecentStartRouteList(placeId, name) {
+    recentStartRoute[placeId] = name;
   }
 
-  addRecentStart() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('start', startStops);
-    final List<String>? start = prefs.getStringList('start');
-    // print("/////////////////////////////start////////////////////////////////");
-    // print(start);
+  addToRecentEndRouteList(placeId, name) {
+    recentEndRoute[placeId] = name;
   }
 
-  addRecentEnd() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('end', endStops);
-    final List<String>? end = prefs.getStringList('end');
-    // print("//////////////////////////////end//////////////////////////////");
-    // print(end);
+  addToRecentMiddleRouteList(placeId, name) {
+    recentMiddleRoute[placeId] = name;
   }
 
-  addRecentIntermediary(middleStops) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList('middle', middleStops);
-    final List<String>? middle = prefs.getStringList('middle');
-    // print("///////////////////////////middle//////////////////////////////");
-    // print(middle);
-  }
-
-  addToStartList(startStop){
-    startStops.add(startStop);
-    // print("//////////////////////////////////////////////////////////////////");
-    // print(startStops);
-  }
-
-  addToEndList(endStop) {
-    endStops.add(endStop);
+  addToRecentRoute() {
+    recentRoute.add(recentStartRoute);
+    recentRoute.add(recentEndRoute);
+    recentRoute.add(recentMiddleRoute);
   }
 
   addToRecentSearchList(placeId, name) async {

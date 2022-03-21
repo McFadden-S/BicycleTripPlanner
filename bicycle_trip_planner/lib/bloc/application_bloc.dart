@@ -214,19 +214,15 @@ class ApplicationBloc with ChangeNotifier {
     List<String> intermediatePlaceId =
         intermediates.map((place) => place.placeId).toList();
 
-    // if route can be found
-    // Refactor!!
-    List<String> middleStops = [];
-    for(var middleStop in intermediates) {
-      middleStops.add(middleStop.name);
+    // if route can be found!!
+    if (intermediates.isNotEmpty) {
+      for(var middleStop in intermediates) {
+        _sharedPreferenceManager.addToRecentMiddleRouteList(middleStop.placeId, middleStop.name);
+      }
     }
-    // _sharedPreferenceManager.addRecentIntermediary(middleStops);
-    // _sharedPreferenceManager.addToStartList(origin.name);
-    // _sharedPreferenceManager.addToEndList(destination.name);
-
-    // _sharedPreferenceManager.addRecentStart();
-    // _sharedPreferenceManager.addRecentEnd();
-    _sharedPreferenceManager.addRecentRoute(origin.name, destination.name, middleStops);
+    _sharedPreferenceManager.addToRecentStartRouteList(origin.placeId, origin.name);
+    _sharedPreferenceManager.addToRecentEndRouteList(destination.placeId, destination.name);
+    _sharedPreferenceManager.addToRecentRoute();
 
     Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
         origin.placeId, startStation.place.placeId);
