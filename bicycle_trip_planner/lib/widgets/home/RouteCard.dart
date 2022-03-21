@@ -62,9 +62,14 @@ class _RouteCardState extends State<RouteCard> {
                   //const Divider(),
                   Row(
                     children: [
+                      Icon(
+                        Icons.place_outlined,
+                        size: 20.0,
+                        color: ThemeStyle.secondaryIconColor,
+                      ),
                       Expanded(
                         child: Text(
-                          "From:\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getStart().getStop().name}",
+                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getStart().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -74,11 +79,32 @@ class _RouteCardState extends State<RouteCard> {
                     ],
                   ),
                   Spacer(),
+                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0)]),
+                  Spacer(),
+                  Row(
+                      children: [
+                        SizedBox(width: 8.0,),
+                        Icon(Icons.circle, size: 4.0),
+                        SizedBox(width: 8.0,),
+                        Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().length} intermediate stops",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
+                        )
+                      ]
+                  ),
+                  Spacer(),
+                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0)]),
+                  Spacer(),
                   Row(
                     children: [
+                      Icon(
+                        Icons.place,
+                        size: 20.0,
+                        color: ThemeStyle.secondaryIconColor,
+                      ),
                       Expanded(
                         child: Text(
-                          "To:\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getDestination().getStop().name}",
+                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
