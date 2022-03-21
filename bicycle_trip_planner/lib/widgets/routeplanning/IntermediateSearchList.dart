@@ -1,5 +1,6 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -126,7 +127,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 final databaseManager = DatabaseManager();
                 bool successfullyAdded = await databaseManager.addToFavouriteRoutes(routeManager.getStart().getStop(),
                     routeManager.getDestination().getStop(),
-                    routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList());
+                    routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList()).then((v){FavouriteRoutesManager().updateRoutes(); return v;});
                 if (successfullyAdded){
                   print('route added');
                 }else {

@@ -47,13 +47,11 @@ class _RouteCardState extends State<RouteCard> {
       },
       onDoubleTap: () {
         if(DatabaseManager().isUserLogged()) {
-
           DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(widget.index));
         }
       },
       onLongPress: () {
         if(DatabaseManager().isUserLogged()) {
-
           DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(widget.index));
         }
       },
