@@ -130,15 +130,6 @@ class _StationBarState extends State<StationBar> {
                                 children: [
                                   Row(
                                     children: [
-                                      /*_isUserLogged && _isFavouriteStations
-                                          ?
-                                      Text("Favourite Stations", style: TextStyle(
-                                          fontSize: 25.0,
-                                          color: ThemeStyle.secondaryTextColor),)
-                                          :
-                                      Text("Nearby Stations", style: TextStyle(
-                                          fontSize: 25.0,
-                                          color: ThemeStyle.secondaryTextColor),),*/
                                       _isUserLogged ?
                                       DropdownButton(
                                         dropdownColor: ThemeStyle.cardColor,
