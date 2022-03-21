@@ -53,7 +53,7 @@ class ApplicationBloc with ChangeNotifier {
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
   // final DatabaseManager _databaseManager = DatabaseManager();
-  // final UserSettings _userSettings = UserSettings();
+  final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -143,11 +143,27 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
+    var recentSearches = await _userSettings.getPlace();
+    var placeIds = recentSearches.keys.toList().reversed.toList();
+    var names = recentSearches.values.toList().reversed.toList();
+
     searchResults.insert(
         0,
         PlaceSearch(
             description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
+
+    if (names.isNotEmpty && placeIds.isNotEmpty) {
+      // only show 4 drop downs
+      for(int i = 0; i<names.length; i++){ // bounds wrong
+        searchResults.insert(
+            i + 1,
+            PlaceSearch(
+                description: names[i],
+                placeId: placeIds[i]
+            ));
+      }
+    }
     notifyListeners();
   }
 
@@ -203,6 +219,10 @@ class ApplicationBloc with ChangeNotifier {
         searchResults[searchIndex].placeId,
         searchResults[searchIndex].description);
     setLocationMarker(place, uid);
+
+    _userSettings.savePlace(place);
+    _userSettings.getPlace();
+
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
