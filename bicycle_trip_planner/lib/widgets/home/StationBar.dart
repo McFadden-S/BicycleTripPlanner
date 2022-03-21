@@ -28,6 +28,8 @@ class _StationBarState extends State<StationBar> {
 
   List<int> _favouriteStations = [];
 
+  ApplicationBloc? _appBloc;
+
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) =>  setState((){
       _favouriteStations = value;
@@ -49,11 +51,14 @@ class _StationBarState extends State<StationBar> {
       setState(() {
         _isUserLogged = event != null && !event.isAnonymous;
       });
+      if(_appBloc != null){
+        _appBloc!.updateStations();
+      }
     });
     super.initState();
   }
 
-  void showExpandedList(List<Station> stations) {
+  void showExpandedList(List<Station> stations, ApplicationBloc applicationBloc, setState) {
     showModalBottomSheet(
         enableDrag: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
@@ -80,7 +85,24 @@ class _StationBarState extends State<StationBar> {
                           children: [
                              Row(
                               children: [
-                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
+                                _isUserLogged ?
+                                DropdownButton(
+                                  dropdownColor: ThemeStyle.cardColor,
+                                  value: _isFavouriteStations ? "Favourite Stations" : "Nearby Stations",
+                                  onChanged: (String? newValue){
+                                    setState(() {
+                                      newValue! == "Favourite Stations" ? _isFavouriteStations = true : _isFavouriteStations = false;
+                                    });
+                                    UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
+                                    applicationBloc.updateStations();
+                                    //stationsPageViewController.jumpTo(0);
+                                  },
+                                  items: [
+                                    DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
+                                    DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                                  ],
+                                ) :
+                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                                 const Spacer(),
                               ],
                             ),
@@ -108,13 +130,10 @@ class _StationBarState extends State<StationBar> {
 
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-
     setState(() {
+      _appBloc = applicationBloc;
       _isUserLogged = applicationBloc.isUserLogged();
     });
-    applicationBloc.updateStations();
-
-
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
@@ -157,7 +176,7 @@ class _StationBarState extends State<StationBar> {
                           icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
-                          onPressed: () => showExpandedList(stationManager.getStations()),
+                          onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc, setState),
                           icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
