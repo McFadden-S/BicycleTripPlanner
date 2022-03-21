@@ -146,7 +146,7 @@ Future<void> routeClicked(
       RouteManager routeManager = RouteManager();
       routeManager.getStart().setStop(pathway.getStart().getStop());
       routeManager.getDestination().setStop(pathway.getDestination().getStop());
-      routeManager.getWaypoints().clear();
+      routeManager.removeWaypoints();
       pathway.getWaypoints().forEach((element) {routeManager.addWaypoint(element.getStop());});
 
       appBloc.setSelectedScreen('routePlanning');
