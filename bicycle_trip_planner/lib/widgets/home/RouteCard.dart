@@ -86,7 +86,8 @@ class _RouteCardState extends State<RouteCard> {
                         SizedBox(width: 8.0,),
                         Icon(Icons.circle, size: 4.0),
                         SizedBox(width: 8.0,),
-                        Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().length} intermediate stops",
+                        Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
                         )
