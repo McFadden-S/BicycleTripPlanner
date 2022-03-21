@@ -43,7 +43,19 @@ class _RouteCardState extends State<RouteCard> {
       onTap: () {
         Navigator.of(context).maybePop();
         routeClicked(applicationBloc,
-            favouriteRoutesManager.getFavouriteRouteByIndex(widget.index), context);
+            favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!, context);
+      },
+      onDoubleTap: () {
+        if(DatabaseManager().isUserLogged()) {
+
+          DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(widget.index));
+        }
+      },
+      onLongPress: () {
+        if(DatabaseManager().isUserLogged()) {
+
+          DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(widget.index));
+        }
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -63,7 +75,7 @@ class _RouteCardState extends State<RouteCard> {
                       SizedBox(
                         width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
                         child: Text(
-                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getStart().getStop().name}",
+                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -83,7 +95,7 @@ class _RouteCardState extends State<RouteCard> {
                         SizedBox(
                           width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
                           child:
-                            Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
                             )
@@ -103,7 +115,7 @@ class _RouteCardState extends State<RouteCard> {
                       SizedBox(
                         width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
                         child: Text(
-                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getDestination().getStop().name}",
+                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
