@@ -56,6 +56,7 @@ class _StationBarState extends State<StationBar> {
       }
 
       if(_isUserLogged == false) {
+        UserSettings().setIsFavouriteStationsSelected(false);
         setState(() {
           _isFavouriteStations = false;
         });
