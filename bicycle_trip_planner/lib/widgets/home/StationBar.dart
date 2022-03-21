@@ -85,10 +85,12 @@ class _StationBarState extends State<StationBar> {
         context: context,
         builder: (BuildContext context) {
           List<int> favourites = [];
+          bool _favouriteStations = _isFavouriteStations;
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
+                final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-                updateStations() {
+                updateFavouriteStations() {
                   if (_isUserLogged) {
                    DatabaseManager().getFavouriteStations().then((value) {
                      try {
@@ -101,7 +103,7 @@ class _StationBarState extends State<StationBar> {
                   });
                   }
                 }
-                updateStations();
+                updateFavouriteStations();
                 return Container(
                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
                   decoration: BoxDecoration(
@@ -128,7 +130,7 @@ class _StationBarState extends State<StationBar> {
                                 children: [
                                   Row(
                                     children: [
-                                      _isUserLogged && _isFavouriteStations
+                                      /*_isUserLogged && _isFavouriteStations
                                           ?
                                       Text("Favourite Stations", style: TextStyle(
                                           fontSize: 25.0,
@@ -136,7 +138,29 @@ class _StationBarState extends State<StationBar> {
                                           :
                                       Text("Nearby Stations", style: TextStyle(
                                           fontSize: 25.0,
-                                          color: ThemeStyle.secondaryTextColor),),
+                                          color: ThemeStyle.secondaryTextColor),),*/
+                                      _isUserLogged ?
+                                      DropdownButton(
+                                        dropdownColor: ThemeStyle.cardColor,
+                                        value: _favouriteStations ? "Favourite Stations" : "Nearby Stations",
+                                        onChanged: (String? newValue){
+                                          setModalState(() {
+                                            newValue! == "Favourite Stations" ? _favouriteStations = true : _favouriteStations = false;
+                                          });
+                                          setState(() {
+                                            _isFavouriteStations = _favouriteStations;
+                                          });
+                                          UserSettings().setIsFavouriteStationsSelected(_favouriteStations);
+                                          updateFavouriteStations();
+                                          applicationBloc.updateStations();
+                                          if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
+                                        },
+                                        items: [
+                                          DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
+                                          DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                                        ],
+                                      ) :
+                                      Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                                       const Spacer(),
                                     ],
                                   ),
@@ -154,7 +178,7 @@ class _StationBarState extends State<StationBar> {
                                                     .id),
                                                 toggleFavourite: (int index){
                                                   toggleFavouriteStation(index);
-                                                  updateStations();
+                                                  updateFavouriteStations();
                                                   /*setModalState((){
                                                     //stations = StationManager().getStations();
                                                   });*/
@@ -252,7 +276,7 @@ class _StationBarState extends State<StationBar> {
                                     toggleFavourite: toggleFavouriteStation
                                   )
                           ) :
-                          Center(child: Text("You don't have any favourite station at the moment."),),
+                          _isFavouriteStations ? Center(child: Text("You don't have any favourite station at the moment."),) : Center(),
                         ),
                     ),
                   ],
