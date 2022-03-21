@@ -37,7 +37,7 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(int index) {
-    if(index < stationManager.getNumberOfStations()) {
+    if(index < stationManager.getNumberOfStations() && index >= 0) {
       if (!_favouriteStations.contains(StationManager()
           .getStationByIndex(index)
           .id)) {
