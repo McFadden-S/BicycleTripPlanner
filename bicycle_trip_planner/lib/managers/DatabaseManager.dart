@@ -120,15 +120,8 @@ class DatabaseManager {
   }
 
   Future<List<Pathway>> getFavouriteRoutesList() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
-    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
-    Map<String, Pathway> pathways = {};
-    await favouriteRoutes.once().then((value) => {
-      for (var child in value.snapshot.children) {
-        pathways[child.key.toString()] = _mapToPathway(child.value)
-      }
-    });
-    return pathways.values.toList();
+    final routes = await getFavouriteRoutes();
+    return routes.values.toList();
   }
 
   Future<bool> removeFavouriteRoute(String routeKey) async {

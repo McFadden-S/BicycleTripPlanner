@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -23,6 +24,7 @@ class _StationBarState extends State<StationBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
+  FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool _isFavouriteStations = false;
   bool _isFavouriteRoutes = false;
@@ -263,7 +265,7 @@ class _StationBarState extends State<StationBar> {
                           ListView.builder(
                             controller: stationsPageViewController,
                             scrollDirection: Axis.horizontal,
-                            itemCount: stationManager.getNumberOfStations(),
+                            itemCount: favouriteRoutesManager.getNumberOfRoutes(),
                             itemBuilder: (BuildContext context, int index) =>
                                 RouteCard(index: index)
                           ) :

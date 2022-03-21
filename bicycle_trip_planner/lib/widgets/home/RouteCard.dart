@@ -3,7 +3,10 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -13,6 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../managers/DatabaseManager.dart';
+import '../../models/pathway.dart';
 
 class RouteCard extends StatefulWidget {
   final int index;
@@ -28,8 +32,8 @@ class RouteCard extends StatefulWidget {
 class _RouteCardState extends State<RouteCard> {
   late StreamSubscription locatorSubscription;
 
-  final LocationManager locationManager = LocationManager();
-  final StationManager stationManager = StationManager();
+  final FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
+
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +42,8 @@ class _RouteCardState extends State<RouteCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        stationClicked(applicationBloc,
-            routeManager.getFavouriteRouteByIndex(widget.index), context);
+        routeClicked(applicationBloc,
+            favouriteRoutesManager.getFavouriteRouteByIndex(widget.index), context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -49,60 +53,39 @@ class _RouteCardState extends State<RouteCard> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Row(
+                  /*Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
                     textBaseline: TextBaseline.alphabetic,
                     children: [
+                    ],
+                  ),*/
+                  //const Divider(),
+                  Row(
+                    children: [
                       Expanded(
-                        flex: 25,
                         child: Text(
-                            stationManager.getStationByIndex(widget.index).name,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 17.0,
-                                fontWeight: FontWeight.bold,
-                                color: ThemeStyle.secondaryTextColor)),
-                      ),
-                      const Spacer(flex: 1),
-                    ],
-                  ),
-                  const Divider(),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.directions_bike,
-                        size: 20.0,
-                        color: ThemeStyle.secondaryIconColor,
-                      ),
-                      Text(
-                        "\t\tFrom",
-                        style: TextStyle(
-                            fontSize: 15.0,
-                            color: ThemeStyle.secondaryTextColor),
+                          "From:\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getStart().getStop().name}",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: ThemeStyle.secondaryTextColor),
+                        ),
                       ),
                     ],
                   ),
+                  Spacer(),
                   Row(
                     children: [
-                      Icon(
-                        Icons.chair_alt,
-                        size: 20.0,
-                        color: ThemeStyle.secondaryIconColor,
-                      ),
-                      Text(
-                        "\t\tTo",
-                        style: TextStyle(
-                            fontSize: 15.0,
-                            color: ThemeStyle.secondaryTextColor),
+                      Expanded(
+                        child: Text(
+                          "To:\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index).getDestination().getStop().name}",
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 15.0,
+                              color: ThemeStyle.secondaryTextColor),
+                        ),
                       ),
                       const Spacer(),
-                      Container(
-                        child: Text(
-                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                                fontSize: 12.0, color: Colors.blueAccent)),
-                      ),
                     ],
                   ),
                 ],
@@ -113,7 +96,18 @@ class _RouteCardState extends State<RouteCard> {
   }
 }
 
-Future<void> stationClicked(
-    ApplicationBloc appBloc, Station station, context) async {
-  appBloc.showSelectedStationDialog(station);
+Future<void> routeClicked(
+    ApplicationBloc appBloc, Pathway pathway, context) async {
+    RouteManager().getStart().setStop(pathway.getStart().getStop());
+    RouteManager().getDestination().setStop(pathway.getDestination().getStop());
+    appBloc.setSelectedScreen('routePlanning');
+    RouteManager routeManager = RouteManager();
+    appBloc.findRoute(
+        routeManager.getStart().getStop(),
+        routeManager.getDestination().getStop(),
+        routeManager
+            .getWaypoints()
+            .map((waypoint) => waypoint.getStop())
+            .toList(),
+        routeManager.getGroupSize());
 }

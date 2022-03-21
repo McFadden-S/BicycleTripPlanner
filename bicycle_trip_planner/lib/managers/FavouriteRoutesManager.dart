@@ -1,3 +1,5 @@
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+
 import '../models/pathway.dart';
 
 class FavouriteRoutesManager {
@@ -27,8 +29,14 @@ class FavouriteRoutesManager {
     return _routes;
   }
 
-  Pathway getFavouriteRouteByName(int index) {
+  Pathway getFavouriteRouteByIndex(int index) {
     return _routes[index];
+  }
+
+  void updateRoutes() {
+    if(DatabaseManager().isUserLogged()) {
+      DatabaseManager().getFavouriteRoutesList().then((value) => _routes = value);
+    }
   }
 
 }
