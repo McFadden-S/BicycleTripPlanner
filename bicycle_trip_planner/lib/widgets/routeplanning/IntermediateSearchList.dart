@@ -116,39 +116,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   ),
                 ),
               ),
-              //TODO: the button below is for testing purposes
-              TextButton(
-                  onPressed: () async {
-                    final databaseManager = DatabaseManager();
-                    bool successfullyAdded =
-                        await databaseManager.addToFavouriteRoutes(
-                            routeManager.getStart().getStop(),
-                            routeManager.getDestination().getStop(),
-                            routeManager
-                                .getWaypoints()
-                                .map((waypoint) => waypoint.getStop())
-                                .toList()).then((v){FavouriteRoutesManager().updateRoutes(); return v;});;
-                    if (successfullyAdded) {
-                      print('route added');
-                    } else {
-                      // set up the AlertDialog
-                      AlertDialog alert = AlertDialog(
-                        title: const Text("Error"),
-                        content: Text(FirebaseAuth.instance.currentUser == null
-                            ? "User not logged in!"
-                            : "Invalid start/end"),
-                      );
-
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    }
-                  },
-                  child: Text("save")),
             ],
           ),
           LimitedBox(
