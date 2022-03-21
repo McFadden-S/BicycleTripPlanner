@@ -1,4 +1,5 @@
 
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 
 class DialogManager {
@@ -16,8 +17,18 @@ class DialogManager {
   bool _isShowingBinaryChoice = false;
 
   String _endOfRouteText = "";
+  Function _DestinationOkButtonFunction = (){};
+
   String _okButtonText = "";
-  Function _okButtonFunction = (){};
+
+  String _walkBikeToggleText = "";
+
+  Function _walkBikeToggleFunction = (){};
+  String _walkBikeToggleButtonText = "";
+
+  String _cancelButtonText = "";
+
+  bool _isShowingWalkBikeToggleDialog = false;
 
   bool _isShowingEndOfRouteDialog = false;
 
@@ -40,6 +51,10 @@ class DialogManager {
 
   //********** Public **********
 
+  bool ifShowingWalkBikeToggleDialog(){
+    return _isShowingWalkBikeToggleDialog;
+  }
+
   bool ifShowingEndOfRouteDialog(){
     return _isShowingEndOfRouteDialog;
   }
@@ -52,12 +67,16 @@ class DialogManager {
     return _isShowingSelectStation;
   }
 
+  String getWalkBikeToggleText() {
+    return _walkBikeToggleText;
+  }
+
   String getEndOfRouteDialogText(){
     return _endOfRouteText;
   }
 
   Function getEndOfRouteFunction(){
-    return _okButtonFunction;
+    return _DestinationOkButtonFunction;
   }
 
   String getOkButtonText(){
@@ -84,6 +103,18 @@ class DialogManager {
     return _optionTwoFunction;
   }
 
+  String getWalkBikeToggleDialogText(){
+    return _walkBikeToggleText;
+  }
+
+  String getCancelButtonText(){
+    return _cancelButtonText;
+  }
+
+  Function getWalkBikeToggleFunction(){
+    return _walkBikeToggleFunction;
+  }
+
   void setBinaryChoice(choicePrompt, optionOneText, optionOneFunction, optionTwoText, optionTwoFunction){
     _choicePrompt = choicePrompt;
     _optionOneText = optionOneText;
@@ -95,9 +126,23 @@ class DialogManager {
   void setEndOfRouteDialog(){
     _endOfRouteText = "You have reached your destination!";
     _okButtonText = "Ok";
-    _okButtonFunction = (){
+    _DestinationOkButtonFunction = (){
       clearEndOfRouteDialog();
     };
+  }
+
+  void setWalkBikeToggle(){
+    _walkBikeToggleText = "Toggle between walking and biking?";
+    _walkBikeToggleButtonText = "Toggle";
+    _cancelButtonText = "Cancel";
+  }
+
+  void showWalkBikeToggleDialog(){
+    _isShowingWalkBikeToggleDialog = true;
+  }
+
+  void clearWalkBikeToggleDialog(){
+    _isShowingWalkBikeToggleDialog = false;
   }
 
   void showEndOfRouteDialog(){

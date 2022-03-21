@@ -13,6 +13,13 @@ class EndOfRouteDialog extends StatefulWidget {
 
 class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
   final DialogManager _dialogManager = DialogManager();
+  late final ApplicationBloc appBloc;
+
+  @override
+  void initState() {
+    appBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,45 +67,3 @@ class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
       );
     }
 }}
-
-
-
-
-// void showEndRouteDialog(ApplicationBloc applicationBloc) {
-//   showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return Dialog(
-//           shape: RoundedRectangleBorder(
-//               borderRadius:
-//               BorderRadius.circular(20.0)
-//           ),
-//           child: Container(
-//               height: 200,
-//               child: Padding(
-//                 padding: const EdgeInsets.all(5.0),
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   children: [
-//                     SizedBox(height: 10),
-//                     Expanded(child: Text("You have reached your destination!", textAlign: TextAlign.center)),
-//                     Expanded(
-//                       child: ElevatedButton(
-//                         style: ElevatedButton.styleFrom(
-//                             minimumSize: Size.fromWidth(double.infinity)
-//                         ),
-//                         onPressed: (){
-//                           applicationBloc.endRoute();
-//                           applicationBloc.setSelectedScreen('home');
-//                           Navigator.pop(context);
-//                         },
-//                         child: Text("Ok"),
-//                       ),
-//                     ),
-//                   ],
-//                 ),
-//               )
-//           ),
-//         );
-//       });
-// }

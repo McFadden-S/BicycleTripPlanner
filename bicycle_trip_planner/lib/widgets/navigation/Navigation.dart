@@ -12,6 +12,7 @@ import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart'
 import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -99,6 +100,7 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
           EndOfRouteDialog(),
+          WalkBikeToggleDialog(),
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),

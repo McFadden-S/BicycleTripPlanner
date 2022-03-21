@@ -28,6 +28,8 @@ class _StationBarState extends State<StationBar> {
 
   List<int> _favouriteStations = [];
 
+  ApplicationBloc? _appBloc;
+
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) =>  setState((){
       _favouriteStations = value;
@@ -35,71 +37,154 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(int index) {
-    if(!_favouriteStations.contains(StationManager().getStationByIndex(index).id)){
-      DatabaseManager().addToFavouriteStations(stationManager.getStationByIndex(index).id).then((value) => getFavouriteStations());
-    } else {
-      DatabaseManager().removeFavouriteStation(stationManager.getStationByIndex(index).id.toString()).then((value) => getFavouriteStations());
+    if(index < stationManager.getNumberOfStations() && index >= 0) {
+      if (!_favouriteStations.contains(StationManager()
+          .getStationByIndex(index)
+          .id)) {
+        DatabaseManager().addToFavouriteStations(stationManager
+            .getStationByIndex(index)
+            .id).then((value) => getFavouriteStations());
+      } else {
+        DatabaseManager().removeFavouriteStation(stationManager
+            .getStationByIndex(index)
+            .id
+            .toString()).then((value) => getFavouriteStations());
+      }
     }
   }
 
   @override
   void initState() {
-    getFavouriteStations();
     FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         _isUserLogged = event != null && !event.isAnonymous;
       });
+
+      if(_appBloc != null){
+        _appBloc!.updateStations();
+      }
+
+      if(_isUserLogged == false) {
+        UserSettings().setIsFavouriteStationsSelected(false);
+        setState(() {
+          _isFavouriteStations = false;
+        });
+      }
+
+      if(_isUserLogged != false) {
+        getFavouriteStations();
+      }
     });
     super.initState();
   }
 
-  void showExpandedList(List<Station> stations) {
+  void showExpandedList() {
     showModalBottomSheet(
         enableDrag: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
-          return Container(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-            decoration: BoxDecoration(
-                color: ThemeStyle.cardColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                    child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: const BoxDecoration(
-                          //color: Color(0xff345955),
-                        ),
-                        child: Column(
-                          children: [
-                             Row(
-                              children: [
-                                Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
-                                const Spacer(),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Expanded(
-                              child: ListView.builder(
-                                  itemCount: stations.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) =>
-                                      StationCard(index: index)
+          List<int> favourites = [];
+          bool _favouriteStations = _isFavouriteStations;
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+                final applicationBloc = Provider.of<ApplicationBloc>(context);
+
+                updateFavouriteStations() {
+                  if (_isUserLogged) {
+                   DatabaseManager().getFavouriteStations().then((value) {
+                     try {
+                       setModalState(() {
+                         favourites = value;
+                       });
+                     } catch (error) {
+                       return;
+                     }
+                  });
+                  }
+                }
+                updateFavouriteStations();
+                return Container(
+                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+                  decoration: BoxDecoration(
+                    color: ThemeStyle.cardColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      SizedBox(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.5,
+                          child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                //color: Color(0xff345955),
                               ),
-                            ),
-                          ],
-                        )
-                    )
-                ),
-              ],
-            ),
-          );
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      _isUserLogged ?
+                                      DropdownButton(
+                                        dropdownColor: ThemeStyle.cardColor,
+                                        value: _favouriteStations ? "Favourite Stations" : "Nearby Stations",
+                                        onChanged: (String? newValue){
+                                          setModalState(() {
+                                            newValue! == "Favourite Stations" ? _favouriteStations = true : _favouriteStations = false;
+                                          });
+                                          setState(() {
+                                            _isFavouriteStations = _favouriteStations;
+                                          });
+                                          UserSettings().setIsFavouriteStationsSelected(_favouriteStations);
+                                          updateFavouriteStations();
+                                          applicationBloc.updateStations();
+                                          if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
+                                        },
+                                        items: [
+                                          DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
+                                          DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                                        ],
+                                      ) :
+                                      Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
+                                      const Spacer(),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Expanded(
+                                    child: ListView.builder(
+                                        itemCount: StationManager().getNumberOfStations(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) =>
+                                            StationCard(
+                                                index: index,
+                                                isFavourite: favourites
+                                                    .contains(StationManager()
+                                                    .getStationByIndex(index)
+                                                    .id),
+                                                toggleFavourite: (int index){
+                                                  toggleFavouriteStation(index);
+                                                  updateFavouriteStations();
+                                                  /*setModalState((){
+                                                    //stations = StationManager().getStations();
+                                                  });*/
+                                                }
+                                            )
+                                    ),
+                                  ),
+                                ],
+                              )
+                          )
+                      ),
+                    ],
+                  ),
+                );
+            });
         });
   }
 
@@ -109,6 +194,7 @@ class _StationBarState extends State<StationBar> {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     setState(() {
+      _appBloc = applicationBloc;
       _isUserLogged = applicationBloc.isUserLogged();
     });
 
@@ -138,6 +224,7 @@ class _StationBarState extends State<StationBar> {
                               });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
+                              if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
                             },
                             items: [
                               DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
@@ -152,7 +239,8 @@ class _StationBarState extends State<StationBar> {
                           icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
-                          onPressed: () => showExpandedList(stationManager.getStations()),
+                          onPressed: () => showExpandedList(),
+                          //onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc),
                           icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
@@ -166,7 +254,8 @@ class _StationBarState extends State<StationBar> {
                     Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: ListView.builder(
+                          child: stationManager.getNumberOfStations() > 0 ?
+                          ListView.builder(
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
                               scrollDirection: Axis.horizontal,
@@ -177,7 +266,8 @@ class _StationBarState extends State<StationBar> {
                                     isFavourite: _favouriteStations.contains(StationManager().getStationByIndex(index).id),
                                     toggleFavourite: toggleFavouriteStation
                                   )
-                          ),
+                          ) :
+                          _isFavouriteStations ? Center(child: Text("You don't have any favourite station at the moment."),) : Center(),
                         ),
                     ),
                   ],
