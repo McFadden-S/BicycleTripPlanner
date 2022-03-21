@@ -239,7 +239,8 @@ class _StationBarState extends State<StationBar> {
                     Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: ListView.builder(
+                          child: stationManager.getNumberOfStations() > 0 ?
+                          ListView.builder(
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
                               scrollDirection: Axis.horizontal,
@@ -250,7 +251,8 @@ class _StationBarState extends State<StationBar> {
                                     isFavourite: _favouriteStations.contains(StationManager().getStationByIndex(index).id),
                                     toggleFavourite: toggleFavouriteStation
                                   )
-                          ),
+                          ) :
+                          Center(child: Text("You don't have any favourite station at the moment."),),
                         ),
                     ),
                   ],
