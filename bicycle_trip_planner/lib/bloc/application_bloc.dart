@@ -295,8 +295,16 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     http.Client client = new http.Client();
-    await _stationManager.setStations(await _stationsService.getStations(client));
-
+    if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
+      List<Station> favouriteStations = await _stationsService.getStations(client);
+      List<int> compare = await DatabaseManager().getFavouriteStations();
+      favouriteStations.retainWhere((element) => compare.contains(element.id));
+      await _stationManager.setStations(favouriteStations, clear: true);
+    } else {
+      await _stationManager.setStations(await _stationsService.getStations(client),
+          clear: true);
+    }
+    filterStationMarkers();
     notifyListeners();
   }
 
