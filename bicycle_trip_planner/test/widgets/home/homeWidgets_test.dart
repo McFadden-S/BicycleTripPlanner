@@ -2,8 +2,13 @@ import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,13 +19,12 @@ import '../login/mock.dart';
 
 void main() {
   setupFirebaseAuthMocks();
-  late NavigatorObserver mockObserver;
 
   setUpAll(() async {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    mockObserver = MockNavigatorObserver();
+
   });
 
   testWidgets("HomeWidgets has a stack", (WidgetTester tester) async {
@@ -63,31 +67,83 @@ void main() {
     expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsOneWidget);
   });
 
-  testWidgets("Home has a bottom StationBar", (WidgetTester tester) async {
+  testWidgets("HomeWidgets has a bottom StationBar", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
     expect(find.byType(StationBar), findsOneWidget);
   });
 
-  // testWidgets('settings button navigate user to settings screen',
+  testWidgets("HomeWidgets has a weather widget", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
+    expect(find.byType(Weather), findsOneWidget);
+  });
+
+
+  testWidgets('settings button navigate user to settings screen',
+          (WidgetTester tester) async {
+        await pumpWidget(tester, MaterialApp(
+            home: Material(child: HomeWidgets()),
+        ));
+
+        expect(find.byKey(Key('settingsButton')), findsOneWidget);
+        await tester.tap(find.byKey(Key('settingsButton')));
+        await tester.pumpAndSettle();
+
+        // check that we are in settings screen
+        expect(find.byType(SettingsScreen), findsOneWidget);
+
+        //check that we are no longer in home screen
+        expect(find.byType(Home), findsNothing);
+        //check that there are no homeWidgets on the screen
+        expect(find.byKey(Key('settingsButton')), findsNothing);
+        expect(find.byType(CurrentLocationButton), findsNothing);
+        expect(find.byType(GroupSizeSelector), findsNothing);
+        expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
+
+      });
+
+
+  testWidgets('Go to routePlanning button loads routePlanning widgets',
+          (WidgetTester tester) async {
+        await pumpWidget(tester, MaterialApp(
+          home: Material(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: Home(),
+            ),
+          ),
+        ));
+
+        expect(find.byKey(Key('navigateToRoutePlanningScreenButton')), findsOneWidget);
+        await tester.tap(find.byKey(Key('navigateToRoutePlanningScreenButton')));
+        await tester.pumpAndSettle();
+
+        // // check that we have routePlanning widgets on screen
+         expect(find.byType(RoutePlanning), findsOneWidget);
+        //
+        // //check that we no longer have homeWidgets
+        expect(find.byType(HomeWidgets), findsNothing);
+
+        //check that there are no homeWidgets on the screen
+        expect(find.byKey(Key('settingsButton')), findsNothing);
+        expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
+
+      });
+
+  //
+  // testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
   //         (WidgetTester tester) async {
   //       await pumpWidget(tester, MaterialApp(
-  //           home: Material(child: HomeWidgets()),
-  //           navigatorObservers: [mockObserver],
+  //         home: Material(child: GroupSizeSelector()),
   //       ));
-  //       expect(find.byKey(Key('settingsButton')), findsOneWidget);
-  //       await tester.tap(find.byKey(Key('settingsButton')));
-  //       await tester.pumpAndSettle();
   //
-  //       /// Verify that a push event happened
-  //       verify(mockObserver.didPush(
-  //           MaterialPageRoute(builder: (BuildContext context) => SettingsScreen()),
-  //           any));
+  //       expect(find.byKey(Key("groupSizeSelector")), findsOneWidget);
+  //       expect(find.text("1"), findsOneWidget);
+  //       await tester.tap(find.byKey(Key("groupSizeSelector")));
+  //       // await tester.pumpAndSettle();
   //
-  //       /// You'd also want to be sure that your page is now
-  //       /// present in the screen.
-  //       expect(find.byType(SettingsScreen), findsOneWidget);
+  //
+  //
   //     });
 
 }
 
-class MockNavigatorObserver extends Mock implements NavigatorObserver {}
