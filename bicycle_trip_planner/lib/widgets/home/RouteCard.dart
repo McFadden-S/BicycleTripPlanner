@@ -113,7 +113,7 @@ class _RouteCardState extends State<RouteCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       SizedBox(
-                        width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
+                        width: (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
                           "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
@@ -122,15 +122,16 @@ class _RouteCardState extends State<RouteCard> {
                               color: ThemeStyle.secondaryTextColor),
                         ),
                       ),
+                      Spacer(flex: 5,),
                       SizedBox(
                         width:20,
-                        height: 30,
+                        height: 34,
                         child: IconButton(
                           icon: Icon(Icons.delete_forever, size:20, color: ThemeStyle.secondaryIconColor,),
                           onPressed: (){widget.deleteRoute!(widget.index);},
                         ),
                       ),
-                      const Spacer(),
+                      const Spacer(flex: 1),
                     ],
                   ),
                 ],
