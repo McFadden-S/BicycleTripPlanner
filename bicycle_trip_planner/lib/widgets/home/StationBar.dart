@@ -78,84 +78,98 @@ class _StationBarState extends State<StationBar> {
     super.initState();
   }
 
-  void showExpandedList(List<Station> stations, ApplicationBloc applicationBloc) {
+  void showExpandedList() {
     showModalBottomSheet(
         enableDrag: true,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
-          List<Station> _stationsState = stations;
-          return StatefulBuilder(builder: (context, StateSetter setState) {
-            builder: (BuildContext context, StateSetter setState) {
-              return Container(
-                padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-                decoration: BoxDecoration(
-                  color: ThemeStyle.cardColor,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30.0),
-                      topRight: Radius.circular(30.0)),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    SizedBox(
-                        height: MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.5,
-                        child: Container(
-                            padding: const EdgeInsets.all(5),
-                            decoration: const BoxDecoration(
-                              //color: Color(0xff345955),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    _isUserLogged && _isFavouriteStations
-                                        ?
-                                    Text("Favourite Stations", style: TextStyle(
-                                        fontSize: 25.0,
-                                        color: ThemeStyle.secondaryTextColor),)
-                                        :
-                                    Text("Nearby Stations", style: TextStyle(
-                                        fontSize: 25.0,
-                                        color: ThemeStyle.secondaryTextColor),),
-                                    const Spacer(),
-                                  ],
-                                ),
-                                const SizedBox(height: 10),
-                                Expanded(
-                                  child: ListView.builder(
-                                      itemCount: _stationsState.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) =>
-                                          StationCard(
-                                              index: index,
-                                              isFavourite: _favouriteStations
-                                                  .contains(StationManager()
-                                                  .getStationByIndex(index)
-                                                  .id),
-                                              toggleFavourite: (int index) {
-                                                toggleFavouriteStation(index);
-                                                setState(() {
-                                                  _stationsState =
-                                                      StationManager()
-                                                          .getStations();
-                                                });
-                                              }
-                                          )
+          List<int> favourites = [];
+          return StatefulBuilder(
+              builder: (BuildContext context, StateSetter setModalState) {
+
+                updateStations() {
+                  if (_isUserLogged) {
+                   DatabaseManager().getFavouriteStations().then((value) {
+                     try {
+                       setModalState(() {
+                         favourites = value;
+                       });
+                     } catch (error) {
+                       return;
+                     }
+                  });
+                  }
+                }
+                updateStations();
+                return Container(
+                  padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+                  decoration: BoxDecoration(
+                    color: ThemeStyle.cardColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.0),
+                        topRight: Radius.circular(30.0)),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      SizedBox(
+                          height: MediaQuery
+                              .of(context)
+                              .size
+                              .height * 0.5,
+                          child: Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                //color: Color(0xff345955),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      _isUserLogged && _isFavouriteStations
+                                          ?
+                                      Text("Favourite Stations", style: TextStyle(
+                                          fontSize: 25.0,
+                                          color: ThemeStyle.secondaryTextColor),)
+                                          :
+                                      Text("Nearby Stations", style: TextStyle(
+                                          fontSize: 25.0,
+                                          color: ThemeStyle.secondaryTextColor),),
+                                      const Spacer(),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            )
-                        )
-                    ),
-                  ],
-                ),
-              );
-            };});
+                                  const SizedBox(height: 10),
+                                  Expanded(
+                                    child: ListView.builder(
+                                        itemCount: StationManager().getNumberOfStations(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) =>
+                                            StationCard(
+                                                index: index,
+                                                isFavourite: favourites
+                                                    .contains(StationManager()
+                                                    .getStationByIndex(index)
+                                                    .id),
+                                                toggleFavourite: (int index){
+                                                  toggleFavouriteStation(index);
+                                                  updateStations();
+                                                  /*setModalState((){
+                                                    //stations = StationManager().getStations();
+                                                  });*/
+                                                }
+                                            )
+                                    ),
+                                  ),
+                                ],
+                              )
+                          )
+                      ),
+                    ],
+                  ),
+                );
+            });
         });
   }
 
@@ -210,7 +224,8 @@ class _StationBarState extends State<StationBar> {
                           icon: Icon(Icons.first_page, color: ThemeStyle.secondaryIconColor),
                         ),
                         IconButton(
-                          onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc),
+                          onPressed: () => showExpandedList(),
+                          //onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc),
                           icon: Icon(Icons.menu, color: ThemeStyle.secondaryIconColor),
                         ),
                       ],
