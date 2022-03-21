@@ -22,32 +22,28 @@ class UserSettings {
 
   savePlace(Place place) async {
     final SharedPreferences prefs = await _prefs;
-    // encode place as json String and add (make helper methods if needed)
-    // encode this as a list of maps/maps with lots of values <--
-    // use the different keys to differ between places.
 
-    if (prefs.getString("one") != null) {
-      String? encodedMap = prefs.getString("one");
+    // add recent searches to prefs and store as json map
+    if (prefs.getString("recentSearches") != null) {
+      String? encodedMap = prefs.getString("recentSearches");
       var decodedMap = json.decode(encodedMap!);
-      // Map<String, String> placeDetails = decodedMap;
       Map<String, dynamic>.from(decodedMap);
-      // placeDetails[place.placeId] = place.description;
       String encodedMap1 = json.encode(decodedMap);
-      await prefs.setString("one", encodedMap1);
+      await prefs.setString("recentSearches", encodedMap1);
     } else {
-      // create new prefs
       Map<String, String> placeDetails = {place.placeId: place.description};
       String encodedMap = json.encode(placeDetails);
-      await prefs.setString("one", encodedMap);
+      await prefs.setString("recentSearches", encodedMap);
     }
   }
 
+  // Retreive recent searches map
   getPlace() async {
     final SharedPreferences prefs = await _prefs;
-    final String? encodedMap = prefs.getString("one");
+    final String? encodedMap = prefs.getString("recentSearches");
     var decodedMap = json.decode(encodedMap!);
     Map<String, dynamic>.from(decodedMap);
-    print(decodedMap);
+    // print(decodedMap);
     return decodedMap;
   }
 
