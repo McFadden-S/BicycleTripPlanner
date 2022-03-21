@@ -7,10 +7,14 @@ class Stop {
 
   Stop([this._stop = const Place.placeNotFound()]);
 
-
   Place getStop() => _stop;
 
   int getUID() => _uid;
 
   void setStop(Place stop) => _stop = stop;
+
+  @override
+  String toString() {
+    return "${_stop.toString()} - ${_uid}";
+  }
 }
