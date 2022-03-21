@@ -20,9 +20,10 @@ import '../../models/pathway.dart';
 
 class RouteCard extends StatefulWidget {
   final int index;
+  final Function(int)? deleteRoute;
 
   const RouteCard(
-      {Key? key, required this.index})
+      {Key? key, required this.index, required this.deleteRoute})
       : super(key: key);
 
   @override
@@ -71,7 +72,7 @@ class _RouteCardState extends State<RouteCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       SizedBox(
-                        width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
+                        width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
                           "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
                           overflow: TextOverflow.ellipsis,
@@ -83,25 +84,26 @@ class _RouteCardState extends State<RouteCard> {
                     ],
                   ),
                   Spacer(),
-                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0)]),
+                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,)]),
                   Spacer(),
                   Row(
                       children: [
                         SizedBox(width: 8.0,),
-                        Icon(Icons.circle, size: 4.0),
+                        Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,),
                         SizedBox(width: 8.0,),
                         SizedBox(
-                          width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
+                          width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
                           child:
                             Text("\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
                             )
-                          )
+                          ),
+                        SizedBox(width: 20),
                         ]
                   ),
                   Spacer(),
-                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0)]),
+                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,)]),
                   Spacer(),
                   Row(
                     children: [
@@ -111,13 +113,21 @@ class _RouteCardState extends State<RouteCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       SizedBox(
-                        width: (MediaQuery.of(context).size.width * 0.85) - 50.0,
+                        width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
                           "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
                               color: ThemeStyle.secondaryTextColor),
+                        ),
+                      ),
+                      SizedBox(
+                        width:20,
+                        height: 30,
+                        child: IconButton(
+                          icon: Icon(Icons.delete_forever, size:20, color: ThemeStyle.secondaryIconColor,),
+                          onPressed: (){widget.deleteRoute!(widget.index);},
                         ),
                       ),
                       const Spacer(),

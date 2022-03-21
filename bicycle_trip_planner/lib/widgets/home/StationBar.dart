@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
+import '../../models/pathway.dart';
 import 'RouteCard.dart';
 
 class StationBar extends StatefulWidget {
@@ -31,6 +32,7 @@ class _StationBarState extends State<StationBar> {
   bool _isUserLogged = false;
 
   List<int> _favouriteStations = [];
+  Map<String, Pathway> _favouriteRoutes = {};
 
   ApplicationBloc? _appBloc;
 
@@ -38,6 +40,20 @@ class _StationBarState extends State<StationBar> {
     DatabaseManager().getFavouriteStations().then((value) =>  setState((){
       _favouriteStations = value;
     }));
+  }
+
+  getFavouriteRoutes() async {
+    DatabaseManager().getFavouriteRoutes().then((value) =>  setState((){
+      _favouriteRoutes = value;
+    }));
+  }
+
+  deleteFavouriteRoute(int index) {
+    if(DatabaseManager().isUserLogged()) {
+      DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(index));
+    }
+    FavouriteRoutesManager().updateRoutes();
+    getFavouriteRoutes();
   }
 
   toggleFavouriteStation(int index) {
@@ -267,7 +283,7 @@ class _StationBarState extends State<StationBar> {
                             scrollDirection: Axis.horizontal,
                             itemCount: favouriteRoutesManager.getNumberOfRoutes(),
                             itemBuilder: (BuildContext context, int index) =>
-                                RouteCard(index: index)
+                                RouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
                           ) :
                           ListView.builder(
                               controller: stationsPageViewController,
