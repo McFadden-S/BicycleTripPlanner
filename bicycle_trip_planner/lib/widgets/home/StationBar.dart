@@ -96,23 +96,8 @@ class _StationBarState extends State<StationBar> {
                           children: [
                              Row(
                               children: [
-                                _isUserLogged ?
-                                DropdownButton(
-                                  dropdownColor: ThemeStyle.cardColor,
-                                  value: _isFavouriteStations ? "Favourite Stations" : "Nearby Stations",
-                                  onChanged: (String? newValue){
-                                    setState(() {
-                                      newValue! == "Favourite Stations" ? _isFavouriteStations = true : _isFavouriteStations = false;
-                                    });
-                                    UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
-                                    applicationBloc.updateStations();
-                                    //stationsPageViewController.jumpTo(0);
-                                  },
-                                  items: [
-                                    DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
-                                    DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
-                                  ],
-                                ) :
+                                _isUserLogged && _isFavouriteStations ?
+                                Text("Favourite Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),) :
                                 Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
                                 const Spacer(),
                               ],
