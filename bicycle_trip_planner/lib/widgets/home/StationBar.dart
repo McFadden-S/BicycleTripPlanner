@@ -209,7 +209,7 @@ class _StationBarState extends State<StationBar> {
                               });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
-                              stationsPageViewController.jumpTo(0);
+                              if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
                             },
                             items: [
                               DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
