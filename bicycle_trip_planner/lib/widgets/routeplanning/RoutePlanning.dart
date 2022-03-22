@@ -171,7 +171,11 @@ saveRoute(context) async {
           .map((waypoint) => waypoint.getStop())
           .toList()).then((v){favouriteRoutesManager.updateRoutes(); return v;});;
   if (successfullyAdded) {
-    print('route added');
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Route saved correctly!"),
+        )
+    );
   } else {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
