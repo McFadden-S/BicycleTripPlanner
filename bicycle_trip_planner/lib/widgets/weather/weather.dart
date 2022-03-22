@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather_model.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
 import 'package:flutter/material.dart';
@@ -22,32 +23,31 @@ class _WeatherState extends State<Weather> {
   }
 
   @override
-  Widget build(BuildContext context) => WillPopScope(
-    onWillPop: () async {
-      return true;
-    },
-    child:
-    Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+  Widget build(BuildContext context) {
+    return Card(
+      color: ThemeStyle.cardColor,
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if(_response != null)
+              Column(
                 children: [
-                  if(_response != null)
-                    Column(
-                      children: [
-                        Text('London', style: TextStyle(fontSize: 30)),
-                        Image.network(_response.iconUrl),
-                        Text('${_response.tempInfo.temperature}°', style: TextStyle(fontSize: 40),),
-                        Text(_response.weatherInfo.description),
-                        BackButton()
-                      ],
-                    ),
+                  Image.network(_response.iconUrl, scale: 1.7,),
+                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 10)
                 ],
-
               ),
-            ),
-          ),
-  );
+          ],
+      ),
+    );
+
+
+
+
+
+  }
+
 
   void _search() async{
     final response = await _weatherService.getWeather("london");

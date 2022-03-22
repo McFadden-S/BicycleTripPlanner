@@ -10,7 +10,7 @@ extension RouteTypeExtension on RouteType {
   Color get polylineColor {
     switch (this) {
       case RouteType.walk:
-        return Colors.grey;
+        return Colors.lightBlue;
       case RouteType.bike:
         return Colors.red;
       default:

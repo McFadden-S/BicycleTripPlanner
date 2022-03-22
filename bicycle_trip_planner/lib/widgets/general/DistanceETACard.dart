@@ -33,7 +33,7 @@ class _StationCardState extends State<DistanceETACard> {
           child: Row(
             children: [
               RouteManager().ifLoading()
-                  ? CircularProgressIndicator(color: Colors.white)
+                  ? CircularProgressIndicator(color: Colors.blueGrey)
                   : Column(children: [
                       Icon(Icons.access_time_outlined,
                           color: ThemeStyle.secondaryIconColor),

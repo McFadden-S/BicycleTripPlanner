@@ -1,10 +1,15 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:provider/provider.dart';
 import '../general/GroupSizeSelector.dart';
+import '../settings/SettingsScreen.dart';
 
 class HomeWidgets extends StatefulWidget {
   const HomeWidgets({Key? key}) : super(key: key);
@@ -18,11 +23,15 @@ class _HomeWidgetsState extends State<HomeWidgets> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    Size size = MediaQuery.of(context).size;
+
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
           Align(
+            key: Key("topAlignment"),
             alignment: FractionalOffset.topCenter,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -44,39 +53,33 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                           ),
                         ),
                         IconButton(
+                          key: Key("settingsButton"),
                           icon: Icon(
                             Icons.settings,
                             color: ThemeStyle.buttonPrimaryColor,
                           ),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, '/settings'),
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return SettingsScreen();
+                                },
+                              ),
+                            );
+                          },
                           iconSize: 50,
                         )
                       ],
                     ),
                   ),
-                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/weather'),
-                      child: Container(
-                          margin: EdgeInsets.only(top: 5),
-                          width: 60.0,
-                          height: 60.0,
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage('assets/weather.png'),
-                              ))),
-                    )
-                  ]),
                 ],
               ),
             ),
           ),
           Align(
-              alignment: FractionalOffset.bottomCenter,
+              key: Key("bottomAlignment"),
+              alignment: Alignment.bottomCenter,
               child: Wrap(
                 children: [
                   Column(
@@ -84,15 +87,35 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Column(
-                                children: [
-                                  CurrentLocationButton(),
-                                  SizedBox(height: 10),
-                                  GroupSizeSelector(),
-                                ],
-                              )),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Weather()),
+                                Spacer(),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Column(
+                                    children: [
+                                      CurrentLocationButton(),
+                                      SizedBox(height: 10),
+                                      CircleButton(
+                                        key: Key("navigateToRoutePlanningScreenButton"),
+                                        iconIn: Icons.assistant_direction,
+                                        onButtonClicked: () => applicationBloc
+                                            .setSelectedScreen('routePlanning'),
+                                      ),
+                                      SizedBox(height: 10),
+                                      GroupSizeSelector(),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ],

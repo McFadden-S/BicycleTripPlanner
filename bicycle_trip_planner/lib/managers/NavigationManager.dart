@@ -4,6 +4,8 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class NavigationManager {
@@ -32,16 +34,29 @@ class NavigationManager {
 
   //********** Private **********
 
-  void _setIfBeginning(bool isBeginning) {
+  @visibleForTesting
+  void setIfBeginning(bool isBeginning) {
     _isBeginning = isBeginning;
   }
 
-  void _setIfCycling(bool isCycling) {
+  @visibleForTesting
+  void setIfCycling(bool isCycling) {
     _isCycling = isCycling;
   }
 
-  void _setIfEndWalking(bool isEndWalking) {
+  @visibleForTesting
+  void setIfEndWalking(bool isEndWalking) {
     _isEndWalking = isEndWalking;
+  }
+
+  @visibleForTesting
+  void setPickupStation(Station station) {
+    _pickUpStation = station;
+  }
+
+  @visibleForTesting
+  void setDropoffStation(Station station) {
+    _dropOffStation = station;
   }
 
   Future<void> _updateStartLocationAndStations() async {
@@ -155,8 +170,8 @@ class NavigationManager {
   }
 
   void checkPassedByPickUpDropOffStations() {
-    passedStation(_pickUpStation, _setIfBeginning, _setIfCycling);
-    passedStation(_dropOffStation, _setIfCycling, _setIfEndWalking);
+    passedStation(_pickUpStation, setIfBeginning, setIfCycling);
+    passedStation(_dropOffStation, setIfCycling, setIfEndWalking);
   }
 
   //remove waypoint once passed by it, return true if we reached the destination
@@ -222,5 +237,17 @@ class NavigationManager {
     _pickUpStation = Station.stationNotFound();
     _dropOffStation = Station.stationNotFound();
     _locationManager.locationSettings();
+  }
+
+  @visibleForTesting
+  void reset() {
+    _isBeginning = true;
+    _isCycling = false;
+    _isEndWalking = false;
+    _isNavigating = false;
+    _passedDropOffStation = false;
+    _passedPickUpStation = false;
+    _pickUpStation = Station.stationNotFound();
+    _dropOffStation = Station.stationNotFound();
   }
 }

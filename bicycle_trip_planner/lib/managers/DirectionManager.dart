@@ -1,10 +1,14 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 
 class DirectionManager {
   //********** Fields **********
+
+  final LocationManager _locationManager = LocationManager();
 
   bool _isCycling = false;
 
@@ -90,18 +94,6 @@ class DirectionManager {
     return Icon(icon, color: ThemeStyle.buttonPrimaryColor, size: 60);
   }
 
-  //TODO: Useful for testing. Should no longer be here
-  List<Steps> createDummyDirections() {
-    List<Steps> steps = [];
-    steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    return steps;
-  }
-
   //********** Setting **********
 
   void setDuration(int seconds) {
@@ -109,9 +101,10 @@ class DirectionManager {
     _duration = "$minutes min";
   }
 
-  void setDistance(int metre) {
-    int miles = (metre / 1609.34).ceil();
-    _distance = "$miles mi";
+  void setDistance(double metre) {
+    DistanceType units = _locationManager.getUnits();
+    int distance = units.convert(metre).ceil();
+    _distance = "$distance ${units.units}";
   }
 
   void setDirections(List<Steps> directions) {
@@ -120,13 +113,13 @@ class DirectionManager {
         directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
   }
 
-  void toggleCycling() {
+  void toggleCycling([bool relocateMap = true]) {
     _isCycling = !_isCycling;
     if (_isCycling) {
       print("Showing bike route...");
-      RouteManager().showBikeRoute();
+      RouteManager().showBikeRoute(relocateMap);
     } else {
-      RouteManager().showCurrentWalkingRoute();
+      RouteManager().showCurrentWalkingRoute(relocateMap);
     }
   }
 

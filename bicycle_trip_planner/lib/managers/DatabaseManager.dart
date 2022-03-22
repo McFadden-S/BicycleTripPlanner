@@ -133,6 +133,10 @@ class DatabaseManager {
     return true;
   }
 
+  bool isUserLogged() {
+    return _auth.currentUser != null;
+  }
+
 
   //********** Private **********
 

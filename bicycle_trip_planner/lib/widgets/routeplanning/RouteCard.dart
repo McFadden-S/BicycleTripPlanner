@@ -29,10 +29,11 @@ class _RouteCardState extends State<RouteCard> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
+  //TODO:Look into preventing rebuild
+  //Build method is called one more time before navigation starts resulting in a waste of api calls
   @override
   Widget build(BuildContext context) {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if (routeManager.ifStartSet() &&
         routeManager.ifDestinationSet() &&

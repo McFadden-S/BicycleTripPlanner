@@ -8,8 +8,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:prototype_map_api/directions_model.dart';
 import 'package:prototype_map_api/directions_repository.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 import 'get_stations.dart';
 import 'station.dart';
+
 
 Future<void> main() async {
   await dotenv.load();
@@ -81,6 +83,7 @@ class _MapScreenState extends State<MapScreen> {
   );
 
   Position currentPosition;
+  http.Client client = new http.Client();
   GoogleMapController _googleMapController;
   Marker _origin;
   Marker _destination;
@@ -92,8 +95,9 @@ class _MapScreenState extends State<MapScreen> {
   Iterable<Station> stations;
   final Set<Marker> stationMarkers = new Set();
 
+
   _MapScreenState() {
-    getStations().then((val) => setState(() {
+    getStations(client).then((val) => setState(() {
           stations = val;
         }));
   }

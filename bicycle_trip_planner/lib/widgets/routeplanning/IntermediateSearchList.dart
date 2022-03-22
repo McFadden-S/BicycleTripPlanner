@@ -1,5 +1,6 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -33,6 +34,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
     TextEditingController searchController = TextEditingController();
     intermediateSearchControllers.add(searchController);
+    applicationBloc.notifyListeningWidgets();
 
     Stop waypoint = routeManager.getWaypoints().firstWhere(
         (stop) => stop == stopIn,
@@ -101,7 +103,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
-  List<Widget> _createAddAndSaveButton(
+  List<Widget> _createAddButton(
       BuildContext context, ApplicationBloc applicationBloc) {
     return [
       TextButton(
@@ -125,42 +127,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           ),
         ),
       ),
-      //TODO: the button below is for testing purposes
-      TextButton(
-        onPressed: () async {
-          final databaseManager = DatabaseManager();
-          bool successfullyAdded = await databaseManager.addToFavouriteRoutes(
-              routeManager.getStart().getStop(),
-              routeManager.getDestination().getStop(),
-              routeManager
-                  .getWaypoints()
-                  .map((waypoint) => waypoint.getStop())
-                  .toList());
-          if (successfullyAdded) {
-            print('route added');
-          } else {
-            // set up the AlertDialog
-            AlertDialog alert = AlertDialog(
-              title: const Text("Error"),
-              content: Text(FirebaseAuth.instance.currentUser == null
-                  ? "User not logged in!"
-                  : "Invalid start/end"),
-            );
-
-            // show the dialog
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return alert;
-              },
-            );
-          }
-        },
-        child: Text("save"),
-        style: TextButton.styleFrom(
-          primary: ThemeStyle.buttonPrimaryColor,
-        ),
-      )
     ];
   }
 
@@ -186,7 +152,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           Wrap(
             children: RouteManager().ifCostOptimised()
                 ? []
-                : _createAddAndSaveButton(context, applicationBloc),
+                : _createAddButton(context, applicationBloc),
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.2,
@@ -203,11 +169,8 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                           shrinkWrap: true,
                           children: stopsList.toList(growable: true),
                           onReorder: (oldIndex, newIndex) => setState(() {
-                            final index =
+                            newIndex =
                                 newIndex > oldIndex ? newIndex - 1 : newIndex;
-
-                            final stop = stopsList.removeAt(oldIndex);
-                            stopsList.insert(index, stop);
 
                             routeManager.swapStops(
                                 routeManager
@@ -216,6 +179,8 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                                 routeManager
                                     .getStopByIndex(newIndex + 1)
                                     .getUID());
+
+                            applicationBloc.notifyListeningWidgets();
                           }),
                         )
                   : SizedBox.shrink(),

@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
@@ -27,7 +32,7 @@ import 'package:wakelock/wakelock.dart';
 import '../managers/NavigationManager.dart';
 
 class ApplicationBloc with ChangeNotifier {
-  final _placesService = PlacesService();
+  var _placesService = PlacesService();
   final _directionsService = DirectionsService();
   final _stationsService = StationsService();
 
@@ -44,10 +49,14 @@ class ApplicationBloc with ChangeNotifier {
   final MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
   final RouteManager _routeManager = RouteManager();
-  final LocationManager _locationManager = LocationManager();
+  LocationManager _locationManager = LocationManager();
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final FavouriteRoutesManager _favouriteRoutesManager =
+      FavouriteRoutesManager();
+  // final DatabaseManager _databaseManager = DatabaseManager();
+  // final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -58,11 +67,35 @@ class ApplicationBloc with ChangeNotifier {
   //late Place _currentLocation;
 
   ApplicationBloc() {
+    // Note: not async
+    changeUnits();
     fetchCurrentLocation();
-    updateStationsPeriodically(const Duration(seconds: 30));
+    updateStationsPeriodically();
+    loadFavouriteRoutes();
+  }
+
+  @visibleForTesting
+  ApplicationBloc.forMock(
+      LocationManager locationManager, PlacesService placesService) {
+    _locationManager = locationManager;
+    _placesService = placesService;
+
+    changeUnits();
+    fetchCurrentLocation();
+    updateStationsPeriodically();
   }
 
   // ********** Dialog **********
+
+  void showWalkBikeToggleDialog() {
+    _dialogManager.showWalkBikeToggleDialog();
+    notifyListeners();
+  }
+
+  void showEndOfRouteDialog() {
+    _dialogManager.showEndOfRouteDialog();
+    notifyListeners();
+  }
 
   void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
@@ -72,6 +105,11 @@ class ApplicationBloc with ChangeNotifier {
   void showSelectedStationDialog(Station station) {
     _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
+    notifyListeners();
+  }
+
+  void clearEndOfRouteDialog() {
+    _dialogManager.clearEndOfRouteDialog();
     notifyListeners();
   }
 
@@ -85,6 +123,11 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearWalkBikeToggleDialog() {
+    _dialogManager.clearWalkBikeToggleDialog();
+    notifyListeners();
+  }
+
   // ********** Search **********
 
   bool ifSearchResult() {
@@ -92,6 +135,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   searchPlaces(String searchTerm) async {
+    final client = http.Client();
     searchResults = await _placesService.getAutocomplete(searchTerm);
     searchResults.insert(
         0,
@@ -116,6 +160,7 @@ class ApplicationBloc with ChangeNotifier {
     viewStationMarker(station, uid);
 
     if (station.place == const Place.placeNotFound()) {
+      var client = http.Client();
       Place place = await _placesService.getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
@@ -142,6 +187,7 @@ class ApplicationBloc with ChangeNotifier {
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude, SearchType.current.description);
     _locationManager.setCurrentLocation(currentPlace);
+
     notifyListeners();
   }
 
@@ -322,8 +368,9 @@ class ApplicationBloc with ChangeNotifier {
     _stationTimer.cancel();
   }
 
-  updateStationsPeriodically(Duration duration) {
-    _stationTimer = Timer.periodic(duration, (timer) {
+  updateStationsPeriodically() async {
+    int duration = await UserSettings().stationsRefreshRate();
+    _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
       filterStationMarkers();
     });
@@ -336,13 +383,29 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    await _stationManager.setStations(await _stationsService.getStations());
+    http.Client client = new http.Client();
+    if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
+      List<Station> favouriteStations =
+          await _stationsService.getStations(client);
+      List<int> compare = await DatabaseManager().getFavouriteStations();
+      favouriteStations.retainWhere((element) => compare.contains(element.id));
+      await _stationManager.setStations(favouriteStations, clear: true);
+    } else {
+      await _stationManager
+          .setStations(await _stationsService.getStations(client), clear: true);
+    }
+    filterStationMarkers();
     notifyListeners();
   }
 
-  List<Station> filterNearbyStations() {
-    List<Station> notNearbyStations = _stationManager.getFarStations();
-    List<Station> nearbyStations = _stationManager.getNearStations();
+  /*reloadStations(bool favourite) {
+
+  }*/
+
+  Future<List<Station>> filterNearbyStations() async {
+    double range = await UserSettings().nearbyStationsRange();
+    List<Station> notNearbyStations = _stationManager.getFarStations(range);
+    List<Station> nearbyStations = _stationManager.getNearStations(range);
     _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
     return nearbyStations;
@@ -357,11 +420,11 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.clearStationMarkers(bikelessStations);
   }
 
-  void filterStationMarkers() {
+  Future<void> filterStationMarkers() async {
     if (_navigationManager.ifNavigating()) {
       return;
     }
-    List<Station> nearbyStations = filterNearbyStations();
+    List<Station> nearbyStations = await filterNearbyStations();
     filterStationsWithBikes(nearbyStations);
   }
 
@@ -399,7 +462,6 @@ class ApplicationBloc with ChangeNotifier {
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
     await _navigationManager.start();
-    await _updateDirections();
     await updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();
@@ -412,6 +474,8 @@ class ApplicationBloc with ChangeNotifier {
 
     await fetchCurrentLocation();
     if (await _navigationManager.checkWaypointPassed()) {
+      // dialog box informing user that they have arrived at their destination
+      showEndOfRouteDialog();
       endRoute();
       return;
     }
@@ -477,6 +541,12 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager.setStationMarker(dropOffStation, this);
   }
 
+  // ********** User Setting Management **********
+
+  bool isUserLogged() {
+    return DatabaseManager().isUserLogged();
+  }
+
   void toggleCycling() {
     _directionManager.toggleCycling();
     notifyListeners();
@@ -486,5 +556,28 @@ class ApplicationBloc with ChangeNotifier {
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
+  }
+
+  void changeUnits() async {
+    DistanceType units = await UserSettings().distanceUnit();
+    _locationManager.setUnits(units);
+    updateStations();
+    notifyListeners();
+  }
+
+  void updateSettings() {
+    cancelStationTimer();
+    updateStationsPeriodically();
+    changeUnits();
+    filterStationMarkers();
+    notifyListeners();
+  }
+
+  void loadFavouriteRoutes() {
+    _favouriteRoutesManager.updateRoutes();
+  }
+
+  void notifyListeningWidgets() {
+    notifyListeners();
   }
 }

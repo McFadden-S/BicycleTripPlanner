@@ -1,6 +1,8 @@
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/place.dart';
 import '../services/places_service.dart';
@@ -28,7 +30,7 @@ class StationManager {
   //********** Private **********
 
   List<Station> _getOrderedToFromStationList(LatLng pos) {
-    List<Station> nearPos = List.castFrom(_stations);
+    List<Station> nearPos = List.from(_stations);
 
     nearPos.sort((stationA, stationB) => _locationManager
         .distanceFromTo(LatLng(stationA.lat, stationA.lng), pos)
@@ -118,21 +120,21 @@ class StationManager {
     return filteredStations.where((station) => station.bikes <= 0).toList();
   }
 
-  List<Station> getFarStations() {
+  List<Station> getFarStations(double range) {
     List<Station> farStations = [];
 
     farStations =
-        _stationsLookUp.difference(getNearStations().toSet()).toList();
+        _stationsLookUp.difference(getNearStations(range).toSet()).toList();
     //print(farStations);
 
     return farStations;
   }
 
-  List<Station> getNearStations() {
+  List<Station> getNearStations(double range) {
     List<Station> nearbyStations = [];
 
     int lastIndex = _stations.lastIndexWhere((station) {
-      return station.distanceTo < 0.5;
+      return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
     //print(nearbyStations);
@@ -140,7 +142,11 @@ class StationManager {
     return nearbyStations;
   }
 
-  Future<void> setStations(List<Station> newStations) async {
+  Future<void> setStations(List<Station> newStations, {clear = false}) async {
+    if (clear) {
+      _stationsLookUp = {};
+      _stations = [];
+    }
     LatLng currentPos = await _locationManager.locate();
 
     for (Station newStation in newStations) {
