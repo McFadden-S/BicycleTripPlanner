@@ -34,7 +34,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
     TextEditingController searchController = TextEditingController();
     intermediateSearchControllers.add(searchController);
-    applicationBloc.notifyListeningWidgets();
+    // applicationBloc.notifyListeningWidgets();
 
     Stop waypoint = routeManager.getWaypoints().firstWhere(
         (stop) => stop == stopIn,

@@ -146,7 +146,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   content: Text("No route could be found!"),
                                 ));
                               }
-                            }),
+                            },
+                            withLoading: true,
+                            ),
                         )
                       ]
                       ),
