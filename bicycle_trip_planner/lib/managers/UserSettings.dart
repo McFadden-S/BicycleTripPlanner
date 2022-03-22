@@ -4,7 +4,10 @@ import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
+import '../models/geometry.dart';
+import '../models/location.dart';
 import '../models/place.dart';
+import '../models/stop.dart';
 
 class UserSettings {
   //********** Singleton **********
@@ -49,43 +52,72 @@ class UserSettings {
     return decodedMap;
   }
 
+  // saveRoute(Place origin, Place destination, List<Place> intermediates) async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   Map<String, dynamic> route = {};
+  //   route[origin.placeId] = origin.description;
+  //
+  //   for (var place in intermediates) {
+  //     route[place.placeId] = place.description;
+  //   }
+  //
+  //   route[destination.placeId] = destination.description;
+  //   // print("/////////////////////////////route/////////////////////////////////");
+  //   // print(route);
+  //
+  //   // if routes is empty
+  //   if ((prefs.getString("recentRoutes") != null)) {
+  //     String? encodedMap = prefs.getString("recentRoutes");
+  //     print("**************** 1 " + encodedMap!);
+  //
+  //     var decoded = Map<int, Map<String, dynamic>>.from(json.decode(encodedMap));
+  //     // add to new route to decoded map
+  //     int recordNumber = decoded.keys.length + 1; // could not be + 1
+  //     decoded[recordNumber] = route;
+  //     print("/////////////////////////decodedmap////////////////////////////");
+  //     String encodedMap1 = json.encode(decoded);
+  //     print("**************** encodedMap1 " + encodedMap1);
+  //     await prefs.setString("recentRoutes", encodedMap1);
+  //   } else {
+  //
+  //     Map<int, Map<String, dynamic>> recentRoutes = {};
+  //     recentRoutes[0] = route;
+  //     print("recent route with number " + recentRoutes.toString());
+  //
+  //     String encodedMap = json.encode(recentRoutes.toString());
+  //
+  //     print("**************** " + encodedMap);
+  //     // print("////////////////////////////////////////////////////////////");
+  //     // print(encodedMap);
+  //     await prefs.setString("recentRoutes", encodedMap);
+  //   }
+  // }
+
+  // TODO: make sure it works, delete prints
   saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
-    Map<String, dynamic> route = {};
-    route[origin.placeId] = origin.description;
-
-    for (var place in intermediates) {
-      route[place.placeId] = place.description;
+    String savedElements = prefs.getString('recentRoutes') ?? "{}";
+    print('******** savedElements ${savedElements}');
+    Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
+    print('******** savedRoutes ${savedRoutes}');
+    Map<String, dynamic> newRoute = {};
+    Map<String, dynamic> start = _place2Map(origin);
+    Map<String, dynamic> end = _place2Map(destination);
+    Map<String, dynamic> stops = {};
+    for(int i = 0; i < intermediates.length; i++){
+      stops[i.toString()] = _place2Map(intermediates[i]);
     }
+    newRoute['start'] = start;
+    newRoute['end'] = end;
+    newRoute['stops'] = stops;
 
-    route[destination.placeId] = destination.description;
-    // print("/////////////////////////////route/////////////////////////////////");
-    // print(route);
+    print('******** newRoute ${newRoute}');
 
-    // if routes is empty
-    if ((prefs.getString("recentRoutes") != null)) {
-      String? encodedMap = prefs.getString("recentRoutes");
-      var decodedMap = json.decode(encodedMap!);
+    savedRoutes[(savedRoutes.keys.length +1).toString()] = newRoute;
+    prefs.setString('recentRoutes', json.encode(savedRoutes));
 
-      Map<int, Map<String, dynamic>>.from(decodedMap);
-      // add to new route to decoded map
-      int recordNumber = decodedMap.keys.length + 1; // could not be + 1
-      decodedMap[recordNumber] = route;
-      print("/////////////////////////decodedmap////////////////////////////");
-      print(decodedMap);
-      String encodedMap1 = json.encode(decodedMap);
-      await prefs.setString("recentRoutes", encodedMap1);
-    } else {
+    print('******** savedRoutes after saving ${savedRoutes}');
 
-      Map<int, Map<String, dynamic>> recentRoutes = {};
-      recentRoutes[0] = route;
-      print("recent route with number " + recentRoutes.toString());
-
-      String encodedMap = json.encode(recentRoutes.toString());
-      // print("////////////////////////////////////////////////////////////");
-      // print(encodedMap);
-      await prefs.setString("recentRoutes", encodedMap);
-    }
   }
 
   getRoute() async {
@@ -169,5 +201,40 @@ class UserSettings {
   }
 
 //********** Private **********
+// TODO: there is same method in databaseManager.dart make a helper class to have these
+  Map<String, Object> _place2Map(Place place) {
+    Map<String, Object> output = {};
+    output['name'] = place.name;
+    output['description'] = place.description;
+    output['id'] = place.placeId;
+    output['lng'] = place.geometry.location.lng;
+    output['lat'] = place.geometry.location.lat;
+    return output;
+  }
 
+  Pathway _mapToPathway(dynamic mapIn) {
+    // TODO: refactor this to work with your code
+    Pathway output = Pathway();
+    // output.changeStart(_mapToPlace(mapIn['start']));
+    // output.changeDestination(_mapToPlace(mapIn['end']));
+    // if(mapIn['stops'] != null) {
+    //   for(var stop in mapIn['stops']){
+    //     output.addStop(Stop(_mapToPlace(stop)));
+    //   }
+    // }
+    return output;
+  }
+
+  // TODO: there is same method in databaseManager.dart make a helper class to have these
+  Place _mapToPlace(dynamic mapIn) {
+    return Place(
+        name: mapIn['name'],
+        description: mapIn['description'],
+        placeId: mapIn['id'],
+        geometry: Geometry(
+            location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
+        )
+    );
+
+  }
 }

@@ -294,7 +294,7 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
-
+// TODO: move this to make sure it's only called when start button is clicked
     _userSettings.saveRoute(origin, destination, intermediates);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
