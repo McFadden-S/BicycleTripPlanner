@@ -61,7 +61,10 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
               .map<DropdownMenuItem<int>>((int value) {
             return DropdownMenuItem<int>(
               value: value,
-              child: Text(value.toString()),
+              child: Text(
+                  value.toString(),
+                  key: Key(value.toString()),
+              ),
             );
           }).toList(),
         ),
