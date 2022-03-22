@@ -104,7 +104,7 @@ class DialogManager {
   }
 
   String getWalkBikeToggleDialogText(){
-    return _walkBikeToggleText;
+    return _walkBikeToggleButtonText;
   }
 
   String getCancelButtonText(){
