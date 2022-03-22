@@ -370,6 +370,12 @@ class RouteManager {
       _markerManager.clearMarker(id);
     }
   }
+  void setRouteMarkers() {
+    List<Stop> stops = _pathway.getStops();
+    for (Stop stop in stops) {
+      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
+    }
+  }
 
   void clearChanged() => _changed = false;
 
