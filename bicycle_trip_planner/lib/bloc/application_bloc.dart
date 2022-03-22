@@ -292,6 +292,8 @@ class ApplicationBloc with ChangeNotifier {
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
 
+    _userSettings.saveRoute(origin, destination, intermediates);
+
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
     notifyListeners();

@@ -28,8 +28,10 @@ class UserSettings {
       String? encodedMap = prefs.getString("recentSearches");
       var decodedMap = json.decode(encodedMap!);
       Map<String, dynamic>.from(decodedMap);
+      decodedMap[place.placeId] = place.description;
       String encodedMap1 = json.encode(decodedMap);
       await prefs.setString("recentSearches", encodedMap1);
+      print(decodedMap.toString());
     } else {
       Map<String, String> placeDetails = {place.placeId: place.description};
       String encodedMap = json.encode(placeDetails);
@@ -37,7 +39,7 @@ class UserSettings {
     }
   }
 
-  // Retreive recent searches map
+  // Retrieve recent searches map
   getPlace() async {
     final SharedPreferences prefs = await _prefs;
     final String? encodedMap = prefs.getString("recentSearches");
@@ -47,12 +49,45 @@ class UserSettings {
     return decodedMap;
   }
 
-  saveRoute(Pathway pathway) async {
+  saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
-    // encode pathway as json String and add
-    // await prefs.setString(key, value);
+    Map<String, dynamic> route = {};
+    route[origin.placeId] = origin.description;
+
+    for (var place in intermediates) {
+      route[place.placeId] = place.description;
+    }
+
+    route[destination.placeId] = destination.description;
+    print(route);
+
+    // if routes is empty
+    if ((prefs.getString("recentSearches") == null)) {
+      Map<int, Map<String, dynamic>> routes = {};
+      routes[0] = route;
+      String encodedMap = json.encode(routes);
+      await prefs.setString("recentRoutes", encodedMap);
+    } else {
+      String? encodedMap = prefs.getString("recentRoutes");
+      var decodedMap = json.decode(encodedMap!);
+
+      Map<int, Map<String, dynamic>>.from(decodedMap);
+      // add to new route to decoded map
+      int recordNumber = decodedMap.keys.length + 1; // could not be + 1
+      decodedMap[recordNumber] = route;
+      String encodedMap1 = json.encode(decodedMap);
+      await prefs.setString("recentRoutes", encodedMap1);
+    }
   }
 
+  getRoute() async {
+    final SharedPreferences prefs = await _prefs;
+    final String? encodedMap = prefs.getString("recentRoutes");
+    var decodedMap = json.decode(encodedMap!);
+    Map<int, Map<String, dynamic>>.from(decodedMap);
+    // print(decodedMap);
+    return decodedMap;
+  }
 
   // returns String 'miles' or 'km'
   Future<DistanceType> distanceUnit() async {
