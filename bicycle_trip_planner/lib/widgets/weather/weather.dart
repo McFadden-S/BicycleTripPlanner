@@ -33,7 +33,9 @@ class _WeatherState extends State<Weather> {
               Column(
                 children: [
                   Image.network(_response.iconUrl, scale: 1.7,),
-                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(fontSize: 20),
+                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(
+                      color: ThemeStyle.primaryTextColor,
+                      fontSize: 20),
                   ),
                   SizedBox(height: 10)
                 ],
