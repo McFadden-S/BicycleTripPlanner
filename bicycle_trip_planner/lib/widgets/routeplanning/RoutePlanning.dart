@@ -97,10 +97,20 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    CustomBackButton(context: context, backTo: 'home'),
-                  ]),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                            // mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              CircleButton(
+                                  iconIn: Icons.history,
+                                  iconColor: ThemeStyle.primaryIconColor,
+                                  onButtonClicked: () => showRecentRoutes()
+                                  ),
+                              Spacer(),
+                              CustomBackButton(context: context, backTo: 'home'),
+                    ]),
+                  ),
                 ),
                 CustomBottomSheet(
                   child:
@@ -132,5 +142,15 @@ class _RoutePlanningState extends State<RoutePlanning> {
         ],
       ),
     );
+  }
+  void showRecentRoutes() {
+    showModalBottomSheet(
+        enableDrag: true,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
+        context: context,
+        builder: (BuildContext context) {
+          List<int> favourites = [];
+          return Container();
+        });
   }
 }
