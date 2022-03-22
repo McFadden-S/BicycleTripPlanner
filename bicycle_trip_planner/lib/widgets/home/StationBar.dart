@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
+import '../../models/pathway.dart';
+import 'RouteCard.dart';
 
 class StationBar extends StatefulWidget {
   const StationBar({ Key? key }) : super(key: key);
@@ -22,11 +25,14 @@ class _StationBarState extends State<StationBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
+  FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool _isFavouriteStations = false;
+  bool _isFavouriteRoutes = false;
   bool _isUserLogged = false;
 
   List<int> _favouriteStations = [];
+  Map<String, Pathway> _favouriteRoutes = {};
 
   ApplicationBloc? _appBloc;
 
@@ -34,6 +40,20 @@ class _StationBarState extends State<StationBar> {
     DatabaseManager().getFavouriteStations().then((value) =>  setState((){
       _favouriteStations = value;
     }));
+  }
+
+  getFavouriteRoutes() async {
+    DatabaseManager().getFavouriteRoutes().then((value) =>  setState((){
+      _favouriteRoutes = value;
+    }));
+  }
+
+  deleteFavouriteRoute(int index) {
+    if(DatabaseManager().isUserLogged()) {
+      DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(index));
+    }
+    FavouriteRoutesManager().updateRoutes();
+    getFavouriteRoutes();
   }
 
   toggleFavouriteStation(int index) {
@@ -73,6 +93,7 @@ class _StationBarState extends State<StationBar> {
 
       if(_isUserLogged != false) {
         getFavouriteStations();
+        getFavouriteRoutes();
       }
     });
     super.initState();
@@ -86,6 +107,7 @@ class _StationBarState extends State<StationBar> {
         builder: (BuildContext context) {
           List<int> favourites = [];
           bool _favouriteStations = _isFavouriteStations;
+          bool _favouriteRoutes = _isFavouriteRoutes;
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
                 final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -133,13 +155,15 @@ class _StationBarState extends State<StationBar> {
                                       _isUserLogged ?
                                       DropdownButton(
                                         dropdownColor: ThemeStyle.cardColor,
-                                        value: _favouriteStations ? "Favourite Stations" : "Nearby Stations",
+                                        value: _favouriteStations ? "Favourite Stations" : _favouriteRoutes ? "Favourite Routes" : "Nearby Stations",
                                         onChanged: (String? newValue){
                                           setModalState(() {
-                                            newValue! == "Favourite Stations" ? _favouriteStations = true : _favouriteStations = false;
+                                            newValue == "Favourite Stations" ? _favouriteStations = true : _favouriteStations = false;
+                                            newValue == "Favourite Routes" ? _favouriteRoutes = true : _favouriteRoutes = false;
                                           });
                                           setState(() {
                                             _isFavouriteStations = _favouriteStations;
+                                            _isFavouriteRoutes = _favouriteRoutes;
                                           });
                                           UserSettings().setIsFavouriteStationsSelected(_favouriteStations);
                                           updateFavouriteStations();
@@ -149,6 +173,7 @@ class _StationBarState extends State<StationBar> {
                                         items: [
                                           DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
                                           DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                                          DropdownMenuItem(child: Text("Favourite Routes", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Routes"),
                                         ],
                                       ) :
                                       Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
@@ -157,11 +182,21 @@ class _StationBarState extends State<StationBar> {
                                   ),
                                   const SizedBox(height: 10),
                                   Expanded(
-                                    child: ListView.builder(
+                                    child:
+                                    _favouriteRoutes ?
+                                    ListView.builder(
+                                        itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
+                                        itemBuilder: (BuildContext context, int index) =>
+                                            SizedBox(
+                                                height: 130,
+                                                child:RouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
+                                            )
+                                    ) :
+                                    ListView.builder(
                                         itemCount: StationManager().getNumberOfStations(),
                                         itemBuilder:
                                             (BuildContext context, int index) =>
-                                            StationCard(
+                                              StationCard(
                                                 index: index,
                                                 isFavourite: favourites
                                                     .contains(StationManager()
@@ -170,13 +205,10 @@ class _StationBarState extends State<StationBar> {
                                                 toggleFavourite: (int index){
                                                   toggleFavouriteStation(index);
                                                   updateFavouriteStations();
-                                                  /*setModalState((){
-                                                    //stations = StationManager().getStations();
-                                                  });*/
                                                 }
+                                              )
                                             )
                                     ),
-                                  ),
                                 ],
                               )
                           )
@@ -217,10 +249,11 @@ class _StationBarState extends State<StationBar> {
                         _isUserLogged ?
                           DropdownButton(
                             dropdownColor: ThemeStyle.cardColor,
-                            value: _isFavouriteStations ? "Favourite Stations" : "Nearby Stations",
+                            value: _isFavouriteStations ? "Favourite Stations" : _isFavouriteRoutes ? "Favourite Routes" : "Nearby Stations",
                             onChanged: (String? newValue){
                               setState(() {
                                 newValue! == "Favourite Stations" ? _isFavouriteStations = true : _isFavouriteStations = false;
+                                newValue == "Favourite Routes" ? _isFavouriteRoutes = true : _isFavouriteRoutes = false;
                               });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
@@ -229,6 +262,7 @@ class _StationBarState extends State<StationBar> {
                             items: [
                               DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
                               DropdownMenuItem(child: Text("Favourite Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Stations"),
+                              DropdownMenuItem(child: Text("Favourite Routes", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor)), value: "Favourite Routes"),
                             ],
                           ) :
                           Text("Nearby Stations", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor),),
@@ -255,6 +289,14 @@ class _StationBarState extends State<StationBar> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
                           child: stationManager.getNumberOfStations() > 0 ?
+                          _isFavouriteRoutes ?
+                          ListView.builder(
+                            controller: stationsPageViewController,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: favouriteRoutesManager.getNumberOfRoutes(),
+                            itemBuilder: (BuildContext context, int index) =>
+                                RouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
+                          ) :
                           ListView.builder(
                               controller: stationsPageViewController,
                               // physics: const PageScrollPhysics(),
