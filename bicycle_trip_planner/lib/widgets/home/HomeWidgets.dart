@@ -31,6 +31,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
       child: Stack(
         children: [
           Align(
+            key: Key("topAlignment"),
             alignment: FractionalOffset.topCenter,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -52,6 +53,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                           ),
                         ),
                         IconButton(
+                          key: Key("settingsButton"),
                           icon: Icon(
                             Icons.settings,
                             color: ThemeStyle.buttonPrimaryColor,
@@ -76,6 +78,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
             ),
           ),
           Align(
+              key: Key("bottomAlignment"),
               alignment: Alignment.bottomCenter,
               child: Wrap(
                 children: [
@@ -100,6 +103,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                       CurrentLocationButton(),
                                       SizedBox(height: 10),
                                       CircleButton(
+                                        key: Key("navigateToRoutePlanningScreenButton"),
                                         iconIn: Icons.assistant_direction,
                                         onButtonClicked: () => applicationBloc
                                             .setSelectedScreen('routePlanning'),

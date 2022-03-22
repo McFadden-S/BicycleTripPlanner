@@ -31,6 +31,7 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<int>(
+          key: Key("groupSizeSelector"),
           dropdownColor: ThemeStyle.cardColor,
           isDense: true,
           value: _routeManager.getGroupSize(),

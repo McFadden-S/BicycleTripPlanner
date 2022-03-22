@@ -1,5 +1,6 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,39 +116,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                   ),
                 ),
               ),
-              //TODO: the button below is for testing purposes
-              TextButton(
-                  onPressed: () async {
-                    final databaseManager = DatabaseManager();
-                    bool successfullyAdded =
-                        await databaseManager.addToFavouriteRoutes(
-                            routeManager.getStart().getStop(),
-                            routeManager.getDestination().getStop(),
-                            routeManager
-                                .getWaypoints()
-                                .map((waypoint) => waypoint.getStop())
-                                .toList());
-                    if (successfullyAdded) {
-                      print('route added');
-                    } else {
-                      // set up the AlertDialog
-                      AlertDialog alert = AlertDialog(
-                        title: const Text("Error"),
-                        content: Text(FirebaseAuth.instance.currentUser == null
-                            ? "User not logged in!"
-                            : "Invalid start/end"),
-                      );
-
-                      // show the dialog
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return alert;
-                        },
-                      );
-                    }
-                  },
-                  child: Text("save")),
             ],
           ),
           LimitedBox(
