@@ -46,6 +46,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           key: Key("Stop ${stopsList.length + 1}"),
           // title: Text(stopIn.getStop().description)
           title: TextField(
+            style: TextStyle(color: ThemeStyle.secondaryTextColor,),
             controller: searchController,
             readOnly: true,
             enabled: false,
