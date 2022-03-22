@@ -1,8 +1,11 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -25,38 +28,40 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets("Navigation has cancel button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
-
-    final cancelButton = find.widgetWithIcon(CircleButton, Icons.cancel_outlined);
-
-    expect(cancelButton, findsOneWidget);
+  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
+    await tester.runAsync(
+            () async {
+              await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+              final countdown = find.byType(Countdown);
+              expect(countdown, findsOneWidget);
+            }
+    );
   });
 
-  testWidgets("Navigation has zoom in/out button", (WidgetTester tester) async {
+  testWidgets("Navigation has a SafeArea", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+    expect(find.byType(SafeArea), findsOneWidget);
+  });
+
+  testWidgets("Navigation has Walk/Bike Toggle Dialog", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-
-    final zoomOutButton = find.widgetWithIcon(CircleButton, Icons.zoom_out_map);
-    final zoomInButton = find.widgetWithIcon(CircleButton, Icons.fullscreen_exit);
-
-    expect(zoomOutButton, findsOneWidget);
-    expect(zoomInButton, findsNothing);
-
-    await tester.tap(zoomOutButton);
-    await tester.pump();
-
-    expect(zoomOutButton, findsNothing);
-    expect(zoomInButton, findsOneWidget);
+    expect(find.byType(WalkBikeToggleDialog), findsOneWidget);
   });
+
+  testWidgets("Navigation has bottom sheet", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+
+    final bottomSheet = find.byType(CustomBottomSheet);
+
+    expect(bottomSheet, findsOneWidget);
+  });
+
 
   testWidgets("Navigation has current location button", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-
-    final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_on);
-
-    expect(currentLocation, findsOneWidget);
+    expect(find.byType(CurrentLocationButton), findsOneWidget);
   });
 
   testWidgets("Navigation has Directions", (WidgetTester tester) async {
@@ -83,20 +88,10 @@ void main() {
     expect(walkOrCycleButton, findsOneWidget);
   });
 
-  testWidgets("Navigation has Map Widget", (WidgetTester tester) async {
+  testWidgets("Navigation has End of Route Dialog", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-    final walkOrCycleButton = find.byType(MapWidget);
-
-    expect(walkOrCycleButton, findsOneWidget);
-  });
-
-  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
-
-    final walkOrCycleButton = find.byType(Countdown);
-
-    expect(walkOrCycleButton, findsOneWidget);
+    expect(find.byType(EndOfRouteDialog), findsOneWidget);
   });
 }
 
