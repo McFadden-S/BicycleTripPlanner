@@ -93,6 +93,7 @@ class _StationBarState extends State<StationBar> {
 
       if(_isUserLogged != false) {
         getFavouriteStations();
+        getFavouriteRoutes();
       }
     });
     super.initState();
