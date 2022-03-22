@@ -177,20 +177,10 @@ saveRoute(context) async {
         )
     );
   } else {
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: const Text("Error"),
-      content: Text(FirebaseAuth.instance.currentUser == null
-          ? "User not logged in!"
-          : "Invalid start/end"),
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error while saving the route!"),
+        )
     );
   }
 }
