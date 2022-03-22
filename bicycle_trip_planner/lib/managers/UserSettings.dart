@@ -31,7 +31,7 @@ class UserSettings {
       decodedMap[place.placeId] = place.description;
       String encodedMap1 = json.encode(decodedMap);
       await prefs.setString("recentSearches", encodedMap1);
-      print(decodedMap.toString());
+      // print(decodedMap.toString());
     } else {
       Map<String, String> placeDetails = {place.placeId: place.description};
       String encodedMap = json.encode(placeDetails);
@@ -59,15 +59,11 @@ class UserSettings {
     }
 
     route[destination.placeId] = destination.description;
-    print(route);
+    // print("/////////////////////////////route/////////////////////////////////");
+    // print(route);
 
     // if routes is empty
-    if ((prefs.getString("recentSearches") == null)) {
-      Map<int, Map<String, dynamic>> routes = {};
-      routes[0] = route;
-      String encodedMap = json.encode(routes);
-      await prefs.setString("recentRoutes", encodedMap);
-    } else {
+    if ((prefs.getString("recentRoutes") != null)) {
       String? encodedMap = prefs.getString("recentRoutes");
       var decodedMap = json.decode(encodedMap!);
 
@@ -75,8 +71,20 @@ class UserSettings {
       // add to new route to decoded map
       int recordNumber = decodedMap.keys.length + 1; // could not be + 1
       decodedMap[recordNumber] = route;
+      print("/////////////////////////decodedmap////////////////////////////");
+      print(decodedMap);
       String encodedMap1 = json.encode(decodedMap);
       await prefs.setString("recentRoutes", encodedMap1);
+    } else {
+
+      Map<int, Map<String, dynamic>> recentRoutes = {};
+      recentRoutes[0] = route;
+      print("recent route with number " + recentRoutes.toString());
+
+      String encodedMap = json.encode(recentRoutes.toString());
+      // print("////////////////////////////////////////////////////////////");
+      // print(encodedMap);
+      await prefs.setString("recentRoutes", encodedMap);
     }
   }
 
