@@ -210,6 +210,7 @@ class ApplicationBloc with ChangeNotifier {
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
+    // _routeManager.printPathway();
   }
 
   setLocationMarker(Place place, [int uid = -1]) async {

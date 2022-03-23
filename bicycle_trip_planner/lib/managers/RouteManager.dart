@@ -335,6 +335,7 @@ class RouteManager {
   }
 
   void clearDestination() {
+    // _pathway.clearDestination();
     _pathway.changeDestination(const Place.placeNotFound());
     _changed = true;
   }
@@ -346,8 +347,8 @@ class RouteManager {
   }
 
   void clearFirstWaypoint() {
-    _pathway.setHasFirstWaypoint(false);
     _pathway.removeFirstWayPoint();
+    _pathway.setHasFirstWaypoint(false);
     _changed = true;
   }
 
@@ -397,6 +398,10 @@ class RouteManager {
     clearStart();
     clearDestination();
     _changed = false;
+  }
+
+  void printPathway() {
+    print(_pathway);
   }
 
   @visibleForTesting

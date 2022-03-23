@@ -15,6 +15,7 @@ class Pathway {
     _stops.add(_destination);
     size = 2;
     _updatePointers();
+    // print(this.toString());
   }
 
   //********** Getters **********
@@ -31,8 +32,11 @@ class Pathway {
         orElse: () => Stop());
   }
 
-  List<Stop> getWaypoints() =>
-      _stops.length <= 2 ? [] : _stops.sublist(1, size - 1);
+  List<Stop> getWaypoints() {
+    List<Stop> ret = size <= 2 ? [] : _stops.sublist(1, size - 1);
+    print(ret);
+    return ret;
+  }
 
   Stop getFirstWaypoint() => _firstWaypoint;
 
@@ -83,8 +87,10 @@ class Pathway {
 
   void removeFirstWayPoint() {
     _firstWaypoint = Stop();
-    _stops.removeAt(1);
-    size = size - 1;
+    if (_hasFirstWaypoint) {
+      _stops.removeAt(1);
+      size = size - 1;
+    }
   }
 
   void clearStart() {
@@ -97,7 +103,10 @@ class Pathway {
   }
 
   void clearDestination() {
+    Stop destinationStop = getDestination();
     _destination = Stop();
+    destinationStop.setStop(_destination.getStop());
+    _updateDestination();
   }
 
   void removeStop(int id) {
@@ -147,6 +156,7 @@ class Pathway {
   void changeStop(int id, Place newStop) {
     Stop stop = getStop(id);
     stop.setStop(newStop);
+    _updatePointers();
   }
 
   @override
