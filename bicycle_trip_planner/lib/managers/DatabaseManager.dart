@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../models/stop.dart';
+import 'Helper.dart';
 
 
 class DatabaseManager {
@@ -85,13 +86,13 @@ class DatabaseManager {
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Object> intermediatePlaces = {};
     Map<String, Object> route = {};
-    route['start'] = _place2Map(start);
-    route['end'] = _place2Map(end);
+    route['start'] =  Helper.place2Map(start);
+    route['end'] =  Helper.place2Map(end);
     stops.removeWhere((place) => place == Place.placeNotFound());
     for(int i = 0; i < stops.length; i++){
       Place stop = stops[i];
       if(stop != const Place.placeNotFound()){
-        intermediatePlaces[i.toString()] = _place2Map(stop);
+        intermediatePlaces[i.toString()] =  Helper.place2Map(stop);
       }
     }
     route['stops'] = intermediatePlaces;
@@ -112,7 +113,7 @@ class DatabaseManager {
     Map<String, Pathway> pathways = {};
     await favouriteRoutes.once().then((value) => {
       for (var child in value.snapshot.children) {
-        pathways[child.key.toString()] = _mapToPathway(child.value)
+        pathways[child.key.toString()] =  Helper.mapToPathway(child.value)
       }
     });
     return pathways;
@@ -135,44 +136,5 @@ class DatabaseManager {
   bool isUserLogged() {
     return _auth.currentUser != null;
   }
-
-
-  //********** Private **********
-
-  Map<String, Object> _place2Map(Place place) {
-    Map<String, Object> output = {};
-    output['name'] = place.name;
-    output['description'] = place.description;
-    output['id'] = place.placeId;
-    output['lng'] = place.geometry.location.lng;
-    output['lat'] = place.geometry.location.lat;
-    return output;
-  }
-
-  Pathway _mapToPathway(dynamic mapIn) {
-    Pathway output = Pathway();
-    output.changeStart(_mapToPlace(mapIn['start']));
-    output.changeDestination(_mapToPlace(mapIn['end']));
-    if(mapIn['stops'] != null) {
-      for(var stop in mapIn['stops']){
-        output.addStop(Stop(_mapToPlace(stop)));
-      }
-    }
-    return output;
-  }
-
-  Place _mapToPlace(dynamic mapIn) {
-    return Place(
-      name: mapIn['name'],
-      description: mapIn['description'],
-      placeId: mapIn['id'],
-      geometry: Geometry(
-          location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
-      )
-    );
-
-  }
-
-
 
 }

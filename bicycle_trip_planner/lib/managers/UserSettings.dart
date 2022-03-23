@@ -8,6 +8,7 @@ import '../models/geometry.dart';
 import '../models/location.dart';
 import '../models/place.dart';
 import '../models/stop.dart';
+import 'Helper.dart';
 
 class UserSettings {
   //********** Singleton **********
@@ -115,12 +116,12 @@ class UserSettings {
     // print('******** savedRoutes ${savedRoutes}');
     // print("------------");
     Map<String, dynamic> newRoute = {};
-    Map<String, dynamic> start = _place2Map(origin);
-    Map<String, dynamic> end = _place2Map(destination);
+    Map<String, dynamic> start =  Helper.place2Map(origin);
+    Map<String, dynamic> end =  Helper.place2Map(destination);
     List<Map<String, dynamic>> stops = [];
 
     for (int i = 0; i < intermediates.length; i++) {
-      stops.add(_place2Map(intermediates[i]));
+      stops.add( Helper.place2Map(intermediates[i]));
     }
 
     newRoute['start'] = start;
@@ -162,7 +163,7 @@ class UserSettings {
     // print("------------");
     // print(decodedMap);
     print("------------ ${decodedMap[index.toString()]}");
-    return _mapToPathway(decodedMap[index.toString()]);
+    return Helper.mapToPathway(decodedMap[index.toString()]);
   }
 
   // returns String 'miles' or 'km'
@@ -236,38 +237,4 @@ class UserSettings {
     return _isFavouriteStationsSelected;
   }
 
-//********** Private **********
-// TODO: there is same method in databaseManager.dart make a helper class to have these
-  Map<String, Object> _place2Map(Place place) {
-    Map<String, Object> output = {};
-    output['name'] = place.name;
-    output['description'] = place.description;
-    output['id'] = place.placeId;
-    output['lng'] = place.geometry.location.lng;
-    output['lat'] = place.geometry.location.lat;
-    return output;
-  }
-
-  Pathway _mapToPathway(dynamic mapIn) {
-    // TODO: refactor this to work with your code
-    Pathway output = Pathway();
-    output.changeStart(_mapToPlace(mapIn['start']));
-    output.changeDestination(_mapToPlace(mapIn['end']));
-    if(mapIn['stops'] != null) {
-      for(var stop in mapIn['stops']){
-        output.addStop(Stop(_mapToPlace(stop)));
-      }
-    }
-    return output;
-  }
-
-  // TODO: there is same method in databaseManager.dart make a helper class to have these
-  Place _mapToPlace(dynamic mapIn) {
-    return Place(
-        name: mapIn['name'],
-        description: mapIn['description'],
-        placeId: mapIn['id'],
-        geometry:
-            Geometry(location: Location(lat: mapIn['lat'], lng: mapIn['lng'])));
-  }
 }
