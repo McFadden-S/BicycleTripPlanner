@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/models/place_search.dart';
 
@@ -11,5 +13,10 @@ void main(){
     expect(placeSearch.placeId.runtimeType, String);
   });
 
+  test('build placeSearch from json', (){
+    String placeSearchJSON = '{"description": "place", "place_id": "user"}';
+    expect(PlaceSearch.fromJson(jsonDecode(placeSearchJSON)).placeId, placeSearch.placeId);
+    expect(PlaceSearch.fromJson(jsonDecode(placeSearchJSON)).description, placeSearch.description);
+  });
 
 }
