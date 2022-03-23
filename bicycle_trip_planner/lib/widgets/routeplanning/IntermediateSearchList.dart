@@ -128,7 +128,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                     routeManager.getDestination().getStop(),
                     routeManager.getWaypoints().map((waypoint) => waypoint.getStop()).toList());
                 if (successfullyAdded){
-                  print('route added');
                 }else {
                   // set up the AlertDialog
                   AlertDialog alert = AlertDialog(

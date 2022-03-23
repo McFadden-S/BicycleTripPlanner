@@ -17,7 +17,6 @@ class WeatherService{
 
     final response = await http.get(uri);
 
-    print(response.body);
     final json = jsonDecode(response.body);
     return WeatherResponse.fromJson(json);
   }

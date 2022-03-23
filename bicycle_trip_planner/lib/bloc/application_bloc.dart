@@ -155,12 +155,7 @@ class ApplicationBloc with ChangeNotifier {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) {
-      // Print this if you suspect that data is loading more than expected
-      //print("I loaded!");
-      _cameraManager.viewUser();
-      print("hi");
-      updateDirections();
-      print("hi2");
+     updateDirections();
     });
   }
 
@@ -350,7 +345,7 @@ class ApplicationBloc with ChangeNotifier {
     setSelectedScreen('navigation');
     await _navigationManager.start();
 
-    updateLocationLive();
+     updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     notifyListeners();
@@ -358,7 +353,7 @@ class ApplicationBloc with ChangeNotifier {
 
   updateDirections() async {
     // End subscription if not navigating?
-    print("hi there");
+
     if (!_navigationManager.ifNavigating()) return;
 
     await fetchCurrentLocation();
@@ -369,7 +364,11 @@ class ApplicationBloc with ChangeNotifier {
 
     if (_routeManager.ifWalkToFirstWaypoint() &&
         _routeManager.ifFirstWaypointSet()) {
+
+
       await _navigationManager.updateRouteWithWalking();
+
+
       setPartialRoutes(
           [_routeManager.getFirstWaypoint().getStop().placeId],
           _routeManager
@@ -378,10 +377,9 @@ class ApplicationBloc with ChangeNotifier {
               .map((waypoint) => waypoint.getStop().placeId)
               .toList());
     } else {
-//      print(_routeManager.ifStartSet());
 
       await _navigationManager.updateRoute();
-      setPartialRoutes(
+     setPartialRoutes(
           [],
           _routeManager
               .getWaypoints()
@@ -399,14 +397,11 @@ class ApplicationBloc with ChangeNotifier {
     String destinationId = _routeManager.getDestination().getStop().placeId;
 
     String startStationId = _navigationManager.getPickupStation().place.placeId;
-    print(startStationId);
     String endStationId = _navigationManager.getDropoffStation().place.placeId;
-    print(endStationId);
     Rou.Route startWalkRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getWalkingRoutes(
             originId, startStationId, first, false)
         : Rou.Route.routeNotFound();
-
 
     Rou.Route bikeRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getRoutes(startStationId, endStationId,

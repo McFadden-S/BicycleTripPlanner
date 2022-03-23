@@ -116,8 +116,7 @@ class DirectionManager {
   void toggleCycling([bool relocateMap = true]) {
     _isCycling = !_isCycling;
     if (_isCycling) {
-      print("Showing bike route...");
-      RouteManager().showBikeRoute(relocateMap);
+     RouteManager().showBikeRoute(relocateMap);
     } else {
       RouteManager().showCurrentWalkingRoute(relocateMap);
     }

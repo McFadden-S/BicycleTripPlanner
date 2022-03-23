@@ -97,7 +97,6 @@ class _FavouriteBarState extends State<FavouriteBar> {
     //final applicationBloc = Provider.of<ApplicationBloc>(context);
      getFavouriteStations();
 
-    print(stations.length);
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(

@@ -4,6 +4,9 @@ import 'package:bicycle_trip_planner/models/route.dart';
 import 'dart:convert' as convert;
 
 class DirectionsService {
+  //Gets routes from point A to B
+  //*Same as getWalkingRoutes barring mode of travel, could be refactored to take in mode of travel as a variable(default could be set to bicycling to reduce number of changes required)
+  //TODO:Refactor to include walking routes and reduce repeated code
   Future<Route> getRoutes(String origin, String destination,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
@@ -38,6 +41,7 @@ class DirectionsService {
     return Route.fromJson(jsonResults, RouteType.walk);
   }
 
+  //Generates waypoints as a String such that it can be read by the Uri.parse in the url
   String _generateWaypoints(List<String> intermediates,
       [bool optimised = true]) {
     String waypoints = "";

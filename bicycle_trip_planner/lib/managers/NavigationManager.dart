@@ -78,8 +78,6 @@ class NavigationManager {
   _updateRoute(Place origin,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     Location startLocation = origin.geometry.location;
-    print(origin.getLatLng());
-    print(_routeManager.getDestination().getStop().geometry.location);
     Location endLocation =
         _routeManager.getDestination().getStop().geometry.location;
 
@@ -136,7 +134,6 @@ class NavigationManager {
 
   Future<void> updateRoute() async {
     await _updateStartLocationAndStations();
-    //print(_routeManager.ifStartSet());
     await _updateRoute(
         _routeManager.getStart().getStop(),
         _routeManager
@@ -228,8 +225,6 @@ class NavigationManager {
   }
 
   Future<void> setInitialPickUpDropOffStations() async {
-    print(_routeManager.getStart().getStop().geometry.location);
-    print(_routeManager.getDestination().getStop().geometry.location);
     setNewPickUpStation(_routeManager.getStart().getStop().geometry.location,
         _routeManager.getGroupSize());
     setNewDropOffStation(

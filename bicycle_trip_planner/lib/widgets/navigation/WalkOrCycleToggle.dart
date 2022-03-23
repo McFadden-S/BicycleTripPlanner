@@ -30,7 +30,6 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
 
   @override
   Widget build(BuildContext context) {
-    print("Being built again!");
     return ElevatedButton(
       style: ButtonStyle(
           backgroundColor:
@@ -59,7 +58,6 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         ],
       ),
       onPressed: () {
-        print("Toggle button pressed");
         setCycling();
       },
     );

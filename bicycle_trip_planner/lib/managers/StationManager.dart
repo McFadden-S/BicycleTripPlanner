@@ -108,7 +108,6 @@ class StationManager {
 
     farStations =
         _stationsLookUp.difference(getNearStations(range).toSet()).toList();
-    //print(farStations);
 
     return farStations;
   }
@@ -120,7 +119,6 @@ class StationManager {
       return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
-    //print(nearbyStations);
 
     return nearbyStations;
   }

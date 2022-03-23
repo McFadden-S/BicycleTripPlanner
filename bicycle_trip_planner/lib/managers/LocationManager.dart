@@ -1,13 +1,9 @@
-import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
-
-
 
 class LocationManager {
   //********** Fields **********
@@ -32,8 +28,6 @@ class LocationManager {
   //********** Public *********
 
   Future<LatLng> locate() async {
-
-    final geolocator = geo.Geolocator();
     return _locator.locate();
   }
 
@@ -71,14 +65,17 @@ class LocationManager {
     return grantedPermission;
   }
 
+  //Calculates distance between 2 LatLng points
   Future<double> distanceTo(LatLng pos) async {
     return distanceFromTo(await locate(), pos);
   }
 
+  // Converts distance to current unit format
   double distanceFromTo(LatLng posFrom, LatLng posTo) {
     return _units.convert(_calculateDistance(posFrom, posTo));
   }
 
+  // Calculates distance between 2 LatLng points in meters
   double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
     return _calculateDistance(posFrom, posTo);
   }
@@ -90,14 +87,17 @@ class LocationManager {
         distanceFilter: distanceFilter);
   }
 
+  // Sets current location to an assigned place
   void setCurrentLocation(Place currentPlace) {
     _currentPlace = currentPlace;
   }
 
+  // Gets stored current location
   Place getCurrentLocation() {
     return _currentPlace;
   }
 
+  //Returns the type of units used
   DistanceType getUnits() {
     return _units;
   }
@@ -110,9 +110,9 @@ class LocationManager {
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
+  // Returns a stream of locationData which adds values everytime the user's location is changed
   Stream<LocationData> onUserLocationChange([double distanceFilter = 0]) {
     Location location = Location();
-    print(distanceFilter);
     locationSettings(distanceFilter);
     return location.onLocationChanged;
   }
@@ -120,12 +120,4 @@ class LocationManager {
   void setUnits(DistanceType units) {
     _units = units;
   }
-
-  @visibleForTesting
-  void isTest(geo.Geolocator geolocator){
-    _locator.locate();
-
-  }
-
-
 }
