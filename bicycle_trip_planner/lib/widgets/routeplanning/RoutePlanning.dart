@@ -1,7 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
@@ -9,8 +8,6 @@ import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
@@ -160,7 +157,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
-  final FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool successfullyAdded =
   await databaseManager.addToFavouriteRoutes(
@@ -169,7 +165,7 @@ saveRoute(context) async {
       routeManager
           .getWaypoints()
           .map((waypoint) => waypoint.getStop())
-          .toList()).then((v){favouriteRoutesManager.updateRoutes(); return v;});;
+          .toList()).then((v){DatabaseManager().updateRoutes(); return v;});;
   if (successfullyAdded) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

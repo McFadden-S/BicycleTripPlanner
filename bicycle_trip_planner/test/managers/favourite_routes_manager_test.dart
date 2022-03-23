@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+/*import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 
 main(){
@@ -13,4 +13,4 @@ main(){
     expect(favouriteRoute.getKey(1), "");
     expect(favouriteRoute.getFavouriteRouteByIndex(1), null);
   });
-}
+}*/

@@ -15,6 +15,8 @@ class DatabaseManager {
   final FirebaseDatabase _dbInstance = FirebaseDatabase.instance;
   final _auth = FirebaseAuth.instance;
 
+  Map<String,Pathway> _routes = {};
+
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
   factory DatabaseManager() {
@@ -116,6 +118,7 @@ class DatabaseManager {
         pathways[child.key.toString()] = _mapToPathway(child.value)
       }
     });
+    updateRoutes();
     return pathways;
   }
 
@@ -135,6 +138,36 @@ class DatabaseManager {
 
   bool isUserLogged() {
     return _auth.currentUser != null;
+  }
+
+  //********** Manage favourite routes
+
+  int getNumberOfRoutes() {
+    return _routes.length;
+  }
+
+  /*Map<String, Pathway> getFavouriteRoutes() {
+    return _routes;
+  }*/
+
+  Pathway? getFavouriteRouteByIndex(int index) {
+    if(index < _routes.length && index >= 0) {
+      return _routes[_routes.keys.toList()[index]]!;
+    }
+  }
+
+  String getRouteKeyByIndex(int index) {
+    if(index < _routes.length && index >= 0) {
+      return _routes.keys.toList()[index];
+    } else {
+      return "";
+    }
+  }
+
+  void updateRoutes() {
+    if(isUserLogged()) {
+      getFavouriteRoutes().then((value) => _routes = value);
+    }
   }
 
 
