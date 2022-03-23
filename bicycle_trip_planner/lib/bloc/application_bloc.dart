@@ -161,7 +161,7 @@ class ApplicationBloc with ChangeNotifier {
             placeId: _locationManager.getCurrentLocation().placeId));
 
     // Insert recent searches as suggestions in recent results drop down
-    if (noRecentSearches < 4 && noRecentSearches > 0) {
+    if (noRecentSearches > 0) {
       for(int i = 0; i<names.length; i++){
         searchResults.insert(
             i + 1,

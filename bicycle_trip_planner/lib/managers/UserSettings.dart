@@ -27,19 +27,29 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
 
     // add recent searches to prefs and store as json map
-    if (prefs.getString("recentSearches") != null) {
-      String? encodedMap = prefs.getString("recentSearches");
-      var decodedMap = json.decode(encodedMap!);
-      Map<String, dynamic>.from(decodedMap);
-      decodedMap[place.placeId] = place.description;
-      String encodedMap1 = json.encode(decodedMap);
-      await prefs.setString("recentSearches", encodedMap1);
-      // print(decodedMap.toString());
-    } else {
-      Map<String, String> placeDetails = {place.placeId: place.description};
-      String encodedMap = json.encode(placeDetails);
-      await prefs.setString("recentSearches", encodedMap);
+    if (place.description != "My Current Location") {
+      if (prefs.getString("recentSearches") != null) {
+        String? encodedMap = prefs.getString("recentSearches");
+        var decodedMap = json.decode(encodedMap!);
+        Map<String, dynamic>.from(decodedMap);
+        decodedMap[place.placeId] = place.description;
+
+        // remove recent searches that are now quite old
+        if (decodedMap.keys.toList().length > 4) {
+          decodedMap.keys.toList().reversed.toList().remove(0);
+          decodedMap.values.toList().reversed.toList().remove(0);
+        }
+
+        String encodedMap1 = json.encode(decodedMap);
+        await prefs.setString("recentSearches", encodedMap1);
+        // print(decodedMap.toString());
+      } else {
+        Map<String, String> placeDetails = {place.placeId: place.description};
+        String encodedMap = json.encode(placeDetails);
+        await prefs.setString("recentSearches", encodedMap);
+      }
     }
+
   }
 
   // Retrieve recent searches map
@@ -123,6 +133,20 @@ class UserSettings {
 
     print('******** savedRoutes after saving ${savedRoutes}');
     print("------------");
+  }
+
+  Future<int> getNumberOfRoutes() async {
+    final SharedPreferences prefs = await _prefs;
+
+    String? encodedMap = prefs.getString('recentRoutes') ;
+    var decodedMap = json.decode(encodedMap!);
+    Map<String, dynamic>.from(decodedMap);
+
+    if (encodedMap == null) {
+      return 0;
+    } else {
+      return decodedMap.keys.toList().length;
+    }
   }
 
   Future<Map<String, dynamic>> getRoute() async {

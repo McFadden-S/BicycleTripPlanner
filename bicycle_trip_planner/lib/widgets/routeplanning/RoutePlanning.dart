@@ -166,7 +166,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
     );
   }
 
-  void showRecentRoutes() {
+  void showRecentRoutes() async {
+    int noRoutes = await _userSettings.getNumberOfRoutes();
     showModalBottomSheet(
         enableDrag: true,
         shape: RoundedRectangleBorder(
@@ -202,23 +203,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
-                                // child: ListView.builder(
-
-                                //     scrollDirection: Axis.horizontal,
-                                //     itemCount: 4, // number of cards
-                                //     itemBuilder:
-                                //         (BuildContext context, int index) {
-                                //       Map<String, String> route =
-                                //           _userSettings.getRoute(index + 1).then((route) => RecentRouteCard(route: route));
-                                //       print(route);
-                                //       return RecentRouteCard(route: route);
-                                //     })
                                 child: FutureBuilder<Map<String, dynamic>>(
                                     future: _userSettings.getRoute(),
                                     builder: (context, snapshot) {
                                       return ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: 4, // number of cards
+                                          itemCount: noRoutes, // number of cards
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             // This could be null when user has no stored routes (fresh phone)
