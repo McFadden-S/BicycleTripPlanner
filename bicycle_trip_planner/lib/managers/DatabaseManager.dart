@@ -106,7 +106,6 @@ class DatabaseManager {
     return true;
   }
 
-
   Future<Map<String, Pathway>> getFavouriteRoutes() async {
     var uid = FirebaseAuth.instance.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');

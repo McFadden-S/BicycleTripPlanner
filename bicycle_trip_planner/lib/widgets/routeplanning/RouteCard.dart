@@ -39,7 +39,7 @@ class _RouteCardState extends State<RouteCard> {
         routeManager.ifDestinationSet() &&
         routeManager.ifChanged()) {
       polylineManager.clearPolyline();
-      print("Description: ${routeManager.getStart().getStop().description}");
+      // print("Description: ${routeManager.getStart().getStop().description}");
       routeManager.getStart().getStop().description ==
               SearchType.current.description
           ? routeManager.setStartFromCurrentLocation(true)
