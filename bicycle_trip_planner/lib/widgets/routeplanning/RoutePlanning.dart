@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
@@ -30,8 +31,17 @@ class RoutePlanning extends StatefulWidget {
 class _RoutePlanningState extends State<RoutePlanning> {
   bool showRouteCard = true;
   bool isOptimised = false;
+  late int _recentRoutesCount;
 
   final RouteManager _routeManager = RouteManager();
+  final UserSettings _userSettings = UserSettings();
+
+
+  @override
+  void initState() {
+    super.initState();
+    getRecentRoutesCount();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -191,7 +201,12 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.22,
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15),
+                      child: Text("Recent Journeys", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
+                    ),
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.165,
                       child: Row(
@@ -200,12 +215,15 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: 1, // number of cards
-                                          itemBuilder: (BuildContext context, int index) =>
-                                              RecentRouteCard(index: index)
-                                          )
+                                child: SizedBox(
+                                    width:MediaQuery.of(context).size.width,
+                                    child: ListView.builder(
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: _recentRoutesCount, // number of cards
+                                              itemBuilder: (BuildContext context, int index) =>
+                                                  RecentRouteCard(index: index)
+                                              ),
+                                )
                             ),
                           ),
                         ],
@@ -215,6 +233,19 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 )),
           );
         });
+  }
+
+  getRecentRoutesCount() async {
+    int recentRoutesCount = await _userSettings.getNumberOfRoutes();
+    if(recentRoutesCount > 5){
+      setState(() {
+        _recentRoutesCount = 5;
+      });
+    }else{
+      setState(() {
+        _recentRoutesCount = recentRoutesCount;
+      });
+    }
   }
 }
 

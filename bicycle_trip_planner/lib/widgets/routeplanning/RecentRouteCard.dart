@@ -18,26 +18,26 @@ class RecentRouteCard extends StatefulWidget {
 }
 
 class _RouteCardState extends State<RecentRouteCard> {
+  late Pathway pathway;
   late String startDescription = 'No DATA';
-  late String endDescription= 'No DATA';
+  late String endDescription = 'No DATA';
   late List<String> stopsDescriptions = [];
   final UserSettings _userSettings = UserSettings();
 
   @override
   void initState() {
-    setState(() {
-      initVariables();
-    });
     super.initState();
+    initVariables();
   }
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      onTap: () {
+      onTap: () async {
         Navigator.of(context).maybePop();
-        // routeClicked(applicationBloc, await _userSettings.getRecentRoute(widget.index), context);
+        routeClicked(applicationBloc, pathway, context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -95,8 +95,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                     SizedBox(
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
-                        child: Text(
-                            "\t\t${stopsDescriptions.join(", ")}",
+                        child: Text("\t\t${stopsDescriptions.join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -147,13 +146,16 @@ class _RouteCardState extends State<RecentRouteCard> {
     );
   }
 
-  Future<void> initVariables() async {
+  initVariables() async {
     Pathway recentRoute = await _userSettings.getRecentRoute(widget.index);
-    startDescription = recentRoute.getStart().getStop().description;
-    endDescription = recentRoute.getDestination().getStop().description;
-    for(var stop in recentRoute.getWaypoints()){
-      stopsDescriptions.add(stop.getStop().description);
-    }
+    setState(() {
+      pathway = recentRoute;
+      startDescription = recentRoute.getStart().getStop().description;
+      endDescription = recentRoute.getDestination().getStop().description;
+      for (var stop in recentRoute.getWaypoints()) {
+        stopsDescriptions.add(stop.getStop().description);
+      }
+    });
   }
 }
 
@@ -167,7 +169,6 @@ Future<void> routeClicked(
     routeManager.addWaypoint(element.getStop());
   });
 
-  appBloc.setSelectedScreen('routePlanning');
 
   appBloc.findRoute(
       routeManager.getStart().getStop(),
