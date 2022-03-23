@@ -9,26 +9,15 @@ import 'package:provider/provider.dart';
 import '../../models/pathway.dart';
 
 class RecentRouteCard extends StatefulWidget {
+  final route;
 
-  const RecentRouteCard(
-      {Key? key})
-      : super(key: key);
+  const RecentRouteCard({Key? key, required this.route}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
 }
 
 class _RouteCardState extends State<RecentRouteCard> {
-  final UserSettings _userSettings = UserSettings();
-
-  String route = "";
-
-  _RouteCardState() {
-    _userSettings.getRoute().then((val) => setState(() {
-      route = val;
-    }));
-  }
-
   @override
   Widget build(BuildContext context) {
     // final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
@@ -54,11 +43,11 @@ class _RouteCardState extends State<RecentRouteCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       SizedBox(
-                        width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
-                        child:
-                        Text(
+                        width:
+                            (MediaQuery.of(context).size.width * 0.85) - 70.0,
+                        child: Text(
                           //"\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
-                          route,
+                          widget.route["start"]["description"],
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -68,28 +57,53 @@ class _RouteCardState extends State<RecentRouteCard> {
                     ],
                   ),
                   Spacer(),
-                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,)]),
+                  Row(children: [
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    Icon(
+                      Icons.circle,
+                      size: 4.0,
+                      color: ThemeStyle.secondaryIconColor,
+                    )
+                  ]),
                   Spacer(),
-                  Row(
-                      children: [
-                        SizedBox(width: 8.0,),
-                        Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,),
-                        SizedBox(width: 8.0,),
-                        SizedBox(
-                            width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
-                            child:
-                            Text(
-                                // "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
-                                "middle",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
-                            )
-                        ),
-                        SizedBox(width: 20),
-                      ]
-                  ),
+                  Row(children: [
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    Icon(
+                      Icons.circle,
+                      size: 4.0,
+                      color: ThemeStyle.secondaryIconColor,
+                    ),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    SizedBox(
+                        width:
+                            (MediaQuery.of(context).size.width * 0.85) - 70.0,
+                        child: Text(
+                            // "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            "middle",
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              color: ThemeStyle.secondaryFontColor,
+                            ))),
+                    SizedBox(width: 20),
+                  ]),
                   Spacer(),
-                  Row(children: [SizedBox(width: 8.0,), Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,)]),
+                  Row(children: [
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    Icon(
+                      Icons.circle,
+                      size: 4.0,
+                      color: ThemeStyle.secondaryIconColor,
+                    )
+                  ]),
                   Spacer(),
                   Row(
                     children: [
@@ -99,7 +113,8 @@ class _RouteCardState extends State<RecentRouteCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       SizedBox(
-                        width: (MediaQuery.of(context).size.width * 0.85) - 80.0,
+                        width:
+                            (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
                           // "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
                           "end",
@@ -109,14 +124,15 @@ class _RouteCardState extends State<RecentRouteCard> {
                               color: ThemeStyle.secondaryTextColor),
                         ),
                       ),
-                      Spacer(flex: 5,),
+                      Spacer(
+                        flex: 5,
+                      ),
                       const Spacer(flex: 1),
                     ],
                   ),
                 ],
               ),
-            )
-        ),
+            )),
       ),
     );
   }
@@ -128,7 +144,9 @@ Future<void> routeClicked(
   routeManager.getStart().setStop(pathway.getStart().getStop());
   routeManager.getDestination().setStop(pathway.getDestination().getStop());
   routeManager.removeWaypoints();
-  pathway.getWaypoints().forEach((element) {routeManager.addWaypoint(element.getStop());});
+  pathway.getWaypoints().forEach((element) {
+    routeManager.addWaypoint(element.getStop());
+  });
 
   appBloc.setSelectedScreen('routePlanning');
 

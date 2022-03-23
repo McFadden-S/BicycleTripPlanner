@@ -98,14 +98,16 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
     print('******** savedElements ${savedElements}');
+    print("------------");
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
     print('******** savedRoutes ${savedRoutes}');
+    print("------------");
     Map<String, dynamic> newRoute = {};
     Map<String, dynamic> start = _place2Map(origin);
     Map<String, dynamic> end = _place2Map(destination);
     Map<String, dynamic> stops = {};
 
-    for(int i = 0; i < intermediates.length; i++){
+    for (int i = 0; i < intermediates.length; i++) {
       stops[i.toString()] = _place2Map(intermediates[i]);
     }
 
@@ -114,23 +116,25 @@ class UserSettings {
     newRoute['stops'] = stops;
 
     print('******** newRoute ${newRoute}');
+    print("------------");
     // """"${(savedRoutes.keys.length + 1).toString()}" """.trim()
     savedRoutes[(savedRoutes.keys.length + 1).toString()] = newRoute;
     prefs.setString('recentRoutes', json.encode(savedRoutes));
 
     print('******** savedRoutes after saving ${savedRoutes}');
+    print("------------");
   }
 
-  Future<String> getRoute() async {
+  Future<Map<String, dynamic>> getRoute() async {
     final SharedPreferences prefs = await _prefs;
     final String? encodedMap = prefs.getString("recentRoutes");
-    var decodedMap = json.decode(encodedMap!); // as Map<dynamic, dynamic>
-    // Map<String, Map<String, String>>
-    print("decoded map as string ${decodedMap.toString()}");
-    // Map<dynamic, dynamic>.from(decodedMap);
-    // print(decodedMap["0"]);
+    Map<String, dynamic> decodedMap = json.decode(encodedMap!);
+
+    //print(decodedMap["1"]["start"]["description"]);
+    // print("------------");
     // print(decodedMap);
-    return "temp string";
+    // print("------------");
+    return decodedMap;
   }
 
   // returns String 'miles' or 'km'
@@ -235,9 +239,7 @@ class UserSettings {
         name: mapIn['name'],
         description: mapIn['description'],
         placeId: mapIn['id'],
-        geometry: Geometry(
-            location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
-        )
-    );
+        geometry:
+            Geometry(location: Location(lat: mapIn['lat'], lng: mapIn['lng'])));
   }
 }

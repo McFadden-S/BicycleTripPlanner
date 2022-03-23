@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
@@ -32,7 +33,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   bool isOptimised = false;
 
   final RouteManager _routeManager = RouteManager();
-  final DirectionManager _directionManager = DirectionManager();
+  final UserSettings _userSettings = UserSettings();
 
   @override
   Widget build(BuildContext context) {
@@ -99,17 +100,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                    child: Row(
+                  child: Row(
                       // mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CircleButton(
-                              iconIn: Icons.history,
-                              iconColor: ThemeStyle.primaryIconColor,
-                              onButtonClicked: () => showRecentRoutes()
-                          ),
-                          Spacer(),
-                          CustomBackButton(context: context, backTo: 'home'),
-                        ]),
+                      children: [
+                        CircleButton(
+                            iconIn: Icons.history,
+                            iconColor: ThemeStyle.primaryIconColor,
+                            onButtonClicked: () => showRecentRoutes()),
+                        Spacer(),
+                        CustomBackButton(context: context, backTo: 'home'),
+                      ]),
                 ),
                 CustomBottomSheet(
                   child: Row(
@@ -119,41 +119,44 @@ class _RoutePlanningState extends State<RoutePlanning> {
                           children: [DistanceETACard()],
                         ),
                         Spacer(),
-                        DatabaseManager().isUserLogged() ?
-                        SizedBox(
-                          width: 50,
-                          child: ElevatedButton(
-                              onPressed: (){saveRoute(context);},
-                              child: Icon(
-                                Icons.save,
-                                color: ThemeStyle.secondaryFontColor,
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(17.0),
-                                ),
-                                primary: ThemeStyle.buttonSecondaryColor,
-                              ))) : Container(),
+                        DatabaseManager().isUserLogged()
+                            ? SizedBox(
+                                width: 50,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      saveRoute(context);
+                                    },
+                                    child: Icon(
+                                      Icons.save,
+                                      color: ThemeStyle.secondaryFontColor,
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(17.0),
+                                      ),
+                                      primary: ThemeStyle.buttonSecondaryColor,
+                                    )))
+                            : Container(),
                         Spacer(),
                         Expanded(
                           flex: 20,
                           child: RoundedRectangleButton(
-                            iconIn: Icons.directions_bike,
-                            buttonColor: ThemeStyle.goButtonColor,
-                            onButtonClicked: () {
-                              if (_routeManager.ifRouteSet()) {
-                                // TODO: call method here that stores the route
-                                applicationBloc.startNavigation();
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text("No route could be found!"),
-                                ));
-                              }
-                            }),
+                              iconIn: Icons.directions_bike,
+                              buttonColor: ThemeStyle.goButtonColor,
+                              onButtonClicked: () {
+                                if (_routeManager.ifRouteSet()) {
+                                  // TODO: call method here that stores the route
+                                  applicationBloc.startNavigation();
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text("No route could be found!"),
+                                  ));
+                                }
+                              }),
                         )
-                      ]
-                      ),
+                      ]),
                 ),
               ],
             ),
@@ -162,19 +165,31 @@ class _RoutePlanningState extends State<RoutePlanning> {
       ),
     );
   }
+
   void showRecentRoutes() {
     showModalBottomSheet(
         enableDrag: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
           return Container(
             padding: const EdgeInsets.only(bottom: 20.0),
             decoration: BoxDecoration(
                 color: ThemeStyle.cardColor,
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-                boxShadow: [ BoxShadow(color: ThemeStyle.stationShadow, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
-            ),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.0),
+                    topRight: Radius.circular(30.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: ThemeStyle.stationShadow,
+                    spreadRadius: 8,
+                    blurRadius: 6,
+                    offset: Offset(0, 0),
+                  )
+                ]),
             child: SizedBox(
                 height: MediaQuery.of(context).size.height * 0.22,
                 child: Column(
@@ -185,23 +200,42 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         children: [
                           Flexible(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                              child:
-                              ListView.builder(
-                                  // controller: stationsPageViewController,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: 4, // number of cards
-                                  itemBuilder: (BuildContext context, int index) =>
-                                      RecentRouteCard()
-                              )
-                            ),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5.0),
+                                // child: ListView.builder(
+
+                                //     scrollDirection: Axis.horizontal,
+                                //     itemCount: 4, // number of cards
+                                //     itemBuilder:
+                                //         (BuildContext context, int index) {
+                                //       Map<String, String> route =
+                                //           _userSettings.getRoute(index + 1).then((route) => RecentRouteCard(route: route));
+                                //       print(route);
+                                //       return RecentRouteCard(route: route);
+                                //     })
+                                child: FutureBuilder<Map<String, dynamic>>(
+                                    future: _userSettings.getRoute(),
+                                    builder: (context, snapshot) {
+                                      return ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: 4, // number of cards
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            // This could be null when user has no stored routes (fresh phone)
+                                            // Ensure that no route card is printed (Or don't show this widget)
+                                            // if there is no recent routes and show a snackbar for an error
+                                            Map<String, dynamic>? route =
+                                                snapshot.data!["${index + 1}"];
+                                            return RecentRouteCard(
+                                                route: route);
+                                          });
+                                    })),
                           ),
                         ],
                       ),
                     ),
                   ],
-                )
-            ),
+                )),
           );
         });
   }
@@ -210,28 +244,29 @@ class _RoutePlanningState extends State<RoutePlanning> {
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
-  final FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
+  final FavouriteRoutesManager favouriteRoutesManager =
+      FavouriteRoutesManager();
 
-  bool successfullyAdded =
-  await databaseManager.addToFavouriteRoutes(
-      routeManager.getStart().getStop(),
-      routeManager.getDestination().getStop(),
-      routeManager
-          .getWaypoints()
-          .map((waypoint) => waypoint.getStop())
-          .toList()).then((v){favouriteRoutesManager.updateRoutes(); return v;});;
+  bool successfullyAdded = await databaseManager
+      .addToFavouriteRoutes(
+          routeManager.getStart().getStop(),
+          routeManager.getDestination().getStop(),
+          routeManager
+              .getWaypoints()
+              .map((waypoint) => waypoint.getStop())
+              .toList())
+      .then((v) {
+    favouriteRoutesManager.updateRoutes();
+    return v;
+  });
+  ;
   if (successfullyAdded) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Route saved correctly!"),
-        )
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Route saved correctly!"),
+    ));
   } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Error while saving the route!"),
-        )
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Error while saving the route!"),
+    ));
   }
 }
-
