@@ -30,26 +30,22 @@ class UserSettings {
         var decodedMap = Map<String, dynamic>.from(json.decode(encodedMap!));
         decodedMap[place.placeId] = place.description;
 
-        print('******** decodedMap B ${decodedMap}');
-        // remove recent searches that are now quite old
-        // use removeLast() and do not use reversed.
-        print("-------------- ${decodedMap.keys.toList().length}" );
         if (decodedMap.keys.toList().length > 4) {
           List<String> placeIds = decodedMap.keys.toList();
-          print("placeIds pre ----------------------");
-          print(placeIds);
-          placeIds.removeLast();
-          print("placeIds  post ----------------------");
-          print(placeIds);
-          List<dynamic> names = decodedMap.values.toList();
-          names.removeLast();
-        }
+          placeIds.remove(placeIds.first);
 
-        print('******** decodedMap A ${decodedMap}');
+          List<dynamic> names = decodedMap.values.toList();
+          names.remove(names.first);
+
+          Map<String, dynamic> newMap = {};
+          for (int i = 0; i < names.length ; i++) {
+            newMap[placeIds[i]] = names[i];
+          }
+          decodedMap = newMap;
+        }
 
         String encodedMap1 = json.encode(decodedMap);
         await prefs.setString("recentSearches", encodedMap1);
-        // print(decodedMap.toString());
       } else {
         Map<String, String> placeDetails = {place.placeId: place.description};
         String encodedMap = json.encode(placeDetails);
