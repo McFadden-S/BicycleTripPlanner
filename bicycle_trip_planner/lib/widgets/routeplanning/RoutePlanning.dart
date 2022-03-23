@@ -36,7 +36,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
   final RouteManager _routeManager = RouteManager();
   final UserSettings _userSettings = UserSettings();
 
-
   @override
   void initState() {
     super.initState();
@@ -108,16 +107,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Row(
-                      // mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        CircleButton(
+                  child: Row(children: [
+                    _recentRoutesCount != 0
+                        ? CircleButton(
                             iconIn: Icons.history,
                             iconColor: ThemeStyle.primaryIconColor,
-                            onButtonClicked: () => showRecentRoutes()),
-                        Spacer(),
-                        CustomBackButton(context: context, backTo: 'home'),
-                      ]),
+                            onButtonClicked: () => showRecentRoutes())
+                        : SizedBox.shrink(),
+                    Spacer(),
+                    CustomBackButton(context: context, backTo: 'home'),
+                  ]),
                 ),
                 CustomBottomSheet(
                   child: Row(
@@ -199,35 +198,32 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   )
                 ]),
             child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.22,
+                height: MediaQuery.of(context).size.height * 0.4,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(left: 15),
-                      child: Text("Recent Journeys", style: TextStyle(fontSize: 25.0, color: ThemeStyle.secondaryTextColor)),
+                      child: Text("Recent Journeys",
+                          style: TextStyle(
+                              fontSize: 25.0,
+                              color: ThemeStyle.secondaryTextColor)),
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.165,
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: SizedBox(
-                                    width:MediaQuery.of(context).size.width,
-                                    child: ListView.builder(
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: _recentRoutesCount, // number of cards
-                                              itemBuilder: (BuildContext context, int index) =>
-                                                  RecentRouteCard(index: index)
-                                              ),
-                                )
-                            ),
-                          ),
-                        ],
-                      ),
+                    Expanded(
+                      child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemCount: _recentRoutesCount, // number of cards
+                              itemBuilder: (BuildContext context, int index) =>
+                                  SizedBox(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.15,
+                                      child: RecentRouteCard(
+                                          index: _recentRoutesCount -
+                                              1 -
+                                              index)))),
                     ),
                   ],
                 )),
@@ -237,15 +233,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   getRecentRoutesCount() async {
     int recentRoutesCount = await _userSettings.getNumberOfRoutes();
-    if(recentRoutesCount > 5){
-      setState(() {
-        _recentRoutesCount = 5;
-      });
-    }else{
-      setState(() {
-        _recentRoutesCount = recentRoutesCount;
-      });
-    }
+    setState(() {
+      _recentRoutesCount = recentRoutesCount;
+    });
   }
 }
 

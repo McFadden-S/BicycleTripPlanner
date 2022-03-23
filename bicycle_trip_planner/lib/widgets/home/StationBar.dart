@@ -2,7 +2,6 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -188,7 +187,7 @@ class _StationBarState extends State<StationBar> {
                                         itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
                                         itemBuilder: (BuildContext context, int index) =>
                                             SizedBox(
-                                                height: 130,
+                                                height: MediaQuery.of(context).size.height * 0.15,
                                                 child:FavouriteRouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
                                             )
                                     ) :

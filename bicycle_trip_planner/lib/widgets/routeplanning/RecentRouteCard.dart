@@ -147,7 +147,7 @@ class _RouteCardState extends State<RecentRouteCard> {
   }
 
   initVariables() async {
-    Pathway recentRoute = await _userSettings.getRecentRoute(widget.index);
+    Pathway recentRoute = await _userSettings.getRecentRoute((widget.index));
     setState(() {
       pathway = recentRoute;
       startDescription = recentRoute.getStart().getStop().description;
@@ -168,7 +168,6 @@ Future<void> routeClicked(
   pathway.getWaypoints().forEach((element) {
     routeManager.addWaypoint(element.getStop());
   });
-
 
   appBloc.findRoute(
       routeManager.getStart().getStop(),
