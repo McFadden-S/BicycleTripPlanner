@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../models/pathway.dart';
 
 class RecentRouteCard extends StatefulWidget {
@@ -24,21 +25,20 @@ class _RouteCardState extends State<RecentRouteCard> {
 
   @override
   void initState() {
-    super.initState();
     setState(() {
       initVariables();
     });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
-      // onTap: () {
-      //   Navigator.of(context).maybePop();
-      //   routeClicked(applicationBloc,
-      //       favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!, context);
-      // },
+      onTap: () {
+        Navigator.of(context).maybePop();
+        // routeClicked(applicationBloc, await _userSettings.getRecentRoute(widget.index), context);
+      },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
         child: Card(

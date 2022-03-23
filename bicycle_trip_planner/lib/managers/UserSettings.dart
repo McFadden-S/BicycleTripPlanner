@@ -1,13 +1,9 @@
 import 'dart:async';
-import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import '../models/geometry.dart';
-import '../models/location.dart';
 import '../models/place.dart';
-import '../models/stop.dart';
 import 'Helper.dart';
 
 class UserSettings {
@@ -36,9 +32,17 @@ class UserSettings {
 
         print('******** decodedMap B ${decodedMap}');
         // remove recent searches that are now quite old
+        // use removeLast() and do not use reversed.
+        print("-------------- ${decodedMap.keys.toList().length}" );
         if (decodedMap.keys.toList().length > 4) {
-          decodedMap.keys.toList().reversed.toList().remove(0);
-          decodedMap.values.toList().reversed.toList().remove(0);
+          List<String> placeIds = decodedMap.keys.toList();
+          print("placeIds pre ----------------------");
+          print(placeIds);
+          placeIds.removeLast();
+          print("placeIds  post ----------------------");
+          print(placeIds);
+          List<dynamic> names = decodedMap.values.toList();
+          names.removeLast();
         }
 
         print('******** decodedMap A ${decodedMap}');
@@ -52,7 +56,6 @@ class UserSettings {
         await prefs.setString("recentSearches", encodedMap);
       }
     }
-
   }
 
   // Retrieve recent searches map
@@ -65,48 +68,7 @@ class UserSettings {
     return decodedMap;
   }
 
-  // saveRoute(Place origin, Place destination, List<Place> intermediates) async {
-  //   final SharedPreferences prefs = await _prefs;
-  //   Map<String, dynamic> route = {};
-  //   route[origin.placeId] = origin.description;
-  //
-  //   for (var place in intermediates) {
-  //     route[place.placeId] = place.description;
-  //   }
-  //
-  //   route[destination.placeId] = destination.description;
-  //   // print("/////////////////////////////route/////////////////////////////////");
-  //   // print(route);
-  //
-  //   // if routes is empty
-  //   if ((prefs.getString("recentRoutes") != null)) {
-  //     String? encodedMap = prefs.getString("recentRoutes");
-  //     print("**************** 1 " + encodedMap!);
-  //
-  //     var decoded = Map<int, Map<String, dynamic>>.from(json.decode(encodedMap));
-  //     // add to new route to decoded map
-  //     int recordNumber = decoded.keys.length + 1; // could not be + 1
-  //     decoded[recordNumber] = route;
-  //     print("/////////////////////////decodedmap////////////////////////////");
-  //     String encodedMap1 = json.encode(decoded);
-  //     print("**************** encodedMap1 " + encodedMap1);
-  //     await prefs.setString("recentRoutes", encodedMap1);
-  //   } else {
-  //
-  //     Map<int, Map<String, dynamic>> recentRoutes = {};
-  //     recentRoutes[0] = route;
-  //     print("recent route with number " + recentRoutes.toString());
-  //
-  //     String encodedMap = json.encode(recentRoutes.toString());
-  //
-  //     print("**************** " + encodedMap);
-  //     // print("////////////////////////////////////////////////////////////");
-  //     // print(encodedMap);
-  //     await prefs.setString("recentRoutes", encodedMap);
-  //   }
-  // }
-
-  // TODO: make sure it works, delete prints
+  // TODO: Delete prints
   saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
