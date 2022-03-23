@@ -56,7 +56,7 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                           key: Key("settingsButton"),
                           icon: Icon(
                             Icons.settings,
-                            color: ThemeStyle.buttonPrimaryColor,
+                            color: ThemeStyle.primaryTextColor,
                           ),
                           onPressed: () async {
                             await Navigator.push(

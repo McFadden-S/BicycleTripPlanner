@@ -118,14 +118,20 @@ class _SearchState extends State<Search> {
                 borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               prefixIcon: IconButton(
-                icon: const Icon(Icons.search),
+                icon: Icon(
+                    Icons.search,
+                    color: ThemeStyle.primaryTextColor,
+                ),
                 onPressed: () {setState(() {
                     applicationBloc.searchPlaces(searchInput);
                   });
                 },
               ),
               suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
+                icon: Icon(
+                    Icons.clear,
+                    color: ThemeStyle.primaryTextColor,
+                ),
                 onPressed: () {
                     applicationBloc.clearLocationMarker(widget.uid);
                     if(widget.uid != -1){

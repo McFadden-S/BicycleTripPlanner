@@ -129,21 +129,25 @@ void main() {
 
       });
 
-  //
-  // testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
-  //         (WidgetTester tester) async {
-  //       await pumpWidget(tester, MaterialApp(
-  //         home: Material(child: GroupSizeSelector()),
-  //       ));
-  //
-  //       expect(find.byKey(Key("groupSizeSelector")), findsOneWidget);
-  //       expect(find.text("1"), findsOneWidget);
-  //       await tester.tap(find.byKey(Key("groupSizeSelector")));
-  //       // await tester.pumpAndSettle();
-  //
-  //
-  //
-  //     });
+
+  testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
+          (WidgetTester tester) async {
+        await pumpWidget(tester, MaterialApp(
+          home: Material(child: GroupSizeSelector()),
+        ));
+
+        expect((tester.widget(
+            find.byKey(
+                Key("groupSizeSelector"))) as DropdownButton).value, equals(1));
+        await tester.tap(find.byKey(Key("groupSizeSelector")));
+        await tester.pump();
+        await tester.pump(Duration(seconds: 1));
+
+        // Check that all options are there 1-10
+        for(int i = 1; i <= 10; i++){
+          expect(find.byKey(Key(i.toString()), skipOffstage: false), findsOneWidget);
+        }
+      });
 
 }
 
