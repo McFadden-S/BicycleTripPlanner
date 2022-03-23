@@ -4,6 +4,8 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
@@ -30,6 +32,7 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   final LocationManager locationManager = LocationManager();
   final DirectionManager directionManager = DirectionManager();
+  final MarkerManager markerManager = MarkerManager();
   late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
   final CountdownController _controller = CountdownController();
@@ -37,27 +40,14 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
-
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    // Move to the user when navigation starts
     CameraManager.instance.viewUser();
-
-    // locatorSubscription = locationManager
-    //     .onUserLocationChange()
-    //     .listen((LocationData currentLocation) {
-    //   setState(() {
-    //     CameraManager.instance.viewUser();
-    //   });
-    // });
-
-    applicationBloc.clearStationMarkersNotInRoute();
+    markerManager.clearStationMarkers(StationManager().getStations());
   }
 
   @override
   void dispose() {
     applicationBloc.filterStationMarkers();
-    //locatorSubscription.cancel();
     super.dispose();
   }
 
@@ -106,12 +96,27 @@ class _NavigationState extends State<Navigation> {
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
               child: Row(
                 children: [
-                  Expanded(child: DistanceETACard()),
                   Expanded(
+                    flex: 2,
+                    child: Wrap(
+                      children: [DistanceETACard()],
+                    ),
+                  ),
+                  // Expanded(
+                  //   flex: 1,
+                  //     child: Spacer()
+                  // ),
+                  Expanded(
+                    flex: 8,
                     child: Column(
                       children: [
                         Expanded(
-                          child: EndRouteButton(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: EndRouteButton(
+                              key: Key('EndRouteButton'),
+                            ),
+                          ),
                         ),
                         Expanded(
                             child: Padding(

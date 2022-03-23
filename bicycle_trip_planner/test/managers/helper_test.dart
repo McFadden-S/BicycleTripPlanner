@@ -1,5 +1,3 @@
-import 'package:bicycle_trip_planner/models/location.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,10 +6,8 @@ import 'package:bicycle_trip_planner/managers/Helper.dart';
 
 void main() {
   test('ensure place to map function works', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
     Place place = Place(
-        geometry: geometry,
+        latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
         placeId: "1",
         description: "the description"
@@ -163,50 +159,40 @@ void main() {
   });
 
   test('ensure map to pathway function works with start, middle and end stops using place2map as well', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
     Place startPlace = Place(
-        geometry: geometry,
+        latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
         placeId: "1",
         description: "the start description"
     );
     Map<String, dynamic> startMap = Helper.place2Map(startPlace);
 
-    Location location1 = Location(lat: 51.345439, lng: -0.115543);
-    Geometry geometry1 = Geometry(location: location1);
     Place middleStopPlace1 = Place(
-        geometry: geometry1,
+        latlng: const LatLng(51.345439, -0.115543),
         name: "St. John's Wood Road",
         placeId: "3",
         description: "the first middle stop description"
     );
     Map<String, dynamic> middleStopMap1 = Helper.place2Map(middleStopPlace1);
 
-    Location location2 = Location(lat: 51.678345, lng: -0.125942);
-    Geometry geometry2 = Geometry(location: location2);
     Place middleStopPlace2 = Place(
-        geometry: geometry2,
+        latlng: const LatLng(51.678345, -0.125942),
         name: "Caven Street, Strand",
         placeId: "4",
         description: "the second middle stop description"
     );
     Map<String, dynamic> middleStopMap2 = Helper.place2Map(middleStopPlace2);
 
-    Location location3 = Location(lat: 51.576023, lng: -0.104998);
-    Geometry geometry3 = Geometry(location: location3);
     Place middleStopPlace3 = Place(
-        geometry: geometry3,
+        latlng: const LatLng(51.678345, -0.125942),
         name: "Southampton Street, Strand",
         placeId: "5",
         description: "the third and final middle stop description"
     );
     Map<String, dynamic> middleStopMap3 = Helper.place2Map(middleStopPlace3);
 
-    Location location4 = Location(lat: 51.400520, lng: -0.138209);
-    Geometry geometry4 = Geometry(location: location4);
     Place endPlace = Place(
-        geometry: geometry4,
+        latlng: const LatLng(51.400520, -0.138209),
         name: "Maida Vale",
         placeId: "2",
         description: "the end description"
@@ -244,12 +230,10 @@ void main() {
     // 5 stops in total including start and end stops
     expect(pathway.getStops().length, 5);
   });
-  
+
   test('ensure place to map and map to place work interchangably', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
     Place place = Place(
-        geometry: geometry,
+        latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
         placeId: "1",
         description: "the description"
@@ -263,7 +247,7 @@ void main() {
     expect(place.name, place2.name);
     expect(place.placeId, place2.placeId);
     expect(place.description, place2.description);
-    expect(place.geometry.toString(), place2.geometry.toString());
+    // expect(place.geometry.toString(), place2.geometry.toString());
     expect(place.getLatLng(), place2.getLatLng());
   });
 

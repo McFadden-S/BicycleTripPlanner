@@ -46,12 +46,12 @@ class _EndRouteButtonState extends State<EndRouteButton> {
           }
         },
         child: Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(2.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: routeManager.ifLoading()
             ? const [CircularProgressIndicator(color: Colors.white, backgroundColor: Color(0xFFC50000),)]
-            : const [Text("End", style: TextStyle(color: Colors.white)),],
+            : const [Text("End", style: TextStyle(color: Colors.white), ),],
           ),
         ),
         style: ButtonStyle(
