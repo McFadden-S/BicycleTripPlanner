@@ -24,6 +24,7 @@ import '../login/mock.dart';
 
 @GenerateMocks([LocationManager])
 void main() {
+  var locationManager = MockLocationManager();
 
   setupFirebaseAuthMocks();
 
@@ -31,17 +32,20 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-    var locationManager = MockLocationManager();
-    Location location = Location();
-    when(locationManager.onUserLocationChange())
-        .thenAnswer((_) => location.onLocationChanged);
-
   });
 
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
+
+    StreamController<LocationData> controller =
+    StreamController<LocationData>();
+    Stream stream = controller.stream;
+    when(locationManager.onUserLocationChange(5.0))
+        .thenAnswer((_) => stream as Stream<LocationData>);
+
     await tester.runAsync(
             () async {
               await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+              await tester.pump(Duration.zero);
               final countdown = find.byType(CountdownCard);
               expect(countdown, findsOneWidget);
             }
