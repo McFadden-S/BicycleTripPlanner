@@ -18,19 +18,19 @@ import 'package:provider/provider.dart';
 import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
 
-class RouteCard extends StatefulWidget {
+class FavouriteRouteCard extends StatefulWidget {
   final int index;
   final Function(int)? deleteRoute;
 
-  const RouteCard(
+  const FavouriteRouteCard(
       {Key? key, required this.index, required this.deleteRoute})
       : super(key: key);
 
   @override
-  _RouteCardState createState() => _RouteCardState();
+  _FavouriteRouteCardState createState() => _FavouriteRouteCardState();
 }
 
-class _RouteCardState extends State<RouteCard> {
+class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
   late StreamSubscription locatorSubscription;
 
   final FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();

@@ -6,7 +6,7 @@ import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 
@@ -55,7 +55,7 @@ void main() {
   testWidgets("RoutePlanning has RouteCard", (WidgetTester tester) async {
     await pumpWidget(tester, RoutePlanning());
 
-    final routeCard = find.byType(RouteCard);
+    final routeCard = find.byType(RoutePlanningCard);
 
     expect(routeCard, findsOneWidget);
   });

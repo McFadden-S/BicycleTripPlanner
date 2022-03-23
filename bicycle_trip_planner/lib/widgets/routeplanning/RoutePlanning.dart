@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
-import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
@@ -14,12 +13,13 @@ import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
-import 'RecentRouteDisplay.dart';
+import 'RecentRouteCard.dart';
+import 'RoutePlanningCard.dart';
 
 class RoutePlanning extends StatefulWidget {
   RoutePlanning({Key? key}) : super(key: key);
@@ -33,7 +33,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
   bool isOptimised = false;
 
   final RouteManager _routeManager = RouteManager();
-  final UserSettings _userSettings = UserSettings();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: Column(
               children: [
                 Visibility(
-                    child: RouteCard(),
+                    child: RoutePlanningCard(),
                     maintainState: true,
                     visible: showRouteCard),
                 GestureDetector(
@@ -167,7 +166,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   void showRecentRoutes() async {
-    int noRoutes = await _userSettings.getNumberOfRoutes();
     showModalBottomSheet(
         enableDrag: true,
         shape: RoundedRectangleBorder(
@@ -203,23 +201,13 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             child: Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 5.0),
-                                child: FutureBuilder<Map<String, dynamic>>(
-                                    future: _userSettings.getRoute(),
-                                    builder: (context, snapshot) {
-                                      return ListView.builder(
+                                child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
-                                          itemCount: noRoutes, // number of cards
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            // This could be null when user has no stored routes (fresh phone)
-                                            // Ensure that no route card is printed (Or don't show this widget)
-                                            // if there is no recent routes and show a snackbar for an error
-                                            Map<String, dynamic>? route =
-                                                snapshot.data!["${index + 1}"];
-                                            return RecentRouteCard(
-                                                route: route);
-                                          });
-                                    })),
+                                          itemCount: 1, // number of cards
+                                          itemBuilder: (BuildContext context, int index) =>
+                                              RecentRouteCard(index: index)
+                                          )
+                            ),
                           ),
                         ],
                       ),

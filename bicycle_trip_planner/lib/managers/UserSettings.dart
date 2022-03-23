@@ -27,18 +27,20 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
 
     // add recent searches to prefs and store as json map
-    if (place.description != "My Current Location") {
+    if (place.description != "My current location") {
       if (prefs.getString("recentSearches") != null) {
         String? encodedMap = prefs.getString("recentSearches");
-        var decodedMap = json.decode(encodedMap!);
-        Map<String, dynamic>.from(decodedMap);
+        var decodedMap = Map<String, dynamic>.from(json.decode(encodedMap!));
         decodedMap[place.placeId] = place.description;
 
+        print('******** decodedMap B ${decodedMap}');
         // remove recent searches that are now quite old
         if (decodedMap.keys.toList().length > 4) {
           decodedMap.keys.toList().reversed.toList().remove(0);
           decodedMap.values.toList().reversed.toList().remove(0);
         }
+
+        print('******** decodedMap A ${decodedMap}');
 
         String encodedMap1 = json.encode(decodedMap);
         await prefs.setString("recentSearches", encodedMap1);
@@ -107,58 +109,60 @@ class UserSettings {
   saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
-    print('******** savedElements ${savedElements}');
-    print("------------");
+    // print('******** savedElements ${savedElements}');
+    // print("------------");
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
-    print('******** savedRoutes ${savedRoutes}');
-    print("------------");
+    // print('******** savedRoutes ${savedRoutes}');
+    // print("------------");
     Map<String, dynamic> newRoute = {};
     Map<String, dynamic> start = _place2Map(origin);
     Map<String, dynamic> end = _place2Map(destination);
-    Map<String, dynamic> stops = {};
+    List<Map<String, dynamic>> stops = [];
 
     for (int i = 0; i < intermediates.length; i++) {
-      stops[i.toString()] = _place2Map(intermediates[i]);
+      stops.add(_place2Map(intermediates[i]));
     }
 
     newRoute['start'] = start;
     newRoute['end'] = end;
     newRoute['stops'] = stops;
 
-    print('******** newRoute ${newRoute}');
-    print("------------");
+    // print('******** newRoute ${newRoute}');
+    // print("------------");
     // """"${(savedRoutes.keys.length + 1).toString()}" """.trim()
+    if(savedRoutes.isEmpty){
+      savedRoutes['0'] = newRoute;
+    }
     savedRoutes[(savedRoutes.keys.length + 1).toString()] = newRoute;
     prefs.setString('recentRoutes', json.encode(savedRoutes));
 
-    print('******** savedRoutes after saving ${savedRoutes}');
-    print("------------");
+    // print('******** savedRoutes after saving ${savedRoutes}');
+    // print("------------");
   }
 
-  Future<int> getNumberOfRoutes() async {
+  // Future<int> getNumberOfRoutes() async {
+  //   final SharedPreferences prefs = await _prefs;
+  //   String encodedMap = prefs.getString('recentRoutes') ?? "{}";
+  //   var decodedMap = json.decode(encodedMap!);
+  //   Map<String, dynamic>.from(decodedMap);
+  //
+  //   if (encodedMap == null) {
+  //     return 0;
+  //   } else {
+  //     return decodedMap.keys.toList().length;
+  //   }
+  // }
+
+  Future<Pathway> getRecentRoute(int index) async {
     final SharedPreferences prefs = await _prefs;
-
-    String? encodedMap = prefs.getString('recentRoutes') ;
-    var decodedMap = json.decode(encodedMap!);
-    Map<String, dynamic>.from(decodedMap);
-
-    if (encodedMap == null) {
-      return 0;
-    } else {
-      return decodedMap.keys.toList().length;
-    }
-  }
-
-  Future<Map<String, dynamic>> getRoute() async {
-    final SharedPreferences prefs = await _prefs;
-    final String? encodedMap = prefs.getString("recentRoutes");
-    Map<String, dynamic> decodedMap = json.decode(encodedMap!);
+    String encodedMap = prefs.getString('recentRoutes') ?? "{}";
+    Map<String, dynamic> decodedMap = json.decode(encodedMap);
 
     //print(decodedMap["1"]["start"]["description"]);
     // print("------------");
     // print(decodedMap);
-    // print("------------");
-    return decodedMap;
+    print("------------ ${decodedMap[index.toString()]}");
+    return _mapToPathway(decodedMap[index.toString()]);
   }
 
   // returns String 'miles' or 'km'
@@ -247,13 +251,13 @@ class UserSettings {
   Pathway _mapToPathway(dynamic mapIn) {
     // TODO: refactor this to work with your code
     Pathway output = Pathway();
-    // output.changeStart(_mapToPlace(mapIn['start']));
-    // output.changeDestination(_mapToPlace(mapIn['end']));
-    // if(mapIn['stops'] != null) {
-    //   for(var stop in mapIn['stops']){
-    //     output.addStop(Stop(_mapToPlace(stop)));
-    //   }
-    // }
+    output.changeStart(_mapToPlace(mapIn['start']));
+    output.changeDestination(_mapToPlace(mapIn['end']));
+    if(mapIn['stops'] != null) {
+      for(var stop in mapIn['stops']){
+        output.addStop(Stop(_mapToPlace(stop)));
+      }
+    }
     return output;
   }
 

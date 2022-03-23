@@ -5,19 +5,31 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../models/pathway.dart';
 
 class RecentRouteCard extends StatefulWidget {
-  final route;
+  final int index;
 
-  const RecentRouteCard({Key? key, required this.route}) : super(key: key);
+  const RecentRouteCard({Key? key, required this.index}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
 }
 
 class _RouteCardState extends State<RecentRouteCard> {
+  late String startDescription = 'No DATA';
+  late String endDescription= 'No DATA';
+  late List<String> stopsDescriptions = [];
+  final UserSettings _userSettings = UserSettings();
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      initVariables();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
@@ -47,7 +59,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
                           //"\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
-                          widget.route["start"]["description"],
+                          startDescription,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -84,8 +96,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                            // "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
-                            "middle",
+                            "\t\t${stopsDescriptions.join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -116,8 +127,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-                          // "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
-                          "end",
+                          endDescription,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -135,6 +145,15 @@ class _RouteCardState extends State<RecentRouteCard> {
             )),
       ),
     );
+  }
+
+  Future<void> initVariables() async {
+    Pathway recentRoute = await _userSettings.getRecentRoute(widget.index);
+    startDescription = recentRoute.getStart().getStop().description;
+    endDescription = recentRoute.getDestination().getStop().description;
+    for(var stop in recentRoute.getWaypoints()){
+      stopsDescriptions.add(stop.getStop().description);
+    }
   }
 }
 

@@ -294,9 +294,6 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
-// TODO: move this to make sure it's only called when start button is clicked
-    _userSettings.saveRoute(origin, destination, intermediates);
-
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
     notifyListeners();
@@ -412,6 +409,10 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     updateLocationLive();
     _routeManager.showCurrentRoute();
+    _userSettings.saveRoute(
+        _routeManager.getStart().getStop(),
+        _routeManager.getDestination().getStop(),
+        _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     Wakelock.enable();
     notifyListeners();
   }
