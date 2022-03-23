@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
-import 'RouteCard.dart';
+import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
   const StationBar({ Key? key }) : super(key: key);
@@ -189,7 +189,7 @@ class _StationBarState extends State<StationBar> {
                                         itemBuilder: (BuildContext context, int index) =>
                                             SizedBox(
                                                 height: 130,
-                                                child:RouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
+                                                child:FavouriteRouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
                                             )
                                     ) :
                                     ListView.builder(
@@ -295,7 +295,7 @@ class _StationBarState extends State<StationBar> {
                             scrollDirection: Axis.horizontal,
                             itemCount: favouriteRoutesManager.getNumberOfRoutes(),
                             itemBuilder: (BuildContext context, int index) =>
-                                RouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
+                                FavouriteRouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
                           ) :
                           ListView.builder(
                               controller: stationsPageViewController,
