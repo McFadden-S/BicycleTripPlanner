@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/EndOfRouteDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
@@ -11,11 +14,15 @@ import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:location/location.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
+import '../../bloc/application_bloc_test.mocks.dart';
 import '../../setUp.dart';
 import '../login/mock.dart';
 
-
+@GenerateMocks([LocationManager])
 void main() {
 
   setupFirebaseAuthMocks();
@@ -24,6 +31,11 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    var locationManager = MockLocationManager();
+    Location location = Location();
+    when(locationManager.onUserLocationChange())
+        .thenAnswer((_) => location.onLocationChanged);
+
   });
 
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
