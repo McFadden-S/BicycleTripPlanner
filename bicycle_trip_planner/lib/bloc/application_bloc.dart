@@ -54,7 +54,6 @@ class ApplicationBloc with ChangeNotifier {
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
   final FavouriteRoutesManager _favouriteRoutesManager = FavouriteRoutesManager();
-  // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
@@ -146,6 +145,14 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
+
+    // Show option to select current location
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: SearchType.current.description,
+            placeId: _locationManager.getCurrentLocation().placeId));
+
     var recentSearches = await _userSettings.getPlace();
 
     // reverse list to view most recent searches
@@ -153,12 +160,6 @@ class ApplicationBloc with ChangeNotifier {
     var names = recentSearches.values.toList().reversed.toList();
 
     int noRecentSearches = names.length;
-
-    searchResults.insert(
-        0,
-        PlaceSearch(
-            description: SearchType.current.description,
-            placeId: _locationManager.getCurrentLocation().placeId));
 
     // Insert recent searches as suggestions in recent results drop down
     if (noRecentSearches > 0) {
