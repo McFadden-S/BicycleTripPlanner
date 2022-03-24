@@ -24,10 +24,18 @@ import '../general/buttons/CircleButton.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
-  const Navigation({Key? key}) : super(key: key);
+  Navigation({Key? key}) : super(key: key);
 
   @override
   _NavigationState createState() => _NavigationState();
+
+  // @visibleForTesting
+  // _NavigationState createState() => _NavigationState(locationManager);
+  //
+  // var locationManager = LocationManager();
+  // @visibleForTesting
+  // Navigation.forMock({Key? key,  required this.locationManager}) : super(key: key);
+
 }
 
 class _NavigationState extends State<Navigation> {
@@ -41,6 +49,9 @@ class _NavigationState extends State<Navigation> {
 
   late final ApplicationBloc applicationBloc;
   late StreamSubscription<LocationData> navigationSubscription;
+
+  // @visibleForTesting
+  // _NavigationState(LocationManager locationManager);
 
   @override
   void initState() {
@@ -138,7 +149,7 @@ class _NavigationState extends State<Navigation> {
 
   zoomOnUser() {
     cameraManager.viewUser(zoomIn: 17.0);
-    navigationSubscription = locationManager
+    navigationSubscription = widget.locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
       cameraManager.viewUser(zoomIn: 17.0);

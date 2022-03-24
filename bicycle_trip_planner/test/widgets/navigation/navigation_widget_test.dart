@@ -44,7 +44,7 @@ void main() {
 
     await tester.runAsync(
             () async {
-              await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+              await pumpWidget(tester, MaterialApp(home: Material(child: Navigation(locationManager))));
               await tester.pump(Duration.zero);
               final countdown = find.byType(CountdownCard);
               expect(countdown, findsOneWidget);
