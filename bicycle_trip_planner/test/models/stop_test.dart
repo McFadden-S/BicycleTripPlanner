@@ -14,12 +14,12 @@ main(){
     expect(stop.getStop().runtimeType, Place);
   });
 
-  test('ensure initial uid is 1', (){
-    expect(stop.getUID(), 1);
+  test('ensure initial uid is 0', (){
+    expect(stop.getUID(), 0);
   });
 
   test('ensure overriden toString is correct', (){
-    expect(stop.toString(), " - 1");
+    expect(stop.toString(), " - 0");
   });
 
   test('ensure can set a stop', (){

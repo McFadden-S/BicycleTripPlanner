@@ -105,6 +105,7 @@ class _StationBarState extends State<StationBar> {
               ? _isFavouriteRoutes = true
               : _isFavouriteRoutes = false;
         });
+
         if (stationsPageViewController.positions.isNotEmpty)
           stationsPageViewController.jumpTo(0);
       },

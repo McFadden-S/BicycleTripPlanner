@@ -199,4 +199,10 @@ void main() {
     expect(s.totalDocks, dummyStation[2].totalDocks);
 
   });
+
+  test('ensure can cache PlaceId', () async {
+    final station = Station(id: 1, name: 'Holborn Station', lat: 0.0, lng: 0.0, bikes: 10, emptyDocks: 2, totalDocks: 8);
+    stationManager.cachePlaceId(station);
+    expect(station.place.toString(), "");
+  });
 }

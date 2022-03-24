@@ -24,14 +24,9 @@ import '../general/buttons/CircleButton.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
-  //Navigation({Key? key}) : super(key: key);
-
   @override
   _NavigationState createState() => _NavigationState();
 
-  // @visibleForTesting
-  // _NavigationState createState() => _NavigationState(locationManager);
-  //
   var locationManager;
   var cameraManager;
   @visibleForTesting
@@ -51,18 +46,12 @@ class _NavigationState extends State<Navigation> {
   late final ApplicationBloc applicationBloc;
   late StreamSubscription<LocationData> navigationSubscription;
 
-  // @visibleForTesting
-  // _NavigationState(LocationManager locationManager);
-
   @override
   void initState() {
     super.initState();
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    //print('$locationManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
     locationManager = widget.locationManager ?? LocationManager();
     cameraManager = widget.cameraManager ?? CameraManager.instance;
-    print('$locationManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
-    print('$cameraManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
     zoomOnUser();
     markerManager.clearStationMarkers(StationManager().getStations());
   }
@@ -117,6 +106,7 @@ class _NavigationState extends State<Navigation> {
                                       ctdwnController: controller),
                                   SizedBox(height: 10),
                                   CountdownCard(
+                                    key: Key('countdownCard'),
                                       ctdwnController: controller),
 
 

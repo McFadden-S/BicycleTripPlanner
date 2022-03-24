@@ -9,14 +9,18 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class PolylineManager {
   //********** Fields **********
 
+  // stores set of all polylines on display
   final Set<Polyline> _polylines = <Polyline>{};
 
+  // keeps track of how many polylines on display
   int _polylineIdCounter = 1;
 
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final PolylineManager _polylineManager = PolylineManager._internal();
 
+  /// Singleton Constructor Override
   factory PolylineManager() {
     return _polylineManager;
   }

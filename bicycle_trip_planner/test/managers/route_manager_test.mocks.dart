@@ -58,11 +58,19 @@ class MockCameraManager extends _i1.Mock implements _i5.CameraManager {
       (super.noSuchMethod(Invocation.getter(#markerManager),
           returnValue: _FakeMarkerManager_2()) as _i4.MarkerManager);
   @override
+  set markerManager(_i4.MarkerManager? _markerManager) =>
+      super.noSuchMethod(Invocation.setter(#markerManager, _markerManager),
+          returnValueForMissingStub: null);
+  @override
   void init() => super.noSuchMethod(Invocation.method(#init, []),
       returnValueForMissingStub: null);
   @override
   void dispose() => super.noSuchMethod(Invocation.method(#dispose, []),
       returnValueForMissingStub: null);
+  @override
+  void setCameraBounds(_i2.LatLng? southwest, _i2.LatLng? northeast) => super
+      .noSuchMethod(Invocation.method(#setCameraBounds, [southwest, northeast]),
+          returnValueForMissingStub: null);
   @override
   void setCameraPosition(_i2.LatLng? position, {double? zoomIn = 16.0}) =>
       super.noSuchMethod(

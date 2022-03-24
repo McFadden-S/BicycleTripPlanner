@@ -10,9 +10,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// NavigationManager is a manager class that manages the data required for navigation
 
 class NavigationManager {
-  final _locationManager = LocationManager();
-  final _stationManager = StationManager();
-  final _routeManager = RouteManager();
+  var _locationManager = LocationManager();
+  var _stationManager = StationManager();
+  var _routeManager = RouteManager();
 
   bool _isNavigating = false;
   bool _isBeginning = true;
@@ -36,6 +36,12 @@ class NavigationManager {
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
+
+  NavigationManager.forMock(StationManager stationManager, RouteManager routeManager, LocationManager locationManager){
+    _stationManager = stationManager;
+    _routeManager = routeManager;
+    _locationManager = locationManager;
+  }
 
   //********** Private **********
 
@@ -77,16 +83,17 @@ class NavigationManager {
     LatLng startLocation = _routeManager.getStart().getStop().latlng;
     LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
-    updatePickUpDropOffStations(startLocation, endLocation, _routeManager.getGroupSize());
+    updatePickUpDropOffStations(
+        startLocation, endLocation, _routeManager.getGroupSize());
   }
 
   //********** Public **********
 
-  bool ifLoading(){
+  bool ifLoading() {
     return _isLoading;
   }
 
-  void setLoading(bool loading){
+  void setLoading(bool loading) {
     _isLoading = loading;
   }
 
@@ -117,18 +124,24 @@ class NavigationManager {
   Future<void> start() async {
     _isNavigating = true;
     if (_routeManager.ifStartFromCurrentLocation()) {
-      await setInitialPickUpDropOffStations();
+      await setInitialPickUpDropOffStations(
+          _routeManager.getStart().getStop().latlng,
+          _routeManager.getDestination().getStop().latlng);
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
-        await setInitialPickUpDropOffStations();
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
+        await setInitialPickUpDropOffStations(
+            firstStop.latlng, _routeManager.getDestination().getStop().latlng);
+        await updateRouteWithWalking();
         updateRouteWithWalking();
       } else {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
         await updateRoute();
-        await setInitialPickUpDropOffStations();
+        await setInitialPickUpDropOffStations(
+            _routeManager.getStart().getStop().latlng,
+            _routeManager.getDestination().getStop().latlng);
       }
     }
   }
@@ -151,6 +164,7 @@ class NavigationManager {
   }
 
   bool isWaypointPassed(LatLng waypoint) {
+
     return (_locationManager.distanceFromToInMeters(
             _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
         30);
@@ -207,18 +221,21 @@ class NavigationManager {
   }
 
   Future<void> setNewPickUpStation(LatLng location, [int groupSize = 1]) async {
-    _pickUpStation = await _stationManager.getPickupStationNear(location, groupSize);
+    _pickUpStation =
+        await _stationManager.getPickupStationNear(location, groupSize);
   }
 
-  Future<void> setNewDropOffStation(LatLng location, [int groupSize = 1]) async {
-    _dropOffStation = await _stationManager.getDropoffStationNear(location, groupSize);
+  Future<void> setNewDropOffStation(LatLng location,
+      [int groupSize = 1]) async {
+    _dropOffStation =
+        await _stationManager.getDropoffStationNear(location, groupSize);
   }
 
-  Future<void> setInitialPickUpDropOffStations() async {
+  Future<void> setInitialPickUpDropOffStations(
+      LatLng startLocation, LatLng endLocation) async {
     setNewPickUpStation(_routeManager.getStart().getStop().latlng,
         _routeManager.getGroupSize());
-    setNewDropOffStation(
-        _routeManager.getDestination().getStop().latlng,
+    setNewDropOffStation(_routeManager.getDestination().getStop().latlng,
         _routeManager.getGroupSize());
   }
 

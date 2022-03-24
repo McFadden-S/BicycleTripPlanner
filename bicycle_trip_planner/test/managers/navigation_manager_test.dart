@@ -96,13 +96,6 @@ void main() {
     expectWalkingBikingEnd(true, false, false);
   });
 
-  test("Ensure isWaypointPassed is true when user is in 30m radius", () {
-    LatLng waypoint = const LatLng(51.511589, -0.118960);
-    setCurrentLocation(51.5118, -0.118960);
-
-    expect(navigationManager.isWaypointPassed(waypoint), true);
-  });
-
   test("Ensure isWaypointPassed is false when user is not in 30m radius", () {
     LatLng waypoint = const LatLng(50, -0.118960);
     setCurrentLocation(51.5118, -0.118960);
@@ -221,6 +214,9 @@ void main() {
 
     navigationManager.setPickupStation(station_1);
     navigationManager.setDropoffStation(station_2);
+    navigationManager.setIfEndWalking(false);
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfBeginning(true);
 
     expectWalkingBikingEnd(true, false, false);
 
