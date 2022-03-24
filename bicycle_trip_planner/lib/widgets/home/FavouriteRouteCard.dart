@@ -8,7 +8,6 @@ import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
 
 class FavouriteRouteCard extends StatefulWidget {

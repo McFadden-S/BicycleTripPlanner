@@ -8,12 +8,11 @@ import 'package:provider/provider.dart';
 class DistanceETACard extends StatefulWidget {
   const DistanceETACard({Key? key}) : super(key: key);
 
-  // This is not station card needs renaming
   @override
-  _StationCardState createState() => _StationCardState();
+  _DistanceETACardState createState() => _DistanceETACardState();
 }
 
-class _StationCardState extends State<DistanceETACard> {
+class _DistanceETACardState extends State<DistanceETACard> {
   final DirectionManager _directionManager = DirectionManager();
 
   @override

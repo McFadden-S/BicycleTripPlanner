@@ -16,10 +16,10 @@ class CircleButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _StationCardState createState() => _StationCardState();
+  _CircleButtonState createState() => _CircleButtonState();
 }
 
-class _StationCardState extends State<CircleButton> {
+class _CircleButtonState extends State<CircleButton> {
 
   @override
   Widget build(BuildContext context) {

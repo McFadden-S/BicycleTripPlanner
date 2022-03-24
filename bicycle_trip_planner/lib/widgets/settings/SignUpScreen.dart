@@ -87,7 +87,6 @@ class _SignUpScreen extends State<SignUpScreen> {
                         ErrorSnackBar.buildErrorSnackbar(context, "passwords-do-not-match");
                       }
                     } catch (e) {
-                      //_showSnackBar(e.toString());
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
                     }
                   },

@@ -5,7 +5,6 @@ import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
@@ -283,7 +282,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 }
 
-// Note: This is outside of the state class...
+// Note: This is outside of the state class.
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
