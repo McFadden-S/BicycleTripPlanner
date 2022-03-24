@@ -29,7 +29,7 @@ class _WeatherState extends State<Weather> {
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if(_response != null)
+            if(_response.weatherInfo.icon != "")
               Column(
                 children: [
                   Image.network(_response.iconUrl, scale: 1.7,),
@@ -43,11 +43,6 @@ class _WeatherState extends State<Weather> {
           ],
       ),
     );
-
-
-
-
-
   }
 
 
