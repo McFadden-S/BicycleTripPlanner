@@ -53,4 +53,12 @@ void main() {
     expect(station.hashCode, Object.hash(station.id, station.name));
   });
 
+  test('ensure can update station when requested', (){
+    station.update(station2, 50);
+    expect(station.bikes, station2.bikes);
+    expect(station.emptyDocks, station2.emptyDocks);
+    expect(station.totalDocks, station2.totalDocks);
+    expect(station.distanceTo, 50);
+  });
+
 }
