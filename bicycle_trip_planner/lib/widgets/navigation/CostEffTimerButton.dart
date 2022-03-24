@@ -68,7 +68,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
               }
             },
             iconIn: !isRunning
-                ? Icons.start
+                ? Icons.timer
                 : Icons.restart_alt,
             iconColor: !RouteManager().ifCostOptimised() || !RouteManager().ifCycling()
                 ? ThemeStyle.primaryIconColor.withOpacity(0.2)
