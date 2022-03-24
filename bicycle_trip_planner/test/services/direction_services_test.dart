@@ -199,7 +199,7 @@ void main(){
 
       final origin = "ChIJDewcaLUEdkgRByjdEk9z704";
       final destination = "ChIJaS6FAKMEdkgRgryaUMRNVEI";
-      final waypoints = "&waypoints=optimize:true|place_id:ChIJs4GOh8sEdkgRRiBFZKMP8ZE";
+      final waypoints = ["ChIJs4GOh8sEdkgRRiBFZKMP8ZE"];
       const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
       final client = mock.MockClient();
@@ -658,13 +658,148 @@ void main(){
              "status" : "OK"
           }""", 200));
 
-      final answer = await DirectionsService().getRoutes(origin, destination, ["ChIJs4GOh8sEdkgRRiBFZKMP8ZE"]);
+      final answer = await DirectionsService().getRoutes(origin, destination, waypoints);
       expect(answer.distance, 3679);
       expect(answer.duration, 857);
       expect(answer.legs.length, 2);
       expect(answer.directions.length, 15);
       expect(answer.routeType, RouteType.bike);
 
+    });
+  });
+
+  group('getWalkingRoutes', ()
+  {
+    test('Get walking routes without waypoints', () async {
+      final origin = "ChIJN6skQs4EdkgRU24-sEUFmPw";
+      final destination = "ChIJi3D0484EdkgRuYlzHV73TlY";
+      final waypoints = "";
+      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+
+      final client = mock.MockClient();
+      when(client.get(Uri.parse(
+          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key')))
+          .thenAnswer((_) async =>
+          http.Response("""{
+             "geocoded_waypoints" : [
+                {
+                   "geocoder_status" : "OK",
+                   "place_id" : "ChIJN6skQs4EdkgRU24-sEUFmPw",
+                   "types" : [ "premise" ]
+                },
+                {
+                   "geocoder_status" : "OK",
+                   "place_id" : "ChIJi3D0484EdkgRuYlzHV73TlY",
+                   "types" : [ "street_address" ]
+                }
+             ],
+             "routes" : [
+                {
+                   "bounds" : {
+                      "northeast" : {
+                         "lat" : 51.5080858,
+                         "lng" : -0.1262404
+                      },
+                      "southwest" : {
+                         "lat" : 51.5070603,
+                         "lng" : -0.1273583
+                      }
+                   },
+                   "copyrights" : "Map data ©2022 Google",
+                   "legs" : [
+                      {
+                         "distance" : {
+                            "text" : "0.2 km",
+                            "value" : 152
+                         },
+                         "duration" : {
+                            "text" : "2 mins",
+                            "value" : 125
+                         },
+                         "end_address" : "10 Northumberland St, London WC2N 5DB, UK",
+                         "end_location" : {
+                            "lat" : 51.5080858,
+                            "lng" : -0.1262404
+                         },
+                         "start_address" : "3 Whitehall, London SW1A 2DD, UK",
+                         "start_location" : {
+                            "lat" : 51.5070603,
+                            "lng" : -0.1273419
+                         },
+                         "steps" : [
+                            {
+                               "distance" : {
+                                  "text" : "21 m",
+                                  "value" : 21
+                               },
+                               "duration" : {
+                                  "text" : "1 min",
+                                  "value" : 17
+                               },
+                               "end_location" : {
+                                  "lat" : 51.5071986,
+                                  "lng" : -0.1273562
+                               },
+                               "html_instructions" : "Walk \u003cb\u003enorth\u003c/b\u003e on \u003cb\u003eWhitehall\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA3212\u003c/b\u003e",
+                               "polyline" : {
+                                  "points" : "c~jyHzzWA?A@A?G@E?G?"
+                               },
+                               "start_location" : {
+                                  "lat" : 51.5070603,
+                                  "lng" : -0.1273419
+                               },
+                               "travel_mode" : "WALKING"
+                            },
+                            {
+                               "distance" : {
+                                  "text" : "0.1 km",
+                                  "value" : 131
+                               },
+                               "duration" : {
+                                  "text" : "2 mins",
+                                  "value" : 108
+                               },
+                               "end_location" : {
+                                  "lat" : 51.5080858,
+                                  "lng" : -0.1262404
+                               },
+                               "html_instructions" : "At the roundabout, take the \u003cb\u003e3rd\u003c/b\u003e exit onto \u003cb\u003eTrafalgar Sq\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA4\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA400\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eContinue to follow A4\u003c/div\u003e\u003cdiv style=\"font-size:0.9em\"\u003eParts of this road may be closed at certain times or on certain days\u003c/div\u003e\u003cdiv style=\"font-size:0.9em\"\u003eDestination will be on the left\u003c/div\u003e",
+                               "maneuver" : "roundabout-left",
+                               "polyline" : {
+                                  "points" : "__kyH~zWCGEKEEQGEAKACIGGa@YEIKSUg@CGGOIMQa@"
+                               },
+                               "start_location" : {
+                                  "lat" : 51.5071986,
+                                  "lng" : -0.1273562
+                               },
+                               "travel_mode" : "WALKING"
+                            }
+                         ],
+                         "traffic_speed_entry" : [],
+                         "via_waypoint" : []
+                      }
+                   ],
+                   "overview_polyline" : {
+                      "points" : "c~jyHzzWMBM?ISWMQCKQa@YEIa@{@KW[o@"
+                   },
+                   "summary" : "A4",
+                   "warnings" : [
+                      "Walking directions are in beta. Use caution – This route may be missing pavements or pedestrian paths."
+                   ],
+                   "waypoint_order" : []
+                }
+             ],
+             "status" : "OK"
+          }
+                    """, 200));
+
+      final answer = await DirectionsService().getWalkingRoutes(
+          origin, destination);
+      expect(answer.distance, 152);
+      expect(answer.duration, 125);
+      expect(answer.legs.length, 1);
+      expect(answer.directions.length, 2);
+      expect(answer.routeType, RouteType.walk);
     });
   });
 }
