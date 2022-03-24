@@ -146,6 +146,13 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
+
+    searchResults.insert(
+        0,
+        PlaceSearch(
+            description: SearchType.current.description,
+            placeId: _locationManager.getCurrentLocation().placeId));
+
     var recentSearches = await _userSettings.getPlace();
 
     // reverse list to view most recent searches
@@ -153,12 +160,6 @@ class ApplicationBloc with ChangeNotifier {
     var names = recentSearches.values.toList().reversed.toList();
 
     int noRecentSearches = names.length;
-
-    searchResults.insert(
-        0,
-        PlaceSearch(
-            description: SearchType.current.description,
-            placeId: _locationManager.getCurrentLocation().placeId));
 
     // Insert recent searches as suggestions in recent results drop down
     if (noRecentSearches > 0) {

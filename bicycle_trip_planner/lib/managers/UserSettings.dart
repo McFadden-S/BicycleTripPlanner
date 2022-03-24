@@ -34,16 +34,7 @@ class UserSettings {
 
         if (decodedMap.keys.toList().length > 4) {
           List<String> placeIds = decodedMap.keys.toList();
-          placeIds.remove(placeIds.first);
-
-          List<dynamic> names = decodedMap.values.toList();
-          names.remove(names.first);
-
-          Map<String, dynamic> newMap = {};
-          for (int i = 0; i < names.length ; i++) {
-            newMap[placeIds[i]] = names[i];
-          }
-          decodedMap = newMap;
+          decodedMap.remove(placeIds.first);
         }
 
         String encodedMap1 = json.encode(decodedMap);
