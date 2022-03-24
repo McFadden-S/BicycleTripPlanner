@@ -1,8 +1,10 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 
 import '../../constants.dart';
@@ -23,6 +25,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
       Row(
@@ -30,7 +33,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
         children: [
           CircleButton(
             onButtonClicked: () {
-              if (!RouteManager().ifCostOptimised()) {
+              if (!RouteManager().ifCostOptimised() || !RouteManager().ifCycling()) {
                 null;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
@@ -39,18 +42,35 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
               }
               else {
                 if (isRunning){
-                  widget.ctdwnController.restart();
-                  widget.ctdwnController.pause();
+                  dialogManager.setBinaryChoice(
+                    "Would you like to reset your timer now?",
+                    "Yes",
+                        () {
+                          widget.ctdwnController.restart();
+                          widget.ctdwnController.pause();
+                          setState(() => isRunning = !isRunning);
+                        },
+                    "No",
+                        () {},
+                  );
                 } else {
-                  widget.ctdwnController.start();
+                  dialogManager.setBinaryChoice(
+                    "Would you like to start your 30 minute timer now?",
+                    "Yes",
+                        () {
+                          widget.ctdwnController.start();
+                          setState(() => isRunning = !isRunning);
+                        },
+                    "No", () {},
+                  );
                 }
-                setState(() => isRunning = !isRunning);
+                applicationBloc.showBinaryDialog();
               }
             },
             iconIn: !isRunning
                 ? Icons.start
                 : Icons.restart_alt,
-            iconColor: !RouteManager().ifCostOptimised()
+            iconColor: !RouteManager().ifCostOptimised() || !RouteManager().ifCycling()
                 ? ThemeStyle.primaryIconColor.withOpacity(0.2)
                 : ThemeStyle.primaryIconColor,
           ),

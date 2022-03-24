@@ -45,13 +45,14 @@ class _CountdownCardState extends State<CountdownCard> {
           child: RouteManager().ifCostOptimised() && RouteManager().ifCycling()
               ? Countdown(
             controller: widget.ctdwnController,
-            seconds: 1800,
+            seconds: 1800, // 1800 seconds == 30 minutes
             build: (_, double time) {
               (time/60).ceil() > 15
               ? whichColor = 0
               : (time/60).ceil() > 5
                 ? whichColor = 1
                 : whichColor = 2;
+              curColor = whichColor == 0 ? _green : whichColor == 1 ? _orange : _red;
               return Text((time/60) > 5
                   ?((time/60).ceil().toString() + " min")
                   :((time/60).floor().toString() + ":" + ((time%60).toInt().toString().length == 1
@@ -59,7 +60,7 @@ class _CountdownCardState extends State<CountdownCard> {
                   : (time%60).toInt().toString()
               )),
                 style: TextStyle(
-                  fontSize: 10,
+                  color: curColor,
                 ),
               );
             }
