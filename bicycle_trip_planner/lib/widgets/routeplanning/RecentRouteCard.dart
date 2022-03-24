@@ -19,9 +19,9 @@ class RecentRouteCard extends StatefulWidget {
 
 class _RouteCardState extends State<RecentRouteCard> {
   late Pathway pathway;
-  late String startDescription = 'No DATA';
-  late String endDescription = 'No DATA';
-  late List<String> stopsDescriptions = [];
+  late String startName = 'No DATA';
+  late String endName = 'No DATA';
+  late List<String> stopNames = [];
   final UserSettings _userSettings = UserSettings();
 
   @override
@@ -59,7 +59,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
                           //"\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
-                          startDescription,
+                          startName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -95,7 +95,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                     SizedBox(
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
-                        child: Text("\t\t${stopsDescriptions.join(", ")}",
+                        child: Text("\t\t${stopNames.join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -126,7 +126,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-                          endDescription,
+                          endName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -147,13 +147,13 @@ class _RouteCardState extends State<RecentRouteCard> {
   }
 
   initVariables() async {
-    Pathway recentRoute = await _userSettings.getRecentRoute(widget.index);
+    Pathway recentRoute = await _userSettings.getRecentRoute((widget.index));
     setState(() {
       pathway = recentRoute;
-      startDescription = recentRoute.getStart().getStop().description;
-      endDescription = recentRoute.getDestination().getStop().description;
+      startName = recentRoute.getStart().getStop().name;
+      endName = recentRoute.getDestination().getStop().name;
       for (var stop in recentRoute.getWaypoints()) {
-        stopsDescriptions.add(stop.getStop().description);
+        stopNames.add(stop.getStop().name);
       }
     });
   }
@@ -168,7 +168,6 @@ Future<void> routeClicked(
   pathway.getWaypoints().forEach((element) {
     routeManager.addWaypoint(element.getStop());
   });
-
 
   appBloc.findRoute(
       routeManager.getStart().getStop(),
