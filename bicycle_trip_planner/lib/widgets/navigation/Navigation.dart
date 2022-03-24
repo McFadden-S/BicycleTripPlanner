@@ -24,7 +24,7 @@ import '../general/buttons/CircleButton.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
-  Navigation({Key? key}) : super(key: key);
+  //Navigation({Key? key}) : super(key: key);
 
   @override
   _NavigationState createState() => _NavigationState();
@@ -32,20 +32,21 @@ class Navigation extends StatefulWidget {
   // @visibleForTesting
   // _NavigationState createState() => _NavigationState(locationManager);
   //
-  // var locationManager = LocationManager();
-  // @visibleForTesting
-  // Navigation.forMock({Key? key,  required this.locationManager}) : super(key: key);
+  var locationManager;
+  var cameraManager;
+  @visibleForTesting
+  Navigation({Key? key,  this.locationManager, this.cameraManager}) : super(key: key);
 
 }
 
 class _NavigationState extends State<Navigation> {
-  final LocationManager locationManager = LocationManager();
+  late LocationManager locationManager;
   final DirectionManager directionManager = DirectionManager();
   final NavigationManager navigationManager = NavigationManager();
   final RouteManager routeManager = RouteManager();
   final MarkerManager markerManager = MarkerManager();
   final CountdownController controller = CountdownController();
-  final CameraManager cameraManager = CameraManager.instance;
+  late CameraManager cameraManager;
 
   late final ApplicationBloc applicationBloc;
   late StreamSubscription<LocationData> navigationSubscription;
@@ -57,6 +58,11 @@ class _NavigationState extends State<Navigation> {
   void initState() {
     super.initState();
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    //print('$locationManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
+    locationManager = widget.locationManager ?? LocationManager();
+    cameraManager = widget.cameraManager ?? CameraManager.instance;
+    print('$locationManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
+    print('$cameraManager djfnhlsnhflirwhfiWHFIUrwhfiWHRFwh');
     zoomOnUser();
     markerManager.clearStationMarkers(StationManager().getStations());
   }
@@ -149,7 +155,7 @@ class _NavigationState extends State<Navigation> {
 
   zoomOnUser() {
     cameraManager.viewUser(zoomIn: 17.0);
-    navigationSubscription = widget.locationManager
+    navigationSubscription = locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
       cameraManager.viewUser(zoomIn: 17.0);

@@ -3,14 +3,14 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
-
 import 'package:mockito/annotations.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:mockito/mockito.dart';
-import 'application_bloc_test.mocks.dart';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../widgets/navigation/navigation_widget_test.mocks.dart';
 
 @GenerateMocks([LocationManager, PlacesService])
 void main() {

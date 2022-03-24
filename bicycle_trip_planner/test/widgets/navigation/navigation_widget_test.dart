@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/EndOfRouteDialog.dart';
@@ -18,13 +19,18 @@ import 'package:location/location.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../bloc/application_bloc_test.mocks.dart';
+import 'navigation_widget_test.mocks.dart';
 import '../../setUp.dart';
 import '../login/mock.dart';
 
-@GenerateMocks([LocationManager])
+@GenerateMocks([LocationManager, CameraManager])
 void main() {
   var locationManager = MockLocationManager();
+  var cameraManager = MockCameraManager();
+  StreamController<LocationData> controller =
+     StreamController<LocationData>();
+    Stream<LocationData> stream = controller.stream;
+  when(locationManager.onUserLocationChange(5)).thenAnswer((realInvocation) => stream);
 
   setupFirebaseAuthMocks();
 
@@ -32,6 +38,10 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+  });
+
+  testWidgets("Navigation has a SafeArea", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation(locationManager: locationManager, cameraManager: cameraManager,))));
   });
 
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
@@ -42,14 +52,14 @@ void main() {
     when(locationManager.onUserLocationChange(5.0))
         .thenAnswer((_) => stream as Stream<LocationData>);
 
-    await tester.runAsync(
-            () async {
-              await pumpWidget(tester, MaterialApp(home: Material(child: Navigation(locationManager))));
+    //await tester.runAsync(
+      //      () async {
+              await pumpWidget(tester, MaterialApp(home: Material(child: Navigation(locationManager: locationManager,))));
               await tester.pump(Duration.zero);
               final countdown = find.byType(CountdownCard);
               expect(countdown, findsOneWidget);
-            }
-    );
+       //     }
+    //);
   });
 
   testWidgets("Navigation has a SafeArea", (WidgetTester tester) async {
@@ -106,4 +116,4 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
     expect(find.byType(EndOfRouteDialog), findsOneWidget);
   });
-}
+ }
