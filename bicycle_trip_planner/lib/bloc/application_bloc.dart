@@ -462,12 +462,14 @@ class ApplicationBloc with ChangeNotifier {
   // ********** Navigation Management **********
 
   Future<void> startNavigation() async {
+    _routeManager.setLoading(true);
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
     await _navigationManager.start();
     await updateLocationLive();
     _routeManager.showCurrentRoute();
     Wakelock.enable();
+    _routeManager.setLoading(false);
     notifyListeners();
   }
 
