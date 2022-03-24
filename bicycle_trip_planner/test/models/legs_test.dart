@@ -8,6 +8,7 @@ main(){
   final endLocation = Location(lat: 2, lng: -2);
   final steps = Steps(instruction: "right", distance: 1, duration: 1);
   final legs = Legs(startLocation: startLocation, endLocation: endLocation, steps: [steps], distance: 1, duration: 1);
+  final legs2 = Legs(startLocation: startLocation, endLocation: endLocation, steps: [steps], distance: 2, duration: 1);
 
   test('ensure startLocation is Location', (){
     expect(legs.startLocation.runtimeType, Location);
@@ -27,6 +28,18 @@ main(){
 
   test('ensure duration is an int', (){
     expect(legs.duration.runtimeType, int);
+  });
+
+  test('ensure overridden == operator is functioning properly', (){
+    expect(legs == legs2, false);
+  });
+
+  test('ensure overridden toString is correct', (){
+    expect(legs.toString(), legs.steps.toString());
+  });
+
+  test('ensure legs return the correct hashCode', (){
+    expect(legs.hashCode, Object.hash(legs.steps, legs.startLocation, legs.endLocation, legs.duration, legs.distance));
   });
 
 }
