@@ -1,16 +1,10 @@
-import 'dart:convert';
 
-import 'package:bicycle_trip_planner/models/overview_polyline.dart';
-import 'package:bicycle_trip_planner/models/route_types.dart';
-import 'package:bicycle_trip_planner/services/directions_service.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bicycle_trip_planner/services/stations_service.dart';
+
 import 'stations_services_test.mocks.dart' as mock;
 
 
@@ -490,6 +484,28 @@ void main(){
       expect(answer.description, description);
       expect(answer.geometry.location.lat, 51.51300070000001);
       expect(answer.geometry.location.lng,   -0.1241621);
+    });
+
+    test('Get place from invalid place id', () async {
+
+      const placeId = "";
+      const description = "Covent Garden, Long Acre, London, UK";
+      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+      const url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
+
+      final client = mock.MockClient();
+      when(client.get(Uri.parse(url)))
+          .thenAnswer((_) async =>
+          http.Response("""{
+           "error_message" : "Missing the placeid or reference parameter.",
+           "html_attributions" : [],
+           "status" : "INVALID_REQUEST"
+        }""", 200));
+
+      final answer = await PlacesService().getPlace(placeId, description);
+      expect(answer.name, Place.placeNotFound().name);
+      expect(answer.placeId, Place.placeNotFound().placeId);
+      expect(answer.description, Place.placeNotFound().description);
     });
   });
 

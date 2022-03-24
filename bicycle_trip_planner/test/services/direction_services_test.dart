@@ -1,14 +1,9 @@
-import 'dart:convert';
 
-import 'package:bicycle_trip_planner/models/overview_polyline.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:mockito/annotations.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'stations_services_test.mocks.dart' as mock;
 
 

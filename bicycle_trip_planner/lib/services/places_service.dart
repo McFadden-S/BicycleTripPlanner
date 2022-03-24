@@ -21,8 +21,12 @@ class PlacesService {
         'https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
-    var jsonResults = json['result'] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults, description);
+    if(json.containsKey('result')) {
+      var jsonResults = json['result'] as Map<String, dynamic>;
+      return Place.fromJson(jsonResults, description);
+    } else {
+      return Place.placeNotFound();
+    }
   }
 
   Future<Place> getPlaceFromCoordinates(double lat, double lng, String description) async {
