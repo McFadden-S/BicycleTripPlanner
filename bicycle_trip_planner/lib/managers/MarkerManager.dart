@@ -133,6 +133,8 @@ class MarkerManager {
     return _markers;
   }
 
+  /// @param void
+  /// @return Marker - returns marker of the user
   Marker getUserMarker(){
     return _markers.firstWhere((marker) => marker.markerId.value == _userID);
   }
