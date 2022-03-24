@@ -403,6 +403,7 @@ class RouteManager {
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     _optimised = true;
+    _costOptimised = false;
     clearRouteMarkers();
     removeWaypoints();
     clearFirstWaypoint();
