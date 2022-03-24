@@ -37,6 +37,8 @@ class RouteManager {
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
 
+  bool _isCycling = false;
+
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
@@ -70,28 +72,37 @@ class RouteManager {
     } else if (_endWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_endWalkingRoute, relocateMap);
     }
+    _isCycling = false;
   }
 
   // Shows only one of the routes
   void showCurrentRoute([bool relocateMap = true]) {
     if (_startWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_startWalkingRoute, relocateMap);
+      _isCycling = false;
       return;
     }
 
     if (_bikingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_bikingRoute, relocateMap);
+      _isCycling = true;
       return;
     }
 
     if (_endWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_endWalkingRoute, relocateMap);
+      _isCycling = false;
       return;
     }
   }
 
+  bool ifCycling() {
+    return _isCycling;
+  }
+
   void showBikeRoute([relocateMap = true]) {
     setCurrentRoute(_bikingRoute, relocateMap);
+    _isCycling = true;
   }
 
   void setDirectionsData(R.Route route) {
