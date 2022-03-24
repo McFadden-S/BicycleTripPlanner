@@ -20,4 +20,13 @@ main(){
     expect(place.placeId.runtimeType, String);
   });
 
+  test('ensure can get LatLng of place', (){
+    expect(place.getLatLng().latitude, geometry.location.lat);
+    expect(place.getLatLng().longitude, geometry.location.lng);
+  });
+
+  test('ensure overridden toString is correct', (){
+    expect(place.toString(), place.description);
+  });
+
 }
