@@ -3,9 +3,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/weather_model.dart';
 
+/// Class Comment:
+/// WeatherService is a service class that returns actual Weather
+
 class WeatherService {
+
+  /// @return WeatherResponse - actual weather in @param city
   Future<WeatherResponse> getWeather(String city) async {
-    //api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}
 
     final queryParameters = {
       'q': city,

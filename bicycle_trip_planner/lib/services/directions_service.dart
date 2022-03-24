@@ -5,11 +5,19 @@ import 'dart:convert' as convert;
 
 import '../auth/Keys.dart';
 
-class DirectionsService {
-  String key = Keys.API_KEY;
-  final String urlPrefix =
-      'https://maps.googleapis.com/maps/api/directions/json?';
+/// Class Comment:
+/// DirectionsService is a service class that returns Route according to
+/// response from maps.googleapis.com website
 
+class DirectionsService {
+
+  String key = Keys.API_KEY;
+  final String urlPrefix = 'https://maps.googleapis.com/maps/api/directions/json?';
+
+  /// @param origin - String; start of the route
+  /// @param destination - String; end of the route
+  /// @param routeType - RouteType; type of the route
+  /// @return Route - route from @params with any intermediate stops
   Future<Route> getRoutes(
       String origin, String destination, RouteType routeType,
       [List<String> intermediates = const <String>[],
@@ -26,6 +34,8 @@ class DirectionsService {
     return Route.fromJson(jsonResults, routeType);
   }
 
+  /// @param intermediates - List<String>; all intermediate stops in a route
+  /// @return String - string of waypoints
   String _generateWaypoints(List<String> intermediates,
       [bool optimised = true]) {
     String waypoints = "";
