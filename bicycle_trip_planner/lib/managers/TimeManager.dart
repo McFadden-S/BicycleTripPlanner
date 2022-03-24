@@ -1,6 +1,12 @@
 import 'package:sunrise_sunset_calc/sunrise_sunset_calc.dart';
 
+/// Class Comment:
+/// CurrentTime is a manager class that holds the current time
+/// and checks actual sunrise/sunset
+
 class CurrentTime {
+
+  //********** Fields **********
 
   DateTime currentTime = DateTime.now();
   int currentHour = DateTime.now().hour;

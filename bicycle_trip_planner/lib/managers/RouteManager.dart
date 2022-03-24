@@ -17,8 +17,11 @@ import '../models/place.dart';
 
 /// Class comment: Route manager is a manager class that updates
 /// the route taken during navigation and route planning
+
 class RouteManager {
+
   //********** Fields **********
+
   /// Managers needed in route manager
   final PolylineManager _polylineManager = PolylineManager();
   MarkerManager _markerManager = MarkerManager();

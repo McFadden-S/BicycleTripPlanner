@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 /// location and distances
 
 class LocationManager {
+
   //********** Fields **********
 
   // This is specifying the Locator class in locator.dart
@@ -40,6 +41,7 @@ class LocationManager {
   }
 
   //********** Private **********
+
   /// Returns true if device is turned on and GPS is turned on
   @visibleForTesting
   Future<bool> checkServiceEnabled() async {
