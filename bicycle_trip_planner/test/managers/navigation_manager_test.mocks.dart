@@ -65,7 +65,7 @@ class MockLocator extends _i1.Mock implements _i4.Locator {
               returnValue: Future<_i3.LatLng>.value(_FakeLatLng_1()))
           as _i5.Future<_i3.LatLng>);
 
-  @override
-  _i5.Future<bool> locationSettings([double distanceFilter = 0]) => (super.noSuchMethod(Invocation.getter(#locationSettings), returnValue: Future<bool>.value(true)
-  as _i5.Future<bool>);
+  /*@override
+  void locationSettings([double distanceFilter = 0]) => (super.noSuchMethod(Invocation.getter(#locationSettings), returnValue: Future<bool>.value(true)
+  as _i5.Future<bool>));*/
 }

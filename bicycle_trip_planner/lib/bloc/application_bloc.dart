@@ -427,6 +427,7 @@ class ApplicationBloc with ChangeNotifier {
       // dialog box informing user that they have arrived at their destination
       showEndOfRouteDialog();
       endRoute();
+      _locationManager.locationSettings();
       return;
     }
 

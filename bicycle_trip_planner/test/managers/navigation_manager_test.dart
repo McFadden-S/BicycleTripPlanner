@@ -256,7 +256,7 @@ void main() {
     expectWalkingBikingEnd(false, false, true);
   });
 
-  test("Test route start to end passed", () async {
+  test("Test route start to end", () async {
     final start = Place(geometry: Geometry(location: Location(lat: 41.511800, lng:-0.118960)), description: "Start", name: "Start", placeId: "12345");
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
     final middle = Place(geometry: Geometry(location: Location(lat: 60.5120, lng:-0.118960)), description: "Middle", name: "Middle", placeId: "67890");
@@ -289,7 +289,7 @@ void main() {
     setCurrentLocation(110.511800, -0.128800);
     await navigationManager.updateRoute();
 
-    await navigationManager.clear();
+    navigationManager.clear();
     expect(navigationManager.ifNavigating(), false);
   });
 }
