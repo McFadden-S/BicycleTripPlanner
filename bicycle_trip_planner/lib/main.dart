@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'constants.dart';
 import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
@@ -19,11 +18,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // TODO: Ensure firebase initialization only occurs once
   try {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  } catch (e) {}
-  ;
+    await Firebase.initializeApp();
+  } catch (e) {};
 
   LocationManager locationManager = LocationManager();
   await locationManager.requestPermission();
