@@ -7,13 +7,15 @@ import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/route.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
+import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 
 @GenerateMocks([Locator])
 void main() {
@@ -49,14 +51,14 @@ void main() {
     List<String> intermediatePlaceId =
     intermediates.map((place) => place.placeId).toList();
 
-    Route startWalkRoute = await DirectionsService().getWalkingRoutes(
+    Rou.Route startWalkRoute = await DirectionsService().getWalkingRoutes(
         origin.placeId, startStation.place.placeId);
-    Route bikeRoute = await DirectionsService().getRoutes(
+    Rou.Route bikeRoute = await DirectionsService().getRoutes(
         startStation.place.placeId,
         endStation.place.placeId,
         intermediatePlaceId,
         RouteManager().ifOptimised());
-    Route endWalkRoute = await DirectionsService().getWalkingRoutes(
+    Rou.Route endWalkRoute = await DirectionsService().getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
     RouteManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   }
