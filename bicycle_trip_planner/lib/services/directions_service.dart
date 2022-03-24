@@ -29,7 +29,7 @@ class DirectionsService {
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';
-    print(url);
+
     var response = await http.get(Uri.parse(url));
 
     var json = convert.jsonDecode(response.body);
