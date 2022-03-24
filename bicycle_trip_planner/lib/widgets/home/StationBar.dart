@@ -448,13 +448,19 @@ class _StationBarState extends State<StationBar> {
                                                           }))
                                               : Center(
                                                   child: Text(
-                                                      "You don't have any nearby stations at the moment."),
+                                                      "You don't have any nearby stations at the moment.",
+                                                      style: TextStyle(
+                                                          color: ThemeStyle
+                                                              .primaryTextColor)),
                                                 );
                                         })
                             : _isFavouriteStations
                                 ? Center(
                                     child: Text(
-                                        "You don't have any favourite station at the moment."),
+                                        "You don't have any favourite station at the moment.",
+                                        style: TextStyle(
+                                            color:
+                                                ThemeStyle.primaryTextColor)),
                                   )
                                 : Center(),
                       ),
