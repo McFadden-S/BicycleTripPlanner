@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
@@ -242,22 +241,15 @@ class _RoutePlanningState extends State<RoutePlanning> {
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
-  final FavouriteRoutesManager favouriteRoutesManager =
-      FavouriteRoutesManager();
 
-  bool successfullyAdded = await databaseManager
-      .addToFavouriteRoutes(
-          routeManager.getStart().getStop(),
-          routeManager.getDestination().getStop(),
-          routeManager
-              .getWaypoints()
-              .map((waypoint) => waypoint.getStop())
-              .toList())
-      .then((v) {
-    favouriteRoutesManager.updateRoutes();
-    return v;
-  });
-  ;
+  bool successfullyAdded =
+  await databaseManager.addToFavouriteRoutes(
+      routeManager.getStart().getStop(),
+      routeManager.getDestination().getStop(),
+      routeManager
+          .getWaypoints()
+          .map((waypoint) => waypoint.getStop())
+          .toList()).then((v){DatabaseManager().updateRoutes(); return v;});
   if (successfullyAdded) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text("Route saved correctly!"),

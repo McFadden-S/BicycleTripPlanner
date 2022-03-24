@@ -21,6 +21,8 @@ class FavouriteRoutesManager {
 
   //********** Public **********
 
+  //********** Manage favourite routes
+
   int getNumberOfRoutes() {
     return _routes.length;
   }

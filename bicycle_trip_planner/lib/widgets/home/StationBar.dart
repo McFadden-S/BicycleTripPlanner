@@ -1,5 +1,4 @@
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
@@ -24,7 +23,6 @@ class _StationBarState extends State<StationBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
-  FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool _isFavouriteStations = false;
   bool _isFavouriteRoutes = false;
@@ -49,9 +47,9 @@ class _StationBarState extends State<StationBar> {
 
   deleteFavouriteRoute(int index) {
     if(DatabaseManager().isUserLogged()) {
-      DatabaseManager().removeFavouriteRoute(FavouriteRoutesManager().getKey(index));
+      DatabaseManager().removeFavouriteRoute(DatabaseManager().getRouteKeyByIndex(index)));
     }
-    FavouriteRoutesManager().updateRoutes();
+    DatabaseManager().updateRoutes();
     getFavouriteRoutes();
   }
 
@@ -88,9 +86,7 @@ class _StationBarState extends State<StationBar> {
         setState(() {
           _isFavouriteStations = false;
         });
-      }
-
-      if(_isUserLogged != false) {
+      } else {
         getFavouriteStations();
         getFavouriteRoutes();
       }
@@ -184,7 +180,7 @@ class _StationBarState extends State<StationBar> {
                                     child:
                                     _favouriteRoutes ?
                                     ListView.builder(
-                                        itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
+                                        itemCount: DatabaseManager().getNumberOfRoutes(),
                                         itemBuilder: (BuildContext context, int index) =>
                                             SizedBox(
                                                 height: MediaQuery.of(context).size.height * 0.15,
@@ -292,7 +288,7 @@ class _StationBarState extends State<StationBar> {
                           ListView.builder(
                             controller: stationsPageViewController,
                             scrollDirection: Axis.horizontal,
-                            itemCount: favouriteRoutesManager.getNumberOfRoutes(),
+                            itemCount: DatabaseManager().getNumberOfRoutes(),
                             itemBuilder: (BuildContext context, int index) =>
                                 FavouriteRouteCard(index: index, deleteRoute: deleteFavouriteRoute,)
                           ) :

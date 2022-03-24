@@ -16,6 +16,8 @@ class DatabaseManager {
   final FirebaseDatabase _dbInstance = FirebaseDatabase.instance;
   final _auth = FirebaseAuth.instance;
 
+  Map<String,Pathway> _routes = {};
+
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
   factory DatabaseManager() {
@@ -116,6 +118,7 @@ class DatabaseManager {
         pathways[child.key.toString()] =  Helper.mapToPathway(child.value)
       }
     });
+    updateRoutes();
     return pathways;
   }
 
@@ -135,6 +138,73 @@ class DatabaseManager {
 
   bool isUserLogged() {
     return _auth.currentUser != null;
+  }
+
+  //********** Manage favourite routes
+
+  int getNumberOfRoutes() {
+    return _routes.length;
+  }
+
+  /*Map<String, Pathway> getFavouriteRoutes() {
+    return _routes;
+  }*/
+
+  Pathway? getFavouriteRouteByIndex(int index) {
+    if(index < _routes.length && index >= 0) {
+      return _routes[_routes.keys.toList()[index]]!;
+    }
+  }
+
+  String getRouteKeyByIndex(int index) {
+    if(index < _routes.length && index >= 0) {
+      return _routes.keys.toList()[index];
+    } else {
+      return "";
+    }
+  }
+
+  void updateRoutes() {
+    if(isUserLogged()) {
+      getFavouriteRoutes().then((value) => _routes = value);
+    }
+  }
+
+
+  //********** Private **********
+
+  Map<String, Object> _place2Map(Place place) {
+    Map<String, Object> output = {};
+    output['name'] = place.name;
+    output['description'] = place.description;
+    output['id'] = place.placeId;
+    output['lng'] = place.geometry.location.lng;
+    output['lat'] = place.geometry.location.lat;
+    return output;
+  }
+
+  Pathway _mapToPathway(dynamic mapIn) {
+    Pathway output = Pathway();
+    output.changeStart(_mapToPlace(mapIn['start']));
+    output.changeDestination(_mapToPlace(mapIn['end']));
+    if(mapIn['stops'] != null) {
+      for(var stop in mapIn['stops']){
+        output.addStop(Stop(_mapToPlace(stop)));
+      }
+    }
+    return output;
+  }
+
+  Place _mapToPlace(dynamic mapIn) {
+    return Place(
+      name: mapIn['name'],
+      description: mapIn['description'],
+      placeId: mapIn['id'],
+      geometry: Geometry(
+          location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
+      )
+    );
+
   }
 
 }

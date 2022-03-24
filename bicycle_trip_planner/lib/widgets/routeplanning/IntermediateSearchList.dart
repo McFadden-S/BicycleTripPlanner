@@ -1,15 +1,12 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
-import '../../managers/DatabaseManager.dart';
 import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {

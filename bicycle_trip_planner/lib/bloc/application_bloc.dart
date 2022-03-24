@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -53,8 +52,6 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-  final FavouriteRoutesManager _favouriteRoutesManager = FavouriteRoutesManager();
-  // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
@@ -524,7 +521,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void loadFavouriteRoutes() {
-    _favouriteRoutesManager.updateRoutes();
+    DatabaseManager().updateRoutes();
   }
 
   void notifyListeningWidgets() {
