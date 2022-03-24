@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:test/test.dart';
@@ -29,4 +31,10 @@ main(){
     expect(place.toString(), place.description);
   });
 
+  test('ensure overridden toString is correct', (){
+    final notFound = Place.placeNotFound();
+    expect(notFound.name, "");
+    expect(notFound.placeId, "");
+    expect(notFound.description, "");
+  });
 }

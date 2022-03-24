@@ -31,6 +31,10 @@ main(){
   });
 
   test('ensure overridden == operator is functioning properly', (){
+    expect(legs == legs, true);
+  });
+
+  test('ensure overridden == operator is functioning properly when compare with different legs', (){
     expect(legs == legs2, false);
   });
 
