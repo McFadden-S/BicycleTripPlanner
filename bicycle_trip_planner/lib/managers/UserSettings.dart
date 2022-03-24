@@ -70,7 +70,10 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
-    savedRoutes = capRoutes(savedRoutes);
+    //if there are already 5 routes saved
+    if(savedRoutes.length == MAX_RECENT_ROUTES_COUNT) {
+      savedRoutes = capRoutes(savedRoutes);
+    }
     Map<String, dynamic> newRoute = {};
     Map<String, dynamic> start =  Helper.place2Map(origin);
     Map<String, dynamic> end =  Helper.place2Map(destination);
@@ -182,15 +185,13 @@ class UserSettings {
 
   Map<String, dynamic> capRoutes(Map<String, dynamic> savedRoutes) {
     Map<String, dynamic> output = {};
-    //if there are already 5 routes saved
-    if(savedRoutes.length == MAX_RECENT_ROUTES_COUNT){
       // update item keys
       for(var key in savedRoutes.keys){
         output[(int.parse(key)-1).toString()] = savedRoutes[key];
       }
       // remove oldest
       output.remove('-1');
-    }
+
     return output;
   }
 
