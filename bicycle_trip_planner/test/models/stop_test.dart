@@ -19,6 +19,10 @@ main(){
     expect(stop.getUID(), 1);
   });
 
+  test('ensure overriden toString is correct', (){
+    expect(stop.toString(), " - 1");
+  });
+
   test('ensure can set a stop', (){
     final location = Location(lat: 1, lng: -1);
     final geometry = Geometry(location: location);
