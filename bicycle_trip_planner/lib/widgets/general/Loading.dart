@@ -9,6 +9,8 @@ import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../auth/Keys.dart';
+
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
 
@@ -32,6 +34,10 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     super.initState();
+    Keys keys = Keys();
+    if(Keys.ANDROID_API_KEY == '' || Keys.iOS_API_KEY == ''){
+      keys.fetchKeys();
+    }
     setUpMap();
   }
 
@@ -50,4 +56,5 @@ class _LoadingState extends State<Loading> {
           ),
         ),
       );
+
 }

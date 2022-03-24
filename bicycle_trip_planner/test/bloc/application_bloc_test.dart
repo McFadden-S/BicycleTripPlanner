@@ -97,7 +97,7 @@ void main() {
 //
 //       final client = MockClient();
 //
-//       const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+//
 //       const search = "waterloo";
 //
 //       when(client.get(Uri.parse(
