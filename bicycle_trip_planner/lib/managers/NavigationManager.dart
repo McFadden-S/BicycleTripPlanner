@@ -8,6 +8,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../models/stop.dart';
+
 class NavigationManager {
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
@@ -227,7 +229,7 @@ class NavigationManager {
   }
 
   // TODO: Include in relevant places and clear up any left behidn variables
-  void clear() {
+  Future<void> clear() async {
     _isBeginning = true;
     _isCycling = false;
     _isEndWalking = false;

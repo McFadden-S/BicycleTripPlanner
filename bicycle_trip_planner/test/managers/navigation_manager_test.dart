@@ -1,9 +1,15 @@
+
+
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
+import 'package:bicycle_trip_planner/models/route.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
@@ -28,6 +34,31 @@ void main() {
     expect(navigationManager.ifBeginning(), walk);
     expect(navigationManager.ifCycling(), bike);
     expect(navigationManager.ifEndWalking(), end);
+  }
+
+  setRoute(Place origin, Place destination,
+      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    Location startLocation = origin.geometry.location;
+    Location endLocation = destination.geometry.location;
+
+    Station startStation = await StationManager().getPickupStationNear(
+        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    Station endStation = await StationManager().getDropoffStationNear(
+        LatLng(endLocation.lat, endLocation.lng), groupSize);
+
+    List<String> intermediatePlaceId =
+    intermediates.map((place) => place.placeId).toList();
+
+    Route startWalkRoute = await DirectionsService().getWalkingRoutes(
+        origin.placeId, startStation.place.placeId);
+    Route bikeRoute = await DirectionsService().getRoutes(
+        startStation.place.placeId,
+        endStation.place.placeId,
+        intermediatePlaceId,
+        RouteManager().ifOptimised());
+    Route endWalkRoute = await DirectionsService().getWalkingRoutes(
+        endStation.place.placeId, destination.placeId);
+    RouteManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
   Station createStation(int id, String name, double lat, double lng) {
@@ -148,5 +179,117 @@ void main() {
     navigationManager.checkPassedByPickUpDropOffStations();
 
     expectWalkingBikingEnd(false, false, true);
+  });
+
+  test("Test start navigation from station", () {
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final station_2 = createStation(2, "station_2", 60.5120, -0.128800);
+
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
+
+    expect(navigationManager.ifNavigating(), false);
+
+    navigationManager.start();
+
+    expect(navigationManager.ifNavigating(), true);
+    expect(navigationManager.ifBeginning(), true);
+    expect(navigationManager.ifCycling(), false);
+    expect(navigationManager.getPickupStation(), station_1);
+    expect(navigationManager.getDropoffStation(), station_2);
+  });
+
+  test("Test start navigation from current location", () {
+    setCurrentLocation(1, 2);
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+
+    //Setting pickup and dropoff stations
+    RouteManager().setStartFromCurrentLocation(true);
+    setRoute(locationManager.getCurrentLocation(), station_1.place);
+
+    expect(navigationManager.ifNavigating(), false);
+
+    navigationManager.start();
+
+    expect(navigationManager.ifNavigating(), true);
+    expect(navigationManager.ifBeginning(), true);
+    expect(navigationManager.ifCycling(), false);
+  });
+
+  test("Test start navigation from defined location with one waypoint", () {
+    final start = Place(geometry: Geometry(location: Location(lat: 1, lng:1)), description: "Start", name: "Start", placeId: "12345");
+    final middle = Place(geometry: Geometry(location: Location(lat: 1, lng:1)), description: "Middle", name: "Middle", placeId: "67890");
+    final end = createStation(1, "station_1", 51.511800, -0.118960);
+
+    setRoute(start, end.place, [middle]);
+
+    expect(navigationManager.ifNavigating(), false);
+    RouteManager().setStartFromCurrentLocation(false);
+    RouteManager().setWalkToFirstWaypoint(true);
+
+    navigationManager.start();
+
+    expectWalkingBikingEnd(true, false, false);
+  });
+
+  test("Test update navigation", () async {
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final station_2 = createStation(2, "station_2", 60.5120, -0.128800);
+
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
+
+    expect(navigationManager.ifNavigating(), false);
+
+    navigationManager.start();
+
+    expectWalkingBikingEnd(true, false, false);
+
+    setCurrentLocation(51.511800, -0.118960);
+    await navigationManager.updateRoute();
+
+    expectWalkingBikingEnd(false, true, false);
+
+    setCurrentLocation(60.5120, -0.128800);
+    await navigationManager.updateRoute();
+
+    expectWalkingBikingEnd(false, false, true);
+  });
+
+  test("Test route start to end passed", () async {
+    final start = Place(geometry: Geometry(location: Location(lat: 41.511800, lng:-0.118960)), description: "Start", name: "Start", placeId: "12345");
+    final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
+    final middle = Place(geometry: Geometry(location: Location(lat: 60.5120, lng:-0.118960)), description: "Middle", name: "Middle", placeId: "67890");
+    final station_2 = createStation(1, "station_1", 100.511800, -0.118960);
+
+    setRoute(start, station_2.place, [middle]);
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
+
+    setCurrentLocation(41.511800, -0.118960);
+    RouteManager().setWalkToFirstWaypoint(true);
+    RouteManager().setStartFromCurrentLocation(true);
+    navigationManager.start();
+    expectWalkingBikingEnd(true, false, false);
+    setCurrentLocation(51.511800, -0.118960);
+    await navigationManager.updateRoute();
+
+    expectWalkingBikingEnd(false, true, false);
+
+    setCurrentLocation(60.5120, -0.118960);
+    await navigationManager.updateRoute();
+
+    expectWalkingBikingEnd(false, true, false);
+
+    setCurrentLocation(100.511800, -0.118960);
+    await navigationManager.updateRoute();
+
+    expectWalkingBikingEnd(false, false, true);
+
+    setCurrentLocation(110.511800, -0.128800);
+    await navigationManager.updateRoute();
+
+    await navigationManager.clear();
+    expect(navigationManager.ifNavigating(), false);
   });
 }
