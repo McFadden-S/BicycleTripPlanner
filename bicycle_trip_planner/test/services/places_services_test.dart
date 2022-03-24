@@ -506,6 +506,8 @@ void main(){
       expect(answer.name, Place.placeNotFound().name);
       expect(answer.placeId, Place.placeNotFound().placeId);
       expect(answer.description, Place.placeNotFound().description);
+      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
+      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
     });
   });
 
@@ -612,6 +614,31 @@ void main(){
       expect(answer.geometry.location.lat, lat);
       expect(answer.geometry.location.lng, lng);
     });
+    test('Get place from invalid coordinates', () async {
+
+      const lat = 110000000.0;
+      const lng = 100000000.0;
+      const description = "Covent Garden, Long Acre, London, UK";
+      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+      var url =
+          'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
+
+      final client = mock.MockClient();
+      when(client.get(Uri.parse(url)))
+          .thenAnswer((_) async =>
+          http.Response("""{
+              "results" : [],
+               "status" : "ZERO_RESULTS"
+            }""", 200));
+
+      final answer = await PlacesService().getPlaceFromCoordinates(lat, lng, description);
+      expect(answer.placeId, Place.placeNotFound().placeId);
+      expect(answer.name, Place.placeNotFound().name);
+      expect(answer.placeId, Place.placeNotFound().placeId);
+      expect(answer.description, Place.placeNotFound().description);
+      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
+      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+    });
   });
 
   group('getPlaceFromAddress', ()
@@ -712,6 +739,30 @@ void main(){
       expect(answer.geometry.location.lat, 51.5130007);
       expect(answer.geometry.location.lng,   -0.1241621);
       expect(answer.placeId, "ChIJT2mIkcwEdkgRYspzsBq1iAM");
+    });
+    test('Get place from invalid address', () async {
+
+      const address = "";
+      const description = "Covent Garden, Long Acre, London, UK";
+      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
+      var url =
+          'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
+
+      final client = mock.MockClient();
+      when(client.get(Uri.parse(url)))
+          .thenAnswer((_) async =>
+          http.Response("""{
+              "results" : [],
+               "status" : "ZERO_RESULTS"
+            }""", 200));
+
+      final answer = await PlacesService().getPlaceFromAddress(address, description);
+      expect(answer.placeId, Place.placeNotFound().placeId);
+      expect(answer.name, Place.placeNotFound().name);
+      expect(answer.placeId, Place.placeNotFound().placeId);
+      expect(answer.description, Place.placeNotFound().description);
+      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
+      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
     });
   });
 }

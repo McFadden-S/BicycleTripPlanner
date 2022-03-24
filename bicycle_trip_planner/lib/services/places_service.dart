@@ -35,8 +35,12 @@ class PlacesService {
         'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
-    var jsonResults = json['results'][0] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults, description);
+    if(json.containsKey('results') && json['results'].length > 0) {
+      var jsonResults = json['results'][0] as Map<String, dynamic>;
+      return Place.fromJson(jsonResults, description);
+    } else {
+      return Place.placeNotFound();
+    }
   }
 
   Future<Place> getPlaceFromAddress(String address, String description) async {
@@ -45,7 +49,11 @@ class PlacesService {
         'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
     var response = await http.get(Uri.parse(url));
     var json = convert.jsonDecode(response.body);
-    var jsonResults = json['results'][0] as Map<String, dynamic>;
-    return Place.fromJson(jsonResults, description);
+    if(json.containsKey('results') && json['results'].length > 0) {
+      var jsonResults = json['results'][0] as Map<String, dynamic>;
+      return Place.fromJson(jsonResults, description);
+    } else {
+      return Place.placeNotFound();
+    }
   }
 }
