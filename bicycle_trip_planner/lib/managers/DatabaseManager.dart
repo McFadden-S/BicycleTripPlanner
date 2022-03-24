@@ -17,6 +17,7 @@ import 'Helper.dart';
 class DatabaseManager {
 
   //************Fields************
+
   late FirebaseDatabase _dbInstance;
   var _auth;
 
@@ -43,6 +44,7 @@ class DatabaseManager {
 
   //********** Public **********
 
+  /// Add @param stationId to Favourite Stations
   Future<bool> addToFavouriteStations(int stationID) async {
     if (_auth.currentUser == null) {
       return false;
@@ -61,6 +63,7 @@ class DatabaseManager {
     return true;
   }
 
+  /// @return List<int> - list of all Favourite Stations Ids
   Future<List<int>> getFavouriteStations() async {
     var uid = _auth.currentUser?.uid;
     var favouriteStations = await _dbInstance.ref('users/$uid/favouriteStations');
@@ -71,13 +74,11 @@ class DatabaseManager {
     //final map = result.snapshot.value as Map<String, int>;
     map.forEach((key, value) => {output.add(value)});
 
-    /*await favouriteStations.once().then((v) => {
-          for (var id in v.snapshot.children.cast()) {output.add(id.value)}
-        });*/
-
     return output;
   }
 
+  /// Remove @param stationId from Favourite Stations
+  /// @return true if stationId was successfully removed, false otherwise
   Future<bool> removeFavouriteStation(String stationId) async {
     var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteStations');
@@ -92,6 +93,7 @@ class DatabaseManager {
     return true;
   }
 
+  /// Add @param start, end, stops to Favourite Routes
   Future<bool> addToFavouriteRoutes(
       Place start, Place end, List<Place> stops) async {
     if (_auth.currentUser == null) {
@@ -134,6 +136,7 @@ class DatabaseManager {
     return true;
   }
 
+  /// @return Map<String, Pathway> - map of all Favourite Routes
   Future<Map<String, Pathway>> getFavouriteRoutes() async {
     var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
@@ -145,6 +148,8 @@ class DatabaseManager {
     return pathways;
   }
 
+  /// Remove route with @param routeKey from Favourite Routes
+  /// @return true if route was successfully removed, false otherwise
   Future<bool> removeFavouriteRoute(String routeKey) async {
     var uid = FirebaseAuth.instance.currentUser?.uid;
     DatabaseReference favouriteRoutes =
@@ -160,27 +165,27 @@ class DatabaseManager {
     return true;
   }
 
+  /// @return true if user is logged in, false otherwise
   bool isUserLogged() {
     return _auth.currentUser != null;
   }
 
 
-  //********** Manage favourite routes
+  //********** Manage favourite routes **********
 
+  /// @return number of routes
   int getNumberOfRoutes() {
     return _routes.length;
   }
 
-  /*Map<String, Pathway> getFavouriteRoutes() {
-    return _routes;
-  }*/
-
+  /// @return favourite route with @param index
   Pathway? getFavouriteRouteByIndex(int index) {
     if(index < _routes.length && index >= 0) {
       return _routes[_routes.keys.toList()[index]]!;
     }
   }
 
+  /// @return route key of route with @param index
   String getRouteKeyByIndex(int index) {
     if(index < _routes.length && index >= 0) {
       return _routes.keys.toList()[index];
@@ -192,6 +197,7 @@ class DatabaseManager {
 
   //********** Private **********
 
+  /// @return Map from @param place
   Map<String, Object> _place2Map(Place place) {
     Map<String, Object> output = {};
     output['name'] = place.name;
@@ -202,6 +208,7 @@ class DatabaseManager {
     return output;
   }
 
+  /// @return Pathway from @param mapIn
   Pathway _mapToPathway(dynamic mapIn) {
     Pathway output = Pathway();
     output.changeStart(_mapToPlace(mapIn['start']));
@@ -214,6 +221,7 @@ class DatabaseManager {
     return output;
   }
 
+  /// @return Place from @param mapIn
   Place _mapToPlace(dynamic mapIn) {
     return Place(
       name: mapIn['name'],
