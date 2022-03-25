@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,16 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-  } catch (e) {}
+  } catch (_) {}
   ;
 
   LocationManager locationManager = LocationManager();
-  await locationManager.requestPermission();
+
+  // location requested and if denied send to settings and close
+  if (!(await locationManager.requestPermission())) {
+    await locationManager.openLocationSettingsOnDevice();
+    exit(0);
+  }
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
       (value) => runApp(ChangeNotifierProvider(
