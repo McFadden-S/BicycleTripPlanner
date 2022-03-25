@@ -16,19 +16,6 @@ import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.da
 import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
-<<<<<<< HEAD
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
-import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
-import 'package:bicycle_trip_planner/widgets/general/OptimiseCostButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
-<<<<<<< Updated upstream
-import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> development
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
@@ -108,7 +95,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ViewRouteButton(),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
-<<<<<<< Updated upstream
                                     _routeManager.getWaypoints().length > 1
                                 ? Column(
                                     children: [
@@ -117,16 +103,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     ],
                                   )
                                 : SizedBox.shrink(),
-=======
-                            _routeManager.getWaypoints().length > 1
-                            ? Column(
-                              children: [
-                                OptimisedButton(),
-                                SizedBox(height: 10),
-                              ],
-                            )
-                            : SizedBox.shrink(),
->>>>>>> Stashed changes
                             OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),

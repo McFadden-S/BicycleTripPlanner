@@ -82,15 +82,10 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Group Size **********
 
-<<<<<<< Updated upstream
+
   Future<void> updateGroupSize(int groupSize) async {
     _routeManager.setGroupSize(groupSize);
     await filterStationMarkers();
-
-=======
-  void showEndOfRouteDialog() {
-    _dialogManager.showEndOfRouteDialog();
->>>>>>> Stashed changes
     notifyListeners();
   }
 
