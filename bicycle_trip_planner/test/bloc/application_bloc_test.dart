@@ -24,7 +24,6 @@ void main() {
 
   test("Fetch location", () async {
     var locationManager = MockLocationManager();
-    var locationManagerReal = LocationManager();
     var placesServices = MockPlacesService();
     var currentLocationLatLng = LatLng(50.526523, -0.4151);
     var currentPlace = Place(
