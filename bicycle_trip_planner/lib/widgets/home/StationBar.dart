@@ -54,7 +54,7 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(int id) {
-    if(stationManager.getStations().any((station) => station.id == id)) {
+    if(DatabaseManager().isUserLogged() && stationManager.getStations().any((station) => station.id == id)) {
       if (!_favouriteStations.contains(id)) {
         DatabaseManager().addToFavouriteStations(id).then((value) => getFavouriteStations());
       } else {
