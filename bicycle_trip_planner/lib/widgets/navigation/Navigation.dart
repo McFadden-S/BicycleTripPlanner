@@ -15,12 +15,6 @@ import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart
 import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CostEffTimerButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
-import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
 // import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
@@ -30,6 +24,8 @@ import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+
+import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
