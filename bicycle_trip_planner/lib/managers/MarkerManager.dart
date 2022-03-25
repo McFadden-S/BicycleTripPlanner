@@ -139,6 +139,7 @@ class MarkerManager {
         .add(_createStationMarker(station, appBloc, _generateMarkerID(uid)));
   }
 
+  // sets a special marker to identify the user
   Future<Marker> setUserMarker(LatLng point) async {
     // Wait for this to load
     if (userMarkerIcon == null) {

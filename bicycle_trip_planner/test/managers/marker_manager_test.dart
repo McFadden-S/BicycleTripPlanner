@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -10,6 +11,7 @@ import 'package:geolocator/geolocator.dart';
 
 void main(){
   final markerManager = MarkerManager();
+
   test('ensure that there are no markers at the start', (){
     expect(MarkerManager().getMarkers().length,0);
   });
@@ -59,17 +61,20 @@ void main(){
     markerManager.getMarkers().clear();
   });
 
-  // need exact station details available on web for it to work
+  // issue with ApplicationBloc()
   // test('ensure marker for station is correct', (){
   //   markerManager.getMarkers().clear();
-  //   List<Station> station = <Station>[Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1)];
+  //     List<Station> station = <Station>[
+  //       Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 12, distanceTo: 1),
+  //       Station(id: 2, name: 'Maida Vale Station', lat: 12.0, lng: 23.0, bikes: 5, emptyDocks: 3, totalDocks: 8, distanceTo: 4)
+  //     ];
   //   expect(markerManager.getMarkers().length,0);
   //   markerManager.setStationMarkers(station, ApplicationBloc());
-  //   expect(markerManager.getMarkers().length,1);
+  //   expect(markerManager.getMarkers().length,2);
   //   markerManager.getMarkers().clear();
   // });
 
-  // same issue as test above
+  // same issue
   // test('ensure marker for station is correct', (){
   //   markerManager.getMarkers().clear();
   //   Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
@@ -79,6 +84,7 @@ void main(){
   //   markerManager.getMarkers().clear();
   // });
 
+  // same issue
   // test('ensure marker for station is correct', (){
   //     markerManager.getMarkers().clear();
   //     List<Station> station = <Station>[
@@ -89,6 +95,15 @@ void main(){
   //     expect(markerManager.getMarkers().length,2);
   //     markerManager.clearStationMarkers(station);
   //     expect(markerManager.getMarkers().length,0);
+  // });
+
+  // same issue
+  // test('ensure marker for station uid is correct', (){
+  //     markerManager.getMarkers().clear();
+  //     Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
+  //     markerManager.setStationMarkerWithUID(station, ApplicationBloc());
+  //     expect(markerManager.getMarkers().length,1);
+  //     markerManager.getMarkers().clear();
   // });
 
   test('remove existing marker', (){
@@ -109,5 +124,29 @@ void main(){
     markerManager.getMarkers().clear();
   });
 
+  test('remove existing marker using uid', (){
+    markerManager.getMarkers().clear();
+    Location location = Location(lat: 51.511448, lng: -0.116414);
+    Geometry geometry = Geometry(location: location);
+    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "");
+    expect(markerManager.getMarkers().length,0);
+    markerManager.setPlaceMarker(place, 1);
+    expect(markerManager.getMarkers().length,1);
+    markerManager.clearMarker(1);
+    expect(markerManager.getMarkers().length,0);
+    markerManager.getMarkers().clear();
+  });
 
+  test('remove non-existing marker using uid', (){
+    markerManager.getMarkers().clear();
+    Location location = Location(lat: 51.511448, lng: -0.116414);
+    Geometry geometry = Geometry(location: location);
+    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "");
+    expect(markerManager.getMarkers().length,0);
+    markerManager.setPlaceMarker(place, 1);
+    expect(markerManager.getMarkers().length,1);
+    markerManager.clearMarker(2); // doesn't exist
+    expect(markerManager.getMarkers().length,1);
+    markerManager.getMarkers().clear();
+  });
 }
