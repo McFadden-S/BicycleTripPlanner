@@ -88,7 +88,7 @@ void main() {
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
     await pumpWidget(tester, Navigation());
 
-    final walkOrCycleButton = find.byType(Countdown);
+    final walkOrCycleButton = find.byType(CustomCountdown);
 
     expect(walkOrCycleButton, findsOneWidget);
   });
