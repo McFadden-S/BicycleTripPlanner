@@ -35,7 +35,6 @@ class LocationManager {
   Future<bool> requestPermission() async {
     bool permission = await checkPermission();
     bool service = await checkServiceEnabled();
-    // PermissionStatus _permissionGranted = await Location().hasPermission();
     return permission && service;
   }
 

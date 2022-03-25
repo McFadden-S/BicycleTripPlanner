@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
@@ -19,7 +21,9 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late StreamSubscription connectivitySubscription;
+  late StreamSubscription<ServiceStatus> serviceStatusStream;
   final DialogManager _dialogManager = DialogManager();
+  LocationManager locationManager = LocationManager();
 
   @override
   void initState() {
@@ -40,6 +44,20 @@ class _HomeState extends State<Home> {
         }
       }
     });
+
+    // check location service is constantly on
+    serviceStatusStream = Geolocator.getServiceStatusStream().listen(
+            (ServiceStatus status) async {
+          if (status == ServiceStatus.disabled) {
+            // location requested and if denied twice, app is closed
+            if (!(await locationManager.requestPermission())) {
+              await locationManager.openLocationSettingsOnDevice();
+              if (!(await locationManager.requestPermission())) {
+                exit(0);
+              }
+            }
+          }
+        });
   }
 
   @override
