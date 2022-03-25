@@ -15,6 +15,8 @@ class StationManager {
   // Used only for O(1) look up times for efficiency
   Set<Station> _stationsLookUp = <Station>{};
 
+  List<Station> _displayedStations = <Station>[];
+
   final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
@@ -40,7 +42,7 @@ class StationManager {
     return nearPos;
   }
 
-  //********** Public **********
+  //********** Stations **********
 
   int getNumberOfStations() {
     return _stations.length;
@@ -120,7 +122,6 @@ class StationManager {
       return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
-    //print(nearbyStations);
 
     return nearbyStations;
   }
@@ -148,4 +149,20 @@ class StationManager {
     _stations.sort((stationA, stationB) =>
         stationA.distanceTo.compareTo(stationB.distanceTo));
   }
+
+  //********** Display Stations **********
+
+  int getNumberOfDisplayedStations(){
+    return _displayedStations.length;
+  }
+
+  List<Station> getDisplayedStations(){
+    return _displayedStations;
+  }
+
+  void setDisplayedStations(List<Station> stations){
+    _displayedStations = stations;
+  }
+
+
 }

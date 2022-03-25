@@ -84,17 +84,16 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically();
   }
 
+  // ********** Group Size **********
+
+  Future<void> updateGroupSize(int groupSize) async {
+    _routeManager.setGroupSize(groupSize);
+    await filterStationMarkers();
+
+    notifyListeners();
+  }
+
   // ********** Dialog **********
-
-  void showWalkBikeToggleDialog() {
-    _dialogManager.showWalkBikeToggleDialog();
-    notifyListeners();
-  }
-
-  void showEndOfRouteDialog() {
-    _dialogManager.showEndOfRouteDialog();
-    notifyListeners();
-  }
 
   void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
@@ -107,11 +106,6 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearEndOfRouteDialog() {
-    _dialogManager.clearEndOfRouteDialog();
-    notifyListeners();
-  }
-
   void clearBinaryDialog() {
     _dialogManager.clearBinaryChoice();
     notifyListeners();
@@ -119,11 +113,6 @@ class ApplicationBloc with ChangeNotifier {
 
   void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
-    notifyListeners();
-  }
-
-  void clearWalkBikeToggleDialog() {
-    _dialogManager.clearWalkBikeToggleDialog();
     notifyListeners();
   }
 
@@ -330,7 +319,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   updateStations() async {
-    http.Client client = new http.Client();
+    http.Client client = http.Client();
     if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
       List<Station> favouriteStations = await _stationsService.getStations(client);
       List<int> compare = await DatabaseManager().getFavouriteStations();
@@ -344,44 +333,47 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  /*reloadStations(bool favourite) {
-
-  }*/
-
   Future<List<Station>> filterNearbyStations() async {
     double range = await UserSettings().nearbyStationsRange();
+
     List<Station> notNearbyStations = _stationManager.getFarStations(range);
     List<Station> nearbyStations = _stationManager.getNearStations(range);
+
     _markerManager.setStationMarkers(nearbyStations, this);
     _markerManager.clearStationMarkers(notNearbyStations);
+
     return nearbyStations;
   }
 
-  filterStationsWithBikes(List<Station> filteredStations, int groupSize) {
+  List<Station> filterStationsWithBikes(List<Station> filteredStations, int groupSize) {
     List<Station> stationsWithBikes =
         _stationManager.getStationsWithAtLeastXBikes(groupSize, filteredStations);
     _markerManager.setStationMarkers(stationsWithBikes, this);
+
     List<Station> bikelessStations =
         _stationManager.getStationsWithNotEnoughBikes(filteredStations, groupSize);
     _markerManager.clearStationMarkers(bikelessStations);
+
+    return stationsWithBikes;
   }
 
   Future<void> filterStationMarkers() async {
     if (_navigationManager.ifNavigating()) {
       return;
     }
+
     List<Station> nearbyStations = await filterNearbyStations();
-    filterStationsWithBikes(nearbyStations, _routeManager.getGroupSize());
+    List<Station> displayedStations = filterStationsWithBikes(nearbyStations, _routeManager.getGroupSize());
+
+    _stationManager.setStationDisplayedCount(displayedStations.length);
+
+    notifyListeners();
   }
 
   viewStationMarker(Station station, [int uid = -1]) {
     // Do this in case station marker is not on the map
     _markerManager.setStationMarkerWithUID(station, this, uid);
     _cameraManager.setCameraPosition(LatLng(station.lat, station.lng));
-  }
-
-  setStationMarkersWithoutUID() {
-    _markerManager.setStationMarkers(_stationManager.getStations(), this);
   }
 
   // ********** Screen Management **********
@@ -425,8 +417,9 @@ class ApplicationBloc with ChangeNotifier {
     await fetchCurrentLocation();
     if (await _navigationManager.checkWaypointPassed()) {
       // dialog box informing user that they have arrived at their destination
-      showEndOfRouteDialog();
+      _dialogManager.showEndOfRouteDialog();
       endRoute();
+      notifyListeners();
       return;
     }
 
@@ -485,8 +478,10 @@ class ApplicationBloc with ChangeNotifier {
 
   void clearStationMarkersNotInRoute() {
     _markerManager.clearStationMarkers(_stationManager.getStations());
+
     Station pickupStation = _navigationManager.getPickupStation();
     Station dropOffStation = _navigationManager.getDropoffStation();
+
     _markerManager.setStationMarker(pickupStation, this);
     _markerManager.setStationMarker(dropOffStation, this);
   }

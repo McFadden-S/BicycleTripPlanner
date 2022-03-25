@@ -57,7 +57,8 @@ class _WalkBikeToggleDialogState extends State<WalkBikeToggleDialog> {
                       ),
                       onPressed: () {
                         toggleCycling();
-                        applicationBloc.clearWalkBikeToggleDialog();
+                        _dialogManager.clearWalkBikeToggleDialog();
+                        applicationBloc.notifyListeningWidgets();
                       },
                       // onPressed: YesOption();
                       child: Text("Toggle",
@@ -72,7 +73,8 @@ class _WalkBikeToggleDialogState extends State<WalkBikeToggleDialog> {
                           primary: ThemeStyle.buttonPrimaryColor
                       ),
                       onPressed: () {
-                        applicationBloc.clearWalkBikeToggleDialog();
+                        _dialogManager.clearWalkBikeToggleDialog();
+                        applicationBloc.notifyListeningWidgets();
                       },
                       // onPressed: YesOption();
                       child: Text("Cancel",

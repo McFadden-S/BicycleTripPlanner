@@ -33,8 +33,6 @@ class _StationBarState extends State<StationBar> {
   List<int> _favouriteStations = [];
   Map<String, Pathway> _favouriteRoutes = {};
 
-  ApplicationBloc? _appBloc;
-
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) =>  setState((){
       _favouriteStations = value;
@@ -74,23 +72,21 @@ class _StationBarState extends State<StationBar> {
 
   @override
   void initState() {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+
     FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         _isUserLogged = event != null && !event.isAnonymous;
       });
 
-      if(_appBloc != null){
-        _appBloc!.updateStations();
-      }
+      applicationBloc.updateStations();
 
       if(_isUserLogged == false) {
         UserSettings().setIsFavouriteStationsSelected(false);
         setState(() {
           _isFavouriteStations = false;
         });
-      }
-
-      if(_isUserLogged != false) {
+      } else{
         getFavouriteStations();
         getFavouriteRoutes();
       }
@@ -101,7 +97,7 @@ class _StationBarState extends State<StationBar> {
   void showExpandedList() {
     showModalBottomSheet(
         enableDrag: true,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
           List<int> favourites = [];
@@ -129,7 +125,7 @@ class _StationBarState extends State<StationBar> {
                   padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
                   decoration: BoxDecoration(
                     color: ThemeStyle.cardColor,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30.0),
                         topRight: Radius.circular(30.0)),
                   ),
@@ -138,14 +134,10 @@ class _StationBarState extends State<StationBar> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: <Widget>[
                       SizedBox(
-                          height: MediaQuery
-                              .of(context)
-                              .size
-                              .height * 0.5,
+                          height: MediaQuery.of(context).size.height * 0.5,
                           child: Container(
                               padding: const EdgeInsets.all(5),
                               decoration: const BoxDecoration(
-                                //color: Color(0xff345955),
                               ),
                               child: Column(
                                 children: [
@@ -167,7 +159,7 @@ class _StationBarState extends State<StationBar> {
                                           UserSettings().setIsFavouriteStationsSelected(_favouriteStations);
                                           updateFavouriteStations();
                                           applicationBloc.updateStations();
-                                          if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
+                                          if(stationManager.getNumberOfDisplayedStations() > 0) stationsPageViewController.jumpTo(0);
                                         },
                                         items: [
                                           DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
@@ -192,13 +184,13 @@ class _StationBarState extends State<StationBar> {
                                             )
                                     ) :
                                     ListView.builder(
-                                        itemCount: StationManager().getNumberOfStations(),
+                                        itemCount: stationManager.getNumberOfDisplayedStations(),
                                         itemBuilder:
                                             (BuildContext context, int index) =>
                                               StationCard(
                                                 index: index,
                                                 isFavourite: favourites
-                                                    .contains(StationManager()
+                                                    .contains(stationManager
                                                     .getStationByIndex(index)
                                                     .id),
                                                 toggleFavourite: (int index){
@@ -222,19 +214,16 @@ class _StationBarState extends State<StationBar> {
   @override
   Widget build(BuildContext context) {
 
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: true);
 
-    setState(() {
-      _appBloc = applicationBloc;
-      _isUserLogged = applicationBloc.isUserLogged();
-    });
+    _isUserLogged = applicationBloc.isUserLogged();
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
           color: ThemeStyle.cardColor,
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
-          boxShadow: [ BoxShadow(color: ThemeStyle.stationShadow, spreadRadius: 8, blurRadius: 6, offset: Offset(0, 0),)]
+          borderRadius: const BorderRadius.only(topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
+          boxShadow: [ BoxShadow(color: ThemeStyle.stationShadow, spreadRadius: 8, blurRadius: 6, offset: const Offset(0, 0),)]
       ),
       child: SizedBox(
           height: MediaQuery.of(context).size.height * 0.22,
@@ -287,7 +276,7 @@ class _StationBarState extends State<StationBar> {
                     Flexible(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                          child: stationManager.getNumberOfStations() > 0 ?
+                          child: stationManager.getNumberOfDisplayedStations() > 0 ?
                           _isFavouriteRoutes ?
                           ListView.builder(
                             controller: stationsPageViewController,
@@ -298,9 +287,8 @@ class _StationBarState extends State<StationBar> {
                           ) :
                           ListView.builder(
                               controller: stationsPageViewController,
-                              // physics: const PageScrollPhysics(),
                               scrollDirection: Axis.horizontal,
-                              itemCount: stationManager.getNumberOfStations(),
+                              itemCount: stationManager.getNumberOfDisplayedStations(),
                               itemBuilder: (BuildContext context, int index) =>
                                   StationCard(
                                     index: index,
@@ -308,7 +296,7 @@ class _StationBarState extends State<StationBar> {
                                     toggleFavourite: toggleFavouriteStation
                                   )
                           ) :
-                          _isFavouriteStations ? Center(child: Text("You don't have any favourite station at the moment."),) : Center(),
+                          _isFavouriteStations ? const Center(child: Text("You don't have any favourite station at the moment."),) : const Center(),
                         ),
                     ),
                   ],
