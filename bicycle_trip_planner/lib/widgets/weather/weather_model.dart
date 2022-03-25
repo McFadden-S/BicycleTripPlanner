@@ -1,16 +1,17 @@
-
 class WeatherInfo {
   final String description;
   final String icon;
 
   WeatherInfo({required this.description, required this.icon});
 
-  factory WeatherInfo.fromJson(Map<String, dynamic> json){
+  const WeatherInfo.weatherInfoNotFound(
+      {this.description = "", this.icon = ""});
+
+  factory WeatherInfo.fromJson(Map<String, dynamic> json) {
     final description = json['description'];
     final icon = json['icon'];
     return WeatherInfo(description: description, icon: icon);
   }
-
 }
 
 class TemperatureInfo {
@@ -18,11 +19,12 @@ class TemperatureInfo {
 
   TemperatureInfo({required this.temperature});
 
-  factory TemperatureInfo.fromJson(Map<String, dynamic> json){
+  const TemperatureInfo.temperatureInfoNotFound({this.temperature = 0});
+
+  factory TemperatureInfo.fromJson(Map<String, dynamic> json) {
     final temperature = json['temp'];
     return TemperatureInfo(temperature: temperature);
   }
-
 }
 
 class WeatherResponse {
@@ -30,18 +32,20 @@ class WeatherResponse {
   final TemperatureInfo tempInfo;
   final WeatherInfo weatherInfo;
 
-  String get iconUrl{
-    if(weatherInfo.icon == ""){
+  String get iconUrl {
+    if (weatherInfo.icon == "") {
       return 'https://openweathermap.org/img/wn/10d@2x.png';
-    }
-    else{
+    } else {
       return 'https://openweathermap.org/img/wn/${weatherInfo.icon}@2x.png';
     }
   }
 
-  WeatherResponse({required this.cityName, required this.tempInfo, required this.weatherInfo});
+  WeatherResponse(
+      {required this.cityName,
+      required this.tempInfo,
+      required this.weatherInfo});
 
-  factory WeatherResponse.fromJson(Map<String, dynamic> json){
+  factory WeatherResponse.fromJson(Map<String, dynamic> json) {
     final cityName = json['name'];
 
     final tempInfoJson = json['main'];
@@ -50,9 +54,12 @@ class WeatherResponse {
     final weatherInfoJson = json['weather'][0];
     final weatherInfo = WeatherInfo.fromJson(weatherInfoJson);
 
-
-
-    return WeatherResponse(cityName: cityName, tempInfo: tempInfo, weatherInfo: weatherInfo);
+    return WeatherResponse(
+        cityName: cityName, tempInfo: tempInfo, weatherInfo: weatherInfo);
   }
 
+  WeatherResponse.weatherResponseNotFound(
+      {this.cityName = "",
+      this.tempInfo = const TemperatureInfo.temperatureInfoNotFound(),
+      this.weatherInfo = const WeatherInfo.weatherInfoNotFound()});
 }
