@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -72,6 +73,10 @@ class UserSettings {
       stops.add(Helper.place2Map(intermediates[i]));
     }
 
+    print(start);
+    print(end);
+    print(stops);
+
     newRoute['start'] = start;
     newRoute['end'] = end;
     newRoute['stops'] = stops;
@@ -96,7 +101,7 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String encodedMap = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> decodedMap = json.decode(encodedMap);
-
+    print("decodedMap: ${decodedMap}");
     return Helper.mapToPathway(decodedMap[index.toString()]);
   }
 

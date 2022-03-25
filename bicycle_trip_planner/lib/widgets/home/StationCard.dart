@@ -62,8 +62,8 @@ class _StationCardState extends State<StationCard> {
                       if (applicationBloc.isUserLogged())
                         if (widget.isFavourite != null)
                           IconButton(
-                            constraints: BoxConstraints(maxHeight: 25),
-                            padding: EdgeInsets.all(0),
+                            constraints: const BoxConstraints(maxHeight: 25),
+                            padding: const EdgeInsets.all(0),
                             iconSize: 20,
                             onPressed: () {
                               setState(() {

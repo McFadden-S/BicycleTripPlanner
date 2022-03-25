@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../bloc/application_bloc.dart';
 import '../../constants.dart';
 import '../../managers/RouteManager.dart';
 
@@ -20,6 +22,7 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     return Container(
       padding:
@@ -42,8 +45,7 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
           style: TextStyle(
               color: ThemeStyle.primaryTextColor, fontSize: 18),
           menuMaxHeight: 200,
-          onChanged: (int? newValue) =>
-              _routeManager.setGroupSize(newValue!),
+          onChanged: (int? newValue) => applicationBloc.updateGroupSize(newValue!),
           selectedItemBuilder: (BuildContext context) {
             return _groupSizeOptions.map((int value) {
               return Padding(

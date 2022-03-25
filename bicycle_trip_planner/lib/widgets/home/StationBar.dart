@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
+import 'RouteCard.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
@@ -31,8 +33,6 @@ class _StationBarState extends State<StationBar> {
 
   List<int> _favouriteStations = [];
   Map<String, Pathway> _favouriteRoutes = {};
-
-  ApplicationBloc? _appBloc;
 
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) => setState(() {
@@ -56,6 +56,7 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(Station station) {
+    // Check if user is logged in...
     if (!_favouriteStations.contains(station.id)) {
       DatabaseManager()
           .addToFavouriteStations(station.id)
@@ -65,27 +66,26 @@ class _StationBarState extends State<StationBar> {
           .removeFavouriteStation(station.id.toString())
           .then((value) => getFavouriteStations());
     }
-    _appBloc!.notifyListeningWidgets();
+    //appBloc!.notifyListeningWidgets();
   }
 
   @override
   void initState() {
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
+
     FirebaseAuth.instance.authStateChanges().listen((event) {
       setState(() {
         _isUserLogged = event != null && !event.isAnonymous;
       });
 
-      if (_appBloc != null) {
-        _appBloc!.updateStations();
-      }
+      applicationBloc.updateStations();
 
       if (_isUserLogged == false) {
         setState(() {
           _isFavouriteStations = false;
         });
-      }
-
-      if (_isUserLogged != false) {
+      } else {
         getFavouriteStations();
         getFavouriteRoutes();
       }
@@ -165,7 +165,7 @@ class _StationBarState extends State<StationBar> {
   void showExpandedList() {
     showModalBottomSheet(
         enableDrag: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30.0),
                 topRight: Radius.circular(30.0))),
@@ -195,7 +195,7 @@ class _StationBarState extends State<StationBar> {
               padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
               decoration: BoxDecoration(
                 color: ThemeStyle.cardColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0)),
               ),
@@ -207,9 +207,7 @@ class _StationBarState extends State<StationBar> {
                       height: MediaQuery.of(context).size.height * 0.5,
                       child: Container(
                           padding: const EdgeInsets.all(5),
-                          decoration: const BoxDecoration(
-                              //color: Color(0xff345955),
-                              ),
+                          decoration: const BoxDecoration(),
                           child: Column(
                             children: [
                               Row(
@@ -276,25 +274,22 @@ class _StationBarState extends State<StationBar> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: true);
 
-    setState(() {
-      _appBloc = applicationBloc;
-      _isUserLogged = applicationBloc.isUserLogged();
-    });
+    _isUserLogged = applicationBloc.isUserLogged();
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
           color: ThemeStyle.cardColor,
-          borderRadius: BorderRadius.only(
+          borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(30.0), topRight: Radius.circular(30.0)),
           boxShadow: [
             BoxShadow(
               color: ThemeStyle.stationShadow,
               spreadRadius: 8,
               blurRadius: 6,
-              offset: Offset(0, 0),
+              offset: const Offset(0, 0),
             )
           ]),
       child: SizedBox(

@@ -53,7 +53,8 @@ class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
                         ),
                         onPressed: () {
                           (_dialogManager.getEndOfRouteFunction())();
-                          applicationBloc.clearEndOfRouteDialog();
+                          _dialogManager.clearEndOfRouteDialog();
+                          applicationBloc.notifyListeningWidgets();
                         },
                         // onPressed: YesOption();
                         child: Text(_dialogManager.getOkButtonText(),
