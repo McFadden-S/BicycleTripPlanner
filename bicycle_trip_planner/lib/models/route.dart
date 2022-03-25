@@ -45,11 +45,19 @@ class Route {
         routeType: routeType);
   }
 
+  /**
+   * method override the toString method
+   * @return String of the toString of the object
+   */
   @override
   String toString() {
     return legs.toString();
   }
 
+  /**
+   * method override the == operator
+   * @return bool of whether the object is same or not
+   */
   @override
   bool operator ==(Object other) {
     return other is Route &&
@@ -58,6 +66,10 @@ class Route {
         other.legs == legs;
   }
 
+  /**
+   * method override the get hashCode method
+   * @return int of the hashCode
+   */
   @override
   // TODO: implement hashCode
   int get hashCode => Object.hash(bounds, polyline, legs);
