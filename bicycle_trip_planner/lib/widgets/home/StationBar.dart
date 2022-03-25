@@ -156,6 +156,24 @@ class _StationBarState extends State<StationBar> {
           );
   }
 
+  Widget routeListBuilder(String errorMessage,
+      [Axis scrollDirection = Axis.vertical]) {
+    return FavouriteRoutesManager().getNumberOfRoutes() > 0
+        ? ListView.builder(
+            scrollDirection: scrollDirection,
+            itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
+            itemBuilder: (BuildContext context, int index) => SizedBox(
+                height: MediaQuery.of(context).size.height * 0.15,
+                child: FavouriteRouteCard(
+                  index: index,
+                  deleteRoute: deleteFavouriteRoute,
+                )))
+        : Center(
+            child: Text(errorMessage,
+                style: TextStyle(color: ThemeStyle.primaryTextColor)),
+          );
+  }
+
   Widget centeredLoadingKit() {
     return Center(
       child: CircularProgressIndicator(color: ThemeStyle.primaryTextColor),
@@ -171,26 +189,10 @@ class _StationBarState extends State<StationBar> {
                 topRight: Radius.circular(30.0))),
         context: context,
         builder: (BuildContext context) {
-          List<int> favourites = [];
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setModalState) {
             final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-            updateFavouriteStations() {
-              if (_isUserLogged) {
-                DatabaseManager().getFavouriteStations().then((value) {
-                  try {
-                    setModalState(() {
-                      favourites = value;
-                    });
-                  } catch (error) {
-                    return;
-                  }
-                });
-              }
-            }
-
-            updateFavouriteStations();
             return Container(
               padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
               decoration: BoxDecoration(
@@ -227,21 +229,8 @@ class _StationBarState extends State<StationBar> {
                               const SizedBox(height: 10),
                               Expanded(
                                   child: _isFavouriteRoutes
-                                      ? ListView.builder(
-                                          itemCount: FavouriteRoutesManager()
-                                              .getNumberOfRoutes(),
-                                          itemBuilder: (BuildContext context,
-                                                  int index) =>
-                                              SizedBox(
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .height *
-                                                      0.15,
-                                                  child: FavouriteRouteCard(
-                                                    index: index,
-                                                    deleteRoute:
-                                                        deleteFavouriteRoute,
-                                                  )))
+                                      ? routeListBuilder(
+                                          "You don't have any favourite routes currently.")
                                       : _isFavouriteStations
                                           ? FutureBuilder<List<Station>>(
                                               future: stationManager
@@ -334,17 +323,9 @@ class _StationBarState extends State<StationBar> {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: stationManager.getNumberOfStations() > 0
                             ? _isFavouriteRoutes
-                                ? ListView.builder(
-                                    controller: stationsPageViewController,
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: favouriteRoutesManager
-                                        .getNumberOfRoutes(),
-                                    itemBuilder:
-                                        (BuildContext context, int index) =>
-                                            FavouriteRouteCard(
-                                              index: index,
-                                              deleteRoute: deleteFavouriteRoute,
-                                            ))
+                                ? routeListBuilder(
+                                    "You don't have any favourite routes currently.",
+                                    Axis.horizontal)
                                 : _isFavouriteStations
                                     ? FutureBuilder<List<Station>>(
                                         future: stationManager
@@ -378,7 +359,7 @@ class _StationBarState extends State<StationBar> {
                                               "You don't have any nearby stations at the moment.",
                                               Axis.horizontal);
                                         })
-                            : Center(),
+                            : const Center(),
                       ),
                     ),
                   ],
