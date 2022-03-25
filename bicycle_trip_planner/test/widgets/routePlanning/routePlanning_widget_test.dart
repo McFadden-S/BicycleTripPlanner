@@ -1,33 +1,15 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:provider/provider.dart';
-
 import '../../setUp.dart';
-
-import 'dart:io';
-
-import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
-import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
-import 'package:bicycle_trip_planner/widgets/home/Home.dart';
-import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_test/flutter_test.dart';
-import '../../setUp.dart';
 import '../login/mock.dart';
 
 void main() {
