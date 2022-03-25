@@ -279,8 +279,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
-  final FavouriteRoutesManager favouriteRoutesManager =
-      FavouriteRoutesManager();
 
   bool successfullyAdded = await databaseManager
       .addToFavouriteRoutes(
@@ -291,7 +289,6 @@ saveRoute(context) async {
               .map((waypoint) => waypoint.getStop())
               .toList())
       .then((v) {
-    favouriteRoutesManager.updateRoutes();
     return v;
   });
   ;

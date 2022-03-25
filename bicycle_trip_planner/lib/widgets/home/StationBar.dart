@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
-import 'RouteCard.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
@@ -26,7 +25,6 @@ class _StationBarState extends State<StationBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
-  FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool _isFavouriteStations = false;
   bool _isFavouriteRoutes = false;
@@ -49,12 +47,10 @@ class _StationBarState extends State<StationBar> {
         }));
   }
 
-  deleteFavouriteRoute(int index) {
+  deleteFavouriteRoute(String key) {
     if (DatabaseManager().isUserLogged()) {
-      DatabaseManager()
-          .removeFavouriteRoute(FavouriteRoutesManager().getKey(index));
+      DatabaseManager().removeFavouriteRoute(key);
     }
-    FavouriteRoutesManager().updateRoutes();
     getFavouriteRoutes();
   }
 
@@ -162,7 +158,7 @@ class _StationBarState extends State<StationBar> {
   Widget favouriteRouteListBuilder(String errorMessage,
       [Axis scrollDirection = Axis.vertical]) {
     return FutureBuilder<Map<String, Pathway>>(
-        future: favouriteRoutesManager.updateRoutes(),
+        future: DatabaseManager().getFavouriteRoutes(),
         builder: (context, snapshot) {
           Map<String, Pathway> routes = {};
           if (snapshot.data != null) {
@@ -170,16 +166,21 @@ class _StationBarState extends State<StationBar> {
           } else {
             return centeredLoadingKit();
           }
-          return FavouriteRoutesManager().getNumberOfRoutes() > 0
+          return routes.isNotEmpty
               ? ListView.builder(
                   scrollDirection: scrollDirection,
-                  itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
-                  itemBuilder: (BuildContext context, int index) => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      child: FavouriteRouteCard(
-                        index: index,
-                        deleteRoute: deleteFavouriteRoute,
-                      )))
+                  itemCount: routes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Pathway valueRoute = routes[routes.keys.toList()[index]]!;
+                    String keyRoute = routes.keys.toList()[index];
+                    return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        child: FavouriteRouteCard(
+                          keyRoute: keyRoute,
+                          valueRoute: valueRoute,
+                          deleteRoute: deleteFavouriteRoute,
+                        ));
+                  })
               : Center(
                   child: Text(errorMessage,
                       style: TextStyle(color: ThemeStyle.primaryTextColor)),
