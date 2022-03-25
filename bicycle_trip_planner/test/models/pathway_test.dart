@@ -20,6 +20,10 @@ main(){
     expect(pathway.size, 2);
   });
 
+  test("ensure stop can be got from id",(){
+    expect(pathway.getStop(1).getUID(), 1);
+  });
+
   test('ensure there are 2 stops when initialized', (){
     expect(pathway.getStops().length, 2);
   });
@@ -32,14 +36,24 @@ main(){
     expect(pathway.getDestination().runtimeType, Stop);
   });
 
+  test("ensure you can get all waypoints",(){
+    pathway.addStop(Stop());
+    pathway.addStop(Stop());
+    pathway.addStop(Stop());
+    expect(pathway.getWaypoints().length, 3);
+  });
+
   test('ensure firstWaypoint is a stop', (){
     expect(pathway.getFirstWaypoint().runtimeType, Stop);
   });
 
-  test('ensure can add firstWaypoint on request', (){
+  test('ensure can add and remove firstWaypoint on request', (){
     pathway.addFirstWayPoint(stop);
     expect(pathway.getFirstWaypoint(), stop);
+    pathway.setHasFirstWaypoint(true);
     expect(pathway.getStops().length, 3);
+    pathway.removeFirstWayPoint();
+    expect(pathway.getStops().length, 2);
   });
 
   test('ensure can clear and remove firstWaypoint on request', (){
@@ -81,6 +95,11 @@ main(){
     expect(pathway.getStops().length, 5);
   });
 
+  test("ensure can add waypoint on request",(){
+    pathway.addWaypoint(stop);
+    expect(pathway.getStopByIndex(pathway.size-1).getUID(), stop.getUID());
+  });
+
   test('ensure can remove stop on request', (){
     pathway.removeStop(4);
     expect(pathway.getStops().length, 4);
@@ -101,4 +120,23 @@ main(){
     expect(pathway.getStopByIndex(2).getStop().name, "Strand");
   });
 
+  test("Set has first waypoint",(){
+    expect(pathway.getHasFirstWaypoint(),false);
+    pathway.setHasFirstWaypoint(true);
+    expect(pathway.getHasFirstWaypoint(),true);
+    pathway.setHasFirstWaypoint(false);
+    expect(pathway.getHasFirstWaypoint(),false);
+  });
+
+  test("Toggle has first waypoint",(){
+    expect(pathway.getHasFirstWaypoint(), false);
+    pathway.toggleHasFirstWaypoint();
+    expect(pathway.getHasFirstWaypoint(), true);
+    pathway.toggleHasFirstWaypoint();
+    expect(pathway.getHasFirstWaypoint(), false);
+  });
+
+  test("Stops to string", (){
+    expect(pathway.toString(), "[ - 1,  - 2]");
+  });
 }
