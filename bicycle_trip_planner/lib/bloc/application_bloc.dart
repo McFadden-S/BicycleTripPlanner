@@ -57,13 +57,8 @@ class ApplicationBloc with ChangeNotifier {
   // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
-  // TODO: Add calls to isNavigation from GUI
-
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
-
-  // TODO: CurrentLocation should be in LocationManager
-  //late Place _currentLocation;
 
   ApplicationBloc() {
     // Note: not async

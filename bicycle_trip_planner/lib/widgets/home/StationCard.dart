@@ -41,7 +41,7 @@ class _StationCardState extends State<StationCard> {
       onTap: () {
         Navigator.of(context).maybePop();
         stationClicked(applicationBloc,
-            stationManager.getStationByIndex(widget.index), context);
+            stationManager.getDisplayedStation(widget.index), context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -58,7 +58,7 @@ class _StationCardState extends State<StationCard> {
                       Expanded(
                         flex: 25,
                         child: Text(
-                            stationManager.getStationByIndex(widget.index).name,
+                            stationManager.getDisplayedStation(widget.index).name,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 17.0,
@@ -93,7 +93,7 @@ class _StationCardState extends State<StationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
+                        "\t\t${stationManager.getDisplayedStation(widget.index).bikes.toString()} bikes available",
                         style: TextStyle(
                             fontSize: 15.0,
                             color: ThemeStyle.secondaryTextColor),
@@ -108,7 +108,7 @@ class _StationCardState extends State<StationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
+                        "\t\t${stationManager.getDisplayedStation(widget.index).totalDocks.toString()} free docks",
                         style: TextStyle(
                             fontSize: 15.0,
                             color: ThemeStyle.secondaryTextColor),
@@ -116,7 +116,7 @@ class _StationCardState extends State<StationCard> {
                       const Spacer(),
                       Container(
                         child: Text(
-                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
+                            "${stationManager.getDisplayedStation(widget.index).distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontSize: 12.0, color: Colors.blueAccent)),
