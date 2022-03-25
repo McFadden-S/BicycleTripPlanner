@@ -4,7 +4,7 @@ import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
