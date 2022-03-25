@@ -99,8 +99,8 @@ class StationManager {
     return filteredStations.where((station) => station.bikes >= bikes).toList();
   }
 
-  List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes <= 0).toList();
+  List<Station> getStationsWithNotEnoughBikes(List<Station> filteredStations, int groupSize) {
+    return filteredStations.where((station) => station.bikes < groupSize).toList();
   }
 
   List<Station> getFarStations(double range) {

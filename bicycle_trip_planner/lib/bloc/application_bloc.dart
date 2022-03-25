@@ -357,12 +357,12 @@ class ApplicationBloc with ChangeNotifier {
     return nearbyStations;
   }
 
-  filterStationsWithBikes(List<Station> filteredStations) {
+  filterStationsWithBikes(List<Station> filteredStations, int groupSize) {
     List<Station> stationsWithBikes =
-        _stationManager.getStationsWithAtLeastXBikes(1, filteredStations);
+        _stationManager.getStationsWithAtLeastXBikes(groupSize, filteredStations);
     _markerManager.setStationMarkers(stationsWithBikes, this);
     List<Station> bikelessStations =
-        _stationManager.getStationsWithNoBikes(filteredStations);
+        _stationManager.getStationsWithNotEnoughBikes(filteredStations, groupSize);
     _markerManager.clearStationMarkers(bikelessStations);
   }
 
@@ -371,7 +371,7 @@ class ApplicationBloc with ChangeNotifier {
       return;
     }
     List<Station> nearbyStations = await filterNearbyStations();
-    filterStationsWithBikes(nearbyStations);
+    filterStationsWithBikes(nearbyStations, _routeManager.getGroupSize());
   }
 
   viewStationMarker(Station station, [int uid = -1]) {
