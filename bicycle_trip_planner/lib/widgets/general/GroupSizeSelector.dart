@@ -39,8 +39,8 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
           const Icon(Icons.group, color: Colors.white),
           iconSize: 30,
           elevation: 16,
-          style: const TextStyle(
-              color: Colors.black45, fontSize: 18),
+          style: TextStyle(
+              color: ThemeStyle.primaryTextColor, fontSize: 18),
           menuMaxHeight: 200,
           onChanged: (int? newValue) =>
               _routeManager.setGroupSize(newValue!),
@@ -61,7 +61,10 @@ class _GroupSizeSelectorState extends State<GroupSizeSelector> {
               .map<DropdownMenuItem<int>>((int value) {
             return DropdownMenuItem<int>(
               value: value,
-              child: Text(value.toString()),
+              child: Text(
+                  value.toString(),
+                  key: Key(value.toString()),
+              ),
             );
           }).toList(),
         ),

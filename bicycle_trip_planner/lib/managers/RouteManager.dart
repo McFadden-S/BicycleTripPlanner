@@ -144,12 +144,11 @@ class RouteManager {
     }
   }
 
-
-  void setLoading(bool isLoading){
+  void setLoading(bool isLoading) {
     _loading = isLoading;
   }
 
-  bool ifLoading(){
+  bool ifLoading() {
     return _loading;
   }
 
@@ -236,7 +235,6 @@ class RouteManager {
   bool ifCostOptimised() {
     return _costOptimised;
   }
-
 
   Stop getStart() => _pathway.getStart();
 
@@ -382,6 +380,7 @@ class RouteManager {
       _markerManager.clearMarker(id);
     }
   }
+
   void setRouteMarkers() {
     List<Stop> stops = _pathway.getStops();
     for (Stop stop in stops) {
@@ -410,10 +409,6 @@ class RouteManager {
     clearStart();
     clearDestination();
     _changed = false;
-  }
-
-  void printPathway() {
-    print(_pathway);
   }
 
   @visibleForTesting

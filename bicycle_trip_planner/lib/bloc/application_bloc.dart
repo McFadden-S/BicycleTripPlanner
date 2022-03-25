@@ -56,7 +56,7 @@ class ApplicationBloc with ChangeNotifier {
   final FavouriteRoutesManager _favouriteRoutesManager =
       FavouriteRoutesManager();
   // final DatabaseManager _databaseManager = DatabaseManager();
-  // final UserSettings _userSettings = UserSettings();
+  final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -147,11 +147,34 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
+
     searchResults.insert(
         0,
         PlaceSearch(
             description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
+
+    var recentSearches = await _userSettings.getPlace();
+
+    // reverse list to view most recent searches
+    var placeIds = recentSearches.keys.toList().reversed.toList();
+    var names = recentSearches.values.toList().reversed.toList();
+
+    int noRecentSearches = names.length;
+
+    // Insert recent searches as suggestions in recent results drop down
+    if (noRecentSearches > 0) {
+      for (int i = 0; i < names.length; i++) {
+        searchResults.insert(
+            i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
+      }
+    } else {
+      // max of 6 recent searches in the drop down
+      for (int i = 0; i < 5; i++) {
+        searchResults.insert(
+            i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
+      }
+    }
     notifyListeners();
   }
 
@@ -207,6 +230,9 @@ class ApplicationBloc with ChangeNotifier {
         searchResults[searchIndex].placeId,
         searchResults[searchIndex].description);
     setLocationMarker(place, uid);
+
+    _userSettings.savePlace(place);
+
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
@@ -268,7 +294,6 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
-
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
   }
@@ -468,6 +493,10 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     await updateLocationLive();
     _routeManager.showCurrentRoute();
+    _userSettings.saveRoute(
+        _routeManager.getStart().getStop(),
+        _routeManager.getDestination().getStop(),
+        _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     Wakelock.enable();
     _routeManager.setLoading(false);
     notifyListeners();

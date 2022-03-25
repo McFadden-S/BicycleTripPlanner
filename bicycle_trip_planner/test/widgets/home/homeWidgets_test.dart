@@ -5,7 +5,11 @@ import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+<<<<<<< HEAD
 import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
+=======
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
+>>>>>>> development
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
@@ -129,6 +133,7 @@ void main() {
 
       });
 
+<<<<<<< HEAD
   //
   // testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
   //         (WidgetTester tester) async {
@@ -144,6 +149,27 @@ void main() {
   //
   //
   //     });
+=======
+
+  testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
+          (WidgetTester tester) async {
+        await pumpWidget(tester, MaterialApp(
+          home: Material(child: GroupSizeSelector()),
+        ));
+
+        expect((tester.widget(
+            find.byKey(
+                Key("groupSizeSelector"))) as DropdownButton).value, equals(1));
+        await tester.tap(find.byKey(Key("groupSizeSelector")));
+        await tester.pump();
+        await tester.pump(Duration(seconds: 1));
+
+        // Check that all options are there 1-10
+        for(int i = 1; i <= 10; i++){
+          expect(find.byKey(Key(i.toString()), skipOffstage: false), findsOneWidget);
+        }
+      });
+>>>>>>> development
 
 }
 

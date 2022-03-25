@@ -34,7 +34,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
     TextEditingController searchController = TextEditingController();
     intermediateSearchControllers.add(searchController);
-    // applicationBloc.notifyListeningWidgets();
 
     Stop waypoint = routeManager.getWaypoints().firstWhere(
         (stop) => stop == stopIn,
@@ -46,7 +45,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           key: Key("Stop ${stopsList.length + 1}"),
           // title: Text(stopIn.getStop().description)
           title: TextField(
-            style: TextStyle(color: ThemeStyle.secondaryTextColor,),
+            style: TextStyle(
+              color: ThemeStyle.secondaryTextColor,
+            ),
             controller: searchController,
             readOnly: true,
             enabled: false,
@@ -143,8 +144,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     stops.forEach((stop) {
       _addStopWidget(applicationBloc, stop);
     });
-
-    //print("Stops Length ${stops.length}");
 
     return InkWell(
         splashColor: Colors.deepPurple.withAlpha(30),

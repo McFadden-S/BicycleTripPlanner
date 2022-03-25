@@ -15,7 +15,6 @@ class Pathway {
     _stops.add(_destination);
     size = 2;
     _updatePointers();
-    // print(this.toString());
   }
 
   //********** Getters **********
@@ -71,6 +70,11 @@ class Pathway {
     _stops.add(stop);
     size = size + 1;
     _updateDestination();
+  }
+
+  void addWaypoint(Stop stop) {
+    _stops.add(stop);
+    swapStops(stop.getUID(), _destination.getUID());
   }
 
   void addStart(Stop stop) {
