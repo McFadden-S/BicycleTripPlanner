@@ -6,7 +6,7 @@ import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:provider/provider.dart';
 
 class RouteCard extends StatefulWidget {

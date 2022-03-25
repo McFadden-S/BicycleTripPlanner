@@ -6,13 +6,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:bicycle_trip_planner/services/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'constants.dart';
-import 'package:bicycle_trip_planner/widgets/general/Loading.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/widgets/general/Error.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Error.dart';
 
 Future<void> main() async {
   ThemeStyle();

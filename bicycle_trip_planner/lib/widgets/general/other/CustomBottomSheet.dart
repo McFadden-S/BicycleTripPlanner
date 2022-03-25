@@ -1,11 +1,10 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../../constants.dart';
 
 class CustomBottomSheet extends StatefulWidget {
   final Widget child;
 
-  const CustomBottomSheet({Key? key, required this.child}) : super(key: key);
+  const CustomBottomSheet({ Key? key, required this.child}) : super(key: key);
 
   @override
   _StationCardState createState() => _StationCardState();
@@ -48,10 +47,8 @@ class _StationCardState extends State<CustomBottomSheet> {
                       constraints: BoxConstraints(),
                       alignment: Alignment.topCenter,
                       icon: isExpanded
-                          ? Icon(Icons.keyboard_arrow_down,
-                              color: ThemeStyle.secondaryIconColor)
-                          : Icon(Icons.keyboard_arrow_up,
-                              color: ThemeStyle.secondaryIconColor),
+                          ? Icon(Icons.keyboard_arrow_down, color: ThemeStyle.secondaryIconColor)
+                          : Icon(Icons.keyboard_arrow_up, color: ThemeStyle.secondaryIconColor),
                       tooltip: 'Shrink',
                       onPressed: () {
                         setState(() {
@@ -65,7 +62,7 @@ class _StationCardState extends State<CustomBottomSheet> {
                 child: Visibility(
                   visible: isExpanded,
                   child: IntrinsicHeight(
-                    child: widget.child,
+                      child: widget.child,
                   ),
                 ),
               ),

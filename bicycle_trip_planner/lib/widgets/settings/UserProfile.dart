@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../constants.dart';
 import 'package:bicycle_trip_planner/widgets/settings/FavouriteBar.dart';
 
-import '../general/CircleButton.dart';
+import '../general/buttons/CircleButton.dart';
 
 class UserProfile extends StatefulWidget {
   UserProfile({Key? key}) : super(key: key);

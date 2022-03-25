@@ -1,6 +1,5 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:flutter/material.dart';
-
-import '../../constants.dart';
 
 class RoundedRectangleButton extends StatefulWidget {
 

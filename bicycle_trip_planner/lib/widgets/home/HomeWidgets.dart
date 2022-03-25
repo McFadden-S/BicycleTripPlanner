@@ -1,13 +1,13 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:provider/provider.dart';
-import '../general/GroupSizeSelector.dart';
+import '../general/other/GroupSizeSelector.dart';
 import '../settings/SettingsScreen.dart';
 
 class HomeWidgets extends StatefulWidget {

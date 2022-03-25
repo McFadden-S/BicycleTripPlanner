@@ -1,10 +1,10 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
+import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 

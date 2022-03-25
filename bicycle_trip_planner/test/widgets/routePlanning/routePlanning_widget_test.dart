@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
