@@ -156,6 +156,10 @@ class NavigationManager {
   }
 
   bool isWaypointPassed(LatLng waypoint) {
+
+    print((_locationManager.distanceFromToInMeters(
+        _locationManager.getCurrentLocation().getLatLng(), waypoint)));
+
     return (_locationManager.distanceFromToInMeters(
             _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
         30);

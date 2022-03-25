@@ -1117,14 +1117,16 @@ void main() {
     appBloc.startNavigation();
     //currentLocationLatLng = LatLng(51.513948, -0.119872,);
 
-    // await untilCalled(directionsService.getWalkingRoutes(
-    //     'MyCurrentLocation', 'firstStation', [], false));
+
     controller.add(x);
 
     List<Station> stations = [];
     stations.add(navigationManager.getPickupStation());
     stations.add(navigationManager.getDropoffStation());
     when(stationManager.getStations()).thenAnswer((realInvocation) => stations);
+
+    await untilCalled(directionsService.getWalkingRoutes(
+        'MyCurrentLocation', 'firstStation', [], false));
 
     LatLng(51.513206, -0.117373);
 
@@ -1295,6 +1297,10 @@ void main() {
 
     await untilCalled(locationManager.onUserLocationChange(5.0));
     verify(locationManager.onUserLocationChange(5.0)).called(1);
+
+
+
+    print(navigationManager.getPickupStation());
     });
 
 }
