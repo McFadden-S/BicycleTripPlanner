@@ -6,25 +6,32 @@ import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import '../models/stop.dart';
 import 'Helper.dart';
 
-
 class DatabaseManager {
   //************Fields************
-  final FirebaseDatabase _dbInstance = FirebaseDatabase.instance;
-  final _auth = FirebaseAuth.instance;
+  late FirebaseDatabase _dbInstance;
+  late FirebaseAuth _auth;
 
   Map<String,Pathway> _routes = {};
 
   //********** Singleton **********
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
   factory DatabaseManager() {
+    _databaseManager._dbInstance = FirebaseDatabase.instance;
+    _databaseManager._auth = FirebaseAuth.instance;
     return _databaseManager;
   }
 
   DatabaseManager._internal();
+
+  DatabaseManager.forMock(FirebaseDatabase db, FirebaseAuth auth){
+    _dbInstance = db;
+    _auth = auth;
+  }
 
 
   //********** Public **********
