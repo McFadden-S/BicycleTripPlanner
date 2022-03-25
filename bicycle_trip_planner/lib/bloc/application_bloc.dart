@@ -82,10 +82,10 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Group Size **********
 
+
   Future<void> updateGroupSize(int groupSize) async {
     _routeManager.setGroupSize(groupSize);
     await filterStationMarkers();
-
     notifyListeners();
   }
 

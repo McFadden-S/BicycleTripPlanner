@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 
-import '../../constants.dart';
-import '../../managers/DialogManager.dart';
-import '../general/CircleButton.dart';
+import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 
 class CostEffTimerButton extends StatefulWidget {
   final CountdownController ctdwnController;

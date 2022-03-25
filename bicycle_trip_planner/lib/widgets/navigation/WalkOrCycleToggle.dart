@@ -60,7 +60,18 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         ],
       ),
       onPressed: () {
-        _dialogManager.showWalkBikeToggleDialog();
+        _dialogManager.setBinaryChoice(
+          "Toggle between walking and cycling?",
+          "Toggle",
+              () {
+            applicationBloc.toggleCycling();
+          },
+          "Cancel",
+              () {},
+        );
+
+        applicationBloc.showBinaryDialog();
+
         applicationBloc.notifyListeningWidgets();
       },
     );
