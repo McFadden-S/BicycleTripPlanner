@@ -8,7 +8,7 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/SelectStationDialog.dart';
 
 import '../widgets/home/Home.dart';
 
