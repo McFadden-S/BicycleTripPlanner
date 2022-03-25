@@ -15,8 +15,8 @@ import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart
 import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CostEffTimerButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
-import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/EndOfRouteDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/WalkBikeToggleDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
 // import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
