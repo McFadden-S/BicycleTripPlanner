@@ -11,10 +11,11 @@ import 'package:flutter/cupertino.dart';
 import '../models/stop.dart';
 import 'Helper.dart';
 
+
 class DatabaseManager {
   //************Fields************
   late FirebaseDatabase _dbInstance;
-  late FirebaseAuth _auth;
+  var _auth;
 
   Map<String,Pathway> _routes = {};
 
@@ -56,7 +57,7 @@ class DatabaseManager {
   }
 
   Future<List<int>> getFavouriteStations() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
+    var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteStations = _dbInstance.ref('users/$uid/favouriteStations');
     List<int> output = [];
     await favouriteStations.once().then((value) => {
@@ -69,7 +70,7 @@ class DatabaseManager {
   }
 
   Future<bool> removeFavouriteStation(String stationId) async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
+    var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteStations');
     await favouriteRoutes.child(stationId).remove().then((_) {
       // Data removed successfully!
@@ -117,7 +118,7 @@ class DatabaseManager {
   }
 
   Future<Map<String, Pathway>> getFavouriteRoutes() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
+    var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
     await favouriteRoutes.once().then((value) => {
