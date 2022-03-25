@@ -146,7 +146,10 @@ class StationManager {
   }
 
   Future<void> setStations(List<Station> newStations) async {
-    LatLng currentPos = await _locationManager.locate();
+    LatLng currentPos = LatLng(
+        _locationManager.getCurrentLocation().geometry.location.lat,
+        _locationManager.getCurrentLocation().geometry.location.lng
+    );
 
     for (Station newStation in newStations) {
       Station? station = _stationsLookUp.lookup(newStation);
