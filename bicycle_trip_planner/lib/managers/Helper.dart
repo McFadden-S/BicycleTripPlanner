@@ -5,7 +5,6 @@ import '../models/place.dart';
 import '../models/stop.dart';
 
 class Helper {
-
   static Map<String, Object> place2Map(Place place) {
     Map<String, Object> output = {};
     output['name'] = place.name;
@@ -20,9 +19,9 @@ class Helper {
     Pathway output = Pathway();
     output.changeStart(mapToPlace(mapIn['start']));
     output.changeDestination(mapToPlace(mapIn['end']));
-    if(mapIn['stops'] != null) {
-      for(var stop in mapIn['stops']){
-        output.addStop(Stop(mapToPlace(stop)));
+    if (mapIn['stops'] != null) {
+      for (var stop in mapIn['stops']) {
+        output.addWaypoint(Stop(mapToPlace(stop)));
       }
     }
     return output;
@@ -33,12 +32,7 @@ class Helper {
         name: mapIn['name'],
         description: mapIn['description'],
         placeId: mapIn['id'],
-        geometry: Geometry(
-            location: Location(lat: mapIn['lat'], lng: mapIn['lng'])
-        )
-    );
-
+        geometry:
+            Geometry(location: Location(lat: mapIn['lat'], lng: mapIn['lng'])));
   }
-
-
 }

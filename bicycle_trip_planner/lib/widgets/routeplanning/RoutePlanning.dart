@@ -1,13 +1,17 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
+import 'package:bicycle_trip_planner/widgets/general/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
@@ -97,6 +101,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             : SizedBox.shrink(),
                             WalkToFirstButton(),
                             SizedBox(height: 10),
+                            OptimiseCostButton(),
+                            SizedBox(height: 10),
                             GroupSizeSelector(),
                           ],
                         ),
@@ -155,18 +161,20 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         Expanded(
                           flex: 20,
                           child: RoundedRectangleButton(
-                              iconIn: Icons.directions_bike,
-                              buttonColor: ThemeStyle.goButtonColor,
-                              onButtonClicked: () {
-                                if (_routeManager.ifRouteSet()) {
-                                  applicationBloc.startNavigation();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("No route could be found!"),
-                                  ));
-                                }
-                              }),
+                            iconIn: Icons.directions_bike,
+                            buttonColor: ThemeStyle.goButtonColor,
+                            onButtonClicked: () {
+                              if (_routeManager.ifRouteSet()) {
+                                applicationBloc.startNavigation();
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("No route could be found!"),
+                                ));
+                              }
+                            },
+                            withLoading: true,
+                          ),
                         )
                       ]),
                 ),
@@ -245,6 +253,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 }
 
+// Note: This is outside of the state class...
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();

@@ -50,31 +50,53 @@ class StationManager {
     return _stations;
   }
 
-  Station getStationByIndex(int stationIndex) {
-    return _stations[stationIndex];
+  List<Station> getStationsInRadius(LatLng pos, [double distance = 4.0]) {
+    List<Station> allStations = List.castFrom(_stations);
+
+    List<Station> nearbyStations = allStations
+        .where((s) =>
+            _locationManager.distanceFromTo(pos, LatLng(s.lat, s.lng)) <=
+            distance)
+        .toList();
+
+    return nearbyStations;
   }
 
-  Station getStationById(int stationId) {
-    return _stations.firstWhere((station) => station.id == stationId,
-        orElse: Station.stationNotFound);
-  }
-
-  Station getStationByName(String stationName) {
-    return _stations.singleWhere((station) => station.name == stationName,
-        orElse: Station.stationNotFound);
-  }
-
-  Future<Station> getPickupStationNear(LatLng pos,[int groupSize = 1]) async {
-    List<Station> nearPos = _getOrderedToFromStationList(pos);
-    Station station = nearPos.firstWhere(
-        (station) => station.bikes >= groupSize,
-        orElse: Station.stationNotFound);
+  Future<void> cachePlaceId(Station station) async {
+    if (station == Station.stationNotFound()) return;
     if (station.place == const Place.placeNotFound()) {
       Place place = await PlacesService().getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
-    //_pickUpStation = station;
+  }
+
+  Station getStationByIndex(int stationIndex) {
+    cachePlaceId(_stations[stationIndex]);
+    return _stations[stationIndex];
+  }
+
+  Station getStationById(int stationId) {
+    Station station = _stations.firstWhere((station) => station.id == stationId,
+        orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
+  }
+
+  Station getStationByName(String stationName) {
+    Station station = _stations.singleWhere(
+        (station) => station.name == stationName,
+        orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
+  }
+
+  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    Station station = nearPos.firstWhere(
+        (station) => station.bikes >= groupSize,
+        orElse: Station.stationNotFound);
+    await cachePlaceId(station);
     return station;
   }
 
@@ -83,12 +105,7 @@ class StationManager {
     Station station = nearPos.firstWhere(
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
-    if (station.place == const Place.placeNotFound()) {
-
-      Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
-      station.place = place;
-    }
+    await cachePlaceId(station);
     //_dropOffStation = station;
     return station;
   }

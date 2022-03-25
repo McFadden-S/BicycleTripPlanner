@@ -14,7 +14,10 @@ class Weather extends StatefulWidget {
 
 class _WeatherState extends State<Weather> {
   final _weatherService = WeatherService();
-  late WeatherResponse _response = WeatherResponse(cityName: "", tempInfo: TemperatureInfo(temperature: 0), weatherInfo: WeatherInfo(description: "", icon: ""));
+  late WeatherResponse _response = WeatherResponse(
+      cityName: "",
+      tempInfo: TemperatureInfo(temperature: 0),
+      weatherInfo: WeatherInfo(description: "", icon: ""));
 
   @override
   void initState() {
@@ -27,30 +30,32 @@ class _WeatherState extends State<Weather> {
     return Card(
       color: ThemeStyle.cardColor,
       child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if(_response.weatherInfo.icon != "")
-              Column(
-                children: [
-                  Image.network(_response.iconUrl, scale: 1.7,),
-                  Text('${_response.tempInfo.temperature.round()}°C', style: TextStyle(
-                      color: ThemeStyle.primaryTextColor,
-                      fontSize: 20),
-                  ),
-                  SizedBox(height: 10)
-                ],
-              ),
-          ],
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (_response.weatherInfo.icon != "")
+            Column(
+              children: [
+                Image.network(
+                  _response.iconUrl,
+                  scale: 1.7,
+                ),
+                Text(
+                  '${_response.tempInfo.temperature.round()}°C',
+                  style: TextStyle(
+                      color: ThemeStyle.primaryTextColor, fontSize: 20),
+                ),
+                SizedBox(height: 10)
+              ],
+            ),
+        ],
       ),
     );
   }
 
-
-  void _search() async{
+  void _search() async {
     final response = await _weatherService.getWeather("london");
     setState(() {
       _response = response;
     });
   }
-
 }

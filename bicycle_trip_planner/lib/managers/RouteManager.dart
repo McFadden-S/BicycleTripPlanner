@@ -25,15 +25,19 @@ class RouteManager {
 
   bool _startFromCurrentLocation = false;
   bool _walkToFirstWaypoint = false;
+  bool _loading = false;
 
   int _groupsize = 1;
 
   bool _changed = false;
   bool _optimised = true;
+  bool _costOptimised = false;
 
   R.Route _startWalkingRoute = R.Route.routeNotFound();
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
+
+  bool _isCycling = false;
 
   //********** Singleton **********
 
@@ -68,28 +72,37 @@ class RouteManager {
     } else if (_endWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_endWalkingRoute, relocateMap);
     }
+    _isCycling = false;
   }
 
   // Shows only one of the routes
   void showCurrentRoute([bool relocateMap = true]) {
     if (_startWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_startWalkingRoute, relocateMap);
+      _isCycling = false;
       return;
     }
 
     if (_bikingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_bikingRoute, relocateMap);
+      _isCycling = true;
       return;
     }
 
     if (_endWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_endWalkingRoute, relocateMap);
+      _isCycling = false;
       return;
     }
   }
 
+  bool ifCycling() {
+    return _isCycling;
+  }
+
   void showBikeRoute([relocateMap = true]) {
     setCurrentRoute(_bikingRoute, relocateMap);
+    _isCycling = true;
   }
 
   void setDirectionsData(R.Route route) {
@@ -129,6 +142,14 @@ class RouteManager {
     if (relocateMap) {
       _moveCameraTo(_bikingRoute);
     }
+  }
+
+  void setLoading(bool isLoading) {
+    _loading = isLoading;
+  }
+
+  bool ifLoading() {
+    return _loading;
   }
 
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
@@ -199,6 +220,20 @@ class RouteManager {
 
   bool ifOptimised() {
     return _optimised;
+  }
+
+  void setCostOptimised(bool optimised) {
+    _costOptimised = optimised;
+    _changed = true;
+  }
+
+  void toggleCostOptimised() {
+    _costOptimised = !_costOptimised;
+    _changed = true;
+  }
+
+  bool ifCostOptimised() {
+    return _costOptimised;
   }
 
   Stop getStart() => _pathway.getStart();
@@ -284,6 +319,14 @@ class RouteManager {
     return waypointStop;
   }
 
+  Stop addCostWaypoint(Place waypoint) {
+    Stop destination = getDestination();
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addStop(waypointStop);
+    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    return waypointStop;
+  }
+
   // Adds a new waypoint at the beginning (before destination)
   Stop addFirstWaypoint(Place waypoint) {
     Stop waypointStop = Stop(waypoint);
@@ -301,6 +344,7 @@ class RouteManager {
   }
 
   void clearDestination() {
+    // _pathway.clearDestination();
     _pathway.changeDestination(const Place.placeNotFound());
     _changed = true;
   }
@@ -312,8 +356,8 @@ class RouteManager {
   }
 
   void clearFirstWaypoint() {
-    _pathway.setHasFirstWaypoint(false);
     _pathway.removeFirstWayPoint();
+    _pathway.setHasFirstWaypoint(false);
     _changed = true;
   }
 
@@ -337,6 +381,13 @@ class RouteManager {
     }
   }
 
+  void setRouteMarkers() {
+    List<Stop> stops = _pathway.getStops();
+    for (Stop stop in stops) {
+      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
+    }
+  }
+
   void clearChanged() => _changed = false;
 
   void clearRoutes() {
@@ -351,8 +402,10 @@ class RouteManager {
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     _optimised = true;
+    _costOptimised = false;
     clearRouteMarkers();
     removeWaypoints();
+    clearFirstWaypoint();
     clearStart();
     clearDestination();
     _changed = false;
