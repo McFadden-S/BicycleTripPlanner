@@ -15,6 +15,8 @@ class StationManager {
   // Used only for O(1) look up times for efficiency
   Set<Station> _stationsLookUp = <Station>{};
 
+  List<Station> _displayedStations = <Station>[];
+
   final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
@@ -40,7 +42,7 @@ class StationManager {
     return nearPos;
   }
 
-  //********** Public **********
+  //********** Stations **********
 
   int getNumberOfStations() {
     return _stations.length;
@@ -106,30 +108,23 @@ class StationManager {
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
     await cachePlaceId(station);
-    //_dropOffStation = station;
     return station;
   }
 
-  // TODO: Find a better method name
-  List<Station> getStationsWithAtLeastXBikes(
-      int bikes, List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes >= bikes).toList();
+  /// Returns a list of Stations with at least bikeNumber bikes
+  List<Station> getStationsWithBikes(
+      int bikeNumber, List<Station> filteredStations) {
+    return filteredStations
+        .where((station) => station.bikes >= bikeNumber)
+        .toList();
   }
 
-  List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes <= 0).toList();
+  /// Returns the list of all stations not including the ones passed into the function
+  List<Station> getStationsCompliment(List<Station> stations) {
+    return _stationsLookUp.difference(stations.toSet()).toList();
   }
 
-  List<Station> getFarStations(double range) {
-    List<Station> farStations = [];
-
-    farStations =
-        _stationsLookUp.difference(getNearStations(range).toSet()).toList();
-    //print(farStations);
-
-    return farStations;
-  }
-
+  /// Returns a list of stations that are within the range passed in
   List<Station> getNearStations(double range) {
     List<Station> nearbyStations = [];
 
@@ -137,16 +132,20 @@ class StationManager {
       return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
-    //print(nearbyStations);
 
     return nearbyStations;
   }
 
-  Future<void> setStations(List<Station> newStations, {clear = false}) async {
-    if (clear) {
-      _stationsLookUp = {};
-      _stations = [];
-    }
+  // Returns a list of stations that the user has favourited
+  Future<List<Station>> getFavouriteStations() async {
+    if (!DatabaseManager().isUserLogged()) return [];
+    List<int> compare = await DatabaseManager().getFavouriteStations();
+    List<Station> favouriteStations = List.from(_stations);
+    favouriteStations.retainWhere((element) => compare.contains(element.id));
+    return favouriteStations;
+  }
+
+  Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = await _locationManager.locate();
 
     for (Station newStation in newStations) {

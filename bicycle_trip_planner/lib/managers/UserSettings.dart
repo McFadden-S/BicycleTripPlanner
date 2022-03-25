@@ -19,7 +19,6 @@ class UserSettings {
 
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  bool _isFavouriteStationsSelected = false;
 
 //********** Public **********
 
@@ -151,7 +150,7 @@ class UserSettings {
     return true;
   }
 
-  nearbyStationsRange() async {
+  Future<double> nearbyStationsRange() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getDouble('nearbyStationsRange') ?? 0.5;
   }
@@ -167,14 +166,6 @@ class UserSettings {
     });
     //no error caught
     return true;
-  }
-
-  setIsFavouriteStationsSelected(bool value) {
-    _isFavouriteStationsSelected = value;
-  }
-
-  getIsIsFavouriteStationsSelected() {
-    return _isFavouriteStationsSelected;
   }
 
   Map<String, dynamic> capRoutes(Map<String, dynamic> savedRoutes) {

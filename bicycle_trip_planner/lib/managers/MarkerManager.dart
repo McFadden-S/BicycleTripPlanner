@@ -164,11 +164,7 @@ class MarkerManager {
   }
 
   void setStationMarker(Station station, ApplicationBloc appBloc) {
-    if (_markerExists(station.name)) {
-      return;
-    }
-
-    if (station == Station.stationNotFound()) {
+    if (_markerExists(station.name) || station == Station.stationNotFound()) {
       return;
     }
 
