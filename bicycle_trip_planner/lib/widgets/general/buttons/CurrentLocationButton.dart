@@ -1,4 +1,3 @@
-import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:flutter/material.dart';
 

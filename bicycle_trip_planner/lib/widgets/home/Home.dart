@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:io';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
-import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/SelectStationDialog.dart';
 
 import '../../managers/DialogManager.dart';
 
