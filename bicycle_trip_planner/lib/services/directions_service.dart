@@ -6,7 +6,7 @@ import 'dart:convert' as convert;
 import '../auth/Keys.dart';
 
 class DirectionsService {
-  final String key = Keys.ANDROID_API_KEY; //TODO: this should be changed to OS specific
+  final String key = Keys.getApiKey();
   Future<Route> getRoutes(String origin, String destination,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
@@ -26,7 +26,6 @@ class DirectionsService {
   Future<Route> getWalkingRoutes(String origin, String destination,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
-
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';

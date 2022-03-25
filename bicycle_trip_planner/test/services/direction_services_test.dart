@@ -10,7 +10,7 @@ import 'stations_services_test.mocks.dart' as mock;
 
 void main(){
   group('getRoutes', () {
-    final String key = Keys.ANDROID_API_KEY; //TODO: this should be changed to OS specific
+    final String key = Keys.getApiKey();
     test('Get routes without waypoints', () async {
 
       final origin = "ChIJi3D0484EdkgRuYlzHV73TlY";
@@ -665,7 +665,7 @@ void main(){
 
   group('getWalkingRoutes', ()
   {
-    final String key = Keys.ANDROID_API_KEY; //TODO: this should be changed to OS specific
+    final String key = Keys.getApiKey(); 
     test('Get walking routes without waypoints', () async {
       final origin = "ChIJN6skQs4EdkgRU24-sEUFmPw";
       final destination = "ChIJi3D0484EdkgRuYlzHV73TlY";

@@ -6,7 +6,7 @@ import 'dart:convert' as convert;
 import '../auth/Keys.dart';
 
 class PlacesService {
-  final String key = Keys.ANDROID_API_KEY; //TODO: this should be changed to OS specific
+  final String key = Keys.getApiKey();
   Future<List<PlaceSearch>> getAutocomplete(String search) async {
     var url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&components=country:gb&location=51.495830%2C-0.145607&radius=35000&strictbounds=true&key=$key';
