@@ -31,7 +31,8 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   bool isShowingIntermediate = false;
 
-  void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn) {
+  void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn,
+      [bool showIntermediate = true]) {
     TextEditingController searchController = TextEditingController();
     intermediateSearchControllers.add(searchController);
 
@@ -98,6 +99,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
           ])));
     }
 
+    if (!showIntermediate) return;
     isShowingIntermediate = true;
   }
 
@@ -142,7 +144,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
     List<Stop> stops = routeManager.getWaypoints();
     stops.forEach((stop) {
-      _addStopWidget(applicationBloc, stop);
+      _addStopWidget(applicationBloc, stop, false);
     });
 
     return InkWell(
