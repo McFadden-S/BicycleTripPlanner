@@ -1,4 +1,3 @@
-import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
@@ -6,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
-
-
 
 class LocationManager {
   //********** Fields **********
@@ -32,16 +29,14 @@ class LocationManager {
   //********** Public *********
 
   Future<LatLng> locate() async {
-
-    final geolocator = geo.Geolocator();
     return _locator.locate();
   }
 
-  Future<PermissionStatus> requestPermission() async {
-    await checkServiceEnabled();
-    await checkPermission();
-    PermissionStatus _permissionGranted = await Location().hasPermission();
-    return _permissionGranted;
+  Future<bool> requestPermission() async {
+    bool permission = await checkPermission();
+    bool service = await checkServiceEnabled();
+    // PermissionStatus _permissionGranted = await Location().hasPermission();
+    return permission && service;
   }
 
   Future<bool> checkServiceEnabled() async {
@@ -69,6 +64,10 @@ class LocationManager {
       }
     }
     return grantedPermission;
+  }
+
+  Future<void> openLocationSettingsOnDevice() async {
+    await geo.Geolocator.openLocationSettings();
   }
 
   Future<double> distanceTo(LatLng pos) async {

@@ -6,6 +6,7 @@ import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
 import 'package:provider/provider.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../managers/DialogManager.dart';
 
