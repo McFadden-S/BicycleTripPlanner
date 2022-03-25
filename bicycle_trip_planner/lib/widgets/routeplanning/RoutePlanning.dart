@@ -11,7 +11,10 @@ import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
+<<<<<<< Updated upstream
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
+=======
+>>>>>>> Stashed changes
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
@@ -95,6 +98,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ViewRouteButton(),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
+<<<<<<< Updated upstream
                                     _routeManager.getWaypoints().length > 1
                                 ? Column(
                                     children: [
@@ -103,6 +107,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     ],
                                   )
                                 : SizedBox.shrink(),
+=======
+                            _routeManager.getWaypoints().length > 1
+                            ? Column(
+                              children: [
+                                OptimisedButton(),
+                                SizedBox(height: 10),
+                              ],
+                            )
+                            : SizedBox.shrink(),
+>>>>>>> Stashed changes
                             OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
@@ -229,7 +243,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     color: ThemeStyle.stationShadow,
                     spreadRadius: 8,
                     blurRadius: 6,
-                    offset: Offset(0, 0),
+                    offset: const Offset(0, 0),
                   )
                 ]),
             child: SizedBox(
