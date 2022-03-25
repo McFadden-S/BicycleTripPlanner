@@ -40,6 +40,7 @@ main(){
     pathway.addFirstWayPoint(stop);
     expect(pathway.getFirstWaypoint(), stop);
     expect(pathway.getStops().length, 3);
+    pathway.clearFirstWaypoint();
   });
 
   test('ensure can clear and remove firstWaypoint on request', (){
@@ -90,6 +91,10 @@ main(){
     expect(pathway.getStopByIndex(0).getStop().name, "Bush House");
   });
 
+  test('ensure can get stop when index is -1', (){
+    expect(pathway.getStop(-1).toString(), " - 12");
+  });
+
   test('ensure can swap stops', (){
     expect(pathway.getStops().length, 4);
     pathway.changeStop(1, place2);
@@ -99,6 +104,10 @@ main(){
     pathway.swapStops(1, 2);
     expect(pathway.getStopByIndex(1).getStop().name, "Bush House");
     expect(pathway.getStopByIndex(2).getStop().name, "Strand");
+  });
+
+  test('ensure toString is correct', (){
+    expect(pathway.toString(), pathway.getStops().toString());
   });
 
 }
