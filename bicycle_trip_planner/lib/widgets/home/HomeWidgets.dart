@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
@@ -23,12 +24,14 @@ class _HomeWidgetsState extends State<HomeWidgets> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    Size size = MediaQuery.of(context).size;
 
     return SafeArea(
       bottom: false,
       child: Stack(
         children: [
           Align(
+            key: Key("topAlignment"),
             alignment: FractionalOffset.topCenter,
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -50,9 +53,10 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                           ),
                         ),
                         IconButton(
+                          key: Key("settingsButton"),
                           icon: Icon(
                             Icons.settings,
-                            color: ThemeStyle.buttonPrimaryColor,
+                            color: ThemeStyle.primaryTextColor,
                           ),
                           onPressed: () async {
                             await Navigator.push(
@@ -69,28 +73,13 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       ],
                     ),
                   ),
-                  Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pushNamed(context, '/weather'),
-                      child: Container(
-                          margin: EdgeInsets.only(top: 5),
-                          width: 60.0,
-                          height: 60.0,
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.fill,
-                                image: AssetImage('assets/weather.png'),
-                              ))),
-                    )
-                  ]),
                 ],
               ),
             ),
           ),
           Align(
-              alignment: FractionalOffset.bottomCenter,
+              key: Key("bottomAlignment"),
+              alignment: Alignment.bottomCenter,
               child: Wrap(
                 children: [
                   Column(
@@ -98,20 +87,35 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Container(
-                              margin: EdgeInsets.only(bottom: 20),
-                              child: Column(
-                                children: [
-                                  CurrentLocationButton(),
-                                  SizedBox(height: 10),
-                                  GroupSizeSelector(),
-                                  SizedBox(height: 10),
-                                  CircleButton(
-                                      iconIn: Icons.assistant_direction,
-                                      onButtonClicked: () => applicationBloc.setSelectedScreen('routePlanning'),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
+                                    padding: EdgeInsets.only(bottom: 10),
+                                    child: Weather()),
+                                Spacer(),
+                                Padding(
+                                  padding: EdgeInsets.only(bottom: 15),
+                                  child: Column(
+                                    children: [
+                                      CurrentLocationButton(),
+                                      SizedBox(height: 10),
+                                      CircleButton(
+                                        key: Key("navigateToRoutePlanningScreenButton"),
+                                        iconIn: Icons.assistant_direction,
+                                        onButtonClicked: () => applicationBloc
+                                            .setSelectedScreen('routePlanning'),
+                                      ),
+                                      SizedBox(height: 10),
+                                      GroupSizeSelector(),
+                                    ],
                                   ),
-                                ],
-                              )),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                     ],

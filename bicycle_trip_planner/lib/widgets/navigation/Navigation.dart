@@ -11,6 +11,8 @@ import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart'
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
@@ -97,6 +99,8 @@ class _NavigationState extends State<Navigation> {
               ],
             ),
           ),
+          EndOfRouteDialog(),
+          WalkBikeToggleDialog(),
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
@@ -126,4 +130,7 @@ class _NavigationState extends State<Navigation> {
       ),
     );
   }
+
+
+
 }

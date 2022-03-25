@@ -3,6 +3,7 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -30,7 +31,6 @@ import 'package:wakelock/wakelock.dart';
 
 import '../managers/NavigationManager.dart';
 
-
 class ApplicationBloc with ChangeNotifier {
   var _placesService = PlacesService();
   final _directionsService = DirectionsService();
@@ -53,8 +53,9 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
+  final FavouriteRoutesManager _favouriteRoutesManager = FavouriteRoutesManager();
   // final DatabaseManager _databaseManager = DatabaseManager();
-  // final UserSettings _userSettings = UserSettings();
+  final UserSettings _userSettings = UserSettings();
 
   // TODO: Add calls to isNavigation from GUI
 
@@ -69,10 +70,12 @@ class ApplicationBloc with ChangeNotifier {
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
+    loadFavouriteRoutes();
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(LocationManager locationManager, PlacesService placesService){
+  ApplicationBloc.forMock(
+      LocationManager locationManager, PlacesService placesService) {
     _locationManager = locationManager;
     _placesService = placesService;
 
@@ -82,6 +85,16 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   // ********** Dialog **********
+
+  void showWalkBikeToggleDialog() {
+    _dialogManager.showWalkBikeToggleDialog();
+    notifyListeners();
+  }
+
+  void showEndOfRouteDialog() {
+    _dialogManager.showEndOfRouteDialog();
+    notifyListeners();
+  }
 
   void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
@@ -94,6 +107,11 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearEndOfRouteDialog() {
+    _dialogManager.clearEndOfRouteDialog();
+    notifyListeners();
+  }
+
   void clearBinaryDialog() {
     _dialogManager.clearBinaryChoice();
     notifyListeners();
@@ -101,6 +119,11 @@ class ApplicationBloc with ChangeNotifier {
 
   void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
+    notifyListeners();
+  }
+
+  void clearWalkBikeToggleDialog() {
+    _dialogManager.clearWalkBikeToggleDialog();
     notifyListeners();
   }
 
@@ -123,11 +146,42 @@ class ApplicationBloc with ChangeNotifier {
 
   getDefaultSearchResult() async {
     searchResults = [];
+
     searchResults.insert(
         0,
         PlaceSearch(
             description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
+
+    var recentSearches = await _userSettings.getPlace();
+
+    // reverse list to view most recent searches
+    var placeIds = recentSearches.keys.toList().reversed.toList();
+    var names = recentSearches.values.toList().reversed.toList();
+
+    int noRecentSearches = names.length;
+
+    // Insert recent searches as suggestions in recent results drop down
+    if (noRecentSearches > 0) {
+      for(int i = 0; i<names.length; i++){
+        searchResults.insert(
+            i + 1,
+            PlaceSearch(
+                description: names[i],
+                placeId: placeIds[i]
+            ));
+      }
+    } else {
+      // max of 6 recent searches in the drop down
+      for(int i = 0; i<5; i++){
+        searchResults.insert(
+            i + 1,
+            PlaceSearch(
+                description: names[i],
+                placeId: placeIds[i]
+            ));
+      }
+    }
     notifyListeners();
   }
 
@@ -183,6 +237,9 @@ class ApplicationBloc with ChangeNotifier {
         searchResults[searchIndex].placeId,
         searchResults[searchIndex].description);
     setLocationMarker(place, uid);
+
+    _userSettings.savePlace(place);
+
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
@@ -238,7 +295,6 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
-
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
     notifyListeners();
@@ -275,8 +331,16 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     http.Client client = new http.Client();
-    await _stationManager.setStations(await _stationsService.getStations(client));
-
+    if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
+      List<Station> favouriteStations = await _stationsService.getStations(client);
+      List<int> compare = await DatabaseManager().getFavouriteStations();
+      favouriteStations.retainWhere((element) => compare.contains(element.id));
+      await _stationManager.setStations(favouriteStations, clear: true);
+    } else {
+      await _stationManager.setStations(await _stationsService.getStations(client),
+          clear: true);
+    }
+    filterStationMarkers();
     notifyListeners();
   }
 
@@ -346,6 +410,10 @@ class ApplicationBloc with ChangeNotifier {
     await _navigationManager.start();
     updateLocationLive();
     _routeManager.showCurrentRoute();
+    _userSettings.saveRoute(
+        _routeManager.getStart().getStop(),
+        _routeManager.getDestination().getStop(),
+        _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     Wakelock.enable();
     notifyListeners();
   }
@@ -356,6 +424,8 @@ class ApplicationBloc with ChangeNotifier {
 
     await fetchCurrentLocation();
     if (await _navigationManager.checkWaypointPassed()) {
+      // dialog box informing user that they have arrived at their destination
+      showEndOfRouteDialog();
       endRoute();
       return;
     }
@@ -431,6 +501,7 @@ class ApplicationBloc with ChangeNotifier {
     _directionManager.toggleCycling();
     notifyListeners();
   }
+
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
@@ -449,6 +520,14 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically();
     changeUnits();
     filterStationMarkers();
+    notifyListeners();
+  }
+
+  void loadFavouriteRoutes() {
+    _favouriteRoutesManager.updateRoutes();
+  }
+
+  void notifyListeningWidgets() {
     notifyListeners();
   }
 }

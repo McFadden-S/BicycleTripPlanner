@@ -10,14 +10,14 @@ class WeatherService{
     final queryParameters = {
       'q': city,
       'appid': 'f90aaab58a10ed03221dca9dc35bc0bc',
-      'units': 'imperial',
+      'units': 'metric',
     };
 
     final uri = Uri.https('api.openweathermap.org', '/data/2.5/weather', queryParameters);
 
     final response = await http.get(uri);
 
-    print(response.body);
+    // print(response.body);
     final json = jsonDecode(response.body);
     return WeatherResponse.fromJson(json);
   }

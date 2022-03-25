@@ -9,14 +9,14 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchLis
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:provider/provider.dart';
 
-class RouteCard extends StatefulWidget {
-  const RouteCard({Key? key}) : super(key: key);
+class RoutePlanningCard extends StatefulWidget {
+  const RoutePlanningCard({Key? key}) : super(key: key);
 
   @override
-  _RouteCardState createState() => _RouteCardState();
+  _RoutePlanningCardState createState() => _RoutePlanningCardState();
 }
 
-class _RouteCardState extends State<RouteCard> {
+class _RoutePlanningCardState extends State<RoutePlanningCard> {
   final TextEditingController startSearchController = TextEditingController();
   final TextEditingController endSearchController = TextEditingController();
 
@@ -33,14 +33,13 @@ class _RouteCardState extends State<RouteCard> {
   //Build method is called one more time before navigation starts resulting in a waste of api calls
   @override
   Widget build(BuildContext context) {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
 
     if (routeManager.ifStartSet() &&
         routeManager.ifDestinationSet() &&
         routeManager.ifChanged()) {
       polylineManager.clearPolyline();
-      print("Description: ${routeManager.getStart().getStop().description}");
+      // print("Description: ${routeManager.getStart().getStop().description}");
       routeManager.getStart().getStop().description ==
               SearchType.current.description
           ? routeManager.setStartFromCurrentLocation(true)
