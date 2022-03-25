@@ -5,7 +5,11 @@ import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+<<<<<<< HEAD
+import 'package:bicycle_trip_planner/widgets/routeplanning/RouteCard.dart';
+=======
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
+>>>>>>> development
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
@@ -129,6 +133,23 @@ void main() {
 
       });
 
+<<<<<<< HEAD
+  //
+  // testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
+  //         (WidgetTester tester) async {
+  //       await pumpWidget(tester, MaterialApp(
+  //         home: Material(child: GroupSizeSelector()),
+  //       ));
+  //
+  //       expect(find.byKey(Key("groupSizeSelector")), findsOneWidget);
+  //       expect(find.text("1"), findsOneWidget);
+  //       await tester.tap(find.byKey(Key("groupSizeSelector")));
+  //       // await tester.pumpAndSettle();
+  //
+  //
+  //
+  //     });
+=======
 
   testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
           (WidgetTester tester) async {
@@ -148,6 +169,7 @@ void main() {
           expect(find.byKey(Key(i.toString()), skipOffstage: false), findsOneWidget);
         }
       });
+>>>>>>> development
 
 }
 

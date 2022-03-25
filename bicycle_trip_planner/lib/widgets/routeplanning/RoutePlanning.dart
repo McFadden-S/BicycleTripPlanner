@@ -1,15 +1,18 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
+import 'package:bicycle_trip_planner/widgets/general/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
@@ -90,7 +93,16 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             SizedBox(height: 10),
                             ViewRouteButton(),
                             SizedBox(height: 10),
-                            OptimisedButton(),
+                            _routeManager.ifRouteSet() &&
+                            _routeManager.getWaypoints().length > 1
+                            ? Column(
+                              children: [
+                                OptimisedButton(),
+                                SizedBox(height: 10),
+                              ],
+                            )
+                            : SizedBox.shrink(),
+                            OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
                           ],
@@ -249,6 +261,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   getRecentRoutesCount() async {
+    _recentRoutesCount = 0;
     int recentRoutesCount = await _userSettings.getNumberOfRoutes();
     setState(() {
       _recentRoutesCount = recentRoutesCount;
@@ -256,6 +269,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 }
 
+// Note: This is outside of the state class...
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
