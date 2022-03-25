@@ -1,11 +1,9 @@
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +53,6 @@ class _StationBarState extends State<StationBar> {
   }
 
   toggleFavouriteStation(Station station) {
-    // Check if user is logged in...
     if (!_favouriteStations.contains(station.id)) {
       DatabaseManager()
           .addToFavouriteStations(station.id)
@@ -65,7 +62,6 @@ class _StationBarState extends State<StationBar> {
           .removeFavouriteStation(station.id.toString())
           .then((value) => getFavouriteStations());
     }
-    //appBloc!.notifyListeningWidgets();
   }
 
   @override
@@ -341,7 +337,6 @@ class _StationBarState extends State<StationBar> {
                     ),
                     IconButton(
                       onPressed: () => showExpandedList(),
-                      //onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc),
                       icon: Icon(Icons.menu,
                           color: ThemeStyle.secondaryIconColor),
                     ),
