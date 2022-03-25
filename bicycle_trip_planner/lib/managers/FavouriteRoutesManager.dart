@@ -5,14 +5,15 @@ import '../models/pathway.dart';
 class FavouriteRoutesManager {
   //********** Fields **********
 
-  Map<String,Pathway> _routes = {};
+  Map<String, Pathway> _routes = {};
 
   //********** Singleton **********
 
-  static final FavouriteRoutesManager _stationManager = FavouriteRoutesManager._internal();
+  static final FavouriteRoutesManager _favouriteRoutesManager =
+      FavouriteRoutesManager._internal();
 
   factory FavouriteRoutesManager() {
-    return _stationManager;
+    return _favouriteRoutesManager;
   }
 
   FavouriteRoutesManager._internal();
@@ -30,13 +31,13 @@ class FavouriteRoutesManager {
   }
 
   Pathway? getFavouriteRouteByIndex(int index) {
-    if(index < _routes.length && index >= 0) {
+    if (index < _routes.length && index >= 0) {
       return _routes[_routes.keys.toList()[index]]!;
     }
   }
 
   String getKey(int index) {
-    if(index < _routes.length && index >= 0) {
+    if (index < _routes.length && index >= 0) {
       return _routes.keys.toList()[index];
     } else {
       return "";
@@ -44,9 +45,8 @@ class FavouriteRoutesManager {
   }
 
   void updateRoutes() {
-    if(DatabaseManager().isUserLogged()) {
+    if (DatabaseManager().isUserLogged()) {
       DatabaseManager().getFavouriteRoutes().then((value) => _routes = value);
     }
   }
-
 }

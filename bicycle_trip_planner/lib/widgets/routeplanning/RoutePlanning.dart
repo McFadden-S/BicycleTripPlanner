@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -22,6 +23,7 @@ import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 
 import '../../constants.dart';
+import '../../models/search_types.dart';
 import 'RecentRouteCard.dart';
 import 'RoutePlanningCard.dart';
 
@@ -39,6 +41,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
 
   final RouteManager _routeManager = RouteManager();
   final UserSettings _userSettings = UserSettings();
+  final DialogManager _dialogManager = DialogManager();
 
   @override
   void initState() {
@@ -89,19 +92,17 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(),
                             SizedBox(height: 10),
-                            // ViewRouteButton(),
-                            // SizedBox(height: 10),
-                            _routeManager.ifRouteSet() &&
-                            _routeManager.getWaypoints().length > 1
-                            ? Column(
-                              children: [
-                                OptimisedButton(),
-                                SizedBox(height: 10),
-                              ],
-                            )
-                            : SizedBox.shrink(),
-                            WalkToFirstButton(),
+                            ViewRouteButton(),
                             SizedBox(height: 10),
+                            _routeManager.ifRouteSet() &&
+                                    _routeManager.getWaypoints().length > 1
+                                ? Column(
+                                    children: [
+                                      OptimisedButton(),
+                                      SizedBox(height: 10),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
                             OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
@@ -126,7 +127,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             iconIn: Icons.history,
                             iconColor: ThemeStyle.primaryIconColor,
                             onButtonClicked: () => showRecentRoutes())
-                        : SizedBox.shrink(),
+                        : const SizedBox.shrink(),
                     Spacer(),
                     CustomBackButton(context: context, backTo: 'home'),
                   ]),
@@ -162,20 +163,40 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         Expanded(
                           flex: 20,
                           child: RoundedRectangleButton(
-                            iconIn: Icons.directions_bike,
-                            buttonColor: ThemeStyle.goButtonColor,
-                            onButtonClicked: () {
-                              if (_routeManager.ifRouteSet()) {
-                                applicationBloc.startNavigation();
-                              } else {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
-                                  content: Text("No route could be found!"),
-                                ));
-                              }
-                            },
-                            withLoading: true,
-                          ),
+                              iconIn: Icons.directions_bike,
+                              buttonColor: ThemeStyle.goButtonColor,
+                              onButtonClicked: () {
+                                if (_routeManager.ifRouteSet()) {
+                                  if (_routeManager
+                                          .getStart()
+                                          .getStop()
+                                          .description !=
+                                      SearchType.current.description) {
+                                    _dialogManager.setBinaryChoice(
+                                      "Do you want to walk to start or be routed to it?",
+                                      "Walk",
+                                      () {
+                                        _routeManager
+                                            .setWalkToFirstWaypoint(true);
+                                      },
+                                      "Route",
+                                      () {
+                                        _routeManager
+                                            .setWalkToFirstWaypoint(false);
+                                      },
+                                    );
+
+                                    applicationBloc.showBinaryDialog();
+                                  }
+
+                                  applicationBloc.startNavigation();
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                    content: Text("No route could be found!"),
+                                  ));
+                                }
+                              }),
                         )
                       ]),
                 ),
@@ -190,7 +211,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   void showRecentRoutes() async {
     showModalBottomSheet(
         enableDrag: true,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30.0),
                 topRight: Radius.circular(30.0))),
@@ -200,7 +221,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             padding: const EdgeInsets.only(bottom: 20.0),
             decoration: BoxDecoration(
                 color: ThemeStyle.cardColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(30.0),
                     topRight: Radius.circular(30.0)),
                 boxShadow: [
@@ -208,7 +229,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                     color: ThemeStyle.stationShadow,
                     spreadRadius: 8,
                     blurRadius: 6,
-                    offset: Offset(0, 0),
+                    offset: const Offset(0, 0),
                   )
                 ]),
             child: SizedBox(
@@ -275,11 +296,11 @@ saveRoute(context) async {
   });
   ;
   if (successfullyAdded) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Route saved correctly!"),
     ));
   } else {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Error while saving the route!"),
     ));
   }
