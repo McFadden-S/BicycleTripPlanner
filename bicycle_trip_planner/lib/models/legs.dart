@@ -26,11 +26,19 @@ class Legs {
     );
   }
 
+  /**
+   * method override the toString method
+   * @return String of the toString of the object
+   */
   @override
   String toString() {
     return steps.toString();
   }
 
+  /**
+   * method override the == operator
+   * @return bool of whether the object is same or not
+   */
   @override
   bool operator ==(Object other) {
     return other is Legs &&
@@ -41,6 +49,10 @@ class Legs {
         other.distance == distance;
   }
 
+  /**
+   * method override the get hashCode method
+   * @return int of the hashCode
+   */
   @override
   // TODO: implement hashCode
   int get hashCode =>

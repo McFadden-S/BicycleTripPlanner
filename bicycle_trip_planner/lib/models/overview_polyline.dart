@@ -17,6 +17,10 @@ class OverviewPolyline {
     );
   }
 
+  /**
+   * method override the == operator
+   * @return bool of whether the object is same or not
+   */
   @override
   bool operator ==(Object other) {
     return other is OverviewPolyline && other.points == points;

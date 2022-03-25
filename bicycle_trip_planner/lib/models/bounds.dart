@@ -16,6 +16,7 @@ class Bounds {
 
   /**
    * override the == operator
+   * @return bool of whether the object is same or not
    */
   @override
   bool operator ==(Object other) {
@@ -25,7 +26,8 @@ class Bounds {
   }
 
   /**
-   * override the get hashCode method
+   * method override the get hashCode method
+   * @return int of the hashCode
    */
   @override
   int get hashCode => Object.hash(northeast, southwest);
