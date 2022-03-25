@@ -48,10 +48,18 @@ class Station {
     );
   }
 
+  /**
+   * method calculates the stations available
+   * @return double stations available
+   */
   double calculateStationAvailability() {
     return (bikes / totalDocks) * 50;
   }
 
+  /**
+   * method updates the station fields
+   * @param Station station, double distance
+   */
   void update(Station station, double distance) {
     bikes = station.bikes;
     emptyDocks = station.emptyDocks;
@@ -59,16 +67,28 @@ class Station {
     distanceTo = distance;
   }
 
+  /**
+   * method override the toString method
+   * @return String of the toString of the object
+   */
   @override
   String toString() {
     return name;
   }
 
+  /**
+   * method override the == operator
+   * @return bool of whether the object is same or not
+   */
   @override
   bool operator ==(Object other) {
     return other is Station && other.id == id && other.name == name;
   }
 
+  /**
+   * method override the get hashCode method
+   * @return int of the hashCode
+   */
   @override
   int get hashCode => Object.hash(id, name);
 }
