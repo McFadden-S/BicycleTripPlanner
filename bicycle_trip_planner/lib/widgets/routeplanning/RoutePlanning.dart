@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/CustomBackButton.dart';
@@ -85,10 +84,17 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(),
                             SizedBox(height: 10),
-                            ViewRouteButton(),
-                            SizedBox(height: 10),
-                            OptimisedButton(),
-                            SizedBox(height: 10),
+                            // ViewRouteButton(),
+                            // SizedBox(height: 10),
+                            _routeManager.ifRouteSet() &&
+                            _routeManager.getWaypoints().length > 1
+                            ? Column(
+                              children: [
+                                OptimisedButton(),
+                                SizedBox(height: 10),
+                              ],
+                            )
+                            : SizedBox.shrink(),
                             WalkToFirstButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
@@ -153,7 +159,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               buttonColor: ThemeStyle.goButtonColor,
                               onButtonClicked: () {
                                 if (_routeManager.ifRouteSet()) {
-                                  // TODO: call method here that stores the route
                                   applicationBloc.startNavigation();
                                 } else {
                                   ScaffoldMessenger.of(context)
@@ -232,6 +237,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   getRecentRoutesCount() async {
+    _recentRoutesCount = 0;
     int recentRoutesCount = await _userSettings.getNumberOfRoutes();
     setState(() {
       _recentRoutesCount = recentRoutesCount;
