@@ -76,22 +76,6 @@ void main() {
               placeId: "firstStation",
               description: "firstStation")));
 
-  when(stationManager.getPickupStationNear(LatLng(51.513160, -0.117373), 1))
-      .thenAnswer((_) async => Station(
-          lat: 51.514148,
-          lng: -0.119647,
-          id: 10,
-          name: 'firstStation',
-          totalDocks: 10,
-          emptyDocks: 0,
-          bikes: 10,
-          place: Place(
-              geometry: Geometry(
-                  location: loc.Location(lat: 51.514148, lng: -0.119647)),
-              name: "firstStation",
-              placeId: "firstStation",
-              description: "firstStation")));
-
   when(stationManager.getDropoffStationNear(LatLng(51.508384, -0.125724), 1))
       .thenAnswer((_) async => Station(
           lat: 51.50984,
@@ -110,7 +94,7 @@ void main() {
 
   when(locationManager.distanceFromToInMeters(
           LatLng(51.513206, -0.117373), LatLng(51.51316, -0.117254)))
-      .thenAnswer((_) => 9.694);
+      .thenAnswer((_) => 31);
 
   when(locationManager.distanceFromToInMeters(
           LatLng(51.513206, -0.117373), LatLng(51.50984, -0.126851)))
@@ -1060,6 +1044,933 @@ void main() {
     )["routes"][0] as Map<String, dynamic>
     , RouteType.walk)
   );
+
+  when(directionsService.getRoutes('firstStation', 'lastStation', ['start'], true)).thenAnswer((_) async=>
+      r.Route.fromJson(convert.jsonDecode(
+          r"""
+          {
+   "geocoded_waypoints" : [
+      {
+         "geocoder_status" : "OK",
+         "place_id" : "GhIJ46YGms_BSUAR24MQkC-hvr8",
+         "types" : [ "plus_code" ]
+      },
+      {
+         "geocoder_status" : "OK",
+         "place_id" : "GhIJqBjnb0LBSUARtoE7UKc8wL8",
+         "types" : [ "plus_code" ]
+      }
+   ],
+   "routes" : [
+      {
+         "bounds" : {
+            "northeast" : {
+               "lat" : 51.5145912,
+               "lng" : -0.1196394
+            },
+            "southwest" : {
+               "lat" : 51.5098393,
+               "lng" : -0.127153
+            }
+         },
+         "copyrights" : "Map data ©2022 Google",
+         "legs" : [
+            {
+               "distance" : {
+                  "text" : "1.0 km",
+                  "value" : 1031
+               },
+               "duration" : {
+                  "text" : "3 mins",
+                  "value" : 161
+               },
+               "end_address" : "GV5F+W7 London, UK",
+               "end_location" : {
+                  "lat" : 51.5098393,
+                  "lng" : -0.126915
+               },
+               "start_address" : "GV7J+M4 London, UK",
+               "start_location" : {
+                  "lat" : 51.5141448,
+                  "lng" : -0.1196394
+               },
+               "steps" : [
+                  {
+                     "distance" : {
+                        "text" : "55 m",
+                        "value" : 55
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 11
+                     },
+                     "end_location" : {
+                        "lat" : 51.5137327,
+                        "lng" : -0.1200871
+                     },
+                     "html_instructions" : "Head \u003cb\u003esouthwest\u003c/b\u003e on \u003cb\u003eKemble St\u003c/b\u003e toward \u003cb\u003eDrury Ln\u003c/b\u003e",
+                     "polyline" : {
+                        "points" : "kjlyHvjVpAxA"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5141448,
+                        "lng" : -0.1196394
+                     },
+                     "travel_mode" : "BICYCLING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.2 km",
+                        "value" : 165
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 30
+                     },
+                     "end_location" : {
+                        "lat" : 51.5145912,
+                        "lng" : -0.1220169
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eright\u003c/b\u003e onto \u003cb\u003eDrury Ln\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eLeaving toll zone\u003c/div\u003e",
+                     "maneuver" : "turn-right",
+                     "polyline" : {
+                        "points" : "yglyHpmVKVEJGTELK\\GPSp@Sl@Sn@Sn@Yr@MT"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5137327,
+                        "lng" : -0.1200871
+                     },
+                     "travel_mode" : "BICYCLING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.1 km",
+                        "value" : 117
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 21
+                     },
+                     "end_location" : {
+                        "lat" : 51.5138071,
+                        "lng" : -0.1231193
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eLong Acre\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eB402\u003c/b\u003e",
+                     "maneuver" : "turn-left",
+                     "polyline" : {
+                        "points" : "emlyHryVJLBDBDDHHLh@`A^p@Rb@@BBBBB@@D@F@"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5145912,
+                        "lng" : -0.1220169
+                     },
+                     "travel_mode" : "BICYCLING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.1 km",
+                        "value" : 101
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 14
+                     },
+                     "end_location" : {
+                        "lat" : 51.5143016,
+                        "lng" : -0.124226
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eright\u003c/b\u003e onto \u003cb\u003eEndell St\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eB401\u003c/b\u003e",
+                     "maneuver" : "turn-right",
+                     "polyline" : {
+                        "points" : "ihlyHn`W?H?D?D@H?F?F?D?HADADADADABCBQZ_@l@]f@EJ"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5138071,
+                        "lng" : -0.1231193
+                     },
+                     "travel_mode" : "BICYCLING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.3 km",
+                        "value" : 274
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 45
+                     },
+                     "end_location" : {
+                        "lat" : 51.5126916,
+                        "lng" : -0.127153
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eShelton St\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eEntering toll zone\u003c/div\u003e",
+                     "maneuver" : "turn-left",
+                     "polyline" : {
+                        "points" : "kklyHlgWDFDJJPLZL\\BBVv@HTv@~Br@rBDJDJP^DLHNFH?@PPLNBBD@DB@@F@@BBBDF"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5143016,
+                        "lng" : -0.124226
+                     },
+                     "travel_mode" : "BICYCLING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "0.3 km",
+                        "value" : 319
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 40
+                     },
+                     "end_location" : {
+                        "lat" : 51.5098393,
+                        "lng" : -0.126915
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eUpper St Martin's Ln\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eB404\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eContinue to follow B404\u003c/div\u003e\u003cdiv style=\"font-size:0.9em\"\u003eLeaving toll zone\u003c/div\u003e\u003cdiv style=\"font-size:0.9em\"\u003eDestination will be on the left\u003c/div\u003e",
+                     "maneuver" : "turn-left",
+                     "polyline" : {
+                        "points" : "ialyHtyWNGb@C`@?`@Af@?RBTBF?X@J?N?TAPENCHCXG`@GVAlAElAA"
+                     },
+                     "start_location" : {
+                        "lat" : 51.5126916,
+                        "lng" : -0.127153
+                     },
+                     "travel_mode" : "BICYCLING"
+                  }
+               ],
+               "traffic_speed_entry" : [],
+               "via_waypoint" : []
+            }
+         ],
+         "overview_polyline" : {
+            "points" : "kjlyHvjVpAxAKVM`@m@nBuA`EMTJLFJxAjC\\n@FBF@?H?J@PA\\GTsAtBEJDFP\\v@tBzBtGf@hAf@l@PJHDHJNGb@CbAAf@?RB\\Bd@@d@AdAUx@IzCG"
+         },
+         "summary" : "Shelton St and B404",
+         "warnings" : [
+            "Bicycling directions are in beta. Use caution – This route may contain streets that aren't suited for bicycling."
+         ],
+         "waypoint_order" : []
+      }
+   ],
+   "status" : "OK"
+}
+          """
+      )["routes"][0] as Map<String, dynamic>
+          , RouteType.walk)
+  );
+
+  when(placesServices.getPlaceFromCoordinates(51.508384, -0.125724, SearchType.current.description)).thenAnswer((_) async=>
+    Place.fromJson(
+    convert.jsonDecode(
+      r"""
+      {
+   "plus_code" : {
+      "compound_code" : "GV5F+9P2 London, UK",
+      "global_code" : "9C3XGV5F+9P2"
+   },
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Charing Cross Station",
+               "short_name" : "Charing Cross Station",
+               "types" : [
+                  "establishment",
+                  "point_of_interest",
+                  "subway_station",
+                  "transit_station"
+               ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "WC2N 5RJ",
+               "short_name" : "WC2N 5RJ",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Charing Cross Station, London WC2N 5RJ, UK",
+         "geometry" : {
+            "location" : {
+               "lat" : 51.5084994,
+               "lng" : -0.1258604
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5098483802915,
+                  "lng" : -0.124511419708498
+               },
+               "southwest" : {
+                  "lat" : 51.5071504197085,
+                  "lng" : -0.127209380291502
+               }
+            }
+         },
+         "place_id" : "ChIJra2jTs4EdkgRshPsDJz8OM0",
+         "plus_code" : {
+            "compound_code" : "GV5F+9M London, UK",
+            "global_code" : "9C3XGV5F+9M"
+         },
+         "types" : [
+            "establishment",
+            "point_of_interest",
+            "subway_station",
+            "transit_station"
+         ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "11",
+               "short_name" : "11",
+               "types" : [ "street_number" ]
+            },
+            {
+               "long_name" : "Strand",
+               "short_name" : "A4",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "WC2N 5RJ",
+               "short_name" : "WC2N 5RJ",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "11 A4, London WC2N 5RJ, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.50843829999999,
+                  "lng" : -0.1256475
+               },
+               "southwest" : {
+                  "lat" : 51.5081697,
+                  "lng" : -0.1261654
+               }
+            },
+            "location" : {
+               "lat" : 51.508304,
+               "lng" : -0.1259065
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5096529802915,
+                  "lng" : -0.124557469708498
+               },
+               "southwest" : {
+                  "lat" : 51.5069550197085,
+                  "lng" : -0.127255430291502
+               }
+            }
+         },
+         "place_id" : "ChIJVWTp9M4EdkgRQFF-0XFuuDA",
+         "types" : [ "route" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "GV5F+9P",
+               "short_name" : "GV5F+9P",
+               "types" : [ "plus_code" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "GV5F+9P London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.5085,
+                  "lng" : -0.125625
+               },
+               "southwest" : {
+                  "lat" : 51.508375,
+                  "lng" : -0.12575
+               }
+            },
+            "location" : {
+               "lat" : 51.508384,
+               "lng" : -0.125724
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5097864802915,
+                  "lng" : -0.124338519708498
+               },
+               "southwest" : {
+                  "lat" : 51.5070885197085,
+                  "lng" : -0.127036480291502
+               }
+            }
+         },
+         "place_id" : "GhIJo-cWuhLBSUARQkEpWrkXwL8",
+         "plus_code" : {
+            "compound_code" : "GV5F+9P London, UK",
+            "global_code" : "9C3XGV5F+9P"
+         },
+         "types" : [ "plus_code" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "WC2N 5RJ",
+               "short_name" : "WC2N 5RJ",
+               "types" : [ "postal_code" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "London WC2N 5RJ, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.5085094,
+                  "lng" : -0.1253217
+               },
+               "southwest" : {
+                  "lat" : 51.5078356,
+                  "lng" : -0.1260326
+               }
+            },
+            "location" : {
+               "lat" : 51.5080957,
+               "lng" : -0.1256962
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5095214802915,
+                  "lng" : -0.124328169708498
+               },
+               "southwest" : {
+                  "lat" : 51.5068235197085,
+                  "lng" : -0.127026130291502
+               }
+            }
+         },
+         "place_id" : "ChIJ7QN-8c4EdkgRz8bZVsDuV-4",
+         "types" : [ "postal_code" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "WC2N",
+               "short_name" : "WC2N",
+               "types" : [ "postal_code", "postal_code_prefix" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "London WC2N, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.5119464,
+                  "lng" : -0.1156253
+               },
+               "southwest" : {
+                  "lat" : 51.5057897,
+                  "lng" : -0.1277062
+               }
+            },
+            "location" : {
+               "lat" : 51.50771659999999,
+               "lng" : -0.1225564
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5119464,
+                  "lng" : -0.1156253
+               },
+               "southwest" : {
+                  "lat" : 51.5057897,
+                  "lng" : -0.1277062
+               }
+            }
+         },
+         "place_id" : "ChIJb9KHxsgEdkgRe82UfSxQIv0",
+         "types" : [ "postal_code", "postal_code_prefix" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Charing Cross",
+               "short_name" : "Charing Cross",
+               "types" : [ "administrative_area_level_4", "political" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Charing Cross, London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.5135131,
+                  "lng" : -0.121372
+               },
+               "southwest" : {
+                  "lat" : 51.5064678,
+                  "lng" : -0.1292108
+               }
+            },
+            "location" : {
+               "lat" : 51.5090275,
+               "lng" : -0.1255016
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5135131,
+                  "lng" : -0.121372
+               },
+               "southwest" : {
+                  "lat" : 51.5064678,
+                  "lng" : -0.1292108
+               }
+            }
+         },
+         "place_id" : "ChIJrStISs4EdkgRvEoozoLVlx0",
+         "types" : [ "administrative_area_level_4", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "City of Westminster",
+               "short_name" : "City of Westminster",
+               "types" : [ "administrative_area_level_3", "political" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "City of Westminster, London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.5397932,
+                  "lng" : -0.1111016
+               },
+               "southwest" : {
+                  "lat" : 51.4838163,
+                  "lng" : -0.2160886
+               }
+            },
+            "location" : {
+               "lat" : 51.5145337,
+               "lng" : -0.1595389
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.5397932,
+                  "lng" : -0.1111016
+               },
+               "southwest" : {
+                  "lat" : 51.4838163,
+                  "lng" : -0.2160886
+               }
+            }
+         },
+         "place_id" : "ChIJxwN8mDUFdkgRoGfsoi2uDgQ",
+         "types" : [ "administrative_area_level_3", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.6723432,
+                  "lng" : 0.148271
+               },
+               "southwest" : {
+                  "lat" : 51.38494009999999,
+                  "lng" : -0.3514683
+               }
+            },
+            "location" : {
+               "lat" : 51.5072178,
+               "lng" : -0.1275862
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.6723432,
+                  "lng" : 0.148271
+               },
+               "southwest" : {
+                  "lat" : 51.38494009999999,
+                  "lng" : -0.3514683
+               }
+            }
+         },
+         "place_id" : "ChIJdd4hrwug2EcRmSrV3Vo6llI",
+         "types" : [ "locality", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "London",
+               "short_name" : "London",
+               "types" : [ "postal_town" ]
+            },
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.6723432,
+                  "lng" : 0.148271
+               },
+               "southwest" : {
+                  "lat" : 51.38494009999999,
+                  "lng" : -0.3514683
+               }
+            },
+            "location" : {
+               "lat" : 51.5569879,
+               "lng" : -0.1411791
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.6723432,
+                  "lng" : 0.148271
+               },
+               "southwest" : {
+                  "lat" : 51.38494009999999,
+                  "lng" : -0.3514683
+               }
+            }
+         },
+         "place_id" : "ChIJ8_MXt1sbdkgRCrIAOXkukUk",
+         "types" : [ "postal_town" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Greater London",
+               "short_name" : "Greater London",
+               "types" : [ "administrative_area_level_2", "political" ]
+            },
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "Greater London, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 51.6918726,
+                  "lng" : 0.3339957
+               },
+               "southwest" : {
+                  "lat" : 51.28676,
+                  "lng" : -0.5103751
+               }
+            },
+            "location" : {
+               "lat" : 51.4309209,
+               "lng" : -0.0936496
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 51.6918726,
+                  "lng" : 0.3339957
+               },
+               "southwest" : {
+                  "lat" : 51.28676,
+                  "lng" : -0.5103751
+               }
+            }
+         },
+         "place_id" : "ChIJb-IaoQug2EcRi-m4hONz8S8",
+         "types" : [ "administrative_area_level_2", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "England",
+               "short_name" : "England",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "England, UK",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 55.81165979999999,
+                  "lng" : 1.7629159
+               },
+               "southwest" : {
+                  "lat" : 49.8647411,
+                  "lng" : -6.4185458
+               }
+            },
+            "location" : {
+               "lat" : 52.3555177,
+               "lng" : -1.1743197
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 55.81165979999999,
+                  "lng" : 1.7629159
+               },
+               "southwest" : {
+                  "lat" : 49.8647411,
+                  "lng" : -6.4185458
+               }
+            }
+         },
+         "place_id" : "ChIJ39UebIqp0EcRqI4tMyWV4fQ",
+         "types" : [ "administrative_area_level_1", "political" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "United Kingdom",
+               "short_name" : "GB",
+               "types" : [ "country", "political" ]
+            }
+         ],
+         "formatted_address" : "United Kingdom",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 60.91569999999999,
+                  "lng" : 33.9165549
+               },
+               "southwest" : {
+                  "lat" : 34.5614,
+                  "lng" : -8.8988999
+               }
+            },
+            "location" : {
+               "lat" : 55.378051,
+               "lng" : -3.435973
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 60.91569999999999,
+                  "lng" : 33.9165549
+               },
+               "southwest" : {
+                  "lat" : 34.5614,
+                  "lng" : -8.8988999
+               }
+            }
+         },
+         "place_id" : "ChIJqZHHQhE7WgIReiWIMkOg-MQ",
+         "types" : [ "country", "political" ]
+      }
+   ],
+   "status" : "OK"
+}
+      """
+    )['results'][0] as Map<String, dynamic>
+    , "myCurrentLocation")
+  );
+
+  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724), LatLng(51.51316, -0.117254))).thenAnswer((_) =>
+  791
+  );
+
+  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724), LatLng(51.514148, -0.119647))).thenAnswer((_) =>
+  766
+  );
+
+  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724),  LatLng(51.50984, -0.126851))).thenAnswer((_) =>
+  29
+  );
+
   var appBloc = ApplicationBloc.forMock(locationManager, placesServices,
       routeManager, navigationManager, directionsService, stationManager);
 
@@ -1110,25 +2021,14 @@ void main() {
       "satelliteNumber": 0,
       "provider": "asdf"
     };
-
-
     var x = LocationData.fromMap(locationChange_1);
 
     appBloc.startNavigation();
-    //currentLocationLatLng = LatLng(51.513948, -0.119872,);
-
-
-    controller.add(x);
 
     List<Station> stations = [];
     stations.add(navigationManager.getPickupStation());
     stations.add(navigationManager.getDropoffStation());
     when(stationManager.getStations()).thenAnswer((realInvocation) => stations);
-
-    await untilCalled(directionsService.getWalkingRoutes(
-        'MyCurrentLocation', 'firstStation', [], false));
-
-    LatLng(51.513206, -0.117373);
 
     when(directionsService.getWalkingRoutes("MyCurrentLocation", "destination"))
         .thenAnswer(
@@ -1298,9 +2198,33 @@ void main() {
     await untilCalled(locationManager.onUserLocationChange(5.0));
     verify(locationManager.onUserLocationChange(5.0)).called(1);
 
+    controller.add(x);
+    await untilCalled(locationManager.distanceFromToInMeters(
+        LatLng(51.513206, -0.117373), LatLng(51.50984, -0.126851)));
 
+    Map<String, dynamic> locationChange_2 = {
+      "latitude": 51.508384,
+      "longitude": -0.125724,
+      "accuracy": 0.0,
+      "altitude": 0.0,
+      "speed": 0.0,
+      "speedAccuracy": 0.0,
+      "heading": 0.0,
+      "time": 0.0,
+      "isMock": false,
+      "verticalAccuracy": 0.0,
+      "headingAccuracy": 0.0,
+      "elapsedRealtimeNanos": 0.0,
+      "elapsedRealtimeUncertaintyNanos": 0.0,
+      "satelliteNumber": 0,
+      "provider": "asdf"
+    };
+    x = LocationData.fromMap(locationChange_2);
 
-    print(navigationManager.getPickupStation());
+    //Verifies partial routes are being stored after initial walking route is done
+    verify(directionsService.getRoutes('firstStation', 'lastStation', ['start'], true));
+
+    currentLocationLatLng = LatLng(51.508384, -0.125724);
+    controller.add(x);
     });
-
 }
