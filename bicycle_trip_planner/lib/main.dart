@@ -29,12 +29,10 @@ Future<void> main() async {
 
   LocationManager locationManager = LocationManager();
 
-  // location requested and if denied twice, app is closed
+  // location requested and if denied send to settings and close
   if (!(await locationManager.requestPermission())) {
     await locationManager.openLocationSettingsOnDevice();
-    if (!(await locationManager.requestPermission())) {
-      exit(0);
-    }
+    exit(0);
   }
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
