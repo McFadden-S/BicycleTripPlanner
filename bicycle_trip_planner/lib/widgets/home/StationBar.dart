@@ -249,9 +249,25 @@ class _StationBarState extends State<StationBar> {
                                                     "You don't have any favourite stations currently.");
                                               })
                                           // Currently gets all stations. Can be changed to only nearby
-                                          : stationListBuilder(
-                                              stationManager.getStations(),
-                                              "There are no stations currently.")),
+                                          : FutureBuilder<double>(
+                                              future: UserSettings()
+                                                  .nearbyStationsRange(),
+                                              builder: (context, snapshot) {
+                                                List<Station> nearbyStations =
+                                                    [];
+                                                if (snapshot.data != null) {
+                                                  nearbyStations =
+                                                      StationManager()
+                                                          .getNearStations(
+                                                              snapshot.data!);
+                                                } else {
+                                                  return centeredLoadingKit();
+                                                }
+                                                return stationListBuilder(
+                                                  nearbyStations,
+                                                  "You don't have any nearby stations at the moment.",
+                                                );
+                                              }))
                             ],
                           ))),
                 ],
