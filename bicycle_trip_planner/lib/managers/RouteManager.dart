@@ -45,6 +45,7 @@ class RouteManager {
 
   //********** Private **********
 
+  //Moves camera to start location
   void _moveCameraTo(R.Route route) {
     _cameraManager.goToPlace(
         route.legs.first.startLocation.lat,
@@ -55,6 +56,7 @@ class RouteManager {
 
   //********** Public **********
 
+  //
   void setRoutes(R.Route startWalk, R.Route bike, R.Route endWalk) {
     _startWalkingRoute = startWalk;
     _bikingRoute = bike;
@@ -62,6 +64,9 @@ class RouteManager {
   }
 
   // Only shows one of the walking route
+  //Checks to see which part of the walking journey the user is on and sets that
+  //as their current route
+  //If relocateMap = true, camera is panned towards that section of the route
   void showCurrentWalkingRoute([bool relocateMap = true]) {
     if (_startWalkingRoute != R.Route.routeNotFound()) {
       setCurrentRoute(_startWalkingRoute, relocateMap);
@@ -92,6 +97,7 @@ class RouteManager {
     setCurrentRoute(_bikingRoute, relocateMap);
   }
 
+  //
   void setDirectionsData(R.Route route) {
     List<Steps> directionsPassByValue = [];
     for (var step in route.directions) {
@@ -102,6 +108,7 @@ class RouteManager {
     _directionManager.setDistance(route.distance);
   }
 
+  //
   void showAllRoutes([bool relocateMap = true]) {
     _polylineManager.clearPolyline();
     _polylineManager.addPolyline(_startWalkingRoute.polyline.points,
@@ -131,6 +138,7 @@ class RouteManager {
     }
   }
 
+  //
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     setDirectionsData(route);
     _polylineManager.setPolyline(
@@ -140,16 +148,19 @@ class RouteManager {
     }
   }
 
+  //
   bool ifRouteSet() {
     return _startWalkingRoute != R.Route.routeNotFound() &&
         _endWalkingRoute != R.Route.routeNotFound() &&
         _bikingRoute != R.Route.routeNotFound();
   }
 
+  //
   int getGroupSize() {
     return _groupsize;
   }
 
+  //
   void setGroupSize(int size) {
     if (size > 0) {
       _groupsize = size;
@@ -157,6 +168,7 @@ class RouteManager {
     }
   }
 
+  //
   bool ifWalkToFirstWaypoint() {
     return _walkToFirstWaypoint;
   }
@@ -173,10 +185,12 @@ class RouteManager {
     _changed = true;
   }
 
+  //
   bool ifStartFromCurrentLocation() {
     return _startFromCurrentLocation;
   }
 
+  //
   void toggleStartFromCurrentLocation() {
     _startFromCurrentLocation = !_startFromCurrentLocation;
     _changed = true;
@@ -187,16 +201,19 @@ class RouteManager {
     _changed = true;
   }
 
+
   void setOptimised(bool optimised) {
     _optimised = optimised;
     _changed = true;
   }
 
+  //
   void toggleOptimised() {
     _optimised = !_optimised;
     _changed = true;
   }
 
+  //
   bool ifOptimised() {
     return _optimised;
   }
@@ -205,11 +222,10 @@ class RouteManager {
 
   Stop getDestination() => _pathway.getDestination();
 
+  //
   List<Stop> getWaypoints() => _pathway.getWaypoints();
 
   Stop getFirstWaypoint() => _pathway.getFirstWaypoint();
-
-  //List<Stop> getWaypointsWithFirstWaypoint() => _pathway.getWaypointsWithFirstWaypoint();
 
   List<Stop> getStops() => _pathway.getStops();
 
@@ -217,11 +233,14 @@ class RouteManager {
 
   bool ifChanged() => _changed;
 
+  //
   Stop getStopByIndex(int index) => _pathway.getStopByIndex(index);
 
+  //
   bool ifStartSet() =>
       _pathway.getStart().getStop() != const Place.placeNotFound();
 
+  //
   bool ifDestinationSet() =>
       _pathway.getDestination().getStop() != const Place.placeNotFound();
 
@@ -229,28 +248,30 @@ class RouteManager {
     return _pathway.getFirstWaypoint().getStop() != const Place.placeNotFound();
   }
 
+  //
   bool ifWaypointsSet() => getWaypoints().isNotEmpty;
 
+  //Changes the start in the pathway
+  //
   void changeStart(Place start) {
     _pathway.changeStart(start);
     _changed = true;
   }
 
+  //Changes the destination in the pathway
+  //
   void changeDestination(Place destination) {
     _pathway.changeDestination(destination);
     _changed = true;
   }
 
-  void changeWaypoint(int id, Place waypoint) {
-    _pathway.changeStop(id, waypoint);
-    _changed = true;
-  }
-
+  //Replaces the stop at a certain id with another stop
   void changeStop(int id, Place stop) {
     _pathway.changeStop(id, stop);
     _changed = true;
   }
 
+  //Changes the position of 2 stops in the pathway
   void swapStops(int stop1ID, int stop2ID) {
     _pathway.swapStops(stop1ID, stop2ID);
     _changed = true;
@@ -272,6 +293,7 @@ class RouteManager {
   }
 
   // Adds a new waypoint at the end (before destination)
+  //
   Stop addWaypoint(Place waypoint) {
     Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
@@ -295,33 +317,43 @@ class RouteManager {
     return waypointStop;
   }
 
+  //Clears start to default
+  //
   void clearStart() {
     _pathway.changeStart(const Place.placeNotFound());
     _changed = true;
   }
 
+  //Clears destination to default
+  //
   void clearDestination() {
     _pathway.changeDestination(const Place.placeNotFound());
     _changed = true;
   }
 
   // Clears a waypoint (doesn't remove)
+  //
   void clearStop(int id) {
     _pathway.changeStop(id, const Place.placeNotFound());
     _changed = true;
   }
 
+  //Clears the first waypoint set in the pathway
   void clearFirstWaypoint() {
     _pathway.setHasFirstWaypoint(false);
     _pathway.removeFirstWayPoint();
     _changed = true;
   }
 
+  //Removes a stop based off of id
+  //
   void removeStop(int id) {
     _pathway.removeStop(id);
     _changed = true;
   }
 
+  //Removes all waypoints
+  //
   void removeWaypoints() {
     List<int> uids =
         _pathway.getWaypoints().map((waypoint) => waypoint.getUID()).toList();
@@ -330,6 +362,7 @@ class RouteManager {
     }
   }
 
+  //Clears all route markers
   void clearRouteMarkers() {
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for (int id in uids) {
@@ -337,14 +370,18 @@ class RouteManager {
     }
   }
 
+  //Resets changed to false
+  //
   void clearChanged() => _changed = false;
 
+  //Clears route data
   void clearRoutes() {
     _startWalkingRoute = R.Route.routeNotFound();
     _bikingRoute = R.Route.routeNotFound();
     _endWalkingRoute = R.Route.routeNotFound();
   }
 
+  //Clears all data
   void clear() {
     _polylineManager.clearPolyline();
     clearRoutes();
