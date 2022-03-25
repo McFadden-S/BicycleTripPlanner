@@ -29,10 +29,17 @@ class Place {
   }
 
   // TODO: Make getLatLng for geometry
+  /**
+   * @return LatLng coordinates of the place
+   */
   LatLng getLatLng() {
     return LatLng(geometry.location.lat, geometry.location.lng);
   }
 
+  /**
+   * method override the toString method
+   * @return String of the toString of the object
+   */
   @override
   String toString() {
     return description;
