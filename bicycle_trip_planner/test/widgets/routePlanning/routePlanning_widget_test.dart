@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/RoundedRectangleButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
@@ -12,30 +14,80 @@ import 'package:provider/provider.dart';
 
 import '../../setUp.dart';
 
+import 'dart:io';
+
+import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/general/Search.dart';
+import 'package:bicycle_trip_planner/widgets/general/SelectStationDialog.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
+import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import '../../setUp.dart';
+import '../login/mock.dart';
+
 void main() {
+
+  setupFirebaseAuthMocks();
+
   setUpAll(() async {
     HttpOverrides.global = null;
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
   });
 
+  testWidgets("RoutePlanning has a SafeArea", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+    expect(find.byType(SafeArea), findsOneWidget);
+  });
+  
   testWidgets("RoutePlanning has current location button", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    // await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_searching);
+    // final currentLocationButton = find.byKey(ValueKey("currentLocationButton"));
 
-    expect(currentLocation, findsOneWidget);
+    expect(find.byKey(ValueKey("currentLocationButton")), findsOneWidget);
   });
 
   testWidgets("RoutePlanning has group button", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final groupButton = find.widgetWithIcon(CircleButton, Icons.group);
+    final groupButton = find.byKey(ValueKey("groupSizeSelector"));
 
     expect(groupButton, findsOneWidget);
   });
 
+  testWidgets("When group button is clicked a dropdown appears", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final groupButton = find.byKey(ValueKey("groupSizeSelector"));
+    //final dropdown = find.byType(DropdownButtonHideUnderline())
+
+    expect(groupButton, findsOneWidget);
+
+    await tester.tap(groupButton);
+    await tester.pumpAndSettle();
+
+    final dropdownItem = find.text('First Item').last;
+
+    expect(dropdownItem, findsOneWidget);
+  });
+
+  testWidgets("RoutePlanning has optimise button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final optimiseButton = find.widgetWithIcon(CircleButton, Icons.alt_route);
+
+    expect(optimiseButton, findsOneWidget);
+  });
 
   testWidgets("RoutePlanning has bike button", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final bikeButton = find.widgetWithIcon(RoundedRectangleButton, Icons.directions_bike);
 
@@ -44,7 +96,7 @@ void main() {
 
 
   testWidgets("RoutePlanning has DistanceETACard", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final distanceETACard = find.byType(DistanceETACard);
 
@@ -53,7 +105,7 @@ void main() {
 
 
   testWidgets("RoutePlanning has RouteCard", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final routeCard = find.byType(RoutePlanningCard);
 
@@ -62,7 +114,7 @@ void main() {
 
 
   testWidgets("RoutePlanning has two search bars in the RouteCard when first opened", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final startSearch = find.text('Starting Point');
     final destinationSearch = find.text('Destination');
@@ -73,7 +125,7 @@ void main() {
 
 
   testWidgets("RoutePlanning has 'Add Stop(s)' button in the RouteCard when first opened", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
 
@@ -82,7 +134,7 @@ void main() {
 
 
   testWidgets("RoutePlanning has Expand button in the RouteCard when first opened", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final startSearch = find.byIcon(Icons.expand_more);
 
@@ -91,7 +143,7 @@ void main() {
 
 
   testWidgets("When Add Stop(s) button is clicked a new search bar for an intermediate stop appears", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop 1');
@@ -106,7 +158,7 @@ void main() {
 
 
   testWidgets("When Add Stop(s) button is clicked twice, two new search bars for an intermediate stops appear", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop 1');
@@ -127,7 +179,7 @@ void main() {
 
 
   testWidgets("When X button is clicked next to a stop, the stop is removed from the screen", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop 1');
@@ -148,7 +200,7 @@ void main() {
 
 
   testWidgets("When X button is clicked next to Stop 1 in a list with 2 stops, stop 1 is removed and stop 2 takes it's place and the text is changed to stop 1", (WidgetTester tester) async {
-    await pumpWidget(tester, RoutePlanning());
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop 1');
@@ -173,39 +225,33 @@ void main() {
     expect(stopSearchBar2, findsNothing);
   });
 
+  testWidgets("When the bike button is clicked the user should be taken to the navigation screen", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-  //TODO finish test for clicking location button
-  // testWidgets('When location button is clicked the map should centre on the current location of the user', (WidgetTester tester) async {
-  //
-  // await pumpWidget(tester, RoutePlanning());
-  //
-  // expect(updated map widget with the map centred on the user, findsOneWidget)
-  //
-  // });
+    final bikeButton = find.widgetWithIcon(RoundedRectangleButton, Icons.directions_bike);
+    final navigationWidget = find.byWidget(Navigation());
 
-  //TODO finish test for clicking group button
-  // testWidgets('When the group button is clicked the group options menu should expand outwards', (WidgetTester tester) async {
-  //
-  // await pumpWidget(tester, RoutePlanning());
-  //
-  // expect(expended group options menu widget, findsOneWidget);
-  //
-  // });
+    expect(navigationWidget, findsNothing);
 
-  //TODO finish test for clicking bike button
-  // testWidgets('When the bike button is clicked the user should be taken to the navigation screen', (WidgetTester tester) async {
-  //
-  // await pumpWidget(tester, RoutePlanning());
-  //
-  // expect(navigation widget, findsOneWidget);
-  // });
+    await tester.tap(bikeButton);
+    await tester.pump();
 
-  //TODO finish test for ETA update
-  // testWidgets('When the ETA is updated, the ETA field in the distanceETA card should update accordingly', (WidgetTester tester) async {
-  //
-  // await pumpWidget(tester, RoutePlanning());
-  //
-  // expect(ETA field in ETA card widget, findsOneWidget);
-  // });
+    expect(bikeButton, findsOneWidget);
+  });
+
+  testWidgets("When the optimise button is clicked the user should be shown a dialog box with choices", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final optimiseButton = find.widgetWithIcon(CircleButton, Icons.alt_route);
+    final binaryDialog = find.byKey(ValueKey("binaryChoiceDialog"));
+
+    expect(optimiseButton, findsOneWidget);
+    expect(binaryDialog, findsNothing);
+
+    await tester.tap(optimiseButton);
+    await tester.pump();
+
+    expect(binaryDialog, findsOneWidget);
+  });
 
 }

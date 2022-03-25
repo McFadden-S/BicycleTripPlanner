@@ -39,6 +39,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   @override
   void initState() {
     super.initState();
+    _recentRoutesCount = 0;
     getRecentRoutesCount();
   }
 
@@ -83,7 +84,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     })
                                 : Container(),
                             !showRouteCard ? SizedBox(height: 10) : Container(),
-                            CurrentLocationButton(),
+                            CurrentLocationButton(
+                              key: Key("currentLocationButton")
+                            ),
                             SizedBox(height: 10),
                             ViewRouteButton(),
                             SizedBox(height: 10),
