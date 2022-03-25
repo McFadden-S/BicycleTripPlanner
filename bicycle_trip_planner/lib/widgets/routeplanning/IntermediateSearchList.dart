@@ -40,34 +40,64 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         (stop) => stop == stopIn,
         orElse: () => routeManager.addWaypoint(const Place.placeNotFound()));
 
-    stopsList.add(ListTile(
-        key: Key("Stop ${stopsList.length + 1}"),
-        title: Search(
-            labelTextIn: "Stop",
-            searchController: searchController,
-            uid: waypoint.getUID()),
-        trailing: Wrap(spacing: 12, children: <Widget>[
-          IconButton(
-              color: ThemeStyle.secondaryIconColor,
-              key: Key("Remove ${intermediateSearchControllers.length}"),
-              onPressed: () {
-                setState(() {
-                  int indexPressed =
-                      intermediateSearchControllers.indexOf(searchController);
-                  applicationBloc.clearLocationMarker(waypoint.getUID());
-                  applicationBloc.clearSelectedLocation(waypoint.getUID());
-                  stopsList.removeAt(indexPressed);
-                  intermediateSearchControllers.removeAt(indexPressed);
-                  routeManager.removeStop(waypoint.getUID());
-                });
-              },
-              icon: Icon(Icons.remove_circle_outline,
-                  color: ThemeStyle.secondaryIconColor)),
-          Icon(
-            Icons.drag_handle,
-            color: ThemeStyle.secondaryIconColor,
+    if (routeManager.ifCostOptimised()) {
+      searchController.text = stopIn.getStop().description;
+      stopsList.add(ListTile(
+          key: Key("Stop ${stopsList.length + 1}"),
+          // title: Text(stopIn.getStop().description)
+          title: TextField(
+            style: TextStyle(
+              color: ThemeStyle.secondaryTextColor,
+            ),
+            controller: searchController,
+            readOnly: true,
+            enabled: false,
+            maxLines: null,
           ),
-        ])));
+          leading: Wrap(
+            spacing: 12,
+            children: <Widget>[
+              RotatedBox(
+                quarterTurns: 1,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.airline_stops,
+                  ),
+                  onPressed: null,
+                ),
+              ),
+            ],
+          )));
+    } else {
+      stopsList.add(ListTile(
+          key: Key("Stop ${stopsList.length + 1}"),
+          title: Search(
+              labelTextIn: "Stop",
+              searchController: searchController,
+              uid: waypoint.getUID()),
+          trailing: Wrap(spacing: 12, children: <Widget>[
+            IconButton(
+                color: ThemeStyle.secondaryIconColor,
+                key: Key("Remove ${intermediateSearchControllers.length}"),
+                onPressed: () {
+                  setState(() {
+                    int indexPressed =
+                        intermediateSearchControllers.indexOf(searchController);
+                    applicationBloc.clearLocationMarker(waypoint.getUID());
+                    applicationBloc.clearSelectedLocation(waypoint.getUID());
+                    stopsList.removeAt(indexPressed);
+                    intermediateSearchControllers.removeAt(indexPressed);
+                    routeManager.removeStop(waypoint.getUID());
+                  });
+                },
+                icon: Icon(Icons.remove_circle_outline,
+                    color: ThemeStyle.secondaryIconColor)),
+            Icon(
+              Icons.drag_handle,
+              color: ThemeStyle.secondaryIconColor,
+            ),
+          ])));
+    }
 
     if (!showIntermediate) return;
     isShowingIntermediate = true;
@@ -75,6 +105,33 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
   void toggleShowingIntermediate() {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
+  }
+
+  List<Widget> _createAddButton(
+      BuildContext context, ApplicationBloc applicationBloc) {
+    return [
+      TextButton(
+        child: Text(
+          'Add Stop(s)',
+          style: TextStyle(
+            fontFamily: 'Outfit',
+            fontSize: 16.0,
+            color: ThemeStyle.primaryTextColor,
+          ),
+        ),
+        onPressed: () =>
+            setState(() => _addStopWidget(applicationBloc, Stop())),
+        style: ButtonStyle(
+          backgroundColor:
+              MaterialStateProperty.all<Color>(ThemeStyle.buttonPrimaryColor),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0),
+                side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
+          ),
+        ),
+      ),
+    ];
   }
 
   @override
@@ -95,30 +152,9 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
         onTap: toggleShowingIntermediate,
         child: Column(children: [
           Wrap(
-            children: [
-              TextButton(
-                child: Text(
-                  'Add Stop(s)',
-                  style: TextStyle(
-                    fontFamily: 'Outfit',
-                    fontSize: 16.0,
-                    color: ThemeStyle.primaryTextColor,
-                  ),
-                ),
-                onPressed: () => setState(() {
-                  _addStopWidget(applicationBloc, Stop());
-                }),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      ThemeStyle.buttonPrimaryColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                        side: BorderSide(color: ThemeStyle.buttonPrimaryColor)),
-                  ),
-                ),
-              ),
-            ],
+            children: RouteManager().ifCostOptimised()
+                ? []
+                : _createAddButton(context, applicationBloc),
           ),
           LimitedBox(
             maxHeight: MediaQuery.of(context).size.height * 0.2,
@@ -126,20 +162,29 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
               fadeDuration: const Duration(milliseconds: 300),
               sizeDuration: const Duration(milliseconds: 300),
               child: isShowingIntermediate && stopsList.isNotEmpty
-                  ? ReorderableListView(
-                      shrinkWrap: true,
-                      children: stopsList.toList(growable: true),
-                      onReorder: (oldIndex, newIndex) => setState(() {
-                        newIndex =
-                            newIndex > oldIndex ? newIndex - 1 : newIndex;
+                  ? routeManager.ifCostOptimised()
+                      ? ListView(
+                          shrinkWrap: true,
+                          children: stopsList.toList(growable: true),
+                        )
+                      : ReorderableListView(
+                          shrinkWrap: true,
+                          children: stopsList.toList(growable: true),
+                          onReorder: (oldIndex, newIndex) => setState(() {
+                            newIndex =
+                                newIndex > oldIndex ? newIndex - 1 : newIndex;
 
-                        routeManager.swapStops(
-                            routeManager.getStopByIndex(oldIndex + 1).getUID(),
-                            routeManager.getStopByIndex(newIndex + 1).getUID());
+                            routeManager.swapStops(
+                                routeManager
+                                    .getStopByIndex(oldIndex + 1)
+                                    .getUID(),
+                                routeManager
+                                    .getStopByIndex(newIndex + 1)
+                                    .getUID());
 
-                        applicationBloc.notifyListeningWidgets();
-                      }),
-                    )
+                            applicationBloc.notifyListeningWidgets();
+                          }),
+                        )
                   : SizedBox.shrink(),
             ),
           ),

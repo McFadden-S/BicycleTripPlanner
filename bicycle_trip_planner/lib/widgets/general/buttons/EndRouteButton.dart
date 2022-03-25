@@ -22,28 +22,36 @@ class _EndRouteButtonState extends State<EndRouteButton> {
 
     return ElevatedButton(
         onPressed: () {
-          dialogManager.setBinaryChoice(
-            "Would you like to end your route?",
-            "Yes",
-            () {
-              applicationBloc.endRoute();
-              applicationBloc.setSelectedScreen('home');
-            },
-            "No",
-            () {
-              routeManager.setWalkToFirstWaypoint(false);
-            },
-          );
+          if (routeManager.ifLoading()){
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text(
+                  "Route is still being loaded!"),
+            ));
+          }
+          else {
+            dialogManager.setBinaryChoice(
+              "Would you like to end your route?",
+              "Yes",
+              () {
+                applicationBloc.endRoute();
+                applicationBloc.setSelectedScreen('home');
+              },
+              "No",
+              () {
+                routeManager.setWalkToFirstWaypoint(false);
+              },
+            );
 
-          applicationBloc.showBinaryDialog();
+            applicationBloc.showBinaryDialog();
+          }
         },
         child: Padding(
           padding: const EdgeInsets.all(5.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text("End", style: TextStyle(color: Colors.white)),
-            ],
+            children: routeManager.ifLoading()
+            ? const [CircularProgressIndicator(color: Colors.white, backgroundColor: Color(0xFFC50000),)]
+            : const [Text("End", style: TextStyle(color: Colors.white)),],
           ),
         ),
         style: ButtonStyle(

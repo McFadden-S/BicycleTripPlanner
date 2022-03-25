@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
@@ -14,6 +15,7 @@ import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.da
 import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -86,11 +88,20 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(),
                             SizedBox(height: 10),
-                            ViewRouteButton(),
-                            SizedBox(height: 10),
-                            OptimisedButton(),
-                            SizedBox(height: 10),
+                            // ViewRouteButton(),
+                            // SizedBox(height: 10),
+                            _routeManager.ifRouteSet() &&
+                            _routeManager.getWaypoints().length > 1
+                            ? Column(
+                              children: [
+                                OptimisedButton(),
+                                SizedBox(height: 10),
+                              ],
+                            )
+                            : SizedBox.shrink(),
                             WalkToFirstButton(),
+                            SizedBox(height: 10),
+                            OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
                           ],
@@ -150,19 +161,20 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         Expanded(
                           flex: 20,
                           child: RoundedRectangleButton(
-                              iconIn: Icons.directions_bike,
-                              buttonColor: ThemeStyle.goButtonColor,
-                              onButtonClicked: () {
-                                if (_routeManager.ifRouteSet()) {
-                                  // TODO: call method here that stores the route
-                                  applicationBloc.startNavigation();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("No route could be found!"),
-                                  ));
-                                }
-                              }),
+                            iconIn: Icons.directions_bike,
+                            buttonColor: ThemeStyle.goButtonColor,
+                            onButtonClicked: () {
+                              if (_routeManager.ifRouteSet()) {
+                                applicationBloc.startNavigation();
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                  content: Text("No route could be found!"),
+                                ));
+                              }
+                            },
+                            withLoading: true,
+                          ),
                         )
                       ]),
                 ),
@@ -233,6 +245,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   getRecentRoutesCount() async {
+    _recentRoutesCount = 0;
     int recentRoutesCount = await _userSettings.getNumberOfRoutes();
     setState(() {
       _recentRoutesCount = recentRoutesCount;
@@ -240,6 +253,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 }
 
+// Note: This is outside of the state class...
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();

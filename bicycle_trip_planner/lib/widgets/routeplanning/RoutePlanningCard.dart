@@ -39,19 +39,25 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
         routeManager.ifDestinationSet() &&
         routeManager.ifChanged()) {
       polylineManager.clearPolyline();
-      // print("Description: ${routeManager.getStart().getStop().description}");
       routeManager.getStart().getStop().description ==
               SearchType.current.description
           ? routeManager.setStartFromCurrentLocation(true)
           : routeManager.setStartFromCurrentLocation(false);
-      applicationBloc.findRoute(
-          routeManager.getStart().getStop(),
-          routeManager.getDestination().getStop(),
-          routeManager
-              .getWaypoints()
-              .map((waypoint) => waypoint.getStop())
-              .toList(),
-          routeManager.getGroupSize());
+      print("Start: ${routeManager.getStart().getStop()}");
+      print(
+          "destination: ${routeManager.getDestination().getStop().description}");
+      routeManager.ifCostOptimised()
+          ? applicationBloc.findCostEfficientRoute(
+              routeManager.getStart().getStop(),
+              routeManager.getDestination().getStop())
+          : applicationBloc.findRoute(
+              routeManager.getStart().getStop(),
+              routeManager.getDestination().getStop(),
+              routeManager
+                  .getWaypoints()
+                  .map((waypoint) => waypoint.getStop())
+                  .toList(),
+              routeManager.getGroupSize());
       routeManager.clearChanged();
     } else if ((!routeManager.ifStartSet() ||
             !routeManager.ifDestinationSet()) &&
