@@ -31,7 +31,7 @@ class Locator {
 
   // Locates the current position of the user
   Future<LatLng> locate() async {
-    Position position = await geolocator.getCurrentPosition(
+    Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(position.latitude, position.longitude);
