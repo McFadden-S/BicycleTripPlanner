@@ -14,6 +14,9 @@ class Bounds {
     );
   }
 
+  /**
+   * override the == operator
+   */
   @override
   bool operator ==(Object other) {
     return other is Bounds &&
@@ -21,6 +24,9 @@ class Bounds {
         other.southwest == southwest;
   }
 
+  /**
+   * override the get hashCode method
+   */
   @override
   int get hashCode => Object.hash(northeast, southwest);
 }
