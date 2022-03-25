@@ -64,7 +64,7 @@ class StationManager {
         orElse: Station.stationNotFound);
   }
 
-  Future<Station> getPickupStationNear(LatLng pos,[int groupSize = 1]) async {
+  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
     Station station = nearPos.firstWhere(
         (station) => station.bikes >= groupSize,
@@ -84,7 +84,6 @@ class StationManager {
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
-
       Place place = await PlacesService().getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
@@ -125,11 +124,15 @@ class StationManager {
     return nearbyStations;
   }
 
-  Future<void> setStations(List<Station> newStations, {clear = false}) async {
-    if (clear) {
-      _stationsLookUp = {};
-      _stations = [];
-    }
+  Future<List<Station>> getFavouriteStations() async {
+    if (!DatabaseManager().isUserLogged()) return [];
+    List<int> compare = await DatabaseManager().getFavouriteStations();
+    List<Station> favouriteStations = List.from(_stations);
+    favouriteStations.retainWhere((element) => compare.contains(element.id));
+    return favouriteStations;
+  }
+
+  Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = await _locationManager.locate();
 
     for (Station newStation in newStations) {

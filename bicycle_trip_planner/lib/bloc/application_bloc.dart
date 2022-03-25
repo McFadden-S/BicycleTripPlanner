@@ -53,7 +53,8 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-  final FavouriteRoutesManager _favouriteRoutesManager = FavouriteRoutesManager();
+  final FavouriteRoutesManager _favouriteRoutesManager =
+      FavouriteRoutesManager();
   // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
@@ -163,23 +164,15 @@ class ApplicationBloc with ChangeNotifier {
 
     // Insert recent searches as suggestions in recent results drop down
     if (noRecentSearches > 0) {
-      for(int i = 0; i<names.length; i++){
+      for (int i = 0; i < names.length; i++) {
         searchResults.insert(
-            i + 1,
-            PlaceSearch(
-                description: names[i],
-                placeId: placeIds[i]
-            ));
+            i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
       }
     } else {
       // max of 6 recent searches in the drop down
-      for(int i = 0; i<5; i++){
+      for (int i = 0; i < 5; i++) {
         searchResults.insert(
-            i + 1,
-            PlaceSearch(
-                description: names[i],
-                placeId: placeIds[i]
-            ));
+            i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
       }
     }
     notifyListeners();
@@ -329,17 +322,13 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  // TODO: UpdateStation should not be responsible for setting stations in
+  // stationManager to favouriteStations only. Causes a lot of side effects
   updateStations() async {
     http.Client client = new http.Client();
-    if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
-      List<Station> favouriteStations = await _stationsService.getStations(client);
-      List<int> compare = await DatabaseManager().getFavouriteStations();
-      favouriteStations.retainWhere((element) => compare.contains(element.id));
-      await _stationManager.setStations(favouriteStations, clear: true);
-    } else {
-      await _stationManager.setStations(await _stationsService.getStations(client),
-          clear: true);
-    }
+    await _stationManager.setStations(
+      await _stationsService.getStations(client),
+    );
     filterStationMarkers();
     notifyListeners();
   }

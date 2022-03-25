@@ -5,7 +5,6 @@ import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
@@ -56,20 +55,17 @@ class _StationBarState extends State<StationBar> {
     getFavouriteRoutes();
   }
 
-  toggleFavouriteStation(int index) {
-    if (index < stationManager.getNumberOfStations() && index >= 0) {
-      if (!_favouriteStations
-          .contains(StationManager().getStationByIndex(index).id)) {
-        DatabaseManager()
-            .addToFavouriteStations(stationManager.getStationByIndex(index).id)
-            .then((value) => getFavouriteStations());
-      } else {
-        DatabaseManager()
-            .removeFavouriteStation(
-                stationManager.getStationByIndex(index).id.toString())
-            .then((value) => getFavouriteStations());
-      }
+  toggleFavouriteStation(Station station) {
+    if (!_favouriteStations.contains(station.id)) {
+      DatabaseManager()
+          .addToFavouriteStations(station.id)
+          .then((value) => getFavouriteStations());
+    } else {
+      DatabaseManager()
+          .removeFavouriteStation(station.id.toString())
+          .then((value) => getFavouriteStations());
     }
+    _appBloc!.notifyListeningWidgets();
   }
 
   @override
@@ -84,7 +80,6 @@ class _StationBarState extends State<StationBar> {
       }
 
       if (_isUserLogged == false) {
-        UserSettings().setIsFavouriteStationsSelected(false);
         setState(() {
           _isFavouriteStations = false;
         });
@@ -96,6 +91,49 @@ class _StationBarState extends State<StationBar> {
       }
     });
     super.initState();
+  }
+
+  Widget dropdownButtons(StateSetter setState) {
+    return DropdownButton(
+      dropdownColor: ThemeStyle.cardColor,
+      value: _isFavouriteStations
+          ? "Favourite Stations"
+          : _isFavouriteRoutes
+              ? "Favourite Routes"
+              : "Nearby Stations",
+      onChanged: (String? newValue) {
+        print("Hello");
+        setState(() {
+          newValue! == "Favourite Stations"
+              ? _isFavouriteStations = true
+              : _isFavouriteStations = false;
+          newValue == "Favourite Routes"
+              ? _isFavouriteRoutes = true
+              : _isFavouriteRoutes = false;
+        });
+        if (stationsPageViewController.positions.isNotEmpty)
+          stationsPageViewController.jumpTo(0);
+      },
+      items: [
+        DropdownMenuItem(
+            child: Text(
+              "Nearby Stations",
+              style: TextStyle(
+                  fontSize: 19.0, color: ThemeStyle.secondaryTextColor),
+            ),
+            value: "Nearby Stations"),
+        DropdownMenuItem(
+            child: Text("Favourite Stations",
+                style: TextStyle(
+                    fontSize: 19.0, color: ThemeStyle.secondaryTextColor)),
+            value: "Favourite Stations"),
+        DropdownMenuItem(
+            child: Text("Favourite Routes",
+                style: TextStyle(
+                    fontSize: 19.0, color: ThemeStyle.secondaryTextColor)),
+            value: "Favourite Routes"),
+      ],
+    );
   }
 
   void showExpandedList() {
@@ -153,66 +191,7 @@ class _StationBarState extends State<StationBar> {
                               Row(
                                 children: [
                                   _isUserLogged
-                                      ? DropdownButton(
-                                          dropdownColor: ThemeStyle.cardColor,
-                                          value: _favouriteStations
-                                              ? "Favourite Stations"
-                                              : _favouriteRoutes
-                                                  ? "Favourite Routes"
-                                                  : "Nearby Stations",
-                                          onChanged: (String? newValue) {
-                                            setModalState(() {
-                                              newValue == "Favourite Stations"
-                                                  ? _favouriteStations = true
-                                                  : _favouriteStations = false;
-                                              newValue == "Favourite Routes"
-                                                  ? _favouriteRoutes = true
-                                                  : _favouriteRoutes = false;
-                                            });
-                                            setState(() {
-                                              _isFavouriteStations =
-                                                  _favouriteStations;
-                                              _isFavouriteRoutes =
-                                                  _favouriteRoutes;
-                                            });
-                                            UserSettings()
-                                                .setIsFavouriteStationsSelected(
-                                                    _favouriteStations);
-                                            updateFavouriteStations();
-                                            applicationBloc.updateStations();
-                                            if (stationManager
-                                                    .getNumberOfStations() >
-                                                0)
-                                              stationsPageViewController
-                                                  .jumpTo(0);
-                                          },
-                                          items: [
-                                            DropdownMenuItem(
-                                                child: Text(
-                                                  "Nearby Stations",
-                                                  style: TextStyle(
-                                                      fontSize: 19.0,
-                                                      color: ThemeStyle
-                                                          .secondaryTextColor),
-                                                ),
-                                                value: "Nearby Stations"),
-                                            DropdownMenuItem(
-                                                child: Text(
-                                                    "Favourite Stations",
-                                                    style: TextStyle(
-                                                        fontSize: 19.0,
-                                                        color: ThemeStyle
-                                                            .secondaryTextColor)),
-                                                value: "Favourite Stations"),
-                                            DropdownMenuItem(
-                                                child: Text("Favourite Routes",
-                                                    style: TextStyle(
-                                                        fontSize: 19.0,
-                                                        color: ThemeStyle
-                                                            .secondaryTextColor)),
-                                                value: "Favourite Routes"),
-                                          ],
-                                        )
+                                      ? dropdownButtons(setModalState)
                                       : Text(
                                           "Nearby Stations",
                                           style: TextStyle(
@@ -225,7 +204,7 @@ class _StationBarState extends State<StationBar> {
                               ),
                               const SizedBox(height: 10),
                               Expanded(
-                                  child: _favouriteRoutes
+                                  child: _isFavouriteRoutes
                                       ? ListView.builder(
                                           itemCount: FavouriteRoutesManager()
                                               .getNumberOfRoutes(),
@@ -241,23 +220,76 @@ class _StationBarState extends State<StationBar> {
                                                     deleteRoute:
                                                         deleteFavouriteRoute,
                                                   )))
-                                      : ListView.builder(
-                                          itemCount: StationManager()
-                                              .getNumberOfStations(),
-                                          itemBuilder: (BuildContext context,
-                                                  int index) =>
-                                              StationCard(
-                                                  index: index,
-                                                  isFavourite: favourites
-                                                      .contains(StationManager()
+                                      : _isFavouriteStations
+                                          ? FutureBuilder<List<Station>>(
+                                              future: stationManager
+                                                  .getFavouriteStations(),
+                                              builder: (context, snapshot) {
+                                                List<Station>
+                                                    favouriteStations = [];
+                                                if (snapshot.data != null) {
+                                                  favouriteStations =
+                                                      snapshot.data!;
+                                                } else {
+                                                  return Center(
+                                                    child: CircularProgressIndicator(
+                                                        color: ThemeStyle
+                                                            .primaryTextColor),
+                                                  );
+                                                }
+                                                return favouriteStations
+                                                        .isNotEmpty
+                                                    ? ListView.builder(
+                                                        itemCount:
+                                                            favouriteStations
+                                                                .length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          Station station =
+                                                              favouriteStations[
+                                                                  index];
+                                                          return StationCard(
+                                                              station: station,
+                                                              isFavourite:
+                                                                  favouriteStations
+                                                                      .contains(
+                                                                          station),
+                                                              toggleFavourite:
+                                                                  (Station
+                                                                      station) {
+                                                                toggleFavouriteStation(
+                                                                    station);
+                                                              });
+                                                        })
+                                                    : Center(
+                                                        child: Text(
+                                                            "You don't have any favourite stations at the moment.",
+                                                            style: TextStyle(
+                                                                color: ThemeStyle
+                                                                    .primaryTextColor)),
+                                                      );
+                                              })
+                                          // Currently gets all stations. Can be changed to only nearby
+                                          : ListView.builder(
+                                              itemCount: StationManager()
+                                                  .getNumberOfStations(),
+                                              itemBuilder: (BuildContext context,
+                                                      int index) =>
+                                                  StationCard(
+                                                      station: stationManager
                                                           .getStationByIndex(
-                                                              index)
-                                                          .id),
-                                                  toggleFavourite: (int index) {
-                                                    toggleFavouriteStation(
-                                                        index);
-                                                    updateFavouriteStations();
-                                                  }))),
+                                                              index),
+                                                      isFavourite: favourites
+                                                          .contains(StationManager()
+                                                              .getStationByIndex(index)
+                                                              .id),
+                                                      toggleFavourite: (Station station) {
+                                                        toggleFavouriteStation(
+                                                            station);
+                                                        updateFavouriteStations();
+                                                      }))),
                             ],
                           ))),
                 ],
@@ -300,56 +332,7 @@ class _StationBarState extends State<StationBar> {
                 child: Row(
                   children: [
                     _isUserLogged
-                        ? DropdownButton(
-                            dropdownColor: ThemeStyle.cardColor,
-                            value: _isFavouriteStations
-                                ? "Favourite Stations"
-                                : _isFavouriteRoutes
-                                    ? "Favourite Routes"
-                                    : "Nearby Stations",
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                newValue! == "Favourite Stations"
-                                    ? _isFavouriteStations = true
-                                    : _isFavouriteStations = false;
-                                newValue == "Favourite Routes"
-                                    ? _isFavouriteRoutes = true
-                                    : _isFavouriteRoutes = false;
-                                print(_isFavouriteRoutes);
-                                print(_isFavouriteRoutes);
-                              });
-                              UserSettings().setIsFavouriteStationsSelected(
-                                  _isFavouriteStations);
-                              applicationBloc.updateStations();
-                              if (stationsPageViewController
-                                  .positions.isNotEmpty)
-                                stationsPageViewController.jumpTo(0);
-                            },
-                            items: [
-                              DropdownMenuItem(
-                                  child: Text(
-                                    "Nearby Stations",
-                                    style: TextStyle(
-                                        fontSize: 19.0,
-                                        color: ThemeStyle.secondaryTextColor),
-                                  ),
-                                  value: "Nearby Stations"),
-                              DropdownMenuItem(
-                                  child: Text("Favourite Stations",
-                                      style: TextStyle(
-                                          fontSize: 19.0,
-                                          color:
-                                              ThemeStyle.secondaryTextColor)),
-                                  value: "Favourite Stations"),
-                              DropdownMenuItem(
-                                  child: Text("Favourite Routes",
-                                      style: TextStyle(
-                                          fontSize: 19.0,
-                                          color:
-                                              ThemeStyle.secondaryTextColor)),
-                                  value: "Favourite Routes"),
-                            ],
-                          )
+                        ? dropdownButtons(setState)
                         : Text(
                             "Nearby Stations",
                             style: TextStyle(
@@ -393,59 +376,93 @@ class _StationBarState extends State<StationBar> {
                                               deleteRoute: deleteFavouriteRoute,
                                             ))
                                 : _isFavouriteStations
-                                    // TODO: Code below is meant to be favouriteStations.
-                                    // This depends on the fact that stations in StationManager
-                                    // only have the favourite stations. This can lead to async
-                                    // issues. Potential solution is to use a future builder
-                                    ? ListView.builder(
-                                        controller: stationsPageViewController,
-                                        // physics: const PageScrollPhysics(),
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: stationManager
-                                            .getNumberOfStations(),
-                                        itemBuilder: (BuildContext context,
-                                                int index) =>
-                                            StationCard(
-                                                index: index,
-                                                isFavourite: _favouriteStations
-                                                    .contains(StationManager()
-                                                        .getStationByIndex(
-                                                            index)
-                                                        .id),
-                                                toggleFavourite:
-                                                    toggleFavouriteStation))
+                                    ? FutureBuilder<List<Station>>(
+                                        future: stationManager
+                                            .getFavouriteStations(),
+                                        builder: (context, snapshot) {
+                                          List<Station> favouriteStations = [];
+                                          if (snapshot.data != null) {
+                                            favouriteStations = snapshot.data!;
+                                          } else {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                  color: ThemeStyle
+                                                      .primaryTextColor),
+                                            );
+                                          }
+                                          return favouriteStations.isNotEmpty
+                                              ? ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
+                                                  itemCount:
+                                                      favouriteStations.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    Station station =
+                                                        favouriteStations[
+                                                            index];
+                                                    return StationCard(
+                                                        station: station,
+                                                        isFavourite:
+                                                            favouriteStations
+                                                                .contains(
+                                                                    station),
+                                                        toggleFavourite:
+                                                            (Station station) {
+                                                          toggleFavouriteStation(
+                                                              station);
+                                                        });
+                                                  })
+                                              : Center(
+                                                  child: Text(
+                                                      "You don't have any favourite stations at the moment.",
+                                                      style: TextStyle(
+                                                          color: ThemeStyle
+                                                              .primaryTextColor)),
+                                                );
+                                        })
                                     : FutureBuilder<double>(
                                         future: UserSettings()
                                             .nearbyStationsRange(),
                                         builder: (context, snapshot) {
                                           List<Station> nearbyStations = [];
                                           if (snapshot.data != null) {
-                                            StationManager().getNearStations(
-                                                snapshot.data!);
+                                            nearbyStations = StationManager()
+                                                .getNearStations(
+                                                    snapshot.data!);
+                                          } else {
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                  color: ThemeStyle
+                                                      .primaryTextColor),
+                                            );
                                           }
                                           return nearbyStations.isNotEmpty
                                               ? ListView.builder(
+                                                  scrollDirection:
+                                                      Axis.horizontal,
                                                   itemCount:
-                                                      StationManager()
-                                                          .getNearStations(
-                                                              snapshot.data!)
-                                                          .length,
-                                                  itemBuilder: (BuildContext
-                                                              context,
-                                                          int index) =>
-                                                      StationCard(
-                                                          index: index,
-                                                          isFavourite: _favouriteStations
-                                                              .contains(
-                                                                  StationManager()
-                                                                      .getStationByIndex(
-                                                                          index)
-                                                                      .id),
-                                                          toggleFavourite:
-                                                              (int index) {
-                                                            toggleFavouriteStation(
-                                                                index);
-                                                          }))
+                                                      nearbyStations.length,
+                                                  itemBuilder:
+                                                      (BuildContext context,
+                                                          int index) {
+                                                    Station station =
+                                                        nearbyStations[index];
+                                                    return StationCard(
+                                                        station: station,
+                                                        isFavourite: _favouriteStations
+                                                            .contains(
+                                                                StationManager()
+                                                                    .getStationByIndex(
+                                                                        index)
+                                                                    .id),
+                                                        toggleFavourite:
+                                                            (Station station) {
+                                                          toggleFavouriteStation(
+                                                              station);
+                                                        });
+                                                  })
                                               : Center(
                                                   child: Text(
                                                       "You don't have any nearby stations at the moment.",
@@ -454,15 +471,7 @@ class _StationBarState extends State<StationBar> {
                                                               .primaryTextColor)),
                                                 );
                                         })
-                            : _isFavouriteStations
-                                ? Center(
-                                    child: Text(
-                                        "You don't have any favourite station at the moment.",
-                                        style: TextStyle(
-                                            color:
-                                                ThemeStyle.primaryTextColor)),
-                                  )
-                                : Center(),
+                            : Center(),
                       ),
                     ),
                   ],

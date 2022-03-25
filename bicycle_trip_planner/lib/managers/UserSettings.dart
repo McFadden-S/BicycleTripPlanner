@@ -18,7 +18,6 @@ class UserSettings {
 
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  bool _isFavouriteStationsSelected = false;
 
 //********** Public **********
 
@@ -162,14 +161,6 @@ class UserSettings {
     });
     //no error caught
     return true;
-  }
-
-  setIsFavouriteStationsSelected(bool value) {
-    _isFavouriteStationsSelected = value;
-  }
-
-  getIsIsFavouriteStationsSelected() {
-    return _isFavouriteStationsSelected;
   }
 
   Map<String, dynamic> capRoutes(Map<String, dynamic> savedRoutes) {
