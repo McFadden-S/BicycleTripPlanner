@@ -44,9 +44,10 @@ class FavouriteRoutesManager {
     }
   }
 
-  void updateRoutes() {
+  Future<Map<String, Pathway>> updateRoutes() async {
     if (DatabaseManager().isUserLogged()) {
-      DatabaseManager().getFavouriteRoutes().then((value) => _routes = value);
+      _routes = await DatabaseManager().getFavouriteRoutes();
     }
+    return _routes;
   }
 }

@@ -159,23 +159,32 @@ class _StationBarState extends State<StationBar> {
           );
   }
 
-  Widget routeListBuilder(String errorMessage,
+  Widget favouriteRouteListBuilder(String errorMessage,
       [Axis scrollDirection = Axis.vertical]) {
-    favouriteRoutesManager.updateRoutes();
-    return FavouriteRoutesManager().getNumberOfRoutes() > 0
-        ? ListView.builder(
-            scrollDirection: scrollDirection,
-            itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
-            itemBuilder: (BuildContext context, int index) => SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: FavouriteRouteCard(
-                  index: index,
-                  deleteRoute: deleteFavouriteRoute,
-                )))
-        : Center(
-            child: Text(errorMessage,
-                style: TextStyle(color: ThemeStyle.primaryTextColor)),
-          );
+    return FutureBuilder<Map<String, Pathway>>(
+        future: favouriteRoutesManager.updateRoutes(),
+        builder: (context, snapshot) {
+          Map<String, Pathway> routes = {};
+          if (snapshot.data != null) {
+            routes = snapshot.data!;
+          } else {
+            return centeredLoadingKit();
+          }
+          return FavouriteRoutesManager().getNumberOfRoutes() > 0
+              ? ListView.builder(
+                  scrollDirection: scrollDirection,
+                  itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
+                  itemBuilder: (BuildContext context, int index) => SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      child: FavouriteRouteCard(
+                        index: index,
+                        deleteRoute: deleteFavouriteRoute,
+                      )))
+              : Center(
+                  child: Text(errorMessage,
+                      style: TextStyle(color: ThemeStyle.primaryTextColor)),
+                );
+        });
   }
 
   Widget centeredLoadingKit() {
@@ -233,7 +242,7 @@ class _StationBarState extends State<StationBar> {
                               const SizedBox(height: 10),
                               Expanded(
                                   child: _isFavouriteRoutes
-                                      ? routeListBuilder(
+                                      ? favouriteRouteListBuilder(
                                           "You don't have any favourite routes currently.")
                                       : _isFavouriteStations
                                           ? FutureBuilder<List<Station>>(
@@ -347,7 +356,7 @@ class _StationBarState extends State<StationBar> {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: stationManager.getNumberOfStations() > 0
                             ? _isFavouriteRoutes
-                                ? routeListBuilder(
+                                ? favouriteRouteListBuilder(
                                     "You don't have any favourite routes currently.",
                                     Axis.horizontal)
                                 : _isFavouriteStations
