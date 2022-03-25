@@ -320,41 +320,18 @@ class ApplicationBloc with ChangeNotifier {
 
   updateStations() async {
     http.Client client = http.Client();
+
     if (isUserLogged() && UserSettings().getIsIsFavouriteStationsSelected()) {
       List<Station> favouriteStations = await _stationsService.getStations(client);
       List<int> compare = await DatabaseManager().getFavouriteStations();
       favouriteStations.retainWhere((element) => compare.contains(element.id));
       await _stationManager.setStations(favouriteStations, clear: true);
     } else {
-      await _stationManager.setStations(await _stationsService.getStations(client),
-          clear: true);
+      await _stationManager.setStations(await _stationsService.getStations(client), clear: true);
     }
+
     filterStationMarkers();
     notifyListeners();
-  }
-
-  Future<List<Station>> filterNearbyStations() async {
-    double range = await UserSettings().nearbyStationsRange();
-
-    List<Station> notNearbyStations = _stationManager.getFarStations(range);
-    List<Station> nearbyStations = _stationManager.getNearStations(range);
-
-    _markerManager.setStationMarkers(nearbyStations, this);
-    _markerManager.clearStationMarkers(notNearbyStations);
-
-    return nearbyStations;
-  }
-
-  List<Station> filterStationsWithBikes(List<Station> filteredStations, int groupSize) {
-    List<Station> stationsWithBikes =
-        _stationManager.getStationsWithAtLeastXBikes(groupSize, filteredStations);
-    _markerManager.setStationMarkers(stationsWithBikes, this);
-
-    List<Station> bikelessStations =
-        _stationManager.getStationsWithNotEnoughBikes(filteredStations, groupSize);
-    _markerManager.clearStationMarkers(bikelessStations);
-
-    return stationsWithBikes;
   }
 
   Future<void> filterStationMarkers() async {
@@ -362,10 +339,18 @@ class ApplicationBloc with ChangeNotifier {
       return;
     }
 
-    List<Station> nearbyStations = await filterNearbyStations();
-    List<Station> displayedStations = filterStationsWithBikes(nearbyStations, _routeManager.getGroupSize());
+    double range = await UserSettings().nearbyStationsRange();
+    int groupSize = _routeManager.getGroupSize();
 
-    _stationManager.setStationDisplayedCount(displayedStations.length);
+    List<Station> nearbyStations = _stationManager.getNearStations(range);
+
+    List<Station> displayedStations = _stationManager.getStationsWithBikes(groupSize, nearbyStations);
+    List<Station> notDisplayedStations = _stationManager.getStationsCompliment(displayedStations);
+
+    _markerManager.setStationMarkers(displayedStations, this);
+    _markerManager.clearStationMarkers(notDisplayedStations);
+
+    _stationManager.setDisplayedStations(displayedStations);
 
     notifyListeners();
   }

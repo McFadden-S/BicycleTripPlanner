@@ -76,7 +76,6 @@ class StationManager {
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
-    //_pickUpStation = station;
     return station;
   }
 
@@ -86,35 +85,24 @@ class StationManager {
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
     if (station.place == const Place.placeNotFound()) {
-
       Place place = await PlacesService().getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
-    //_dropOffStation = station;
     return station;
   }
 
-  // TODO: Find a better method name
-  List<Station> getStationsWithAtLeastXBikes(
-      int bikes, List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes >= bikes).toList();
+  /// Returns a list of Stations with at least bikeNumber bikes
+  List<Station> getStationsWithBikes(int bikeNumber, List<Station> filteredStations) {
+    return filteredStations.where((station) => station.bikes >= bikeNumber).toList();
   }
 
-  List<Station> getStationsWithNotEnoughBikes(List<Station> filteredStations, int groupSize) {
-    return filteredStations.where((station) => station.bikes < groupSize).toList();
+  /// Returns the list of all stations not including the ones passed into the function
+  List<Station> getStationsCompliment(List<Station> stations){
+    return _stationsLookUp.difference(stations.toSet()).toList();
   }
 
-  List<Station> getFarStations(double range) {
-    List<Station> farStations = [];
-
-    farStations =
-        _stationsLookUp.difference(getNearStations(range).toSet()).toList();
-    //print(farStations);
-
-    return farStations;
-  }
-
+  /// Returns a list of stations that are within the range passed in
   List<Station> getNearStations(double range) {
     List<Station> nearbyStations = [];
 
@@ -158,6 +146,10 @@ class StationManager {
 
   List<Station> getDisplayedStations(){
     return _displayedStations;
+  }
+
+  Station getDisplayedStation(int index){
+    return _displayedStations[index];
   }
 
   void setDisplayedStations(List<Station> stations){

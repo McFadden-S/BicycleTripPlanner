@@ -53,19 +53,12 @@ class _StationBarState extends State<StationBar> {
     getFavouriteRoutes();
   }
 
-  toggleFavouriteStation(int index) {
-    if(index < stationManager.getNumberOfStations() && index >= 0) {
-      if (!_favouriteStations.contains(StationManager()
-          .getStationByIndex(index)
-          .id)) {
-        DatabaseManager().addToFavouriteStations(stationManager
-            .getStationByIndex(index)
-            .id).then((value) => getFavouriteStations());
+  toggleFavouriteStation(int id) {
+    if(stationManager.getStations().any((station) => station.id == id)) {
+      if (!_favouriteStations.contains(id)) {
+        DatabaseManager().addToFavouriteStations(id).then((value) => getFavouriteStations());
       } else {
-        DatabaseManager().removeFavouriteStation(stationManager
-            .getStationByIndex(index)
-            .id
-            .toString()).then((value) => getFavouriteStations());
+        DatabaseManager().removeFavouriteStation(id.toString()).then((value) => getFavouriteStations());
       }
     }
   }
@@ -159,7 +152,7 @@ class _StationBarState extends State<StationBar> {
                                           UserSettings().setIsFavouriteStationsSelected(_favouriteStations);
                                           updateFavouriteStations();
                                           applicationBloc.updateStations();
-                                          if(stationManager.getNumberOfDisplayedStations() > 0) stationsPageViewController.jumpTo(0);
+                                          if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
                                         },
                                         items: [
                                           DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
@@ -191,10 +184,10 @@ class _StationBarState extends State<StationBar> {
                                                 index: index,
                                                 isFavourite: favourites
                                                     .contains(stationManager
-                                                    .getStationByIndex(index)
+                                                    .getDisplayedStation(index)
                                                     .id),
                                                 toggleFavourite: (int index){
-                                                  toggleFavouriteStation(index);
+                                                  toggleFavouriteStation(stationManager.getDisplayedStation(index).id);
                                                   updateFavouriteStations();
                                                 }
                                               )
@@ -245,7 +238,7 @@ class _StationBarState extends State<StationBar> {
                               });
                               UserSettings().setIsFavouriteStationsSelected(_isFavouriteStations);
                               applicationBloc.updateStations();
-                              if(stationManager.getNumberOfStations() > 0) stationsPageViewController.jumpTo(0);
+                              if(stationManager.getNumberOfDisplayedStations() > 0) stationsPageViewController.jumpTo(0);
                             },
                             items: [
                               DropdownMenuItem(child: Text("Nearby Stations", style: TextStyle(fontSize: 19.0, color: ThemeStyle.secondaryTextColor),), value: "Nearby Stations"),
@@ -292,8 +285,8 @@ class _StationBarState extends State<StationBar> {
                               itemBuilder: (BuildContext context, int index) =>
                                   StationCard(
                                     index: index,
-                                    isFavourite: _favouriteStations.contains(StationManager().getStationByIndex(index).id),
-                                    toggleFavourite: toggleFavouriteStation
+                                    isFavourite: _favouriteStations.contains(stationManager.getDisplayedStation(index).id),
+                                    toggleFavourite: toggleFavouriteStation(stationManager.getDisplayedStation(index).id)
                                   )
                           ) :
                           _isFavouriteStations ? const Center(child: Text("You don't have any favourite station at the moment."),) : const Center(),
