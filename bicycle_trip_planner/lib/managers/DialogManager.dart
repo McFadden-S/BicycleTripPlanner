@@ -137,7 +137,7 @@ class DialogManager {
   // @param void
   // @return String - the text prompt shown to the user in the Walk/Bike dialog
   String getWalkBikeToggleDialogText(){
-    return _walkBikeToggleText;
+    return _walkBikeToggleButtonText;
   }
 
   // @param void
