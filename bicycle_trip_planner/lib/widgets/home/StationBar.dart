@@ -102,7 +102,6 @@ class _StationBarState extends State<StationBar> {
               ? "Favourite Routes"
               : "Nearby Stations",
       onChanged: (String? newValue) {
-        print("Hello");
         setState(() {
           newValue! == "Favourite Stations"
               ? _isFavouriteStations = true
@@ -146,7 +145,7 @@ class _StationBarState extends State<StationBar> {
               Station station = stations[index];
               return StationCard(
                   station: station,
-                  isFavourite: stations.contains(station),
+                  isFavourite: _favouriteStations.contains(station.id),
                   toggleFavourite: (Station station) {
                     toggleFavouriteStation(station);
                   });
@@ -155,6 +154,12 @@ class _StationBarState extends State<StationBar> {
             child: Text(errorMessage,
                 style: TextStyle(color: ThemeStyle.primaryTextColor)),
           );
+  }
+
+  Widget centeredLoadingKit() {
+    return Center(
+      child: CircularProgressIndicator(color: ThemeStyle.primaryTextColor),
+    );
   }
 
   void showExpandedList() {
@@ -250,34 +255,16 @@ class _StationBarState extends State<StationBar> {
                                                   favouriteStations =
                                                       snapshot.data!;
                                                 } else {
-                                                  return Center(
-                                                    child: CircularProgressIndicator(
-                                                        color: ThemeStyle
-                                                            .primaryTextColor),
-                                                  );
+                                                  return centeredLoadingKit();
                                                 }
                                                 return stationListBuilder(
                                                     favouriteStations,
                                                     "You don't have any favourite stations currently.");
                                               })
                                           // Currently gets all stations. Can be changed to only nearby
-                                          : ListView.builder(
-                                              itemCount: StationManager()
-                                                  .getNumberOfStations(),
-                                              itemBuilder: (BuildContext context,
-                                                      int index) =>
-                                                  StationCard(
-                                                      station: stationManager
-                                                          .getStationByIndex(
-                                                              index),
-                                                      isFavourite: favourites
-                                                          .contains(StationManager()
-                                                              .getStationByIndex(index)
-                                                              .id),
-                                                      toggleFavourite: (Station station) {
-                                                        toggleFavouriteStation(
-                                                            station);
-                                                      }))),
+                                          : stationListBuilder(
+                                              stationManager.getStations(),
+                                              "There are no stations currently.")),
                             ],
                           ))),
                 ],
@@ -372,11 +359,7 @@ class _StationBarState extends State<StationBar> {
                                           if (snapshot.data != null) {
                                             favouriteStations = snapshot.data!;
                                           } else {
-                                            return Center(
-                                              child: CircularProgressIndicator(
-                                                  color: ThemeStyle
-                                                      .primaryTextColor),
-                                            );
+                                            return centeredLoadingKit();
                                           }
                                           return stationListBuilder(
                                               favouriteStations,
@@ -393,11 +376,7 @@ class _StationBarState extends State<StationBar> {
                                                 .getNearStations(
                                                     snapshot.data!);
                                           } else {
-                                            return Center(
-                                              child: CircularProgressIndicator(
-                                                  color: ThemeStyle
-                                                      .primaryTextColor),
-                                            );
+                                            return centeredLoadingKit();
                                           }
                                           return stationListBuilder(
                                               nearbyStations,
