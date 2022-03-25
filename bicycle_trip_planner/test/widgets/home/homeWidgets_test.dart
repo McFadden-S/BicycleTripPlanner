@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
