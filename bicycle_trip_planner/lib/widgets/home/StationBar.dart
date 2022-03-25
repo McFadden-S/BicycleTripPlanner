@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
@@ -248,18 +249,24 @@ class _StationBarState extends State<StationBar> {
                                                     favouriteStations,
                                                     "You don't have any favourite stations currently.");
                                               })
-                                          // Currently gets all stations. Can be changed to only nearby
                                           : FutureBuilder<double>(
                                               future: UserSettings()
                                                   .nearbyStationsRange(),
                                               builder: (context, snapshot) {
                                                 List<Station> nearbyStations =
                                                     [];
+                                                int groupSize = RouteManager()
+                                                    .getGroupSize();
                                                 if (snapshot.data != null) {
                                                   nearbyStations =
                                                       StationManager()
                                                           .getNearStations(
                                                               snapshot.data!);
+                                                  nearbyStations =
+                                                      stationManager
+                                                          .getStationsWithBikes(
+                                                              groupSize,
+                                                              nearbyStations);
                                                 } else {
                                                   return centeredLoadingKit();
                                                 }
@@ -367,6 +374,11 @@ class _StationBarState extends State<StationBar> {
                                             nearbyStations = StationManager()
                                                 .getNearStations(
                                                     snapshot.data!);
+                                            int groupSize =
+                                                RouteManager().getGroupSize();
+                                            nearbyStations = stationManager
+                                                .getStationsWithBikes(
+                                                    groupSize, nearbyStations);
                                           } else {
                                             return centeredLoadingKit();
                                           }

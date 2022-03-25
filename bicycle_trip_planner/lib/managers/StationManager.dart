@@ -136,6 +136,7 @@ class StationManager {
     return nearbyStations;
   }
 
+  // Returns a list of stations that the user has favourited
   Future<List<Station>> getFavouriteStations() async {
     if (!DatabaseManager().isUserLogged()) return [];
     List<int> compare = await DatabaseManager().getFavouriteStations();
