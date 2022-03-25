@@ -35,6 +35,8 @@ class _StationBarState extends State<StationBar> {
   List<int> _favouriteStations = [];
   Map<String, Pathway> _favouriteRoutes = {};
 
+  late final firebaseSubscription;
+
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) => setState(() {
           _favouriteStations = value;
@@ -72,26 +74,26 @@ class _StationBarState extends State<StationBar> {
 
   @override
   void initState() {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-
-    FirebaseAuth.instance.authStateChanges().listen((event) {
+    firebaseSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((event) {
+      _isUserLogged = event != null && !event.isAnonymous;
       setState(() {
-        _isUserLogged = event != null && !event.isAnonymous;
-      });
-
-      applicationBloc.updateStations();
-
-      if (_isUserLogged == false) {
-        setState(() {
+        if (!_isUserLogged) {
           _isFavouriteStations = false;
-        });
-      } else {
-        getFavouriteStations();
-        getFavouriteRoutes();
-      }
+          _isFavouriteRoutes = false;
+        } else {
+          getFavouriteStations();
+          getFavouriteRoutes();
+        }
+      });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    firebaseSubscription.cancel();
+    super.dispose();
   }
 
   Widget dropdownButtons(StateSetter setState) {
@@ -159,6 +161,7 @@ class _StationBarState extends State<StationBar> {
 
   Widget routeListBuilder(String errorMessage,
       [Axis scrollDirection = Axis.vertical]) {
+    favouriteRoutesManager.updateRoutes();
     return FavouriteRoutesManager().getNumberOfRoutes() > 0
         ? ListView.builder(
             scrollDirection: scrollDirection,
@@ -287,8 +290,6 @@ class _StationBarState extends State<StationBar> {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: true);
-
-    _isUserLogged = applicationBloc.isUserLogged();
 
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
