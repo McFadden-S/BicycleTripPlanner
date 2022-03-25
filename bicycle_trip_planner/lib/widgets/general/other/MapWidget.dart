@@ -1,14 +1,15 @@
 import 'dart:async';
-import 'package:bicycle_trip_planner/managers/StationManager.dart';
+
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:flutter/material.dart';
-import 'package:location/location.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({Key? key}) : super(key: key);

@@ -90,7 +90,7 @@ class MockApplicationBloc extends _i1.Mock {
   @override
   dynamic searchPlaces(String searchTerm, http.Client client, placeService.PlacesService placesService) async {
 
-     return await placesService.getAutocomplete(searchTerm, client);
+     return await placesService.getAutocomplete(searchTerm);
   }
 
   getDefaultSearchResult() async {
@@ -109,7 +109,7 @@ class MockApplicationBloc extends _i1.Mock {
     if (station.place == const _i7.Place.placeNotFound()) {
       var client = http.Client();
       _i7.Place place = await placesService.getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}", client);
+          station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
 

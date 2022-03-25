@@ -1,11 +1,10 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/widgets/general/BinaryChoiceDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import 'CircleButton.dart';
 
 class CustomBackButton extends StatefulWidget {
   final String backTo;
