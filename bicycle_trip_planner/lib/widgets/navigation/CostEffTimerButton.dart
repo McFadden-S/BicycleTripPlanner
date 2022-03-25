@@ -13,7 +13,8 @@ import '../general/CircleButton.dart';
 
 class CostEffTimerButton extends StatefulWidget {
   final CountdownController ctdwnController;
-  const CostEffTimerButton({Key? key, required this.ctdwnController}) : super(key: key);
+  const CostEffTimerButton({Key? key, required this.ctdwnController})
+      : super(key: key);
 
   @override
   _CostEffTimerButtonState createState() => _CostEffTimerButtonState();
@@ -25,7 +26,8 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc =
+        Provider.of<ApplicationBloc>(context, listen: false);
 
     return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
       Row(
@@ -33,46 +35,46 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
         children: [
           CircleButton(
             onButtonClicked: () {
-              if (!RouteManager().ifCostOptimised() || !RouteManager().ifCycling()) {
+              if (!RouteManager().ifCostOptimised() ||
+                  !RouteManager().ifCycling()) {
                 null;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
                       "This feature is only available in cost efficiency mode!"),
                 ));
-              }
-              else {
-                if (isRunning){
+              } else {
+                if (isRunning) {
                   dialogManager.setBinaryChoice(
                     "Would you like to reset your timer now?",
                     "Yes",
-                        () {
-                          widget.ctdwnController.restart();
-                          widget.ctdwnController.pause();
-                          setState(() => isRunning = !isRunning);
-                        },
+                    () {
+                      widget.ctdwnController.restart();
+                      widget.ctdwnController.pause();
+                      setState(() => isRunning = !isRunning);
+                    },
                     "No",
-                        () {},
+                    () {},
                   );
                 } else {
                   dialogManager.setBinaryChoice(
                     "Would you like to start your 30 minute timer now?",
                     "Yes",
-                        () {
-                          widget.ctdwnController.start();
-                          setState(() => isRunning = !isRunning);
-                        },
-                    "No", () {},
+                    () {
+                      widget.ctdwnController.start();
+                      setState(() => isRunning = !isRunning);
+                    },
+                    "No",
+                    () {},
                   );
                 }
                 applicationBloc.showBinaryDialog();
               }
             },
-            iconIn: !isRunning
-                ? Icons.timer
-                : Icons.restart_alt,
-            iconColor: !RouteManager().ifCostOptimised() || !RouteManager().ifCycling()
-                ? ThemeStyle.primaryIconColor.withOpacity(0.2)
-                : ThemeStyle.primaryIconColor,
+            iconIn: !isRunning ? Icons.timer : Icons.restart_alt,
+            iconColor:
+                !RouteManager().ifCostOptimised() || !RouteManager().ifCycling()
+                    ? ThemeStyle.primaryIconColor.withOpacity(0.2)
+                    : ThemeStyle.primaryIconColor,
           ),
         ],
       ),

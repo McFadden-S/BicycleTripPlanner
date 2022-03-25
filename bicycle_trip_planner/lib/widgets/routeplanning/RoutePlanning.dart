@@ -10,6 +10,7 @@ import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/OptimisedButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/WalkToFirstButton.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:wakelock/wakelock.dart';
@@ -94,14 +95,14 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ViewRouteButton(),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
-                            _routeManager.getWaypoints().length > 1
-                            ? Column(
-                              children: [
-                                OptimisedButton(),
-                                SizedBox(height: 10),
-                              ],
-                            )
-                            : SizedBox.shrink(),
+                                    _routeManager.getWaypoints().length > 1
+                                ? Column(
+                                    children: [
+                                      OptimisedButton(),
+                                      SizedBox(height: 10),
+                                    ],
+                                  )
+                                : SizedBox.shrink(),
                             OptimiseCostButton(),
                             SizedBox(height: 10),
                             GroupSizeSelector(),
@@ -166,16 +167,22 @@ class _RoutePlanningState extends State<RoutePlanning> {
                               buttonColor: ThemeStyle.goButtonColor,
                               onButtonClicked: () {
                                 if (_routeManager.ifRouteSet()) {
-                                  if(_routeManager.getStart().getStop().description != SearchType.current.description){
+                                  if (_routeManager
+                                          .getStart()
+                                          .getStop()
+                                          .description !=
+                                      SearchType.current.description) {
                                     _dialogManager.setBinaryChoice(
                                       "Do you want to walk to start or be routed to it?",
                                       "Walk",
-                                          () {
-                                        _routeManager.setWalkToFirstWaypoint(true);
+                                      () {
+                                        _routeManager
+                                            .setWalkToFirstWaypoint(true);
                                       },
                                       "Route",
-                                          () {
-                                        _routeManager.setWalkToFirstWaypoint(false);
+                                      () {
+                                        _routeManager
+                                            .setWalkToFirstWaypoint(false);
                                       },
                                     );
 
@@ -183,7 +190,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                   }
 
                                   applicationBloc.startNavigation();
-
                                 } else {
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(const SnackBar(
@@ -249,10 +255,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                       height:
                                           MediaQuery.of(context).size.height *
                                               0.15,
-                                      child: RecentRouteCard(index: _recentRoutesCount - 1 - index)
-                                  )
-                          )
-                      ),
+                                      child: RecentRouteCard(
+                                          index: _recentRoutesCount -
+                                              1 -
+                                              index)))),
                     ),
                   ],
                 )),

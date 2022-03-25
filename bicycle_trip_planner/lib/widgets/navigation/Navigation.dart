@@ -40,7 +40,7 @@ class _NavigationState extends State<Navigation> {
   final DirectionManager directionManager = DirectionManager();
   late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
-  final CountdownController _controller = new CountdownController();
+  final CountdownController _controller = CountdownController();
 
   @override
   void initState() {
