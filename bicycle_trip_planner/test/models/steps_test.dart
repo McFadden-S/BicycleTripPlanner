@@ -15,6 +15,8 @@ void main() {
     expect(steps.duration.runtimeType, int);
   });
 
-
+  test('ensure returns correct hashCode', (){
+    expect(steps.hashCode, Object.hash(steps.instruction, steps.distance, steps.duration));
+  });
 
 }

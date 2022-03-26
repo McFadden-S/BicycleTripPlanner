@@ -31,11 +31,10 @@ class LocationManager {
     return _locator.locate();
   }
 
-  Future<PermissionStatus> requestPermission() async {
-    await checkServiceEnabled();
-    await checkPermission();
-    PermissionStatus _permissionGranted = await Location().hasPermission();
-    return _permissionGranted;
+  Future<bool> requestPermission() async {
+    bool permission = await checkPermission();
+    bool service = await checkServiceEnabled();
+    return permission && service;
   }
 
   Future<bool> checkServiceEnabled() async {
@@ -65,7 +64,10 @@ class LocationManager {
     return grantedPermission;
   }
 
-  //Calculates distance between 2 LatLng points
+  Future<void> openLocationSettingsOnDevice() async {
+    await geo.Geolocator.openLocationSettings();
+  }
+
   Future<double> distanceTo(LatLng pos) async {
     return distanceFromTo(await locate(), pos);
   }

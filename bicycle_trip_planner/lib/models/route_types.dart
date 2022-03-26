@@ -7,10 +7,15 @@ enum RouteType {
 }
 
 extension RouteTypeExtension on RouteType {
+
+  /**
+   * method returns a polyline color depending on the enum RouteType specified
+   * @return Color polyline color
+   */
   Color get polylineColor {
     switch (this) {
       case RouteType.walk:
-        return Colors.grey;
+        return Colors.lightBlue;
       case RouteType.bike:
         return Colors.red;
       default:
