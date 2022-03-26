@@ -58,7 +58,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 quarterTurns: 1,
                 child: IconButton(
                   icon: Icon(
-                    Icons.airline_stops,
+                    Icons.description,
                   ),
                   onPressed: null,
                 ),
