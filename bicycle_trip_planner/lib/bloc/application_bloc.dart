@@ -545,11 +545,6 @@ class ApplicationBloc with ChangeNotifier {
     return DatabaseManager().isUserLogged();
   }
 
-  void toggleCycling() {
-    _directionManager.toggleCycling();
-    notifyListeners();
-  }
-
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();

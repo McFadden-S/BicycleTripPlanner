@@ -17,21 +17,17 @@ class WalkOrCycleToggle extends StatefulWidget {
 }
 
 class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
-  late final ApplicationBloc applicationBloc;
   final DialogManager _dialogManager = DialogManager();
+  final DirectionManager _directionManager = DirectionManager();
 
   void setCycling() {
-    setState(() => {applicationBloc.toggleCycling()});
-  }
-
-  @override
-  void initState() {
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    super.initState();
+    setState(() => {_directionManager.toggleCycling()});
   }
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+
     return ElevatedButton(
       style: ButtonStyle(
           backgroundColor:
@@ -63,15 +59,14 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         _dialogManager.setBinaryChoice(
           "Toggle between walking and cycling?",
           "Toggle",
-              () {
-            applicationBloc.toggleCycling();
+          () {
+            setCycling();
           },
           "Cancel",
-              () {},
+          () {},
         );
 
         applicationBloc.showBinaryDialog();
-
         applicationBloc.notifyListeningWidgets();
       },
     );
