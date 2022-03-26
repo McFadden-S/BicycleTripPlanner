@@ -16,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 
 import '../general/dialogs/EndOfRouteDialog.dart';
 
@@ -84,9 +83,10 @@ class _NavigationState extends State<Navigation> {
                           SizedBox(height: 10),
                           ViewRouteButton(),
                           SizedBox(height: 10),
+                          CostEffTimerButton(ctdwnController: _controller),
+                          SizedBox(height: 10),
                           CountdownCard(ctdwnController: _controller),
                           SizedBox(height: 10),
-                          CostEffTimerButton(ctdwnController: _controller),
                           // CircleButton(
                           //     iconIn: Icons.access_alarm,
                           //     onButtonClicked: () {_controller.start();}
@@ -104,24 +104,24 @@ class _NavigationState extends State<Navigation> {
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
-              child: Row(
-                children: [
-                  Expanded(child: DistanceETACard()),
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: EndRouteButton(),
-                        ),
-                        Expanded(
-                            child: Padding(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    DistanceETACard(),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: WalkOrCycleToggle(),
                         )),
-                      ],
+                    Expanded(
+                      child: Expanded(
+                        child: EndRouteButton(),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
@@ -40,6 +41,7 @@ class _CountdownCardState extends State<CountdownCard> {
     RouteType routeType = RouteManager().getCurrentRoute().routeType;
 
     return Card(
+      color: ThemeStyle.cardOutlineColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: curColor,
