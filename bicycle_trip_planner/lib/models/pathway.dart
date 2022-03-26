@@ -10,6 +10,9 @@ class Pathway {
   int size = 0;
 
   // NOTE: TODO ADD EDGE CASE (Pathway MUST have 2 stops at least)
+  /**
+   * pathway constructor
+   */
   Pathway() {
     _stops.add(_start);
     _stops.add(_destination);

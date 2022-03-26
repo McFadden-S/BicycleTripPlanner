@@ -12,6 +12,9 @@ class Station {
   double distanceTo;
   Place place;
 
+  /**
+   * constructor with specified required inputs
+   */
   Station(
       {required this.id,
       required this.name,
@@ -24,6 +27,9 @@ class Station {
       this.place = const Place.placeNotFound()
       });
 
+  /**
+   * constructor default assignments when station is not found
+   */
   Station.stationNotFound(
       {this.id = 0,
       this.name = "Station Not Found",
@@ -36,6 +42,10 @@ class Station {
       this.place = const Place.placeNotFound()
       });
 
+  /**
+   * factory constructor when data is passed from Xml
+   * @param XmlElement element
+   */
   factory Station.fromXml(XmlElement element) {
     return Station(
       id: int.parse(element.findElements("id").first.text),

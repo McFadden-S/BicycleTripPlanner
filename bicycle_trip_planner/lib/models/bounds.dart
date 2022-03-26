@@ -2,11 +2,21 @@ class Bounds {
   final Map<String, dynamic> northeast;
   final Map<String, dynamic> southwest;
 
+  /**
+   * constructor with specified required inputs
+   */
   Bounds({required this.northeast, required this.southwest});
 
+  /**
+   * constructor default assignments when bounds are not found
+   */
   const Bounds.boundsNotFound(
       {this.northeast = const {}, this.southwest = const {}});
 
+  /**
+   * factory constructor when data is passed from Json
+   * @param Map<dynamic, dynamic> parsed Json
+   */
   factory Bounds.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Bounds(
       northeast: parsedJson['northeast'],

@@ -8,6 +8,9 @@ class Legs {
   final int distance;
   final int duration;
 
+  /**
+   * constructor with specified required inputs
+   */
   Legs(
       {required this.startLocation,
       required this.endLocation,
@@ -15,6 +18,11 @@ class Legs {
       required this.distance,
       required this.duration});
 
+  /**
+   * factory constructor when data is passed from Json
+   * @param Map<dynamic, dynamic> parsed Json
+   * @return Legs
+   */
   factory Legs.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Legs(
       startLocation: Location.fromJson(parsedJson['start_location']),

@@ -5,6 +5,9 @@ class Stop {
   Place _stop;
   final int _uid = IDManager().generateUID();
 
+  /**
+   * Strop constructor
+   */
   Stop([this._stop = const Place.placeNotFound()]);
 
   /**

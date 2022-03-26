@@ -11,6 +11,9 @@ class Locator {
   int distanceFilter; 
   Geolocator geolocator = Geolocator();
 
+  /**
+   * locator constructor
+   */
   Locator({this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}){
     settings = LocationSettings(
       accuracy: accuracy, 
@@ -18,11 +21,17 @@ class Locator {
     ); 
   }
 
+  /**
+   * constructor with mock input
+   */
   Locator.withMock(Geolocator mockGeolocator, {this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}){
     geolocator = mockGeolocator;
   }
 
-  // Locates the current position of the user
+  /**
+   * method locates the current position of the user
+   * @return LatLng current position
+   */
   Future<LatLng> locate() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
