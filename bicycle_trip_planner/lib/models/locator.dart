@@ -1,24 +1,28 @@
-
-
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 class Locator {
-
-  LocationSettings? settings; 
+  LocationSettings? settings;
   LocationAccuracy accuracy;
-  int distanceFilter; 
+  int distanceFilter;
   Geolocator geolocator = Geolocator();
 
-  Locator({this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}){
+  //Default constructor to set locator values
+  Locator({this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}) {
     settings = LocationSettings(
-      accuracy: accuracy, 
+      accuracy: accuracy,
       distanceFilter: distanceFilter,
-    ); 
+    );
   }
 
-  Locator.withMock(Geolocator mockGeolocator, {this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}){
+  //Constructor to mock method
+  Locator.withMock(Geolocator mockGeolocator,
+      {this.accuracy = LocationAccuracy.high, this.distanceFilter = 0}) {
+    settings = LocationSettings(
+      accuracy: accuracy,
+      distanceFilter: distanceFilter,
+    );
     geolocator = mockGeolocator;
   }
 

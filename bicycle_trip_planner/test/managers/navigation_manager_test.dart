@@ -1,5 +1,3 @@
-
-
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
@@ -36,31 +34,6 @@ void main() {
     expect(navigationManager.ifBeginning(), walk);
     expect(navigationManager.ifCycling(), bike);
     expect(navigationManager.ifEndWalking(), end);
-  }
-
-  setRoute(Place origin, Place destination,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation = destination.geometry.location;
-
-    Station startStation = await StationManager().getPickupStationNear(
-        LatLng(startLocation.lat, startLocation.lng), groupSize);
-    Station endStation = await StationManager().getDropoffStationNear(
-        LatLng(endLocation.lat, endLocation.lng), groupSize);
-
-    List<String> intermediatePlaceId =
-    intermediates.map((place) => place.placeId).toList();
-
-    Rou.Route startWalkRoute = await DirectionsService().getWalkingRoutes(
-        origin.placeId, startStation.place.placeId);
-    Rou.Route bikeRoute = await DirectionsService().getRoutes(
-        startStation.place.placeId,
-        endStation.place.placeId,
-        intermediatePlaceId,
-        RouteManager().ifOptimised());
-    Rou.Route endWalkRoute = await DirectionsService().getWalkingRoutes(
-        endStation.place.placeId, destination.placeId);
-    RouteManager().setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
   }
 
   Station createStation(int id, String name, double lat, double lng) {
@@ -207,7 +180,6 @@ void main() {
 
     //Setting pickup and dropoff stations
     RouteManager().setStartFromCurrentLocation(true);
-    setRoute(locationManager.getCurrentLocation(), station_1.place);
 
     expect(navigationManager.ifNavigating(), false);
 
@@ -219,11 +191,17 @@ void main() {
   });
 
   test("Test start navigation from defined location with one waypoint", () {
-    final start = Place(geometry: Geometry(location: Location(lat: 1, lng:1)), description: "Start", name: "Start", placeId: "12345");
-    final middle = Place(geometry: Geometry(location: Location(lat: 1, lng:1)), description: "Middle", name: "Middle", placeId: "67890");
+    final start = Place(
+        geometry: Geometry(location: Location(lat: 1, lng: 1)),
+        description: "Start",
+        name: "Start",
+        placeId: "12345");
+    final middle = Place(
+        geometry: Geometry(location: Location(lat: 1, lng: 1)),
+        description: "Middle",
+        name: "Middle",
+        placeId: "67890");
     final end = createStation(1, "station_1", 51.511800, -0.118960);
-
-    setRoute(start, end.place, [middle]);
 
     expect(navigationManager.ifNavigating(), false);
     RouteManager().setStartFromCurrentLocation(false);
@@ -238,12 +216,12 @@ void main() {
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
     final station_2 = createStation(2, "station_2", 60.5120, -0.128800);
 
-    navigationManager.setPickupStation(station_1);
-    navigationManager.setDropoffStation(station_2);
-
     expect(navigationManager.ifNavigating(), false);
 
-    navigationManager.start();
+    await navigationManager.start();
+
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
 
     expectWalkingBikingEnd(true, false, false);
 
@@ -259,19 +237,27 @@ void main() {
   });
 
   test("Test route start to end", () async {
-    final start = Place(geometry: Geometry(location: Location(lat: 41.511800, lng:-0.118960)), description: "Start", name: "Start", placeId: "12345");
+    final start = Place(
+        geometry: Geometry(location: Location(lat: 41.511800, lng: -0.118960)),
+        description: "Start",
+        name: "Start",
+        placeId: "12345");
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
-    final middle = Place(geometry: Geometry(location: Location(lat: 60.5120, lng:-0.118960)), description: "Middle", name: "Middle", placeId: "67890");
+    final middle = Place(
+        geometry: Geometry(location: Location(lat: 60.5120, lng: -0.118960)),
+        description: "Middle",
+        name: "Middle",
+        placeId: "67890");
     final station_2 = createStation(1, "station_1", 100.511800, -0.118960);
-
-    setRoute(start, station_2.place, [middle]);
-    navigationManager.setPickupStation(station_1);
-    navigationManager.setDropoffStation(station_2);
 
     setCurrentLocation(41.511800, -0.118960);
     RouteManager().setWalkToFirstWaypoint(true);
     RouteManager().setStartFromCurrentLocation(true);
-    navigationManager.start();
+    await navigationManager.start();
+
+    navigationManager.setPickupStation(station_1);
+    navigationManager.setDropoffStation(station_2);
+
     expectWalkingBikingEnd(true, false, false);
     setCurrentLocation(51.511800, -0.118960);
     await navigationManager.updateRoute();

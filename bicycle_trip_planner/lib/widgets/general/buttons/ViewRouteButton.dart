@@ -1,8 +1,6 @@
-import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:flutter/material.dart';
-
-import 'CircleButton.dart';
 
 class ViewRouteButton extends StatefulWidget {
 
