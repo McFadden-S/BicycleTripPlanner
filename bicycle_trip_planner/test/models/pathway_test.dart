@@ -5,7 +5,6 @@ import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
 
-
 main(){
   final pathway = Pathway();
   final stop = Stop();

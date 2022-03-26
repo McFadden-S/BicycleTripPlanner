@@ -33,7 +33,6 @@ class Pathway {
 
   List<Stop> getWaypoints() {
     List<Stop> ret = size <= 2 ? [] : _stops.sublist(1, size - 1);
-    print(ret);
     return ret;
   }
 
