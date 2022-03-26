@@ -1,6 +1,5 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -65,7 +64,6 @@ void main(){
     expect(markerManager.getMarkers().length,1);
   });
 
-  // issue with ApplicationBloc()
   test('ensure marker for station is correct', (){
       List<Station> station = <Station>[
         Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 12, distanceTo: 1),
@@ -76,7 +74,6 @@ void main(){
     expect(markerManager.getMarkers().length,2);
   });
 
-  // same issue
   test('ensure marker for station is correct', (){
     Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
     expect(markerManager.getMarkers().length,0);
@@ -84,7 +81,6 @@ void main(){
     expect(markerManager.getMarkers().length,1);
   });
 
-  // same issue
   test('ensure marker for station is correct', (){
       List<Station> station = <Station>[
         Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 12, distanceTo: 1),
@@ -96,7 +92,6 @@ void main(){
       expect(markerManager.getMarkers().length,0);
   });
 
-  // same issue
   test('ensure marker for station uid is correct', (){
       Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
       markerManager.setStationMarkerWithUID(station, mockAppBloc);
