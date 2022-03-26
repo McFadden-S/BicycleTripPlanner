@@ -7,20 +7,26 @@ import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'setUp.dart';
+import 'widgets/login/mock.dart';
 
 
 void main() {
-  setUpAll(() async {
 
+  setupFirebaseAuthMocks();
+
+  setUpAll(() async {
     HttpOverrides.global = null;
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
   });
 
   testWidgets("Navigation has cancel button", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final cancelButton = find.widgetWithIcon(CircleButton, Icons.cancel_outlined);
 
@@ -28,7 +34,7 @@ void main() {
   });
 
   testWidgets("Navigation has zoom in/out button", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
 
     final zoomOutButton = find.widgetWithIcon(CircleButton, Icons.zoom_out_map);
@@ -45,7 +51,7 @@ void main() {
   });
 
   testWidgets("Navigation has current location button", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
 
     final currentLocation = find.widgetWithIcon(CircleButton, Icons.location_on);
@@ -54,7 +60,7 @@ void main() {
   });
 
   testWidgets("Navigation has Directions", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final directions = find.byType(Directions);
 
@@ -62,7 +68,7 @@ void main() {
   });
 
   testWidgets("Navigation has DistanceETACard", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final distanceETACard = find.byType(DistanceETACard);
 
@@ -70,7 +76,7 @@ void main() {
   });
   
   testWidgets("Navigation has Walk or Cycle button", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final walkOrCycleButton = find.byType(WalkOrCycleToggle);
 
@@ -78,7 +84,7 @@ void main() {
   });
 
   testWidgets("Navigation has Map Widget", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final walkOrCycleButton = find.byType(MapWidget);
 
@@ -86,7 +92,7 @@ void main() {
   });
 
   testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     final walkOrCycleButton = find.byType(Countdown);
 
