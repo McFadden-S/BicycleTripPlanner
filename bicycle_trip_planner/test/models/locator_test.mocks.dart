@@ -2,11 +2,7 @@
 // in bicycle_trip_planner/test/models/locator_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i4;
-
-import 'package:geolocator/geolocator.dart' as _i3;
-import 'package:geolocator_platform_interface/geolocator_platform_interface.dart'
-    as _i2;
+import 'package:geolocator/geolocator.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -19,27 +15,11 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 
-class _FakePosition_0 extends _i1.Fake implements _i2.Position {}
-
 /// A class which mocks [Geolocator].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGeolocator extends _i1.Mock implements _i3.Geolocator {
+class MockGeolocator extends _i1.Mock implements _i2.Geolocator {
   MockGeolocator() {
     _i1.throwOnMissingStub(this);
   }
-
-  @override
-  _i4.Future<_i2.Position> getCurrentPosition(
-          {_i2.LocationAccuracy? desiredAccuracy = _i2.LocationAccuracy.best,
-          bool? forceAndroidLocationManager = false,
-          Duration? timeLimit}) =>
-      (super.noSuchMethod(
-              Invocation.method(#getCurrentPosition, [], {
-                #desiredAccuracy: desiredAccuracy,
-                #forceAndroidLocationManager: forceAndroidLocationManager,
-                #timeLimit: timeLimit
-              }),
-              returnValue: Future<_i2.Position>.value(_FakePosition_0()))
-          as _i4.Future<_i2.Position>);
 }
