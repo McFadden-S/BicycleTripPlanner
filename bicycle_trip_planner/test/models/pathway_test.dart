@@ -10,11 +10,22 @@ main(){
   final pathway = Pathway();
   final stop = Stop();
   final stop2 = Stop();
-  final stop3 = Stop();
   final location = Location(lat: 1, lng: -1);
   final geometry = Geometry(location: location);
   final place = Place(geometry: geometry, name: "Bush House", placeId: "1", description: "");
   final place2 = Place(geometry: geometry, name: "Strand", placeId: "1", description: "");
+
+  // setUp((){
+  //   pathway.clear();
+  // });
+
+  test("Stops to string", (){
+    expect(pathway.toString(), "[ - 1,  - 2]");
+  });
+
+  test('ensure can get stop by index', (){
+    expect(pathway.getStopByIndex(0).getUID(), 1);
+  });
 
   test('ensure size is 2 when initialized', (){
     expect(pathway.size, 2);
@@ -48,6 +59,7 @@ main(){
   });
 
   test('ensure can add and remove firstWaypoint on request', (){
+    pathway.clear();
     pathway.addFirstWayPoint(stop);
     expect(pathway.getFirstWaypoint(), stop);
     pathway.setHasFirstWaypoint(true);
@@ -56,14 +68,8 @@ main(){
     expect(pathway.getStops().length, 2);
   });
 
-  test('ensure can clear and remove firstWaypoint on request', (){
-    pathway.clearDestination();
-    expect(pathway.getStops().length, 3);
-    pathway.removeFirstWayPoint();
-    expect(pathway.getStops().length, 2);
-  });
-
   test('ensure can add start and clear on request', (){
+    pathway.clear();
     pathway.addStart(stop);
     expect(pathway.getStops().length, 3);
     expect(pathway.getStart(), stop);
@@ -85,6 +91,7 @@ main(){
   });
 
   test('ensure can clear destination on request', (){
+    pathway.changeDestination(place2);
     expect(pathway.getDestination().getStop().name, "Strand");
     pathway.clearDestination();
     expect(pathway.getDestination().getStop().name, "");
@@ -101,23 +108,22 @@ main(){
   });
 
   test('ensure can remove stop on request', (){
+    expect(pathway.getStops().length, 6);
     pathway.removeStop(4);
-    expect(pathway.getStops().length, 4);
-  });
-
-  test('ensure can get stop by index', (){
-    expect(pathway.getStopByIndex(0).getStop().name, "Bush House");
+    expect(pathway.getStops().length, 5);
   });
 
   test('ensure can swap stops', (){
-    expect(pathway.getStops().length, 4);
-    pathway.changeStop(1, place2);
-    expect(pathway.getStopByIndex(1).getStop().name, "Strand");
-    pathway.changeStop(2, place);
-    expect(pathway.getStopByIndex(2).getStop().name, "Bush House");
-    pathway.swapStops(1, 2);
+    pathway.clear();
+    pathway.changeStop(pathway.getStopByIndex(0).getUID(), place2);
+    pathway.changeStop(pathway.getStopByIndex(1).getUID(), place);
+
+    expect(pathway.getStopByIndex(0).getStop().name, "Strand");
     expect(pathway.getStopByIndex(1).getStop().name, "Bush House");
-    expect(pathway.getStopByIndex(2).getStop().name, "Strand");
+
+    pathway.swapStops(pathway.getStopByIndex(0).getUID(), pathway.getStopByIndex(1).getUID());
+    expect(pathway.getStopByIndex(0).getStop().name, "Bush House");
+    expect(pathway.getStopByIndex(1).getStop().name, "Strand");
   });
 
   test("Set has first waypoint",(){
@@ -136,7 +142,11 @@ main(){
     expect(pathway.getHasFirstWaypoint(), false);
   });
 
-  test("Stops to string", (){
-    expect(pathway.toString(), "[ - 1,  - 2]");
+  test("Move stop",(){
+    pathway.getStops().first.getUID();
+    final initID = pathway.getStops().first.getUID();
+
+    pathway.moveStop(initID, 2);
+    expect(pathway.getStops()[1].getUID(), initID);
   });
 }

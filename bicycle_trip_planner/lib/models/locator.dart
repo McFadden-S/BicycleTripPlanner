@@ -1,6 +1,3 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -31,7 +28,7 @@ class Locator {
 
   // Locates the current position of the user
   Future<LatLng> locate() async {
-    Position position = await geolocator.getCurrentPosition(
+    Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
 
     return LatLng(position.latitude, position.longitude);
