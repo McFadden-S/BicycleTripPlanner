@@ -5,15 +5,14 @@
 import 'dart:async' as _i7;
 
 import 'package:bicycle_trip_planner/managers/LocationManager.dart' as _i6;
-import 'package:bicycle_trip_planner/managers/StationManager.dart' as _i14;
+import 'package:bicycle_trip_planner/managers/StationManager.dart' as _i13;
 import 'package:bicycle_trip_planner/models/distance_types.dart' as _i9;
 import 'package:bicycle_trip_planner/models/place.dart' as _i3;
-import 'package:bicycle_trip_planner/models/place_search.dart' as _i12;
+import 'package:bicycle_trip_planner/models/place_search.dart' as _i11;
 import 'package:bicycle_trip_planner/models/route.dart' as _i4;
 import 'package:bicycle_trip_planner/models/station.dart' as _i5;
-import 'package:bicycle_trip_planner/services/directions_service.dart' as _i13;
-import 'package:bicycle_trip_planner/services/places_service.dart' as _i11;
-import 'package:geolocator/geolocator.dart' as _i10;
+import 'package:bicycle_trip_planner/services/directions_service.dart' as _i12;
+import 'package:bicycle_trip_planner/services/places_service.dart' as _i10;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
 import 'package:location/location.dart' as _i8;
 import 'package:mockito/mockito.dart' as _i1;
@@ -103,26 +102,22 @@ class MockLocationManager extends _i1.Mock implements _i6.LocationManager {
   void setUnits(_i9.DistanceType? units) =>
       super.noSuchMethod(Invocation.method(#setUnits, [units]),
           returnValueForMissingStub: null);
-  @override
-  void isTest(_i10.Geolocator? geolocator) =>
-      super.noSuchMethod(Invocation.method(#isTest, [geolocator]),
-          returnValueForMissingStub: null);
 }
 
 /// A class which mocks [PlacesService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPlacesService extends _i1.Mock implements _i11.PlacesService {
+class MockPlacesService extends _i1.Mock implements _i10.PlacesService {
   MockPlacesService() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i7.Future<List<_i12.PlaceSearch>> getAutocomplete(String? search) =>
+  _i7.Future<List<_i11.PlaceSearch>> getAutocomplete(String? search) =>
       (super.noSuchMethod(Invocation.method(#getAutocomplete, [search]),
               returnValue:
-                  Future<List<_i12.PlaceSearch>>.value(<_i12.PlaceSearch>[]))
-          as _i7.Future<List<_i12.PlaceSearch>>);
+                  Future<List<_i11.PlaceSearch>>.value(<_i11.PlaceSearch>[]))
+          as _i7.Future<List<_i11.PlaceSearch>>);
   @override
   _i7.Future<_i3.Place> getPlace(String? placeId, String? description) =>
       (super.noSuchMethod(Invocation.method(#getPlace, [placeId, description]),
@@ -148,7 +143,7 @@ class MockPlacesService extends _i1.Mock implements _i11.PlacesService {
 /// A class which mocks [DirectionsService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockDirectionsService extends _i1.Mock implements _i13.DirectionsService {
+class MockDirectionsService extends _i1.Mock implements _i12.DirectionsService {
   MockDirectionsService() {
     _i1.throwOnMissingStub(this);
   }
@@ -174,7 +169,7 @@ class MockDirectionsService extends _i1.Mock implements _i13.DirectionsService {
 /// A class which mocks [StationManager].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockStationManager extends _i1.Mock implements _i14.StationManager {
+class MockStationManager extends _i1.Mock implements _i13.StationManager {
   MockStationManager() {
     _i1.throwOnMissingStub(this);
   }
