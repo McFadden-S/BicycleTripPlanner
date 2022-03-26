@@ -3,11 +3,13 @@ import 'package:http/http.dart' as http;
 import 'package:bicycle_trip_planner/models/route.dart';
 import 'dart:convert' as convert;
 
+import '../auth/Keys.dart';
+
 class DirectionsService {
+  final String key = Keys.getApiKey();
   Future<Route> getRoutes(String origin, String destination,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
-    const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
@@ -24,8 +26,6 @@ class DirectionsService {
   Future<Route> getWalkingRoutes(String origin, String destination,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
-    const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
         'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';
