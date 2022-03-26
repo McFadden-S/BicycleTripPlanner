@@ -1,15 +1,12 @@
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
-
-import '../../models/stop.dart';
 
 class SelectStationDialog extends StatefulWidget {
 

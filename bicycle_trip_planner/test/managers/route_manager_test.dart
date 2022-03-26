@@ -502,7 +502,6 @@ void main() {
 }  
         """)["routes"][0] as Map<String, dynamic>, RouteType.walk);
 
-
   // ************ Helper functions ***************
 
   Place createPlace(String name, String id) {
@@ -558,10 +557,15 @@ void main() {
     expect(routeManager.ifStartSet(), true);
   });
 
-  test("ensure stop can be changed",(){
-     final stop = Stop(Place(geometry: const Geometry.geometryNotFound(), name: "stop_2", placeId: "placeId", description: "description"));
+  test("ensure stop can be changed", () {
+    final stop = Stop(Place(
+        geometry: const Geometry.geometryNotFound(),
+        name: "stop_2",
+        placeId: "placeId",
+        description: "description"));
 
-    routeManager.changeStop(routeManager.getStops().first.getUID(), stop.getStop());
+    routeManager.changeStop(
+        routeManager.getStops().first.getUID(), stop.getStop());
     expect(routeManager.getStops().first.getStop().name, stop.getStop().name);
   });
 
@@ -599,24 +603,32 @@ void main() {
     expect(routeManager.ifWaypointsSet(), true);
   });
 
-  test("Ensure start can be added",(){
-    expect(routeManager.getStart().getStop(),const Place.placeNotFound());
+  test("Ensure start can be added", () {
+    expect(routeManager.getStart().getStop(), const Place.placeNotFound());
     expect(routeManager.ifStartSet(), false);
-    routeManager.changeStart(Place(geometry: const Geometry.geometryNotFound(), name: "something", placeId: "placeId", description: "description"));
+    routeManager.changeStart(Place(
+        geometry: const Geometry.geometryNotFound(),
+        name: "something",
+        placeId: "placeId",
+        description: "description"));
     expect(routeManager.getStart().getStop().name, "something");
     expect(routeManager.ifStartSet(), true);
   });
 
-  test("Ensure first waypoint can be set",(){
+  test("Ensure first waypoint can be set", () {
     expect(routeManager.ifFirstWaypointSet(), false);
-    expect(routeManager.getFirstWaypoint().getStop().name,Place.placeNotFound().name);
+    expect(routeManager.getFirstWaypoint().getStop().name,
+        Place.placeNotFound().name);
 
-    final waypoint = Place(geometry: Geometry.geometryNotFound(), name: "Something", placeId: "placeId", description: "description");
+    final waypoint = Place(
+        geometry: Geometry.geometryNotFound(),
+        name: "Something",
+        placeId: "placeId",
+        description: "description");
     routeManager.addFirstWaypoint(waypoint);
 
     expect(routeManager.ifFirstWaypointSet(), true);
-    expect(routeManager.getFirstWaypoint().getStop().name,"Something");
-
+    expect(routeManager.getFirstWaypoint().getStop().name, "Something");
   });
 
   test(
@@ -663,12 +675,16 @@ void main() {
     expect(routeManager.ifChanged(), false);
   });
 
-  test("ensure clear first waypoint works",(){
-    final waypoint = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+  test("ensure clear first waypoint works", () {
+    final waypoint = Place(
+        geometry: Geometry.geometryNotFound(),
+        name: "name",
+        placeId: "placeId",
+        description: "description");
     routeManager.addFirstWaypoint(waypoint);
     expect(routeManager.ifFirstWaypointSet(), true);
     routeManager.clearFirstWaypoint();
-    expect(routeManager.ifFirstWaypointSet(),false);
+    expect(routeManager.ifFirstWaypointSet(), false);
   });
 
   test('ensure route manager initialises correctly', () {
@@ -1172,8 +1188,7 @@ void main() {
     expect(routeManager.ifRouteSet(), true);
   });
 
-
-  test("Set optimised",(){
+  test("Set optimised", () {
     routeManager.setOptimised(false);
     expect(routeManager.ifOptimised(), false);
     routeManager.setOptimised(true);
@@ -1636,8 +1651,6 @@ void main() {
   });
 
   test("If route set", () {
-
-
     routeManager.setRoutes(route_1, route_2, route_3);
 
     routeManager.showAllRoutes(false);
@@ -1661,71 +1674,79 @@ void main() {
     expect(listLatLng, listRoute);
   });
 
-  test("Show current route",(){
-    expect(routeManager.getStartWalkingRoute(),R.Route.routeNotFound());
-    expect(routeManager.getBikingRoute(),R.Route.routeNotFound());
-    expect(routeManager.getEndWalkingRoute(),R.Route.routeNotFound());
+  test("Show current route", () {
+    expect(routeManager.getStartWalkingRoute(), R.Route.routeNotFound());
+    expect(routeManager.getBikingRoute(), R.Route.routeNotFound());
+    expect(routeManager.getEndWalkingRoute(), R.Route.routeNotFound());
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,0);
+    expect(directionManager.getDirections().length, 0);
 
     routeManager.setRoutes(route_1, route_2, route_3);
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,4);
+    expect(directionManager.getDirections().length, 4);
 
     routeManager.setRoutes(R.Route.routeNotFound(), route_2, route_3);
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,5);
+    expect(directionManager.getDirections().length, 5);
 
-    routeManager.setRoutes(R.Route.routeNotFound(), R.Route.routeNotFound(), route_3);
-
-    routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,0);
-
-    routeManager.setRoutes(R.Route.routeNotFound(), route_2, R.Route.routeNotFound());
+    routeManager.setRoutes(
+        R.Route.routeNotFound(), R.Route.routeNotFound(), route_3);
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,5);
+    expect(directionManager.getDirections().length, 0);
+
+    routeManager.setRoutes(
+        R.Route.routeNotFound(), route_2, R.Route.routeNotFound());
+
+    routeManager.showCurrentRoute(false);
+    expect(directionManager.getDirections().length, 5);
   });
 
-  test("Show current walking route",(){
-    expect(routeManager.getStartWalkingRoute(),R.Route.routeNotFound());
-    expect(routeManager.getEndWalkingRoute(),R.Route.routeNotFound());
-    expect(directionManager.getDirections().length,0);
+  test("Show current walking route", () {
+    expect(routeManager.getStartWalkingRoute(), R.Route.routeNotFound());
+    expect(routeManager.getEndWalkingRoute(), R.Route.routeNotFound());
+    expect(directionManager.getDirections().length, 0);
 
-    routeManager.setRoutes(route_1, R.Route.routeNotFound(), R.Route.routeNotFound());
-
-    routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,4);
-
-    routeManager.setRoutes(R.Route.routeNotFound(), R.Route.routeNotFound(), route_3);
+    routeManager.setRoutes(
+        route_1, R.Route.routeNotFound(), R.Route.routeNotFound());
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,0);
+    expect(directionManager.getDirections().length, 4);
+
+    routeManager.setRoutes(
+        R.Route.routeNotFound(), R.Route.routeNotFound(), route_3);
+
+    routeManager.showCurrentRoute(false);
+    expect(directionManager.getDirections().length, 0);
   });
 
-  test("Show bike route",(){
-    expect(routeManager.getBikingRoute(),R.Route.routeNotFound());
+  test("Show bike route", () {
+    expect(routeManager.getBikingRoute(), R.Route.routeNotFound());
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,0);
+    expect(directionManager.getDirections().length, 0);
 
-    routeManager.setRoutes(R.Route.routeNotFound(), route_2, R.Route.routeNotFound());
+    routeManager.setRoutes(
+        R.Route.routeNotFound(), route_2, R.Route.routeNotFound());
 
     routeManager.showCurrentRoute(false);
-    expect(directionManager.getDirections().length,5);
-
+    expect(directionManager.getDirections().length, 5);
   });
 
-  test("Set destination",(){
-    expect(routeManager.ifDestinationSet(),false);
-    routeManager.changeDestination(Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description"));
+  test("Set destination", () {
+    expect(routeManager.ifDestinationSet(), false);
+    routeManager.changeDestination(Place(
+        geometry: Geometry.geometryNotFound(),
+        name: "name",
+        placeId: "placeId",
+        description: "description"));
     expect(routeManager.ifDestinationSet(), true);
   });
 
-  test("Toggle start from current location",(){
+  test("Toggle start from current location", () {
     expect(routeManager.ifStartFromCurrentLocation(), false);
     routeManager.toggleStartFromCurrentLocation();
     expect(routeManager.ifStartFromCurrentLocation(), true);
@@ -1734,7 +1755,7 @@ void main() {
     expect(routeManager.ifStartFromCurrentLocation(), false);
   });
 
-  test("Set start from current location", (){
+  test("Set start from current location", () {
     expect(routeManager.ifStartFromCurrentLocation(), false);
     routeManager.setStartFromCurrentLocation(true);
     expect(routeManager.ifStartFromCurrentLocation(), true);

@@ -1,4 +1,5 @@
 
+import 'package:bicycle_trip_planner/auth/Keys.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:http/http.dart' as http;
@@ -10,10 +11,10 @@ import 'stations_services_test.mocks.dart' as mock;
 
 void main(){
   group('getAutocomplete', () {
+    final String key = Keys.getApiKey(); 
     test('Get automcomplete from non empty string', () async {
 
       const search = "Covent";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&components=country:gb&location=51.495830%2C-0.145607&radius=35000&strictbounds=true&key=$key';
 
@@ -235,7 +236,6 @@ void main(){
     test('Get automcomplete from empty string', () async {
 
       const search = "";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&components=country:gb&location=51.495830%2C-0.145607&radius=35000&strictbounds=true&key=$key';
 
@@ -256,12 +256,12 @@ void main(){
 
   group('getPlace', ()
   {
+    final String key = Keys.getApiKey();
     test('Get place from valid place id', () async {
 
       const placeId = "ChIJT2mIkcwEdkgRYspzsBq1iAM";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-      const url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
+      var url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(url)))
@@ -490,8 +490,7 @@ void main(){
 
       const placeId = "";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-      const url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
+      var url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(url)))
@@ -513,12 +512,12 @@ void main(){
 
   group('getPlaceFromCoordinates', ()
   {
+    final String key = Keys.getApiKey(); 
     test('Get place from valid coordinates', () async {
 
       const lat = 51.5130007;
       const lng = -0.1241621;
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
 
@@ -619,7 +618,6 @@ void main(){
       const lat = 110000000.0;
       const lng = 100000000.0;
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
 
@@ -643,11 +641,11 @@ void main(){
 
   group('getPlaceFromAddress', ()
   {
+    final String key = Keys.getApiKey(); 
     test('Get place from valid address', () async {
 
       const address = "Covent Garden, Long Acre, London WC2E 9JT, UK";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
 
@@ -744,7 +742,6 @@ void main(){
 
       const address = "";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
 

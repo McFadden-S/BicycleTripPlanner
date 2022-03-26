@@ -4,21 +4,21 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
-import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/ViewRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
-import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/CostEffTimerButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
-import 'package:location/location.dart';
 import 'package:provider/provider.dart';
+import 'package:timer_count_down/timer_controller.dart';
+import 'package:timer_count_down/timer_count_down.dart';
+
+import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
   const Navigation({Key? key}) : super(key: key);
@@ -32,6 +32,7 @@ class _NavigationState extends State<Navigation> {
   final DirectionManager directionManager = DirectionManager();
   late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
+  final CountdownController _controller = CountdownController();
 
   @override
   void initState() {
@@ -83,14 +84,14 @@ class _NavigationState extends State<Navigation> {
                           SizedBox(height: 10),
                           ViewRouteButton(),
                           SizedBox(height: 10),
-                          Card(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                    color: Color(0xFF8B0000), width: 1),
-                                borderRadius: BorderRadius.circular(9.0),
-                              ),
-                              child: Countdown(
-                                  duration: directionManager.getDuration())),
+                          CountdownCard(ctdwnController: _controller),
+                          SizedBox(height: 10),
+                          CostEffTimerButton(ctdwnController: _controller),
+                          // CircleButton(
+                          //     iconIn: Icons.access_alarm,
+                          //     onButtonClicked: () {_controller.start();}
+                          // ),
+                          // CostEffTimerButton(),
                         ],
                       ),
                     ),
@@ -100,7 +101,6 @@ class _NavigationState extends State<Navigation> {
             ),
           ),
           EndOfRouteDialog(),
-          WalkBikeToggleDialog(),
           CustomBottomSheet(
             child: Container(
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
@@ -116,8 +116,7 @@ class _NavigationState extends State<Navigation> {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: WalkOrCycleToggle(
-                              directionManager: directionManager),
+                          child: WalkOrCycleToggle(),
                         )),
                       ],
                     ),
@@ -130,7 +129,4 @@ class _NavigationState extends State<Navigation> {
       ),
     );
   }
-
-
-
 }

@@ -10,7 +10,7 @@ class DirectionManager {
 
   final LocationManager _locationManager = LocationManager();
 
-  bool _isCycling = false;
+  int _durationValue = 0;
 
   String _duration = "No data";
   String _distance = "No data";
@@ -41,16 +41,16 @@ class DirectionManager {
 
   //********** Getting **********
 
+  int getDurationValue() {
+    return _durationValue;
+  }
+
   String getDuration() {
     return _duration;
   }
 
   String getDistance() {
     return _distance;
-  }
-
-  bool ifCycling() {
-    return _isCycling;
   }
 
   Steps getDirection(int index) {
@@ -98,6 +98,7 @@ class DirectionManager {
 
   void setDuration(int seconds) {
     int minutes = (seconds / 60).ceil();
+    _durationValue = minutes;
     _duration = "$minutes min";
   }
 
@@ -113,20 +114,9 @@ class DirectionManager {
         directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
   }
 
-  void toggleCycling([bool relocateMap = true]) {
-    _isCycling = !_isCycling;
-    if (_isCycling) {
-      print("Showing bike route...");
-      RouteManager().showBikeRoute(relocateMap);
-    } else {
-      RouteManager().showCurrentWalkingRoute(relocateMap);
-    }
-  }
-
   //********** Clearing **********
 
   void clear() {
-    _isCycling = false;
     clearDuration();
     clearDistance();
     clearCurrentDirection();

@@ -30,6 +30,7 @@ class RouteManager {
 
   /// True if user needs to walk to first waypoint
   bool _walkToFirstWaypoint = false;
+  bool _loading = false;
 
   /// The size of the group the user is travelling with
   int _groupsize = 1;
@@ -39,6 +40,7 @@ class RouteManager {
 
   /// True if user has chosen optimised path
   bool _optimised = true;
+  bool _costOptimised = false;
 
   /// Journey is split into 3 separate routes
   /// Start walking route: Route between user and pickup station
@@ -47,6 +49,8 @@ class RouteManager {
   R.Route _startWalkingRoute = R.Route.routeNotFound();
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
+
+  R.Route _currentRoute = R.Route.routeNotFound();
 
   //********** Singleton **********
 
@@ -176,6 +180,14 @@ class RouteManager {
     }
   }
 
+  void setLoading(bool isLoading) {
+    _loading = isLoading;
+  }
+
+  bool ifLoading() {
+    return _loading;
+  }
+
   /// @param - Route route, bool relocateMap
   /// @return void
   /// @effects - Set directions and polylines to show current route data
@@ -184,9 +196,14 @@ class RouteManager {
     setDirectionsData(route);
     _polylineManager.setPolyline(
         route.polyline.points, route.routeType.polylineColor);
+    _currentRoute = route;
     if (relocateMap) {
       _moveCameraTo(route);
     }
+  }
+
+  R.Route getCurrentRoute() {
+    return _currentRoute;
   }
 
   /// @param void
@@ -279,6 +296,20 @@ class RouteManager {
   /// @return bool - gets optimised value
   bool ifOptimised() {
     return _optimised;
+  }
+
+  void setCostOptimised(bool optimised) {
+    _costOptimised = optimised;
+    _changed = true;
+  }
+
+  void toggleCostOptimised() {
+    _costOptimised = !_costOptimised;
+    _changed = true;
+  }
+
+  bool ifCostOptimised() {
+    return _costOptimised;
   }
 
   /// @param void
@@ -380,6 +411,14 @@ class RouteManager {
     return waypointStop;
   }
 
+  Stop addCostWaypoint(Place waypoint) {
+    Stop destination = getDestination();
+    Stop waypointStop = Stop(waypoint);
+    _pathway.addStop(waypointStop);
+    _pathway.swapStops(destination.getUID(), waypointStop.getUID());
+    return waypointStop;
+  }
+
   /// @param - Place waypoint
   /// @return - waypoint as stop
   /// @effects - Adds a new waypoint at the beginning (before destination)
@@ -405,6 +444,7 @@ class RouteManager {
   /// @return void
   /// @effects - Clears destination to default
   void clearDestination() {
+    // _pathway.clearDestination();
     _pathway.changeDestination(const Place.placeNotFound());
     _changed = true;
   }
@@ -421,8 +461,8 @@ class RouteManager {
   /// @return void
   /// @effects - Clears the first waypoint set in the pathway
   void clearFirstWaypoint() {
-    _pathway.setHasFirstWaypoint(false);
     _pathway.removeFirstWayPoint();
+    _pathway.setHasFirstWaypoint(false);
     _changed = true;
   }
 
@@ -455,6 +495,13 @@ class RouteManager {
     }
   }
 
+  void setRouteMarkers() {
+    List<Stop> stops = _pathway.getStops();
+    for (Stop stop in stops) {
+      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
+    }
+  }
+
   /// @param void
   /// @return void
   /// @effects - Resets changed to false
@@ -474,10 +521,12 @@ class RouteManager {
   /// @effects - Clears all data
   void clear() {
     _polylineManager.clearPolyline();
+
     clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     _optimised = true;
+    _costOptimised = false;
     clearRouteMarkers();
     removeWaypoints();
     clearStart();

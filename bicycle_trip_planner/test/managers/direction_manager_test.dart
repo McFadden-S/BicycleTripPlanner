@@ -23,10 +23,6 @@ void main() {
     return steps;
   }
 
-  test('ensure isCycling is false when initialized', () {
-    expect(directionManager.ifCycling(), false);
-  });
-
   test('ensure duration is no data when initialized', () {
     expect(directionManager.getDuration(), "No data");
   });
@@ -36,7 +32,8 @@ void main() {
   });
 
   test('ensure directions is empty when initialized', () {
-    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.ifDirections(), false);
+    expect(directionManager.getNumberOfDirections(), 0);
   });
 
   test('ensure currentDirection is empty when initialized', () {
@@ -578,20 +575,40 @@ void main() {
     final routeManager = RouteManager();
 
     routeManager.setRoutes(route_1, route_2, route_3);
-    directionManager.toggleCycling(false);
 
     List<Steps> r2Directions = [];
     r2Directions.addAll(route_2.directions);
     r2Directions.removeAt(0);
 
-    expect(directionManager.getDirections(), r2Directions);
+    routeManager.showBikeRoute(false);
 
-    directionManager.toggleCycling(false);
+    expect(directionManager.getDirections(), r2Directions);
+    expect(directionManager.getNumberOfDirections(), 5);
 
     List<Steps> r1Directions = [];
     r1Directions.addAll(route_1.directions);
     r1Directions.removeAt(0);
 
+    routeManager.showCurrentWalkingRoute(false);
+
     expect(directionManager.getDirections(), r1Directions);
   });
+
+  test('ensure can get direction on index', () {
+    expect(directionManager.getDirection(-1), Steps.stepsNotFound());
+    expect(directionManager.getDirection(1).toString(), "Turn <b>right</b> onto <b>Strand</b>/<wbr/><b>A4</b>");
+  });
+
+  test('ensure can pop direction', () {
+    expect(directionManager.popDirection().toString(), "Turn <b>right</b> onto <b>Strand</b>/<wbr/><b>A4</b>");
+  });
+
+  test('ensure can clear directions', () {
+    directionManager.clear();
+    expect(directionManager.getDuration(), "No data");
+    expect(directionManager.getDistance(), "No data");
+    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.getCurrentDirection(), Steps.stepsNotFound());
+  });
+
 }
