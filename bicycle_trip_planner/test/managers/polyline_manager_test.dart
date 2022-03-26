@@ -41,7 +41,6 @@ void main(){
     expect(polyLineManager.getPolyLines().length,100);
   });
 
-  // test clear polyline on both null and actual polylines
   test('be able to remove multiple polylines from addPolyline', (){
     List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length,0);
@@ -59,6 +58,12 @@ void main(){
     expect(polyLineManager.getPolyLines().length,0);
     polyLineManager.setPolyline(points, Colors.grey);
     expect(polyLineManager.getPolyLines().length,1);
+    polyLineManager.clearPolyline();
+    expect(polyLineManager.getPolyLines().length,0);
+  });
+
+  test('ensure clearPolyline does not crash if there are no polylines to clear', (){
+    expect(polyLineManager.getPolyLines().length,0);
     polyLineManager.clearPolyline();
     expect(polyLineManager.getPolyLines().length,0);
   });
