@@ -37,4 +37,12 @@ main(){
     expect(notFound.placeId, "");
     expect(notFound.description, "");
   });
+
+  test('build Place from Json', (){
+    String placeJSON = '{"geometry": {"location": {"lat": 1.0 ,"lng": -1.0 }}, "formatted_address": "Bush House", "place_id": "1"}';
+    expect(Place.fromJson(jsonDecode(placeJSON), "").geometry.toString(), place.geometry.toString());
+    expect(Place.fromJson(jsonDecode(placeJSON), "").placeId, place.placeId);
+    expect(Place.fromJson(jsonDecode(placeJSON), "").name, place.name);
+    expect(Place.fromJson(jsonDecode(placeJSON), "").description, "");
+  });
 }
