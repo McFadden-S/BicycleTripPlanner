@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../widgets/home/Home.dart';
 
+/// Class Comment:
+/// MarkerManager is a manager class that organises and creates
+/// markers to be displayed on the map
+
 class MarkerManager {
   //********** Fields **********
 

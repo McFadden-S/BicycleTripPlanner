@@ -72,10 +72,6 @@ class UserSettings {
       stops.add(Helper.place2Map(intermediates[i]));
     }
 
-    // print(start);
-    // print(end);
-    // print(stops);
-
     newRoute['start'] = start;
     newRoute['end'] = end;
     newRoute['stops'] = stops;
@@ -100,7 +96,6 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String encodedMap = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> decodedMap = json.decode(encodedMap);
-    // print("decodedMap: ${decodedMap}");
     return Helper.mapToPathway(decodedMap[index.toString()]);
   }
 
