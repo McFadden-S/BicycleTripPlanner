@@ -23,6 +23,7 @@ class PolylineManager {
 
   //********** Public **********
 
+
   Set<Polyline> getPolyLines() {
     return _polylines;
   }
