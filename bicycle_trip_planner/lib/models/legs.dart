@@ -26,6 +26,13 @@ class Legs {
     );
   }
 
+  const Legs.legsNotFound(
+      {this.startLocation = const Location.locationNotFound(),
+      this.endLocation = const Location.locationNotFound(),
+      this.steps = const [],
+      this.duration = 0,
+      this.distance = 0});
+
   @override
   String toString() {
     return steps.toString();
