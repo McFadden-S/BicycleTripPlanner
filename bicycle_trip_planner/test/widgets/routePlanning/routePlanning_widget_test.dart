@@ -114,21 +114,11 @@ void main() {
     expect(addStopsButton, findsOneWidget);
   });
 
-
-  testWidgets("RoutePlanning has Expand button in the RouteCard when first opened", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
-
-    final startSearch = find.byIcon(Icons.expand_more);
-
-    expect(startSearch, findsOneWidget);
-  });
-
-
   testWidgets("When Add Stop(s) button is clicked a new search bar for an intermediate stop appears", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop 1');
+    final stopSearchBar = find.text('Stop');
 
     expect(stopSearchBar, findsNothing);
 
@@ -143,68 +133,66 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop 1');
-    final StopSearchBar2 = find.text('Stop 2');
+    final stopSearchBar = find.text('Stop');
 
     expect(stopSearchBar, findsNothing);
 
     await tester.tap(addStopsButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(stopSearchBar, findsOneWidget);
 
     await tester.tap(addStopsButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(StopSearchBar2, findsOneWidget);
+    expect(stopSearchBar, findsWidgets);
   });
 
 
-  testWidgets("When X button is clicked next to a stop, the stop is removed from the screen", (WidgetTester tester) async {
+  testWidgets("When remove button is clicked next to an intermediate stop, the stop is removed from the screen", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop 1');
+    final stopSearchBar = find.text('Stop');
     final removeStopButton = find.byIcon(Icons.remove_circle_outline);
 
     expect(stopSearchBar, findsNothing);
 
     await tester.tap(addStopsButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(stopSearchBar, findsOneWidget);
 
     await tester.tap(removeStopButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(stopSearchBar, findsNothing);
   });
 
 
-  testWidgets("When X button is clicked next to Stop 1 in a list with 2 stops, stop 1 is removed and stop 2 takes it's place and the text is changed to stop 1", (WidgetTester tester) async {
+  testWidgets("When remove button is clicked next to Stop 1 in a list with 2 stops, stop 1 is removed and stop 2 takes it's place", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop 1');
-    final stopSearchBar2 = find.text('Stop 2');
-    final removeStopButton = find.byKey(Key("Remove 2"));
+    final stopSearchBar = find.text('Stop');
+    final removeStopButton = find.byKey(Key("Remove 1"));
 
     expect(stopSearchBar, findsNothing);
 
     await tester.tap(addStopsButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(stopSearchBar, findsOneWidget);
 
     await tester.tap(addStopsButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(stopSearchBar2, findsOneWidget);
+    expect(stopSearchBar, findsWidgets);
 
     await tester.tap(removeStopButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(stopSearchBar2, findsNothing);
+    expect(stopSearchBar, findsOneWidget);
   });
 
   testWidgets("When the bike button is clicked the user should be taken to the navigation screen", (WidgetTester tester) async {
@@ -216,7 +204,7 @@ void main() {
     expect(navigationWidget, findsNothing);
 
     await tester.tap(bikeButton);
-    await tester.pump();
+    await tester.pumpAndSettle();
 
     expect(bikeButton, findsOneWidget);
   });
