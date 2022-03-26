@@ -41,6 +41,9 @@ class DirectionsService {
   String _generateWaypoints(List<String> intermediates,
       [bool optimised = true]) {
     String waypoints = "";
+    // Only look at intermediates that aren't empty
+    intermediates = List.from(intermediates);
+    intermediates.removeWhere((stop) => stop == "");
     if (intermediates.isNotEmpty) {
       waypoints += "&waypoints=optimize:$optimised";
       for (var intermediate in intermediates) {
