@@ -24,28 +24,35 @@ class _StationCardState extends State<DistanceETACard> {
   @override
   Widget build(BuildContext context) {
     Provider.of<ApplicationBloc>(context);
-    return Card(
-        color: ThemeStyle.cardColor,
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(13)),
-        child: Container(
-          padding: const EdgeInsets.all(5.0),
-          child: Row(
-            children: [
-              RouteManager().ifLoading()
-                  ? CircularProgressIndicator(color: Colors.blueGrey)
-                  : Column(children: [
+    return Container(
+      padding: const EdgeInsets.all(5.0),
+      child: Row(
+        children: [
+          RouteManager().ifLoading()
+              ? CircularProgressIndicator(color: Colors.blueGrey)
+              : Wrap(
+              direction: Axis.vertical,
+              children: [
+                  Row(
+                    children: [
                       Icon(Icons.access_time_outlined,
                           color: ThemeStyle.secondaryIconColor),
-                      Text(
-                        _directionManager.getDuration(),
+                      Text(' ${_directionManager.getDuration()}',
                         style: TextStyle(color: ThemeStyle.secondaryTextColor),
                       )
-                    ]),
-              Text(_directionManager.getDistance(),
-                  style: TextStyle(color: ThemeStyle.secondaryTextColor))
-            ],
-          ),
-        ));
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.pin_drop,
+                          color: ThemeStyle.secondaryIconColor),
+                      Text(' ${_directionManager.getDistance()}',
+                        style: TextStyle(color: ThemeStyle.secondaryTextColor)),
+                    ],
+                  )
+          ]),
+        ],
+      ),
+    );
   }
 }

@@ -14,6 +14,7 @@ import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButt
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 
@@ -117,83 +118,51 @@ class _RoutePlanningState extends State<RoutePlanning> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
                   child: Row(children: [
-                    _recentRoutesCount != 0
-                        ? CircleButton(
+                    Column(
+                      children: [
+                        DatabaseManager().isUserLogged()
+                            ? CircleButton(
+                            iconIn: Icons.star,
+                            iconColor: ThemeStyle.primaryIconColor,
+                            onButtonClicked: () => saveRoute(context))
+                            : SizedBox.shrink(),
+                        SizedBox(height: 10),
+                        _recentRoutesCount != 0
+                            ? CircleButton(
                             iconIn: Icons.history,
                             iconColor: ThemeStyle.primaryIconColor,
                             onButtonClicked: () => showRecentRoutes())
-                        : const SizedBox.shrink(),
+                            : const SizedBox.shrink(),
+                      ],
+                    ),
                     Spacer(),
                     CustomBackButton(context: context, backTo: 'home'),
                   ]),
                 ),
                 CustomBottomSheet(
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Wrap(
-                          children: [DistanceETACard()],
-                        ),
-                        Spacer(),
-                        DatabaseManager().isUserLogged()
-                            ? SizedBox(
-                                width: 50,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      saveRoute(context);
-                                    },
-                                    child: Icon(
-                                      Icons.save,
-                                      color: ThemeStyle.secondaryFontColor,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(17.0),
-                                      ),
-                                      primary: ThemeStyle.buttonSecondaryColor,
-                                    )))
-                            : Container(),
-                        Spacer(),
-                        Expanded(
-                          flex: 20,
-                          child: RoundedRectangleButton(
-                              iconIn: Icons.directions_bike,
-                              buttonColor: ThemeStyle.goButtonColor,
-                              onButtonClicked: () {
-                                if (_routeManager.ifRouteSet()) {
-                                  if (_routeManager
-                                          .getStart()
-                                          .getStop()
-                                          .description !=
-                                      SearchType.current.description) {
-                                    _dialogManager.setBinaryChoice(
-                                      "Do you want to walk to start or be routed to it?",
-                                      "Walk",
-                                      () {
-                                        _routeManager
-                                            .setWalkToFirstWaypoint(true);
-                                      },
-                                      "Route",
-                                      () {
-                                        _routeManager
-                                            .setWalkToFirstWaypoint(false);
-                                      },
-                                    );
-
-                                    applicationBloc.showBinaryDialog();
-                                  }
-
-                                  applicationBloc.startNavigation();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("No route could be found!"),
-                                  ));
-                                }
-                              }),
-                        )
-                      ]),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 10),
+                          Expanded(
+                              child: DistanceETACard()),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: ElevatedButton(
+                                  child: Icon(Icons.directions_bike),
+                                  onPressed: () => startJourney(applicationBloc),
+                                  style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(Colors.green)
+                                  ),
+                              ),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ),
               ],
             ),
@@ -267,6 +236,39 @@ class _RoutePlanningState extends State<RoutePlanning> {
     setState(() {
       _recentRoutesCount = recentRoutesCount;
     });
+  }
+
+  startJourney(ApplicationBloc applicationBloc) {
+    if (_routeManager.ifRouteSet()) {
+      if (_routeManager
+          .getStart()
+          .getStop()
+          .description !=
+          SearchType.current.description) {
+        _dialogManager.setBinaryChoice(
+          "Do you want to walk to start or be routed to it?",
+          "Walk",
+              () {
+            _routeManager
+                .setWalkToFirstWaypoint(true);
+          },
+          "Route",
+              () {
+            _routeManager
+                .setWalkToFirstWaypoint(false);
+          },
+        );
+
+        applicationBloc.showBinaryDialog();
+      }
+
+      applicationBloc.startNavigation();
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(
+        content: Text("No route could be found!"),
+      ));
+    }
   }
 }
 
