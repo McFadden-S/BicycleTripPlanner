@@ -389,8 +389,6 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: UpdateStation should not be responsible for setting stations in
-  // stationManager to favouriteStations only. Causes a lot of side effects
   updateStations() async {
     http.Client client = new http.Client();
     await _stationManager.setStations(
@@ -543,11 +541,6 @@ class ApplicationBloc with ChangeNotifier {
 
   bool isUserLogged() {
     return DatabaseManager().isUserLogged();
-  }
-
-  void toggleCycling() {
-    _directionManager.toggleCycling();
-    notifyListeners();
   }
 
   // Clears selected route and directions

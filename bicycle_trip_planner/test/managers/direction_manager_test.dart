@@ -23,10 +23,6 @@ void main() {
     return steps;
   }
 
-  test('ensure isCycling is false when initialized', () {
-    expect(directionManager.ifCycling(), false);
-  });
-
   test('ensure duration is no data when initialized', () {
     expect(directionManager.getDuration(), "No data");
   });
@@ -579,21 +575,21 @@ void main() {
     final routeManager = RouteManager();
 
     routeManager.setRoutes(route_1, route_2, route_3);
-    directionManager.toggleCycling(false);
 
     List<Steps> r2Directions = [];
     r2Directions.addAll(route_2.directions);
     r2Directions.removeAt(0);
 
+    routeManager.showBikeRoute(false);
+
     expect(directionManager.getDirections(), r2Directions);
-
     expect(directionManager.getNumberOfDirections(), 5);
-
-    directionManager.toggleCycling(false);
 
     List<Steps> r1Directions = [];
     r1Directions.addAll(route_1.directions);
     r1Directions.removeAt(0);
+
+    routeManager.showCurrentWalkingRoute(false);
 
     expect(directionManager.getDirections(), r1Directions);
   });
