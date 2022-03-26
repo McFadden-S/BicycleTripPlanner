@@ -558,15 +558,12 @@ void main() {
     expect(routeManager.ifStartSet(), true);
   });
 
-  // test("ensure stop can be changed",(){
-  //   final stop_1 = Stop(Place(geometry: const Geometry.geometryNotFound(), name: "stop_1", placeId: "placeId", description: "description"));
-  //   final stop_2 = Stop(Place(geometry: const Geometry.geometryNotFound(), name: "stop_2", placeId: "placeId", description: "description"));
-  //
-  //   routeManager.changeStop(stop_1.getUID(), stop_2.getStop());
-  //   print(stop_1.getStop().name);
-  //   print(routeManager.getStops());
-  //   expect(stop_1.getStop().name, stop_2.getStop().name);
-  // });
+  test("ensure stop can be changed",(){
+     final stop = Stop(Place(geometry: const Geometry.geometryNotFound(), name: "stop_2", placeId: "placeId", description: "description"));
+
+    routeManager.changeStop(routeManager.getStops().first.getUID(), stop.getStop());
+    expect(routeManager.getStops().first.getStop().name, stop.getStop().name);
+  });
 
   test('ensure that start can be cleared when requested', () {
     Place start = createPlace("start", "1");
