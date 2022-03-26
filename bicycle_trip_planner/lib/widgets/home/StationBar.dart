@@ -1,18 +1,15 @@
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
-import 'RouteCard.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
@@ -26,7 +23,6 @@ class _StationBarState extends State<StationBar> {
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
-  FavouriteRoutesManager favouriteRoutesManager = FavouriteRoutesManager();
 
   bool _isFavouriteStations = false;
   bool _isFavouriteRoutes = false;
@@ -34,6 +30,8 @@ class _StationBarState extends State<StationBar> {
 
   List<int> _favouriteStations = [];
   Map<String, Pathway> _favouriteRoutes = {};
+
+  late final firebaseSubscription;
 
   getFavouriteStations() async {
     DatabaseManager().getFavouriteStations().then((value) => setState(() {
@@ -47,17 +45,14 @@ class _StationBarState extends State<StationBar> {
         }));
   }
 
-  deleteFavouriteRoute(int index) {
+  deleteFavouriteRoute(String key) {
     if (DatabaseManager().isUserLogged()) {
-      DatabaseManager()
-          .removeFavouriteRoute(FavouriteRoutesManager().getKey(index));
+      DatabaseManager().removeFavouriteRoute(key);
     }
-    FavouriteRoutesManager().updateRoutes();
     getFavouriteRoutes();
   }
 
   toggleFavouriteStation(Station station) {
-    // Check if user is logged in...
     if (!_favouriteStations.contains(station.id)) {
       DatabaseManager()
           .addToFavouriteStations(station.id)
@@ -67,31 +62,30 @@ class _StationBarState extends State<StationBar> {
           .removeFavouriteStation(station.id.toString())
           .then((value) => getFavouriteStations());
     }
-    //appBloc!.notifyListeningWidgets();
   }
 
   @override
   void initState() {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
-
-    FirebaseAuth.instance.authStateChanges().listen((event) {
+    firebaseSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((event) {
+      _isUserLogged = event != null && !event.isAnonymous;
       setState(() {
-        _isUserLogged = event != null && !event.isAnonymous;
-      });
-
-      applicationBloc.updateStations();
-
-      if (_isUserLogged == false) {
-        setState(() {
+        if (!_isUserLogged) {
           _isFavouriteStations = false;
-        });
-      } else {
-        getFavouriteStations();
-        getFavouriteRoutes();
-      }
+          _isFavouriteRoutes = false;
+        } else {
+          getFavouriteStations();
+          getFavouriteRoutes();
+        }
+      });
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    firebaseSubscription.cancel();
+    super.dispose();
   }
 
   Widget dropdownButtons(StateSetter setState) {
@@ -157,22 +151,37 @@ class _StationBarState extends State<StationBar> {
           );
   }
 
-  Widget routeListBuilder(String errorMessage,
+  Widget favouriteRouteListBuilder(String errorMessage,
       [Axis scrollDirection = Axis.vertical]) {
-    return FavouriteRoutesManager().getNumberOfRoutes() > 0
-        ? ListView.builder(
-            scrollDirection: scrollDirection,
-            itemCount: FavouriteRoutesManager().getNumberOfRoutes(),
-            itemBuilder: (BuildContext context, int index) => SizedBox(
-                height: MediaQuery.of(context).size.height * 0.15,
-                child: FavouriteRouteCard(
-                  index: index,
-                  deleteRoute: deleteFavouriteRoute,
-                )))
-        : Center(
-            child: Text(errorMessage,
-                style: TextStyle(color: ThemeStyle.primaryTextColor)),
-          );
+    return FutureBuilder<Map<String, Pathway>>(
+        future: DatabaseManager().getFavouriteRoutes(),
+        builder: (context, snapshot) {
+          Map<String, Pathway> routes = {};
+          if (snapshot.data != null) {
+            routes = snapshot.data!;
+          } else {
+            return centeredLoadingKit();
+          }
+          return routes.isNotEmpty
+              ? ListView.builder(
+                  scrollDirection: scrollDirection,
+                  itemCount: routes.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    Pathway valueRoute = routes[routes.keys.toList()[index]]!;
+                    String keyRoute = routes.keys.toList()[index];
+                    return SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.15,
+                        child: FavouriteRouteCard(
+                          keyRoute: keyRoute,
+                          valueRoute: valueRoute,
+                          deleteRoute: deleteFavouriteRoute,
+                        ));
+                  })
+              : Center(
+                  child: Text(errorMessage,
+                      style: TextStyle(color: ThemeStyle.primaryTextColor)),
+                );
+        });
   }
 
   Widget centeredLoadingKit() {
@@ -230,7 +239,7 @@ class _StationBarState extends State<StationBar> {
                               const SizedBox(height: 10),
                               Expanded(
                                   child: _isFavouriteRoutes
-                                      ? routeListBuilder(
+                                      ? favouriteRouteListBuilder(
                                           "You don't have any favourite routes currently.")
                                       : _isFavouriteStations
                                           ? FutureBuilder<List<Station>>(
@@ -288,8 +297,6 @@ class _StationBarState extends State<StationBar> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context, listen: true);
 
-    _isUserLogged = applicationBloc.isUserLogged();
-
     return Container(
       padding: const EdgeInsets.only(bottom: 20.0),
       decoration: BoxDecoration(
@@ -330,7 +337,6 @@ class _StationBarState extends State<StationBar> {
                     ),
                     IconButton(
                       onPressed: () => showExpandedList(),
-                      //onPressed: () => showExpandedList(stationManager.getStations(), applicationBloc),
                       icon: Icon(Icons.menu,
                           color: ThemeStyle.secondaryIconColor),
                     ),
@@ -346,7 +352,7 @@ class _StationBarState extends State<StationBar> {
                         padding: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: stationManager.getNumberOfStations() > 0
                             ? _isFavouriteRoutes
-                                ? routeListBuilder(
+                                ? favouriteRouteListBuilder(
                                     "You don't have any favourite routes currently.",
                                     Axis.horizontal)
                                 : _isFavouriteStations
