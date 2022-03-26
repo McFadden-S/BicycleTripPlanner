@@ -12,6 +12,8 @@ class DirectionManager {
 
   bool _isCycling = false;
 
+  int _durationValue = 0;
+
   String _duration = "No data";
   String _distance = "No data";
 
@@ -40,6 +42,10 @@ class DirectionManager {
   }
 
   //********** Getting **********
+
+  int getDurationValue() {
+    return _durationValue;
+  }
 
   String getDuration() {
     return _duration;
@@ -98,6 +104,7 @@ class DirectionManager {
 
   void setDuration(int seconds) {
     int minutes = (seconds / 60).ceil();
+    _durationValue = minutes;
     _duration = "$minutes min";
   }
 

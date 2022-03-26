@@ -1,4 +1,5 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,21 +17,21 @@ class WalkOrCycleToggle extends StatefulWidget {
 }
 
 class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
-  late final ApplicationBloc appBloc;
+  late final ApplicationBloc applicationBloc;
+  final DialogManager _dialogManager = DialogManager();
 
   void setCycling() {
-    setState(() => {appBloc.toggleCycling()});
+    setState(() => {applicationBloc.toggleCycling()});
   }
 
   @override
   void initState() {
-    appBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("Being built again!");
     return ElevatedButton(
       style: ButtonStyle(
           backgroundColor:
@@ -59,7 +60,19 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         ],
       ),
       onPressed: () {
-        appBloc.showWalkBikeToggleDialog();
+        _dialogManager.setBinaryChoice(
+          "Toggle between walking and cycling?",
+          "Toggle",
+              () {
+            applicationBloc.toggleCycling();
+          },
+          "Cancel",
+              () {},
+        );
+
+        applicationBloc.showBinaryDialog();
+
+        applicationBloc.notifyListeningWidgets();
       },
     );
   }

@@ -46,8 +46,11 @@ class Pathway {
   /**
    * @return List<Stop> of the waypoints in the list
    */
-  List<Stop> getWaypoints() =>
-      _stops.isEmpty ? [] : _stops.sublist(1, size - 1);
+  List<Stop> getWaypoints() {
+    List<Stop> ret = size <= 2 ? [] : _stops.sublist(1, size - 1);
+    print(ret);
+    return ret;
+  }
 
   /**
    * @return Stop first waypoint
@@ -114,6 +117,15 @@ class Pathway {
   }
 
   /**
+   * method adds a waypoint specified and swaps stops
+   * @param Stop stop
+   */
+  void addWaypoint(Stop stop) {
+    _stops.add(stop);
+    swapStops(stop.getUID(), _destination.getUID());
+  }
+
+  /**
    * method adds a start stop specified and updates the start
    * @param Stop start stop
    */
@@ -138,8 +150,10 @@ class Pathway {
    */
   void removeFirstWayPoint() {
     _firstWaypoint = Stop();
-    _stops.removeAt(1);
-    size = size - 1;
+    if (_hasFirstWaypoint) {
+      _stops.removeAt(1);
+      size = size - 1;
+    }
   }
 
   /**
@@ -161,7 +175,10 @@ class Pathway {
    * method clears destination waypoint by setting _start to a empty Stop
    */
   void clearDestination() {
+    Stop destinationStop = getDestination();
     _destination = Stop();
+    destinationStop.setStop(_destination.getStop());
+    _updateDestination();
   }
 
   /**
@@ -235,6 +252,7 @@ class Pathway {
   void changeStop(int id, Place newStop) {
     Stop stop = getStop(id);
     stop.setStop(newStop);
+    _updatePointers();
   }
 
   /**
