@@ -36,7 +36,8 @@ void main() {
   });
 
   test('ensure directions is empty when initialized', () {
-    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.ifDirections(), false);
+    expect(directionManager.getNumberOfDirections(), 0);
   });
 
   test('ensure currentDirection is empty when initialized', () {
@@ -586,6 +587,8 @@ void main() {
 
     expect(directionManager.getDirections(), r2Directions);
 
+    expect(directionManager.getNumberOfDirections(), 5);
+
     directionManager.toggleCycling(false);
 
     List<Steps> r1Directions = [];
@@ -594,4 +597,22 @@ void main() {
 
     expect(directionManager.getDirections(), r1Directions);
   });
+
+  test('ensure can get direction on index', () {
+    expect(directionManager.getDirection(-1), Steps.stepsNotFound());
+    expect(directionManager.getDirection(1).toString(), "Turn <b>right</b> onto <b>Strand</b>/<wbr/><b>A4</b>");
+  });
+
+  test('ensure can pop direction', () {
+    expect(directionManager.popDirection().toString(), "Turn <b>right</b> onto <b>Strand</b>/<wbr/><b>A4</b>");
+  });
+
+  test('ensure can clear directions', () {
+    directionManager.clear();
+    expect(directionManager.getDuration(), "No data");
+    expect(directionManager.getDistance(), "No data");
+    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.getCurrentDirection(), Steps.stepsNotFound());
+  });
+
 }
