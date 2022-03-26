@@ -31,8 +31,6 @@ class MarkerManager {
 
   //********** Private **********
 
-  StreamSink<Set<Marker>> get _mapMarkerSink => _mapMarkerSC.sink;
-
   Stream<Set<Marker>> get mapMarkerStream => _mapMarkerSC.stream;
 
   /// @param -
@@ -80,17 +78,6 @@ class MarkerManager {
   }
 
   /// @param - String; markerID in question
-  /// @return Marker - returns marker object from the markerID given
-  Marker _getMarker(String markerID) {
-    Marker marker = const Marker(markerId: MarkerId("false"));
-    if (_markerExists(markerID)) {
-      return _markers
-          .firstWhere((marker) => marker.markerId == MarkerId(markerID));
-    }
-    return marker;
-  }
-
-  /// @param - String; markerID in question
   /// @affect - removes marker using markerID given
   void _removeMarker(String markerID) {
     if (_markerExists(markerID)) {
@@ -131,13 +118,6 @@ class MarkerManager {
   /// @return Set<Marker> - returns set of markers and removes duplicates if any
   Set<Marker> getMarkers() {
     return _markers;
-  }
-
-  /// @param - String; markerID wanted to be removed
-  /// @return void
-  /// @affects - removes marker using markerID given
-  void removeMarker(String markerID) {
-    _removeMarker(markerID);
   }
 
   /// @param - int; UID of marker

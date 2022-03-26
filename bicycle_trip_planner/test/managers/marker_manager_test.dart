@@ -98,20 +98,6 @@ void main(){
       expect(markerManager.getMarkers().length,1);
   });
 
-  test('remove existing marker', (){
-    expect(markerManager.getMarkers().length,0);
-    markerManager.setMarker(const LatLng(51.511448, -0.116414), "test marker");
-    expect(markerManager.getMarkers().length,1);
-    markerManager.removeMarker("test marker");
-    expect(markerManager.getMarkers().length,0);
-  });
-
-  test('remove non-existant marker', (){
-    expect(markerManager.getMarkers().length,0);
-    markerManager.removeMarker("non-existant marker");
-    expect(markerManager.getMarkers().length,0);
-  });
-
   test('remove existing marker using uid', (){
     Location location = Location(lat: 51.511448, lng: -0.116414);
     Geometry geometry = Geometry(location: location);
