@@ -48,9 +48,8 @@ void main(){
   });
 
   test('ensure marker is added for place requested', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "description");
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
@@ -99,9 +98,8 @@ void main(){
   });
 
   test('remove existing marker using uid', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "description");
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
@@ -110,9 +108,8 @@ void main(){
   });
 
   test('remove non-existing marker using uid', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(geometry: geometry, name: 'Bush House', placeId: "1", description: "description");
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);

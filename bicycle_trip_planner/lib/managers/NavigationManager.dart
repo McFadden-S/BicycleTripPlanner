@@ -74,8 +74,8 @@ class NavigationManager {
   }
 
   _updateRoute() async {
-    Location startLocation = _routeManager.getStart().getStop().geometry.location;
-    Location endLocation = _routeManager.getDestination().getStop().geometry.location;
+    LatLng startLocation = _routeManager.getStart().getStop().latlng;
+    LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
     updatePickUpDropOffStations(startLocation, endLocation, _routeManager.getGroupSize());
   }
@@ -181,15 +181,14 @@ class NavigationManager {
 
   walkToFirstLocation(Place first,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location firstLocation = first.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
+    LatLng firstLocation = first.latlng;
+    LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
   }
 
   Future<void> updatePickUpDropOffStations(
-      Location startLocation, Location endLocation, int groupSize) async {
+      LatLng startLocation, LatLng endLocation, int groupSize) async {
     // Looks like some code duplication here too??
     if (_pickUpStation.bikes < groupSize && !_passedPickUpStation) {
       await setNewPickUpStation(startLocation, groupSize);
@@ -199,23 +198,19 @@ class NavigationManager {
     }
   }
 
-  Future<void> setNewPickUpStation(Location location,
-      [int groupSize = 1]) async {
-    _pickUpStation = await _stationManager.getPickupStationNear(
-        LatLng(location.lat, location.lng), groupSize);
+  Future<void> setNewPickUpStation(LatLng location, [int groupSize = 1]) async {
+    _pickUpStation = await _stationManager.getPickupStationNear(location, groupSize);
   }
 
-  Future<void> setNewDropOffStation(Location location,
-      [int groupSize = 1]) async {
-    _dropOffStation = await _stationManager.getDropoffStationNear(
-        LatLng(location.lat, location.lng), groupSize);
+  Future<void> setNewDropOffStation(LatLng location, [int groupSize = 1]) async {
+    _dropOffStation = await _stationManager.getDropoffStationNear(location, groupSize);
   }
 
   Future<void> setInitialPickUpDropOffStations() async {
-    setNewPickUpStation(_routeManager.getStart().getStop().geometry.location,
+    setNewPickUpStation(_routeManager.getStart().getStop().latlng,
         _routeManager.getGroupSize());
     setNewDropOffStation(
-        _routeManager.getDestination().getStop().geometry.location,
+        _routeManager.getDestination().getStop().latlng,
         _routeManager.getGroupSize());
   }
 

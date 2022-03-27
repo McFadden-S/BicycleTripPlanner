@@ -27,7 +27,7 @@ void main() {
     var placesServices = MockPlacesService();
     var currentLocationLatLng = LatLng(50.526523, -0.4151);
     var currentPlace = Place(
-        geometry: Geometry(
+        latlng: Geometry(
             location: Location(
                 lat: currentLocationLatLng.latitude,
                 lng: currentLocationLatLng.longitude)),

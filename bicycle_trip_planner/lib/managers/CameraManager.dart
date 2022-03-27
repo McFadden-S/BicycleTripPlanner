@@ -90,10 +90,7 @@ class CameraManager {
 
   /// Views a Place on the Map
   Future<void> viewPlace(Place place) async {
-    final double lat = place.geometry.location.lat;
-    final double lng = place.geometry.location.lng;
-
-    setCameraPosition(LatLng(lat, lng));
+    setCameraPosition(place.latlng);
   }
 
   /// Views the Route

@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../models/geometry.dart';
 import '../models/location.dart';
 import '../models/pathway.dart';
@@ -10,8 +12,8 @@ class Helper {
     output['name'] = place.name;
     output['description'] = place.description;
     output['id'] = place.placeId;
-    output['lng'] = place.geometry.location.lng;
-    output['lat'] = place.geometry.location.lat;
+    output['lng'] = place.latlng.longitude;
+    output['lat'] = place.latlng.latitude;
     return output;
   }
 
@@ -32,7 +34,7 @@ class Helper {
         name: mapIn['name'],
         description: mapIn['description'],
         placeId: mapIn['id'],
-        geometry:
-            Geometry(location: Location(lat: mapIn['lat'], lng: mapIn['lng'])));
+        latlng: LatLng(mapIn['lat'], mapIn['lng'])
+    );
   }
 }
