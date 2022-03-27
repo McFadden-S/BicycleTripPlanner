@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+
+import 'firebase_mocks/firebase_auth_mocks.dart';
 
 /*<<<<<<< HEAD
 import 'mock_firebase.dart';
@@ -111,12 +114,59 @@ void main() {
 Future<void> main() async {
 
   setupFirebaseMocks();
+  setupFirebaseAuthMocks();
 //>>>>>>> 70a28859dd8ba5f654840bebf080ec2b2439fcc2
 
-  final database = MockFirebaseDatabase();
-  final auth = MockFirebaseAuth();
+  var database = MockFirebaseDatabase();
+  var auth = MockFirebaseAuth();
 
   await Firebase.initializeApp();
+
+  const userId = 'userId';
+  const userName = 'Elon musk';
+  const favouriteRouteId = "routeID";
+  const favouriteStationsID = "158";
+  const description = "description";
+  const routeID = "endRouteID";
+  const lat = "50.54631";
+  const lng = "-0.15413";
+  const name = "locationName";
+  const fakeData = {
+    'users': {
+      userId: {
+        'favouriteRoutes': {
+          favouriteRouteId: {
+            'end':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'start':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'stops':{
+              0: {
+                'description':{description},
+                'id':{routeID},
+                'lat': {lat},
+                'lng': {lng},
+                'name': {name}
+              }
+            }
+          },
+          'favouriteStations': {
+            favouriteStationsID: {favouriteStationsID}
+          }
+        }
+      }
+    }
+  };
 
 
 /*<<<<<<< HEAD
@@ -128,9 +178,44 @@ Future<void> main() async {
 =======
 >>>>>>> 70a28859dd8ba5f654840bebf080ec2b2439fcc2*/
 
+  setUp(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    database.reference().set(fakeData);
+    /*final app = await Firebase.initializeApp(
+      name: '1',
+      options: const FirebaseOptions(
+        apiKey: '',
+        appId: '',
+        messagingSenderId: '',
+        projectId: '',
+      ),
+    );*/
+
+    final googleSignIn = MockGoogleSignIn();
+    final signinAccount = await googleSignIn.signIn();
+    final googleAuth = await signinAccount?.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    final user = MockUser(
+      isAnonymous: false,
+      uid: userId,
+      email: 'bob@somedomain.com',
+      displayName: 'Bob',
+    );
+    auth = MockFirebaseAuth(mockUser: user);
+    final result = await auth.signInWithCredential(credential);
+    final loginInUser = await result.user;
+
+  });
+
   test('Get favourite station', () async {
 
     final databaseManager = DatabaseManager.forMock(database, auth);
+    print(database.ref("users").key);
     databaseManager.isUserLogged();
     databaseManager.getFavouriteRoutes();
 
