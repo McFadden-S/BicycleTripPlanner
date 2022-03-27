@@ -51,10 +51,6 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-<<<<<<< HEAD
-=======
-  // final DatabaseManager _databaseManager = DatabaseManager();
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
   final UserSettings _userSettings = UserSettings();
 
   late Timer _stationTimer;

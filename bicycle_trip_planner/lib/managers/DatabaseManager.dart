@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import '../models/stop.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Helper.dart';
 
 /// Class Comment:

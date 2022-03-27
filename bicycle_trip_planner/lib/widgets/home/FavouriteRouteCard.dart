@@ -2,12 +2,6 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-<<<<<<< HEAD
-import 'package:bicycle_trip_planner/managers/DialogManager.dart';
-import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
-=======
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,31 +35,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-<<<<<<< HEAD
-        routeClicked(applicationBloc,
-            DatabaseManager().getFavouriteRouteByIndex(widget.index)!, context);
-      },
-      onDoubleTap: () {
-        if(DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(DatabaseManager().getRouteKeyByIndex(widget.index));
-        }
-      },
-      onLongPress: () {
-        if(DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(DatabaseManager().getRouteKeyByIndex(widget.index));
-=======
         routeClicked(applicationBloc, widget.valueRoute, context);
-      },
-      onDoubleTap: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
-        }
-      },
-      onLongPress: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
-        }
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -86,11 +56,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-<<<<<<< HEAD
-                          "\t\t${DatabaseManager().getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
-=======
                           "\t\t${widget.valueRoute.getStart().getStop().name}",
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -111,24 +77,6 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                     )
                   ]),
                   Spacer(),
-<<<<<<< HEAD
-                  Row(
-                      children: [
-                        SizedBox(width: 8.0,),
-                        Icon(Icons.circle, size: 4.0, color: ThemeStyle.secondaryIconColor,),
-                        SizedBox(width: 8.0,),
-                        SizedBox(
-                          width: (MediaQuery.of(context).size.width * 0.85) - 70.0,
-                          child:
-                            Text("\t\t${DatabaseManager().getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 15.0, color: ThemeStyle.secondaryFontColor,)
-                            )
-                          ),
-                        SizedBox(width: 20),
-                        ]
-                  ),
-=======
                   Row(children: [
                     SizedBox(
                       width: 8.0,
@@ -153,7 +101,6 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                             ))),
                     SizedBox(width: 20),
                   ]),
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
                   Spacer(),
                   Row(children: [
                     SizedBox(
@@ -177,11 +124,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-<<<<<<< HEAD
-                          "\t\t${DatabaseManager().getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
-=======
                           "\t\t${widget.valueRoute.getDestination().getStop().name}",
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,

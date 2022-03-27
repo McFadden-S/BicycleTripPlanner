@@ -1,8 +1,5 @@
 import 'package:bicycle_trip_planner/constants.dart';
-<<<<<<< HEAD
-=======
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
->>>>>>> 957c949c6c9690e897b342fbe37b5661b034907b
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
