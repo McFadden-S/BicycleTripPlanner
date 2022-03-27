@@ -66,7 +66,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                          "\t\t${widget.valueRoute.getStart().getStop().name}",
+                          "\t\t${widget.valueRoute.getStart().getStop().description}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -103,7 +103,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                            "\t\t${widget.valueRoute.getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            "\t\t${widget.valueRoute.getWaypoints().map((e) => e.getStop().description).join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -134,7 +134,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-                          "\t\t${widget.valueRoute.getDestination().getStop().name}",
+                          "\t\t${widget.valueRoute.getDestination().getStop().description}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,

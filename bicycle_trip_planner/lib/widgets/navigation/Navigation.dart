@@ -10,7 +10,7 @@ import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dar
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/ZoomOnUserButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CostEffTimerButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -60,61 +60,72 @@ class _NavigationState extends State<Navigation> {
     Provider.of<ApplicationBloc>(context);
     return SafeArea(
       bottom: false,
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
-            child: Column(
-              children: [
-                Directions(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10),
-                      child: Column(
-                        children: [
-                          CurrentLocationButton(),
-                          SizedBox(height: 10),
-                          ViewRouteButton(),
-                          routeManager.ifCostOptimised()
-                          ? Column(
-                            children: [
-                              SizedBox(height: 10),
-                              CostEffTimerButton(ctdwnController: controller),
-                              SizedBox(height: 10),
-                              CountdownCard(ctdwnController: controller),
-                            ],)
-                          : SizedBox.shrink()
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          EndOfRouteDialog(),
-          CustomBottomSheet(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Row(
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          setState(() {
+          });
+        },
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, right: 10, left: 10),
+              child: Column(
                 children: [
-                  SizedBox(width: 10),
-                  DistanceETACard(),
-                  SizedBox(width: 10),
-                  Expanded(
-                      child: WalkOrCycleToggle()),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: EndRouteButton(),
+                  Directions(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Column(
+                          children: [
+                            CurrentLocationButton(),
+                            SizedBox(height: 10),
+                            ZoomOnUserButton(),
+                            routeManager.ifCostOptimised()
+                            ? Column(
+                              children: [
+                                SizedBox(height: 10),
+                                CostEffTimerButton(ctdwnController: controller),
+                                SizedBox(height: 10),
+                                CountdownCard(ctdwnController: controller),
+                              ],)
+                            : SizedBox.shrink()
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+            EndOfRouteDialog(),
+            CustomBottomSheet(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10),
+                    DistanceETACard(),
+                    SizedBox(width: 10),
+                    Expanded(
+                        child: WalkOrCycleToggle()),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: EndRouteButton(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
+  }
+
+  testfff() {
+    print("+++++++++++++++++");
   }
 }

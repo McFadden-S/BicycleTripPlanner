@@ -442,13 +442,13 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager.setLoading(true);
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
-    await _navigationManager.start();
-    await updateLocationLive();
-    _routeManager.showCurrentRoute();
     _userSettings.saveRoute(
         _routeManager.getStart().getStop(),
         _routeManager.getDestination().getStop(),
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
+    await _navigationManager.start();
+    await updateLocationLive();
+    _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
     notifyListeners();

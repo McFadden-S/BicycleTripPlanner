@@ -63,11 +63,11 @@ class CameraManager {
   //********** Public **********
 
   ///Sets the position of the camera on the map
-  void setCameraPosition(LatLng position) {
+  void setCameraPosition(LatLng position, {double zoomIn = 16}) {
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
-        zoom: 16.0,
+        zoom: zoomIn,
       )),
     );
   }
@@ -101,8 +101,8 @@ class CameraManager {
   }
 
   /// Sets the camera to the user's location
-  Future<void> viewUser() async {
+  Future<void> viewUser({double zoomIn = 16}) async {
     LatLng userLocation = await locationManager.locate();
-    setCameraPosition(userLocation);
+    setCameraPosition(userLocation, zoomIn: zoomIn);
   }
 }

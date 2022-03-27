@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
