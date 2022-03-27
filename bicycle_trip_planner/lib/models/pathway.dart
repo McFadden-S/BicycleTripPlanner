@@ -16,13 +16,11 @@ class Pathway {
 
   /// A list of all stops in this pathway
   final List<Stop> _stops = [];
-  int size = 0;
 
   /// Initialize pathway such that you always have a start and a end stop
   Pathway() {
     _stops.add(_start);
     _stops.add(_destination);
-    size = 2;
     _updatePointers();
   }
 
@@ -51,7 +49,7 @@ class Pathway {
   /// @return List<Stop>
   ///   - Returns all waypoints in pathway
   List<Stop> getWaypoints() {
-    List<Stop> ret = size <= 2 ? [] : _stops.sublist(1, size - 1);
+    List<Stop> ret = _stops.length <= 2 ? [] : _stops.sublist(1, _stops.length - 1);
     return ret;
   }
 
@@ -112,7 +110,6 @@ class Pathway {
   /// @effects adds stop to stops list
   void addStop(Stop stop) {
     _stops.add(stop);
-    size = size + 1;
     _updateDestination();
   }
 
@@ -131,7 +128,6 @@ class Pathway {
   /// @effects adds stop to stops list at the first position
   void addStart(Stop stop) {
     _stops.insert(0, stop);
-    size = size + 1;
     _updateStart();
   }
 
@@ -142,7 +138,6 @@ class Pathway {
   void addFirstWayPoint(Stop stop) {
     _firstWaypoint = stop;
     _stops.insert(1, stop);
-    size = size + 1;
   }
 
   /// @param void
@@ -153,7 +148,6 @@ class Pathway {
     _firstWaypoint = Stop();
     if (_hasFirstWaypoint) {
       _stops.removeAt(1);
-      size = size - 1;
     }
   }
 
@@ -192,7 +186,6 @@ class Pathway {
       clearFirstWaypoint();
     }
     _stops.remove(stop);
-    size = size - 1;
     _updatePointers();
   }
 
@@ -284,12 +277,9 @@ class Pathway {
     clearStart();
     _hasFirstWaypoint = false;
     _stops.clear();
-    size = 0;
 
     _stops.add(_start);
     _stops.add(_destination);
-
-    size = 2;
     _updatePointers();
   }
 }
