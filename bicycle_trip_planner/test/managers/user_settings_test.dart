@@ -101,7 +101,7 @@ void main() {
     expect(placeMap.values.last, "the final description");
   });
 
-  test('make sure savePlace cant save "My current location"', () async {
+  test('make sure savePlace() can not save "My current location"', () async {
     Place place = Place(
         latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
@@ -115,7 +115,7 @@ void main() {
     expect(placeString, null);
   });
 
-  test('make sure savePlace removes not so recent searches', () async {
+  test('make sure savePlace() removes not so recent searches', () async {
     Place place = Place(
         latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
@@ -320,32 +320,32 @@ void main() {
     userSettings.saveRoute(startPlace, endPlace, intermediates);
     final SharedPreferences prefs = await userSettings.getSharedPref();
     String? routesString = prefs.getString("recentRoutes");
-    Map<String, dynamic> placeMap = json.decode(routesString!);
+    Map<String, dynamic> routeMap = json.decode(routesString!);
 
     // stored one recent route
-    expect(placeMap.length, 1);
-    expect(placeMap.containsKey("0"), true);
-    expect(placeMap["0"].containsKey("start"), true);
-    expect(placeMap["0"].containsKey("end"), true);
+    expect(routeMap.length, 1);
+    expect(routeMap.containsKey("0"), true);
+    expect(routeMap["0"].containsKey("start"), true);
+    expect(routeMap["0"].containsKey("end"), true);
 
     // expect 5 attributes of the start stop
-    expect(placeMap["0"]["start"].length, 5);
-    expect(placeMap["0"]["start"]["name"], "Bush House");
-    expect(placeMap["0"]["start"]["description"], "the description");
-    expect(placeMap["0"]["start"]["id"], "1");
-    expect(placeMap["0"]["start"]["lat"], 51.511448);
-    expect(placeMap["0"]["start"]["lng"], -0.116414);
+    expect(routeMap["0"]["start"].length, 5);
+    expect(routeMap["0"]["start"]["name"], "Bush House");
+    expect(routeMap["0"]["start"]["description"], "the description");
+    expect(routeMap["0"]["start"]["id"], "1");
+    expect(routeMap["0"]["start"]["lat"], 51.511448);
+    expect(routeMap["0"]["start"]["lng"], -0.116414);
 
     // expect 5 attributes of the end stop
-    expect(placeMap["0"]["end"].length, 5);
-    expect(placeMap["0"]["end"]["name"], "Maida Vale");
-    expect(placeMap["0"]["end"]["description"], "the end description");
-    expect(placeMap["0"]["end"]["id"], "2");
-    expect(placeMap["0"]["end"]["lat"], 51.400520);
-    expect(placeMap["0"]["end"]["lng"], -0.138209);
+    expect(routeMap["0"]["end"].length, 5);
+    expect(routeMap["0"]["end"]["name"], "Maida Vale");
+    expect(routeMap["0"]["end"]["description"], "the end description");
+    expect(routeMap["0"]["end"]["id"], "2");
+    expect(routeMap["0"]["end"]["lat"], 51.400520);
+    expect(routeMap["0"]["end"]["lng"], -0.138209);
 
     // no intermediary stops set so length should be 0
-    expect(placeMap["0"]["stops"].length, 0);
+    expect(routeMap["0"]["stops"].length, 0);
   });
 
   test('make save route works with a start and end stop only', () async {
@@ -389,35 +389,35 @@ void main() {
     userSettings.saveRoute(startPlace, endPlace, intermediates);
     final SharedPreferences prefs = await userSettings.getSharedPref();
     String? routesString = prefs.getString("recentRoutes");
-    Map<String, dynamic> placeMap = json.decode(routesString!);
+    Map<String, dynamic> routeMap = json.decode(routesString!);
 
     // stored one recent route
-    expect(placeMap.length, 1);
-    expect(placeMap.containsKey("0"), true);
-    expect(placeMap["0"].containsKey("start"), true);
-    expect(placeMap["0"].containsKey("end"), true);
+    expect(routeMap.length, 1);
+    expect(routeMap.containsKey("0"), true);
+    expect(routeMap["0"].containsKey("start"), true);
+    expect(routeMap["0"].containsKey("end"), true);
 
     // expect 5 attributes of the start stop
-    expect(placeMap["0"]["start"].length, 5);
-    expect(placeMap["0"]["start"]["name"], "Bush House");
-    expect(placeMap["0"]["start"]["description"], "the description");
-    expect(placeMap["0"]["start"]["id"], "1");
-    expect(placeMap["0"]["start"]["lat"], 51.511448);
-    expect(placeMap["0"]["start"]["lng"], -0.116414);
+    expect(routeMap["0"]["start"].length, 5);
+    expect(routeMap["0"]["start"]["name"], "Bush House");
+    expect(routeMap["0"]["start"]["description"], "the description");
+    expect(routeMap["0"]["start"]["id"], "1");
+    expect(routeMap["0"]["start"]["lat"], 51.511448);
+    expect(routeMap["0"]["start"]["lng"], -0.116414);
 
-    expect(placeMap["0"]["stops"].length, 3);
+    expect(routeMap["0"]["stops"].length, 3);
     // check each stop is actually a stop
-    for (var stop in placeMap["0"]["stops"]) {
+    for (var stop in routeMap["0"]["stops"]) {
       expect(stop["description"].contains("stop description"), true);
     }
 
     // expect 5 attributes of the end stop
-    expect(placeMap["0"]["end"].length, 5);
-    expect(placeMap["0"]["end"]["name"], "Maida Vale");
-    expect(placeMap["0"]["end"]["description"], "the end description");
-    expect(placeMap["0"]["end"]["id"], "2");
-    expect(placeMap["0"]["end"]["lat"], 51.400520);
-    expect(placeMap["0"]["end"]["lng"], -0.138209);
+    expect(routeMap["0"]["end"].length, 5);
+    expect(routeMap["0"]["end"]["name"], "Maida Vale");
+    expect(routeMap["0"]["end"]["description"], "the end description");
+    expect(routeMap["0"]["end"]["id"], "2");
+    expect(routeMap["0"]["end"]["lat"], 51.400520);
+    expect(routeMap["0"]["end"]["lng"], -0.138209);
   });
 
   test('add multiple different type of routes with and without stops', () async {
@@ -466,44 +466,44 @@ void main() {
 
     final SharedPreferences prefs = await userSettings.getSharedPref();
     String? routesString = prefs.getString("recentRoutes");
-    Map<String, dynamic> placeMap = json.decode(routesString!);
+    Map<String, dynamic> routeMap = json.decode(routesString!);
 
     // stored two recent routes
-    expect(placeMap.length, 2);
-    expect(placeMap.containsKey("0"), true);
-    expect(placeMap.containsKey("1"), true);
+    expect(routeMap.length, 2);
+    expect(routeMap.containsKey("0"), true);
+    expect(routeMap.containsKey("1"), true);
 
-    expect(placeMap["0"]["start"]["name"], "Bush House");
-    expect(placeMap["0"]["start"]["description"], "the description");
-    expect(placeMap["0"]["start"]["id"], "1");
-    expect(placeMap["0"]["start"]["lat"], 51.511448);
-    expect(placeMap["0"]["start"]["lng"], -0.116414);
+    expect(routeMap["0"]["start"]["name"], "Bush House");
+    expect(routeMap["0"]["start"]["description"], "the description");
+    expect(routeMap["0"]["start"]["id"], "1");
+    expect(routeMap["0"]["start"]["lat"], 51.511448);
+    expect(routeMap["0"]["start"]["lng"], -0.116414);
 
-    expect(placeMap["0"]["end"]["name"], "Maida Vale");
-    expect(placeMap["0"]["end"]["description"], "the end description");
-    expect(placeMap["0"]["end"]["id"], "2");
-    expect(placeMap["0"]["end"]["lat"], 51.400520);
-    expect(placeMap["0"]["end"]["lng"], -0.138209);
+    expect(routeMap["0"]["end"]["name"], "Maida Vale");
+    expect(routeMap["0"]["end"]["description"], "the end description");
+    expect(routeMap["0"]["end"]["id"], "2");
+    expect(routeMap["0"]["end"]["lat"], 51.400520);
+    expect(routeMap["0"]["end"]["lng"], -0.138209);
 
     // no intermediary stops set so length should be 0
-    expect(placeMap["0"]["stops"].length, 0);
+    expect(routeMap["0"]["stops"].length, 0);
 
-    expect(placeMap["1"]["start"]["name"], "St. John's Wood Road");
-    expect(placeMap["1"]["start"]["description"], "the second route first description");
-    expect(placeMap["1"]["start"]["id"], "3");
-    expect(placeMap["1"]["start"]["lat"], 51.345439);
-    expect(placeMap["1"]["start"]["lng"], -0.115543);
+    expect(routeMap["1"]["start"]["name"], "St. John's Wood Road");
+    expect(routeMap["1"]["start"]["description"], "the second route first description");
+    expect(routeMap["1"]["start"]["id"], "3");
+    expect(routeMap["1"]["start"]["lat"], 51.345439);
+    expect(routeMap["1"]["start"]["lng"], -0.115543);
 
-    expect(placeMap["1"]["end"]["name"], "Southampton Street, Strand");
-    expect(placeMap["1"]["end"]["description"], "the second route end description");
-    expect(placeMap["1"]["end"]["id"], "5");
-    expect(placeMap["1"]["end"]["lat"], 51.678345);
-    expect(placeMap["1"]["end"]["lng"], -0.125942);
+    expect(routeMap["1"]["end"]["name"], "Southampton Street, Strand");
+    expect(routeMap["1"]["end"]["description"], "the second route end description");
+    expect(routeMap["1"]["end"]["id"], "5");
+    expect(routeMap["1"]["end"]["lat"], 51.678345);
+    expect(routeMap["1"]["end"]["lng"], -0.125942);
 
     // one intermediary stop set so length should be 1
-    expect(placeMap["1"]["stops"].length, 1);
+    expect(routeMap["1"]["stops"].length, 1);
 
-    for (var stop in placeMap["1"]["stops"]) {
+    for (var stop in routeMap["1"]["stops"]) {
       expect(stop["description"].contains("stop description"), true);
     }
   });
@@ -513,14 +513,14 @@ void main() {
         latlng: const LatLng(51.511448, -0.116414),
         name: 'Bush House',
         placeId: "1",
-        description: "the description"
+        description: "the first route start description"
     );
 
     Place endPlace = Place(
         latlng: const LatLng(51.400520, -0.138209),
         name: "Maida Vale",
         placeId: "2",
-        description: "the end description"
+        description: "the first route end description"
     );
 
     // no intermediary stops set
@@ -530,7 +530,7 @@ void main() {
         latlng: const LatLng(51.345439, -0.115543),
         name: "St. John's Wood Road",
         placeId: "3",
-        description: "the second route first description"
+        description: "the second route start description"
     );
 
     Place endPlace1 = Place(
@@ -556,78 +556,94 @@ void main() {
         description: "the third route end description"
     );
 
+    List<Place> intermediates2 = [];
+
     Place startPlace3 = Place(
         latlng: const LatLng(51.485573, -0.119585),
         name: "Sardinia Street, Holborn",
-        placeId: "5",
-        description: "the foruth route start description"
+        placeId: "7",
+        description: "the fourth route start description"
     );
 
     Place endPlace3 = Place(
         latlng: const LatLng(49.999233, -0.123456),
         name: "Drury Lane, Covent Garden",
-        placeId: "6",
+        placeId: "8",
         description: "the fourth route end description"
     );
 
-    Place startPlace3 = Place(
-        latlng: const LatLng(51.485573, -0.119585),
-        name: "Sardinia Street, Holborn",
-        placeId: "5",
-        description: "the foruth route start description"
+    List<Place> intermediates3 = [];
+
+    Place startPlace4 = Place(
+        latlng: const LatLng(50.123456, -0.109834),
+        name: "Arundel Street, Temple",
+        placeId: "9",
+        description: "the fifth route start description"
     );
 
-    Place endPlace3 = Place(
-        latlng: const LatLng(49.999233, -0.123456),
-        name: "Drury Lane, Covent Garden",
-        placeId: "6",
-        description: "the fourth route end description"
+    Place endPlace4 = Place(
+        latlng: const LatLng(52.002232, -0.103432),
+        name: "Kingsway, Covent Garden",
+        placeId: "10",
+        description: "the fifth route end description"
     );
+
+    List<Place> intermediates4 = [];
+
+    Place startPlace5 = Place(
+        latlng: const LatLng(50.457345, -0.2342353),
+        name: "Clifton Road, Maida Vale",
+        placeId: "11",
+        description: "the sixth route start description"
+    );
+
+    Place endPlace5 = Place(
+        latlng: const LatLng(52.532667, -0.2343256),
+        name: "Frampton Street, Paddington",
+        placeId: "12",
+        description: "the sixth route end description"
+    );
+
+    List<Place> intermediates5 = [];
 
     userSettings.saveRoute(startPlace, endPlace, intermediates);
     userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+    userSettings.saveRoute(startPlace2, endPlace2, intermediates2);
+    userSettings.saveRoute(startPlace3, endPlace3, intermediates3);
+    userSettings.saveRoute(startPlace4, endPlace4, intermediates4);
+    userSettings.saveRoute(startPlace5, endPlace5, intermediates5);
 
     final SharedPreferences prefs = await userSettings.getSharedPref();
     String? routesString = prefs.getString("recentRoutes");
-    Map<String, dynamic> placeMap = json.decode(routesString!);
+    Map<String, dynamic> routeMap = json.decode(routesString!);
 
-    // stored two recent routes
-    expect(placeMap.length, 2);
-    expect(placeMap.containsKey("0"), true);
-    expect(placeMap.containsKey("1"), true);
+    // max of 5 recent routes stored despite saving 6 routes
+    expect(routeMap.length, 5);
+    expect(routeMap.containsKey("0"), true);
+    expect(routeMap.containsKey("1"), true);
+    expect(routeMap.containsKey("2"), true);
+    expect(routeMap.containsKey("3"), true);
+    expect(routeMap.containsKey("4"), true);
+    expect(routeMap.containsKey("5"), false);
 
-    expect(placeMap["0"]["start"]["name"], "Bush House");
-    expect(placeMap["0"]["start"]["description"], "the description");
-    expect(placeMap["0"]["start"]["id"], "1");
-    expect(placeMap["0"]["start"]["lat"], 51.511448);
-    expect(placeMap["0"]["start"]["lng"], -0.116414);
+    // check correct recent routes are stored in order of recency and removes first recent route entry
+    expect(routeMap["0"]["start"]["id"], "3");
+    expect(routeMap["0"]["start"]["description"], "the second route start description");
+    expect(routeMap["0"]["end"]["id"], "4");
+    expect(routeMap["0"]["end"]["description"], "the second route end description");
 
-    expect(placeMap["0"]["end"]["name"], "Maida Vale");
-    expect(placeMap["0"]["end"]["description"], "the end description");
-    expect(placeMap["0"]["end"]["id"], "2");
-    expect(placeMap["0"]["end"]["lat"], 51.400520);
-    expect(placeMap["0"]["end"]["lng"], -0.138209);
+    expect(routeMap["1"]["start"]["id"], "5");
+    expect(routeMap["1"]["end"]["id"], "6");
 
-    // no intermediary stops set so length should be 0
-    expect(placeMap["0"]["stops"].length, 0);
+    expect(routeMap["2"]["start"]["id"], "7");
+    expect(routeMap["2"]["end"]["id"], "8");
 
-    expect(placeMap["1"]["start"]["name"], "St. John's Wood Road");
-    expect(placeMap["1"]["start"]["description"], "the second route first description");
-    expect(placeMap["1"]["start"]["id"], "3");
-    expect(placeMap["1"]["start"]["lat"], 51.345439);
-    expect(placeMap["1"]["start"]["lng"], -0.115543);
+    expect(routeMap["3"]["start"]["id"], "9");
+    expect(routeMap["3"]["end"]["id"], "10");
 
-    expect(placeMap["1"]["end"]["name"], "Southampton Street, Strand");
-    expect(placeMap["1"]["end"]["description"], "the second route end description");
-    expect(placeMap["1"]["end"]["id"], "5");
-    expect(placeMap["1"]["end"]["lat"], 51.678345);
-    expect(placeMap["1"]["end"]["lng"], -0.125942);
-
-    // one intermediary stop set so length should be 1
-    expect(placeMap["1"]["stops"].length, 1);
-
-    for (var stop in placeMap["1"]["stops"]) {
-      expect(stop["description"].contains("stop description"), true);
-    }
+    expect(routeMap["4"]["start"]["id"], "11");
+    expect(routeMap["4"]["start"]["description"], "the sixth route start description");
+    expect(routeMap["4"]["end"]["id"], "12");
+    expect(routeMap["4"]["end"]["description"], "the sixth route end description");
   });
 }

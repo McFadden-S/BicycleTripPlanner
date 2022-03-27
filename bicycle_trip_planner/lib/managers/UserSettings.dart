@@ -65,7 +65,7 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
-    //if there are already 5 routes saved
+    // check if there are already 5 routes saved beforehand
     if (savedRoutes.length == MAX_RECENT_ROUTES_COUNT) {
       savedRoutes = capRoutes(savedRoutes);
     }
