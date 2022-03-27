@@ -1,21 +1,21 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/legs.dart';
 
 main(){
-  final startLocation = Location(lat: 1, lng: -1);
-  final endLocation = Location(lat: 2, lng: -2);
+  const startLocation = LatLng(1, -1);
+  const endLocation = LatLng(2, -2);
   final steps = Steps(instruction: "right", distance: 1, duration: 1);
   final legs = Legs(startLocation: startLocation, endLocation: endLocation, steps: [steps], distance: 1, duration: 1);
   final legs2 = Legs(startLocation: startLocation, endLocation: endLocation, steps: [steps], distance: 2, duration: 1);
 
   test('ensure startLocation is Location', (){
-    expect(legs.startLocation.runtimeType, Location);
+    expect(legs.startLocation.runtimeType, LatLng);
   });
 
   test('ensure endLocation is Location', (){
-    expect(legs.endLocation.runtimeType, Location);
+    expect(legs.endLocation.runtimeType, LatLng);
   });
 
   test('ensure steps is List<Steps>', (){

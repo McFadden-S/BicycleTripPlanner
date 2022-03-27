@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
 import 'package:bicycle_trip_planner/models/route_types.dart';
@@ -515,7 +514,7 @@ void main() {
 
   Place createPlace(String name, String id) {
     return Place(
-        geometry: const Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: name,
         placeId: id,
         description: "description");
@@ -568,7 +567,7 @@ void main() {
 
   test("ensure stop can be changed", () {
     final stop = Stop(Place(
-        geometry: const Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: "stop_2",
         placeId: "placeId",
         description: "description"));
@@ -616,7 +615,7 @@ void main() {
     expect(routeManager.getStart().getStop(), const Place.placeNotFound());
     expect(routeManager.ifStartSet(), false);
     routeManager.changeStart(Place(
-        geometry: const Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: "something",
         placeId: "placeId",
         description: "description"));
@@ -627,10 +626,10 @@ void main() {
   test("Ensure first waypoint can be set", () {
     expect(routeManager.ifFirstWaypointSet(), false);
     expect(routeManager.getFirstWaypoint().getStop().name,
-        Place.placeNotFound().name);
+        const Place.placeNotFound().name);
 
     final waypoint = Place(
-        geometry: Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: "Something",
         placeId: "placeId",
         description: "description");
@@ -686,7 +685,7 @@ void main() {
 
   test("ensure clear first waypoint works", () {
     final waypoint = Place(
-        geometry: Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: "name",
         placeId: "placeId",
         description: "description");
@@ -1056,7 +1055,7 @@ void main() {
   test("Set destination", () {
     expect(routeManager.ifDestinationSet(), false);
     routeManager.changeDestination(Place(
-        geometry: Geometry.geometryNotFound(),
+        latlng: const LatLng(0, 0),
         name: "name",
         placeId: "placeId",
         description: "description"));
