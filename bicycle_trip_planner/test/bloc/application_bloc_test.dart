@@ -1,13 +1,7 @@
-import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
+
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:bicycle_trip_planner/services/places_service.dart';
 
 import 'package:mockito/annotations.dart';
@@ -16,7 +10,6 @@ import 'package:mockito/mockito.dart';
 import 'application_bloc_test.mocks.dart';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 @GenerateMocks([LocationManager, PlacesService])
@@ -27,10 +20,9 @@ void main() {
     var placesServices = MockPlacesService();
     var currentLocationLatLng = LatLng(50.526523, -0.4151);
     var currentPlace = Place(
-        latlng: Geometry(
-            location: Location(
-                lat: currentLocationLatLng.latitude,
-                lng: currentLocationLatLng.longitude)),
+        latlng: LatLng(
+                currentLocationLatLng.latitude,
+                currentLocationLatLng.longitude),
         name: "currentLocation",
         placeId: "placeId",
         description: SearchType.current.description);

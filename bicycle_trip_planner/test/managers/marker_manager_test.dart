@@ -4,8 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mockito/annotations.dart';
 import 'marker_manager_test.mocks.dart';

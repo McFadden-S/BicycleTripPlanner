@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';

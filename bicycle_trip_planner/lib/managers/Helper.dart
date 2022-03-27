@@ -1,7 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../models/geometry.dart';
-import '../models/location.dart';
 import '../models/pathway.dart';
 import '../models/place.dart';
 import '../models/stop.dart';
