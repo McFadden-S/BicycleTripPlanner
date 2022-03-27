@@ -73,6 +73,7 @@ class Pathway {
 
   void addWaypoint(Stop stop) {
     _stops.add(stop);
+    size = size +1;
     swapStops(stop.getUID(), _destination.getUID());
   }
 
