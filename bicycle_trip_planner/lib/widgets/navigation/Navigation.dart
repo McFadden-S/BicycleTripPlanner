@@ -96,12 +96,25 @@ class _NavigationState extends State<Navigation> {
               margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
               child: Row(
                 children: [
-                  Expanded(child: DistanceETACard()),
                   Expanded(
+                    flex: 2,
+                    child: Wrap(
+                      children: [DistanceETACard()],
+                    ),
+                  ),
+                  // Expanded(
+                  //   flex: 1,
+                  //     child: Spacer()
+                  // ),
+                  Expanded(
+                    flex: 8,
                     child: Column(
                       children: [
                         Expanded(
-                          child: EndRouteButton(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: EndRouteButton(),
+                          ),
                         ),
                         Expanded(
                             child: Padding(

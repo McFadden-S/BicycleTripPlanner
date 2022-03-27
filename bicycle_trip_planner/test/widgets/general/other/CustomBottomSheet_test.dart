@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dar
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -80,29 +81,66 @@ void main() {
     await tester.tap(find.byType(IconButton));
     await tester.pumpAndSettle();
 
-    final Size expandedSize = tester.getSize(animatedContainer);
+    final Size shrunkSize = tester.getSize(animatedContainer);
 
-    expect(expandedSize.height, equals(origSize.height / 3));
+    expect(shrunkSize.height, equals(origSize.height / 3));
   });
 
-  // testWidgets("CustomBottomSheet shrinks when first tapped, then expands when tapped again", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
-  //
-  //   final animatedContainer = find.byType(AnimatedContainer);
-  //   final Size origSize = tester.getSize(animatedContainer);
-  //
-  //   await tester.tap(find.byType(IconButton));
-  //   await tester.pumpAndSettle();
-  //
-  //   final Size expandedSize = tester.getSize(animatedContainer);
-  //
-  //   expect(expandedSize.height, equals(origSize.height / 3));
-  //
-  //   await tester.tap(find.byType(IconButton));
-  //   await tester.pumpAndSettle();
-  //
-  //   final Size nextSize = tester.getSize(animatedContainer);
-  //
-  //   expect(nextSize.height, equals(expandedSize.height * 3));
-  // });
+  testWidgets("CustomBottomSheet shrinks when first tapped, then expands when tapped again", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+
+    final animatedContainer = find.byType(AnimatedContainer);
+    final Size origSize = tester.getSize(animatedContainer);
+
+    await tester.tap(find.byType(IconButton));
+    await tester.pumpAndSettle();
+
+    final Size shrunkSize = tester.getSize(animatedContainer);
+
+    expect(shrunkSize.height, equals(origSize.height / 3));
+
+    await tester.tap(find.byType(IconButton));
+    await tester.pumpAndSettle();
+
+    final Size nextSize = tester.getSize(animatedContainer);
+
+    expect(nextSize.height, equals(origSize.height));
+    expect(nextSize.height, equals(shrunkSize.height * 3));
+  });
+
+  testWidgets("CustomBottomSheet shrinks when first tapped", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final animatedContainer = find.byType(AnimatedContainer);
+    final Size origSize = tester.getSize(animatedContainer);
+
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+    await tester.pumpAndSettle();
+
+    final Size shrunkSize = tester.getSize(animatedContainer);
+
+    expect(shrunkSize.height, equals(origSize.height / 3));
+  });
+
+  testWidgets("CustomBottomSheet shrinks when first tapped, then expands when tapped again", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final animatedContainer = find.byType(AnimatedContainer);
+    final Size origSize = tester.getSize(animatedContainer);
+
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+    await tester.pumpAndSettle();
+
+    final Size shrunkSize = tester.getSize(animatedContainer);
+
+    expect(shrunkSize.height, equals(origSize.height / 3));
+
+    await tester.tap(find.byIcon(Icons.keyboard_arrow_up));
+    await tester.pumpAndSettle();
+
+    final Size nextSize = tester.getSize(animatedContainer);
+
+    expect(nextSize.height, equals(origSize.height));
+    expect(nextSize.height, equals(shrunkSize.height * 3));
+  });
 }
