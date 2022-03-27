@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,17 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: ViewRouteButton())));
 
     final button = find.byType(ViewRouteButton);
+
+    expect(button, findsOneWidget);
+  });
+
+  testWidgets("ViewRouteButton is clickable", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: ViewRouteButton())));
+
+    final button = find.byType(ViewRouteButton);
+
+    await tester.tap(button);
+    await tester.pump();
 
     expect(button, findsOneWidget);
   });
