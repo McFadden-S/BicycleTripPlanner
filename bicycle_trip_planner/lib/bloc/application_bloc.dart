@@ -373,6 +373,7 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically() async {
     int duration = await UserSettings().stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
+      fetchCurrentLocation();
       updateStations();
       filterStationMarkers();
     });
