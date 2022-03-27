@@ -82,9 +82,9 @@ class CameraManager {
   }
 
   /// Views the route to a location
-  Future<void> goToPlace(double lat, double lng, Map<String, dynamic> boundsNe,
+  Future<void> goToPlace(LatLng latLng, Map<String, dynamic> boundsNe,
       Map<String, dynamic> boundsSw) async {
-    setRouteCamera(LatLng(lat, lng), boundsSw, boundsNe);
+    setRouteCamera(latLng, boundsSw, boundsNe);
     viewRoute();
   }
 

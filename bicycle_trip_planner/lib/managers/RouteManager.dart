@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
@@ -69,8 +68,7 @@ class RouteManager {
   /// @effects - Moves camera to start location
   void _moveCameraTo(R.Route route) {
     _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
+        route.legs.first.startLocation,
         route.bounds.northeast,
         route.bounds.southwest);
   }

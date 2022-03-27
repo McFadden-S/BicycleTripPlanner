@@ -24,7 +24,7 @@ class Place {
   /// @param Map<String, dynamic> parsed Json
   factory Place.fromJson(Map<String, dynamic> parsedJson, String description) {
     return Place(
-      latlng: LatLng(parsedJson['lat'], parsedJson['lng']),
+      latlng: LatLng(parsedJson['location']['lat'], parsedJson['location']['lng']),
       name: parsedJson['formatted_address'],
       placeId: parsedJson['place_id'],
       description: description,
