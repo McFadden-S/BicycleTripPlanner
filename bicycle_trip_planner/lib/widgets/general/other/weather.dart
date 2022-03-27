@@ -1,6 +1,6 @@
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather_model.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
+import 'package:bicycle_trip_planner/models/weather_model.dart';
+import 'package:bicycle_trip_planner/services/weather_service.dart';
 import 'package:flutter/material.dart';
 
 class Weather extends StatefulWidget {
