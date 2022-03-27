@@ -123,7 +123,9 @@ class _NavigationState extends State<Navigation> {
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: EndRouteButton(),
+                            child: EndRouteButton(
+                              key: Key('EndRouteButton'),
+                            ),
                           ),
                         ),
                         Expanded(
