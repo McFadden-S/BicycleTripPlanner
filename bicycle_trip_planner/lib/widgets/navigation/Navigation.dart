@@ -37,7 +37,7 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
-    // Move to the user when navigation starts
+    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     CameraManager.instance.viewUser();
   }
 

@@ -98,7 +98,6 @@ class MarkerManager {
 
   //********** Public **********
 
-  @visibleForTesting
   void setMarker(LatLng point, String markerID) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
     removeMarker(markerID);

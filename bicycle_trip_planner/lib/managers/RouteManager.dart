@@ -105,10 +105,15 @@ class RouteManager {
     return Bounds(northeast: newNorthEast, southwest: newSouthWest);
   }
 
-  _createRouteMarker(LatLng pos) {
+  _createRouteMarker(R.Route route) {
+    _setRouteMarker(route.legs.first.startLocation);
+    _setRouteMarker(route.legs.last.endLocation);
+  }
+
+  _setRouteMarker(LatLng pos) {
     String markerId = "$_markerPrefix${_markerId++}";
-    _markerManager.setMarker(pos, markerId);
     _routeMarkers.add(markerId);
+    _markerManager.setMarker(pos, markerId);
   }
 
   _clearRouteMarkers() {
@@ -210,13 +215,11 @@ class RouteManager {
     for (R.Route route in allRoutes) {
       _polylineManager.addPolyline(
           route.polyline.points, route.routeType.polylineColor);
-
-      _createRouteMarker(route.legs.first.startLocation);
-      _createRouteMarker(route.legs.last.endLocation);
-
       duration += route.duration;
       distance += route.distance;
     }
+
+    _createRouteMarker(_bikingRoute);
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
@@ -245,8 +248,7 @@ class RouteManager {
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     setDirectionsData(route);
     _clearRouteMarkers();
-    _createRouteMarker(route.legs.first.startLocation);
-    _createRouteMarker(route.legs.last.endLocation);
+    _createRouteMarker(route);
     _polylineManager.setPolyline(
         route.polyline.points, route.routeType.polylineColor);
     _currentRoute = route;
