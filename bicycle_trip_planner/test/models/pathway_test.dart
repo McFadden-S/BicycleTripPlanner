@@ -29,7 +29,7 @@ main() {
   });
 
   test('ensure size is 2 when initialized', () {
-    expect(pathway.size, 2);
+    expect(pathway.getStops().length, 2);
   });
 
   test("ensure stop can be got from id", () {
@@ -105,7 +105,8 @@ main() {
 
   test("ensure can add waypoint on request", () {
     pathway.addWaypoint(stop);
-    expect(pathway.getStopByIndex(pathway.size - 1).getUID(), stop.getUID());
+    expect(pathway.getStopByIndex(pathway.getStops().length - 1).getUID(),
+        stop.getUID());
   });
 
   test('ensure can remove stop on request', () {
