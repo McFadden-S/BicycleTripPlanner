@@ -9,7 +9,6 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
-import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -215,7 +214,6 @@ class ApplicationBloc with ChangeNotifier {
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
-    // _routeManager.printPathway();
   }
 
   setLocationMarker(Place place, [int uid = -1]) async {
@@ -273,6 +271,7 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
+
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
   }
@@ -298,22 +297,18 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   Future<Station> _getStartStation(Place origin, [int groupSize = 1]) async {
-    Loc.Location startLocation = origin.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    return await _stationManager.getPickupStationNear(origin.latlng, groupSize);
   }
 
   Future<Station> _getEndStation(Place destination, [int groupSize = 1]) async {
-    Loc.Location endLocation = destination.geometry.location;
     return await _stationManager.getPickupStationNear(
-        LatLng(endLocation.lat, endLocation.lng), groupSize);
+        destination.latlng, groupSize);
   }
 
   Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
     _routeManager.clearRouteMarkers();
     _routeManager.removeWaypoints();
-    _routeManager.setRouteMarkers();
     _routeManager.setLoading(true);
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);
@@ -349,11 +344,8 @@ class ApplicationBloc with ChangeNotifier {
         intermediateStations.map((station) => station.place).toList();
 
     for (Place station in intermediates) {
-      setLocationMarker(
-          station, _routeManager.addCostWaypoint(station).getUID());
+      _routeManager.addCostWaypoint(station);
     }
-    clearStationMarkersNotInRoute();
-
     await _setRoutes(
         origin, destination, startStation, endStation, intermediates);
     _routeManager.setLoading(false);
@@ -378,6 +370,7 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically() async {
     int duration = await UserSettings().stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
+      fetchCurrentLocation();
       updateStations();
       filterStationMarkers();
     });
@@ -493,7 +486,6 @@ class ApplicationBloc with ChangeNotifier {
               .map((waypoint) => waypoint.getStop().placeId)
               .toList());
     }
-    clearStationMarkersNotInRoute();
   }
 
   Future<void> setPartialRoutes(
@@ -525,16 +517,6 @@ class ApplicationBloc with ChangeNotifier {
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showCurrentRoute(false);
-  }
-
-  void clearStationMarkersNotInRoute() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-
-    Station pickupStation = _navigationManager.getPickupStation();
-    Station dropOffStation = _navigationManager.getDropoffStation();
-
-    _markerManager.setStationMarker(pickupStation, this);
-    _markerManager.setStationMarker(dropOffStation, this);
   }
 
   // ********** User Setting Management **********

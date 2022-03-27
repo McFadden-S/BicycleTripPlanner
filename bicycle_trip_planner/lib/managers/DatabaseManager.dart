@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,13 +8,23 @@ import 'package:firebase_database/firebase_database.dart';
 import '../models/stop.dart';
 import 'Helper.dart';
 
+/// Class Comment:
+/// DatabaseManager is a manager class that manages data transfer
+/// to and from the Firebase Database
+
 class DatabaseManager {
+
   //************Fields************
+
   final FirebaseDatabase _dbInstance = FirebaseDatabase.instance;
   final _auth = FirebaseAuth.instance;
 
   //********** Singleton **********
+
+  /// Holds Singleton Instance
   static final DatabaseManager _databaseManager = DatabaseManager._internal();
+
+  /// Singleton Constructor Override
   factory DatabaseManager() {
     return _databaseManager;
   }
