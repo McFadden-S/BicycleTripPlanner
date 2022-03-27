@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/place.dart';
@@ -20,6 +21,11 @@ class UserSettings {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
 //********** Public **********
+
+  @visibleForTesting
+  getSharedPref() {
+    return _prefs;
+  }
 
   savePlace(Place place) async {
     final SharedPreferences prefs = await _prefs;
