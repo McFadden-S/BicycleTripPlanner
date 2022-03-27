@@ -7,7 +7,6 @@ import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/Helper.dart';
 
 void main() {
-
   test('ensure place to map function works', (){
     Location location = Location(lat: 51.511448, lng: -0.116414);
     Geometry geometry = Geometry(location: location);
