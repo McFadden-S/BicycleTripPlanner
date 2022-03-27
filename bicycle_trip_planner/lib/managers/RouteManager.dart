@@ -106,20 +106,25 @@ class RouteManager {
   }
 
   _createRouteMarker(R.Route route) {
-    _setRouteMarker(route.legs.first.startLocation);
-    _setRouteMarker(route.legs.last.endLocation);
+    double color = route.routeType == RouteType.bike
+        ? BitmapDescriptor.hueGreen
+        : BitmapDescriptor.hueRed;
+    _setRouteMarker(route.legs.first.startLocation, color);
+    _setRouteMarker(route.legs.last.endLocation, color);
     // Add waypoints
+    print(route.legs.length);
     if (route.legs.length > 1) {
+      color = BitmapDescriptor.hueRed;
       for (int i = 1; i < route.legs.length; i++) {
-        _setRouteMarker(route.legs[i].startLocation);
+        _setRouteMarker(route.legs[i].startLocation, color);
       }
     }
   }
 
-  _setRouteMarker(LatLng pos) {
+  _setRouteMarker(LatLng pos, [double color = BitmapDescriptor.hueRed]) {
     String markerId = "$_markerPrefix${_markerId++}";
     _routeMarkers.add(markerId);
-    _markerManager.setMarker(pos, markerId);
+    _markerManager.setMarker(pos, markerId, color);
   }
 
   _clearRouteMarkers() {

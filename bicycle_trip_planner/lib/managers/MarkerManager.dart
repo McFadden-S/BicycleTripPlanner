@@ -98,13 +98,15 @@ class MarkerManager {
 
   //********** Public **********
 
-  void setMarker(LatLng point, String markerID) {
+  void setMarker(LatLng point, String markerID,
+      [double color = BitmapDescriptor.hueRed]) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
     removeMarker(markerID);
 
     _markers.add(Marker(
       markerId: MarkerId(markerID),
       position: point,
+      icon: BitmapDescriptor.defaultMarkerWithHue(color),
     ));
   }
 

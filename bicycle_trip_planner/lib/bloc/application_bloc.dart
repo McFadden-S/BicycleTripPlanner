@@ -214,7 +214,6 @@ class ApplicationBloc with ChangeNotifier {
     if (uid != -1) {
       setSelectedLocation(place, uid);
     }
-    // _routeManager.printPathway();
   }
 
   setLocationMarker(Place place, [int uid = -1]) async {
@@ -345,10 +344,8 @@ class ApplicationBloc with ChangeNotifier {
         intermediateStations.map((station) => station.place).toList();
 
     for (Place station in intermediates) {
-      setLocationMarker(
-          station, _routeManager.addCostWaypoint(station).getUID());
+      _routeManager.addCostWaypoint(station);
     }
-
     await _setRoutes(
         origin, destination, startStation, endStation, intermediates);
     _routeManager.setLoading(false);
