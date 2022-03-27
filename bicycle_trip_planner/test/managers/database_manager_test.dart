@@ -169,28 +169,9 @@ Future<void> main() async {
   };
 
 
-/*<<<<<<< HEAD
-  test('Remove favourite route', ()async{
-    await databaseManager.removeFavouriteRoute(routeID);
-    final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    expect(stationFromFakeDatabase, equals(null));
-  });
-=======
->>>>>>> 70a28859dd8ba5f654840bebf080ec2b2439fcc2*/
-
+  MockFirebaseDatabase.instance.reference().set(fakeData);
   setUp(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
-    database.reference().set(fakeData);
-    /*final app = await Firebase.initializeApp(
-      name: '1',
-      options: const FirebaseOptions(
-        apiKey: '',
-        appId: '',
-        messagingSenderId: '',
-        projectId: '',
-      ),
-    );*/
 
     final googleSignIn = MockGoogleSignIn();
     final signinAccount = await googleSignIn.signIn();
@@ -208,16 +189,15 @@ Future<void> main() async {
     );
     auth = MockFirebaseAuth(mockUser: user);
     final result = await auth.signInWithCredential(credential);
-    final loginInUser = await result.user;
 
   });
 
   test('Get favourite station', () async {
-
     final databaseManager = DatabaseManager.forMock(database, auth);
-    print(database.ref("users").key);
-    databaseManager.isUserLogged();
-    databaseManager.getFavouriteRoutes();
+    var result = await database.ref('users/userId/favouriteStations/158').once();
+    print(result.snapshot.value);
+    //databaseManager.isUserLogged();
+    //databaseManager.getFavouriteRoutes();
 
   });
 
