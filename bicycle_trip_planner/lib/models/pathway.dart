@@ -201,9 +201,11 @@ class Pathway {
     if (currentIndex < newIndex) {
       _stops.insert(newIndex, stop);
       _stops.removeAt(currentIndex);
+      print("1");
     } else if (newIndex > currentIndex) {
       _stops.removeAt(currentIndex);
       _stops.insert(newIndex, stop);
+      print("2");
     }
     _updatePointers();
   }
@@ -273,10 +275,8 @@ class Pathway {
   /// @effects - resets values to original values
   @visibleForTesting
   void clear() {
-    List<int> uids =
-        getWaypoints().map((waypoint) => waypoint.getUID()).toList();
-    for (int id in uids) {
-      removeStop(id);
+    for(int uid in getWaypoints().map((waypoint) => waypoint.getUID()).toList()){
+      removeStop(uid);
     }
     clearDestination();
     clearStart();
