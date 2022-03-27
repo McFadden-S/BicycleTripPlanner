@@ -19,6 +19,8 @@ import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 
+import '../../managers/MarkerManager.dart';
+import '../../managers/StationManager.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
@@ -31,36 +33,25 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   final LocationManager locationManager = LocationManager();
   final DirectionManager directionManager = DirectionManager();
-  final NavigationManager _navigationManager = NavigationManager();
-  final RouteManager _routeManager = RouteManager();
-  // late final ApplicationBloc applicationBloc;
+  final NavigationManager navigationManager = NavigationManager();
+  final RouteManager routeManager = RouteManager();
+  final MarkerManager markerManager = MarkerManager();
+  final CountdownController controller = CountdownController();
+
+  late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
-  final CountdownController _controller = CountdownController();
 
   @override
   void initState() {
     super.initState();
-
-    // applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
-    // Move to the user when navigation starts
+    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
     CameraManager.instance.viewUser();
-
-    // locatorSubscription = locationManager
-    //     .onUserLocationChange()
-    //     .listen((LocationData currentLocation) {
-    //   setState(() {
-    //     CameraManager.instance.viewUser();
-    //   });
-    // });
-
-    // applicationBloc.clearStationMarkersNotInRoute();
+    markerManager.clearStationMarkers(StationManager().getStations());
   }
 
   @override
   void dispose() {
-    // applicationBloc.filterStationMarkers();
-    //locatorSubscription.cancel();
+    applicationBloc.filterStationMarkers();
     super.dispose();
   }
 
@@ -86,13 +77,13 @@ class _NavigationState extends State<Navigation> {
                           CurrentLocationButton(),
                           SizedBox(height: 10),
                           ViewRouteButton(),
-                          _navigationManager.ifCycling() && _routeManager.ifCostOptimised()
+                          routeManager.ifCostOptimised()
                           ? Column(
                             children: [
                               SizedBox(height: 10),
-                              CostEffTimerButton(ctdwnController: _controller),
+                              CostEffTimerButton(ctdwnController: controller),
                               SizedBox(height: 10),
-                              CountdownCard(ctdwnController: _controller),
+                              CountdownCard(ctdwnController: controller),
                             ],)
                           : SizedBox.shrink()
                         ],
@@ -113,10 +104,8 @@ class _NavigationState extends State<Navigation> {
                   DistanceETACard(),
                   SizedBox(width: 10),
                   Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: WalkOrCycleToggle(),
-                      )),
+                      child: WalkOrCycleToggle()),
+                  SizedBox(width: 10),
                   Expanded(
                     child: EndRouteButton(),
                   ),

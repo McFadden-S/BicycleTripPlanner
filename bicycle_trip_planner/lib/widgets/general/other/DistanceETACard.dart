@@ -30,8 +30,8 @@ class _StationCardState extends State<DistanceETACard> {
         children: [
           RouteManager().ifLoading()
               ? CircularProgressIndicator(color: Colors.blueGrey)
-              : Wrap(
-              direction: Axis.vertical,
+              : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                   Row(
                     children: [
