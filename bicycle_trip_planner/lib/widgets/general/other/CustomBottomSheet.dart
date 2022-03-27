@@ -1,3 +1,4 @@
+import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -16,40 +17,40 @@ class _StationCardState extends State<CustomBottomSheet> {
   Widget build(BuildContext context) {
     return !isExpanded
         ? Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            decoration: BoxDecoration(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              decoration: BoxDecoration(
                 color: ThemeStyle.cardColor,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20.0),
                     topRight: Radius.circular(20.0)),
               ),
-            height: MediaQuery.of(context).size.height * 0.05,
-            child: Column(
-                  children: [
-                    // top bar where the expand/shrink ion is
-                    Align(
+              height: MediaQuery.of(context).size.height * 0.05,
+              child: Column(
+                children: [
+                  // top bar where the expand/shrink ion is
+                  Align(
+                      alignment: Alignment.topCenter,
+                      child: IconButton(
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
                         alignment: Alignment.topCenter,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          constraints: BoxConstraints(),
-                          alignment: Alignment.topCenter,
-                          icon: Icon(Icons.keyboard_arrow_up,
-                              color: ThemeStyle.secondaryIconColor),
-                          tooltip: 'Expand',
-                          onPressed: () => {
-                            setState(() {
-                              isExpanded = true;
-                            })
-                          },
-                        )),
-                  ],
-                ),
-          ),
-        )
+                        icon: Icon(Icons.keyboard_arrow_up,
+                            color: ThemeStyle.secondaryIconColor),
+                        tooltip: 'Expand',
+                        onPressed: () => {
+                          setState(() {
+                            isExpanded = true;
+                          })
+                        },
+                      )),
+                ],
+              ),
+            ),
+          )
         : Align(
-          alignment: Alignment.bottomCenter,
-          child: Container(
+            alignment: Alignment.bottomCenter,
+            child: Container(
               padding: const EdgeInsets.only(bottom: 20.0),
               decoration: BoxDecoration(
                   color: ThemeStyle.cardColor,
@@ -88,6 +89,6 @@ class _StationCardState extends State<CustomBottomSheet> {
                     ],
                   )),
             ),
-        );
+          );
   }
 }

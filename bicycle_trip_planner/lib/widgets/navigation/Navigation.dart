@@ -41,7 +41,7 @@ class _NavigationState extends State<Navigation> {
   void initState() {
     super.initState();
 
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    // applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
@@ -54,12 +54,12 @@ class _NavigationState extends State<Navigation> {
     //   });
     // });
 
-    applicationBloc.clearStationMarkersNotInRoute();
+    // applicationBloc.clearStationMarkersNotInRoute();
   }
 
   @override
   void dispose() {
-    applicationBloc.filterStationMarkers();
+    // applicationBloc.filterStationMarkers();
     //locatorSubscription.cancel();
     super.dispose();
   }
@@ -105,21 +105,23 @@ class _NavigationState extends State<Navigation> {
           ),
           EndOfRouteDialog(),
           CustomBottomSheet(
-            child: Row(
-              children: [
-                DistanceETACard(),
-                SizedBox(width: 10),
-                Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: WalkOrCycleToggle(),
-                    )),
-                Expanded(
-                  child: Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  DistanceETACard(),
+                  SizedBox(width: 10),
+                  Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: WalkOrCycleToggle(),
+                      )),
+                  Expanded(
                     child: EndRouteButton(),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
