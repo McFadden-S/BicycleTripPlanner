@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -7,7 +6,6 @@ class Locator {
   LocationAccuracy accuracy;
   int distanceFilter;
   Geolocator geolocator = Geolocator();
-
 
   /**
    * default constructor to set locator values
