@@ -33,7 +33,7 @@ class _NavigationState extends State<Navigation> {
   final DirectionManager directionManager = DirectionManager();
   final NavigationManager _navigationManager = NavigationManager();
   final RouteManager _routeManager = RouteManager();
-  late final ApplicationBloc applicationBloc;
+  // late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
   final CountdownController _controller = CountdownController();
 

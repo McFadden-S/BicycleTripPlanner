@@ -117,7 +117,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Row(children: [
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
                     Column(
                       children: [
                         DatabaseManager().isUserLogged()
