@@ -50,8 +50,13 @@ class CameraManager {
   //********** Private **********
 
   @visibleForTesting
+
   ///Sets the bounds of the map's camera
   void setCameraBounds(LatLng southwest, LatLng northeast) {
+    print("-------Manager begin----------");
+    print(southwest);
+    print(northeast);
+
     googleMapController.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
@@ -61,6 +66,7 @@ class CameraManager {
           25),
     );
     print("Manager says hi");
+    print("-------Manager end----------");
   }
 
   //********** Public **********
