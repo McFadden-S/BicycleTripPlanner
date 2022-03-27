@@ -12,6 +12,7 @@ import 'package:bicycle_trip_planner/models/place.dart' as _i7;
 import 'package:bicycle_trip_planner/models/station.dart' as _i9;
 import 'package:flutter/material.dart' as _i4;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -75,10 +76,10 @@ class MockCameraManager extends _i1.Mock implements _i5.CameraManager {
           Invocation.method(#setRouteCamera, [origin, boundsSw, boundsNe]),
           returnValueForMissingStub: null);
   @override
-  _i6.Future<void> goToPlace(double? lat, double? lng,
-          Map<String, dynamic>? boundsNe, Map<String, dynamic>? boundsSw) =>
+  _i6.Future<void> goToPlace(LatLng latlng, Map<String, dynamic>? boundsNe,
+          Map<String, dynamic>? boundsSw) =>
       (super.noSuchMethod(
-          Invocation.method(#goToPlace, [lat, lng, boundsNe, boundsSw]),
+          Invocation.method(#goToPlace, [latlng, boundsNe, boundsSw]),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override

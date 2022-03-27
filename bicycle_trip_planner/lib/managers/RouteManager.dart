@@ -61,7 +61,8 @@ class RouteManager {
   factory RouteManager() => _routeManager;
 
   RouteManager._internal();
-  RouteManager.forMock(CameraManager cameraManager,MarkerManager markerManager){
+  RouteManager.forMock(
+      CameraManager cameraManager, MarkerManager markerManager) {
     _cameraManager = cameraManager;
     _markerManager = markerManager;
   }
@@ -71,7 +72,8 @@ class RouteManager {
   /// @param - Route route, Bounds bounds
   /// @return void
   /// @effects - Moves camera to the route and views its bounds or the given bounds
-  void _moveCameraTo(R.Route route,
+  @visibleForTesting
+  void moveCameraTo(R.Route route,
       [Bounds bounds = const Bounds.boundsNotFound()]) {
     if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
     _cameraManager.goToPlace(
@@ -183,7 +185,7 @@ class RouteManager {
         _endWalkingRoute.bounds);
 
     if (relocateMap) {
-      _moveCameraTo(_bikingRoute, bounds);
+      moveCameraTo(_bikingRoute, bounds);
     }
   }
 
@@ -521,14 +523,13 @@ class RouteManager {
   /// @effects - Clears all route markers
   void clearRouteMarkers() {
     List<int> uids = [];
-    for(Stop stops in _pathway.getStops()){
+    for (Stop stops in _pathway.getStops()) {
       uids.add(stops.getUID());
     }
 
     for (int id in uids) {
       _markerManager.clearMarker(id);
     }
-
   }
 
   void setRouteMarkers() {
@@ -592,15 +593,14 @@ class RouteManager {
   }
 
   @visibleForTesting
-  bool getCostOptimised(){
+  bool getCostOptimised() {
     return _costOptimised;
   }
-
 
   /// @param void
   /// @return Route - returns loading
   @visibleForTesting
-  bool getLoading(){
+  bool getLoading() {
     return _loading;
   }
 }

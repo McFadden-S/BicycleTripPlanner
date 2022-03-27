@@ -705,7 +705,6 @@ void main() {
   });
 
   test('ensure route manager sets routes correctly', () {
-
     expect(routeManager.ifRouteSet(), false);
     routeManager.setRoutes(route_1, route_2, route_3);
     expect(routeManager.ifRouteSet(), true);
@@ -946,7 +945,6 @@ void main() {
   });
 
   test("Set current route", () {
-
     routeManager.setCurrentRoute(route_1, true);
 
     final polylineManager = PolylineManager();
@@ -1109,42 +1107,46 @@ void main() {
     expect(routeManager.getStopByIndex(2), waypoint1);
   });
 
-  test("Move camera to route",(){
+  test("Move camera to route", () {
     routeManager.moveCameraTo(route_1);
-    verify(cameraManager.goToPlace(any,any,any,any));
+    verify(cameraManager.goToPlace(route_1.legs.first.startLocation, any, any));
   });
 
-  test("Set loading",(){
+  test("Set loading", () {
     routeManager.setLoading(false);
-    expect(routeManager.getLoading(),false);
+    expect(routeManager.getLoading(), false);
     routeManager.setLoading(true);
-    expect(routeManager.getLoading(),true);
+    expect(routeManager.getLoading(), true);
   });
 
-  test("Set and toggle cost optimised",(){
+  test("Set and toggle cost optimised", () {
     routeManager.setCostOptimised(false);
-    expect(routeManager.getCostOptimised(),false);
+    expect(routeManager.getCostOptimised(), false);
 
     routeManager.setCostOptimised(true);
-    expect(routeManager.getCostOptimised(),true);
+    expect(routeManager.getCostOptimised(), true);
 
     routeManager.toggleCostOptimised();
-    expect(routeManager.getCostOptimised(),false);
+    expect(routeManager.getCostOptimised(), false);
 
     routeManager.toggleCostOptimised();
-    expect(routeManager.getCostOptimised(),true);
+    expect(routeManager.getCostOptimised(), true);
   });
 
-  test("Set and clear route markers",(){
+  test("Set and clear route markers", () {
+    clearInteractions(markerManager);
     routeManager.setRouteMarkers();
-    verify(markerManager.setPlaceMarker(any,any)).called(2);
+    verify(markerManager.setPlaceMarker(any, any)).called(2);
     routeManager.clearRouteMarkers();
-    //It is called 4 times as it is already called once in setup
-    verify(markerManager.clearMarker(any)).called(4);
+    verify(markerManager.clearMarker(any)).called(2);
   });
 
-  test("Add cost waypoint",(){
-    final waypoint = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+  test("Add cost waypoint", () {
+    final waypoint = Place(
+        latlng: LatLng(0, 0),
+        name: "name",
+        placeId: "placeId",
+        description: "description");
     expect(routeManager.addCostWaypoint(waypoint).getStop().name, "name");
   });
 }
