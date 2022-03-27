@@ -310,7 +310,6 @@ class ApplicationBloc with ChangeNotifier {
       [int groupSize = 1]) async {
     _routeManager.clearRouteMarkers();
     _routeManager.removeWaypoints();
-    _routeManager.setRouteMarkers();
     _routeManager.setLoading(true);
     Station startStation = await _getStartStation(origin);
     Station endStation = await _getEndStation(destination);

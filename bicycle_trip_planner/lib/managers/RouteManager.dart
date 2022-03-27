@@ -55,7 +55,7 @@ class RouteManager {
   R.Route _currentRoute = R.Route.routeNotFound();
 
   /// Manage route markers
-  Set<String> _routeMarkers = {};
+  final Set<String> _routeMarkers = {};
   final String _markerPrefix = "Route";
   int _markerId = 0;
 
@@ -108,6 +108,12 @@ class RouteManager {
   _createRouteMarker(R.Route route) {
     _setRouteMarker(route.legs.first.startLocation);
     _setRouteMarker(route.legs.last.endLocation);
+    // Add waypoints
+    if (route.legs.length > 1) {
+      for (int i = 1; i < route.legs.length; i++) {
+        _setRouteMarker(route.legs[i].startLocation);
+      }
+    }
   }
 
   _setRouteMarker(LatLng pos) {
@@ -219,7 +225,9 @@ class RouteManager {
       distance += route.distance;
     }
 
+    _setRouteMarker(_startWalkingRoute.legs.first.startLocation);
     _createRouteMarker(_bikingRoute);
+    _setRouteMarker(_endWalkingRoute.legs.last.endLocation);
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
@@ -548,13 +556,6 @@ class RouteManager {
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for (int id in uids) {
       _markerManager.clearMarker(id);
-    }
-  }
-
-  void setRouteMarkers() {
-    List<Stop> stops = _pathway.getStops();
-    for (Stop stop in stops) {
-      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
     }
   }
 
