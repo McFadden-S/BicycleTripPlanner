@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
@@ -29,39 +30,50 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
+  bool ifRouteSetAndChanged() {
+    return routeManager.ifStartSet() &&
+        routeManager.ifDestinationSet() &&
+        routeManager.ifChanged();
+  }
+
+  bool ifNoRouteAndChanged() {
+    return (!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) &&
+        routeManager.ifChanged();
+  }
+
+  bool ifStartFromCurrentLocation() {
+    return routeManager.getStart().getStop().description ==
+        SearchType.current.description;
+  }
+
+  void findRoute(ApplicationBloc applicationBloc) {
+    Place origin = routeManager.getStart().getStop();
+    Place destination = routeManager.getDestination().getStop();
+    int groupSize = routeManager.getGroupSize();
+    bool ifCostOptimised = routeManager.ifCostOptimised();
+    List<Place> places = routeManager
+        .getWaypoints()
+        .map((waypoint) => waypoint.getStop())
+        .toList();
+    ifCostOptimised
+        ? applicationBloc.findCostEfficientRoute(origin, destination, groupSize)
+        : applicationBloc.findRoute(origin, destination, places, groupSize);
+  }
+
   //TODO:Look into preventing rebuild
   //Build method is called one more time before navigation starts resulting in a waste of api calls
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if (routeManager.ifStartSet() &&
-        routeManager.ifDestinationSet() &&
-        routeManager.ifChanged()) {
+    if (ifRouteSetAndChanged()) {
       polylineManager.clearPolyline();
-      routeManager.getStart().getStop().description ==
-              SearchType.current.description
+      ifStartFromCurrentLocation()
           ? routeManager.setStartFromCurrentLocation(true)
           : routeManager.setStartFromCurrentLocation(false);
-      print("Start: ${routeManager.getStart().getStop()}");
-      print(
-          "destination: ${routeManager.getDestination().getStop().description}");
-      routeManager.ifCostOptimised()
-          ? applicationBloc.findCostEfficientRoute(
-              routeManager.getStart().getStop(),
-              routeManager.getDestination().getStop())
-          : applicationBloc.findRoute(
-              routeManager.getStart().getStop(),
-              routeManager.getDestination().getStop(),
-              routeManager
-                  .getWaypoints()
-                  .map((waypoint) => waypoint.getStop())
-                  .toList(),
-              routeManager.getGroupSize());
+      findRoute(applicationBloc);
       routeManager.clearChanged();
-    } else if ((!routeManager.ifStartSet() ||
-            !routeManager.ifDestinationSet()) &&
-        routeManager.ifChanged()) {
+    } else if (ifNoRouteAndChanged()) {
       polylineManager.clearPolyline();
       routeManager.clearChanged();
     }
