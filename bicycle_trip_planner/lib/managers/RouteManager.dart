@@ -20,9 +20,9 @@ class RouteManager {
   //********** Fields **********
   /// Managers needed in route manager
   final PolylineManager _polylineManager = PolylineManager();
-  final MarkerManager _markerManager = MarkerManager();
+  MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
-  final CameraManager _cameraManager = CameraManager.instance;
+  CameraManager _cameraManager = CameraManager.instance;
   Pathway _pathway = Pathway();
 
   /// True if user is starting from current location
@@ -61,13 +61,18 @@ class RouteManager {
   factory RouteManager() => _routeManager;
 
   RouteManager._internal();
+  RouteManager.forMock(CameraManager cameraManager,MarkerManager markerManager){
+    _cameraManager = cameraManager;
+    _markerManager = markerManager;
+  }
 
   //********** Private **********
 
   /// @param void
   /// @return void
   /// @effects - Moves camera to start location
-  void _moveCameraTo(R.Route route) {
+  @visibleForTesting
+  void moveCameraTo(R.Route route) {
     _cameraManager.goToPlace(
         route.legs.first.startLocation.lat,
         route.legs.first.startLocation.lng,
@@ -176,7 +181,7 @@ class RouteManager {
     _directionManager.setDistance(distance);
 
     if (relocateMap) {
-      _moveCameraTo(_bikingRoute);
+      moveCameraTo(_bikingRoute);
     }
   }
 
@@ -198,7 +203,7 @@ class RouteManager {
         route.polyline.points, route.routeType.polylineColor);
     _currentRoute = route;
     if (relocateMap) {
-      _moveCameraTo(route);
+      moveCameraTo(route);
     }
   }
 
@@ -489,10 +494,15 @@ class RouteManager {
   /// @return void
   /// @effects - Clears all route markers
   void clearRouteMarkers() {
-    List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
+    List<int> uids = [];
+    for(Stop stops in _pathway.getStops()){
+      uids.add(stops.getUID());
+    }
+
     for (int id in uids) {
       _markerManager.clearMarker(id);
     }
+
   }
 
   void setRouteMarkers() {
@@ -534,14 +544,6 @@ class RouteManager {
     _changed = false;
   }
 
-  /// @param - pathway Pathway
-  /// @return void
-  /// @effects - sets the pathway
-  @visibleForTesting
-  void setPathway(Pathway pathway) {
-    _pathway = pathway;
-  }
-
   /// @param void
   /// @return Route - returns startWalkingRoute
   @visibleForTesting
@@ -561,5 +563,18 @@ class RouteManager {
   @visibleForTesting
   R.Route getEndWalkingRoute() {
     return _endWalkingRoute;
+  }
+
+  @visibleForTesting
+  bool getCostOptimised(){
+    return _costOptimised;
+  }
+
+
+  /// @param void
+  /// @return Route - returns loading
+  @visibleForTesting
+  bool getLoading(){
+    return _loading;
   }
 }
