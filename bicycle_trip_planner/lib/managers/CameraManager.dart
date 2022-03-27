@@ -60,6 +60,7 @@ class CameraManager {
           ),
           25),
     );
+    print("Manager says hi");
   }
 
   //********** Public **********

@@ -1,16 +1,13 @@
+import 'package:bicycle_trip_planner/models/geometry.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
-import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
-import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'dart:async';
-import 'package:flutter/material.dart';
 
 import 'camera_manager_test.mocks.dart';
+
 @GenerateMocks([GoogleMapController])
 void main(){
   final controller = MockGoogleMapController();
@@ -272,36 +269,68 @@ void main(){
 ]
  """;
 
-  //init method can't be called due to rootBundle
+  Map<String, dynamic> boundsSw ={};
+  Map<String, dynamic> boundsNe ={};
+  final place = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+
   test("Initialise google map controller",() async {
     TestWidgetsFlutterBinding.ensureInitialized();
     cameraManager.init();
-    await untilCalled(controller.setMapStyle(style)).whenComplete(() => print("hi"));
+    await untilCalled(controller.setMapStyle(style));
     verify(controller.setMapStyle(style));
   });
 
   test("Set camera bounds",() async {
-    cameraManager.setCameraBounds(LatLng(10, 10), LatLng(20, 20));
+    const sw = LatLng(10, 10);
+    const ne =  LatLng(20, 20);
+
+    cameraManager.setCameraBounds(sw,ne);
+    print("hi");
     await untilCalled(controller.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
-            southwest: LatLng(10, 10),
-            northeast: LatLng(20, 20),
+            southwest: sw,
+            northeast: ne,
           ),
           25),
     ));
 
+    print("hi2");
     verify(controller.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
-            southwest: LatLng(10, 10),
-            northeast: LatLng(20, 20),
+            southwest:sw,
+            northeast:ne,
           ),
           25),
       )
     );
   });
 
+  test("Set camera position",(){
+    cameraManager.setCameraPosition(const LatLng(20,10));
+  });
+
+  test("Set route camera",(){
+
+    cameraManager.setRouteCamera(const LatLng(10,20), boundsSw, boundsNe);
+  });
+
+  test("Go to place",(){
+    cameraManager.goToPlace(10.0, 20.0, boundsNe, boundsSw);
+  });
+
+  test("View place",(){
+    cameraManager.viewPlace(place);
+  });
+
+  test("View route",(){
+    cameraManager.viewRoute();
+  });
+
+  test("View user",(){
+    cameraManager.viewUser();
+  });
 //   final LocationManager locationManager = LocationManager();
 //   bool isInitPos = true;
 //   CameraManager? cameraManager;
