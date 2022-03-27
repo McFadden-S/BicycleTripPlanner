@@ -41,7 +41,7 @@ class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
                   children: [
                     const SizedBox(height: 10),
                     Expanded(
-                        child: Text(_dialogManager.getEndOfRouteDialogText(),
+                        child: Text(_dialogManager.getChoicePrompt(),
                             textAlign: TextAlign.center,
                             style: TextStyle(color: ThemeStyle.primaryTextColor)
                         )),
@@ -53,7 +53,8 @@ class _EndOfRouteDialogState extends State<EndOfRouteDialog> {
                         ),
                         onPressed: () {
                           (_dialogManager.getEndOfRouteFunction())();
-                          applicationBloc.clearEndOfRouteDialog();
+                          _dialogManager.clearEndOfRouteDialog();
+                          applicationBloc.notifyListeningWidgets();
                         },
                         // onPressed: YesOption();
                         child: Text(_dialogManager.getOkButtonText(),

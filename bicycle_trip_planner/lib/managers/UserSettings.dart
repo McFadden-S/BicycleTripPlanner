@@ -18,7 +18,6 @@ class UserSettings {
 
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  bool _isFavouriteStationsSelected = false;
 
 //********** Public **********
 
@@ -56,22 +55,21 @@ class UserSettings {
     return decodedMap;
   }
 
-
   saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
     //if there are already 5 routes saved
-    if(savedRoutes.length == MAX_RECENT_ROUTES_COUNT) {
+    if (savedRoutes.length == MAX_RECENT_ROUTES_COUNT) {
       savedRoutes = capRoutes(savedRoutes);
     }
     Map<String, dynamic> newRoute = {};
-    Map<String, dynamic> start =  Helper.place2Map(origin);
-    Map<String, dynamic> end =  Helper.place2Map(destination);
+    Map<String, dynamic> start = Helper.place2Map(origin);
+    Map<String, dynamic> end = Helper.place2Map(destination);
     List<Map<String, dynamic>> stops = [];
 
     for (int i = 0; i < intermediates.length; i++) {
-      stops.add( Helper.place2Map(intermediates[i]));
+      stops.add(Helper.place2Map(intermediates[i]));
     }
 
     newRoute['start'] = start;
@@ -80,7 +78,6 @@ class UserSettings {
 
     savedRoutes[(savedRoutes.length).toString()] = newRoute;
     prefs.setString('recentRoutes', json.encode(savedRoutes));
-
   }
 
   Future<int> getNumberOfRoutes() async {
@@ -88,7 +85,7 @@ class UserSettings {
     String encodedMap = prefs.getString('recentRoutes') ?? "{}";
     var routeCount = Map<String, dynamic>.from(json.decode(encodedMap));
 
-    if(routeCount.isEmpty) {
+    if (routeCount.isEmpty) {
       return 0;
     }
 
@@ -99,7 +96,6 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String encodedMap = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> decodedMap = json.decode(encodedMap);
-
     return Helper.mapToPathway(decodedMap[index.toString()]);
   }
 
@@ -148,7 +144,7 @@ class UserSettings {
     return true;
   }
 
-  nearbyStationsRange() async {
+  Future<double> nearbyStationsRange() async {
     final SharedPreferences prefs = await _prefs;
     return prefs.getDouble('nearbyStationsRange') ?? 0.5;
   }
@@ -166,24 +162,15 @@ class UserSettings {
     return true;
   }
 
-  setIsFavouriteStationsSelected(bool value) {
-    _isFavouriteStationsSelected = value;
-  }
-
-  getIsIsFavouriteStationsSelected() {
-    return _isFavouriteStationsSelected;
-  }
-
   Map<String, dynamic> capRoutes(Map<String, dynamic> savedRoutes) {
     Map<String, dynamic> output = {};
-      // update item keys
-      for(var key in savedRoutes.keys){
-        output[(int.parse(key)-1).toString()] = savedRoutes[key];
-      }
-      // remove oldest
-      output.remove('-1');
+    // update item keys
+    for (var key in savedRoutes.keys) {
+      output[(int.parse(key) - 1).toString()] = savedRoutes[key];
+    }
+    // remove oldest
+    output.remove('-1');
 
     return output;
   }
-
 }
