@@ -236,7 +236,6 @@ class NavigationManager {
     _passedPickUpStation = false;
     _pickUpStation = Station.stationNotFound();
     _dropOffStation = Station.stationNotFound();
-    _locationManager.locationSettings();
   }
 
   @visibleForTesting

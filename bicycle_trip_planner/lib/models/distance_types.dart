@@ -4,6 +4,12 @@ enum DistanceType {
 }
 
 extension DistanceTypeExtension on DistanceType {
+
+  /**
+   * method converts the metres given to specified enum DistanceType
+   * @param double metres to convert
+   * @return converted distance
+   */
   double convert(double metres) {
     switch (this) {
       case DistanceType.miles:
@@ -13,6 +19,10 @@ extension DistanceTypeExtension on DistanceType {
     }
   }
 
+  /**
+   * method returns the String of a specified enum DistanceType
+   * @return String of units
+   */
   String get units {
     switch (this) {
       case DistanceType.miles:
@@ -22,6 +32,10 @@ extension DistanceTypeExtension on DistanceType {
     }
   }
 
+  /**
+   * method returns the String of the full specified enum DistanceType
+   * @return String of long units
+   */
   String get unitsLong {
     switch (this) {
       case DistanceType.miles:

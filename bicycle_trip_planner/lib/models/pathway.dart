@@ -270,25 +270,23 @@ class Pathway {
   /// @param void
   /// @return bool - get _hasFirstWaypoint
   @visibleForTesting
-  bool getHasFirstWaypoint(){
-   return _hasFirstWaypoint;
+  bool getHasFirstWaypoint() {
+    return _hasFirstWaypoint;
   }
 
   /// @param void
   /// @clear void
   /// @effects - resets values to original values
   @visibleForTesting
-  void clear(){
-    clearFirstWaypoint();
+  void clear() {
+    List<int> uids =
+        getWaypoints().map((waypoint) => waypoint.getUID()).toList();
+    for (int id in uids) {
+      removeStop(id);
+    }
     clearDestination();
     clearStart();
     _hasFirstWaypoint = false;
-    _stops.clear();
-    size = 0;
-
-    _stops.add(_start);
-    _stops.add(_destination);
-
     size = 2;
     _updatePointers();
   }

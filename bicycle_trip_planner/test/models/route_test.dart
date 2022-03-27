@@ -25,6 +25,11 @@ main() {
       legs: [legs],
       polyline: polyline,
       routeType: RouteType.walk);
+  final route2 = Route(
+      bounds: bounds,
+      legs: [legs],
+      polyline: polyline,
+      routeType: RouteType.bike);
 
   test('ensure bounds is Bounds', () {
     expect(route.bounds.runtimeType, Bounds);
@@ -37,4 +42,17 @@ main() {
   test('ensure polyline is OverviewPolyline', () {
     expect(route.polyline.runtimeType, OverviewPolyline);
   });
+
+  test('ensure overridden toString is correct', () {
+    expect(route.toString(), route.legs.toString());
+  });
+
+  test('ensure overridden == operator is correct', () {
+    expect(route == route2, false);
+  });
+
+  test('ensure return the correct hashCode', () {
+    expect(route.hashCode, Object.hash(route.bounds, route.polyline, route.legs));
+  });
+
 }

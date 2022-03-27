@@ -1,8 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/models/search_types.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
@@ -28,6 +26,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
   Widget build(BuildContext context) {
     final applicationBloc =
         Provider.of<ApplicationBloc>(context, listen: false);
+    RouteType routeType = RouteManager().getCurrentRoute().routeType;
 
     return Column(mainAxisAlignment: MainAxisAlignment.end, children: [
       Row(
@@ -36,7 +35,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
           CircleButton(
             onButtonClicked: () {
               if (!RouteManager().ifCostOptimised() ||
-                  !RouteManager().ifCycling()) {
+                  routeType != RouteType.bike) {
                 null;
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text(
@@ -72,7 +71,7 @@ class _CostEffTimerButtonState extends State<CostEffTimerButton> {
             },
             iconIn: !isRunning ? Icons.timer : Icons.restart_alt,
             iconColor:
-                !RouteManager().ifCostOptimised() || !RouteManager().ifCycling()
+                !RouteManager().ifCostOptimised() || routeType != RouteType.bike
                     ? ThemeStyle.primaryIconColor.withOpacity(0.2)
                     : ThemeStyle.primaryIconColor,
           ),
