@@ -219,7 +219,6 @@ class NavigationManager {
         _routeManager.getGroupSize());
   }
 
-  // TODO: Include in relevant places and clear up any left behidn variables
   void clear() {
     _isBeginning = true;
     _isCycling = false;

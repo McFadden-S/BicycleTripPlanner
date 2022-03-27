@@ -8,9 +8,7 @@ class Legs {
   final int distance;
   final int duration;
 
-  /**
-   * constructor with specified required inputs
-   */
+  /// constructor with specified required inputs
   Legs(
       {required this.startLocation,
       required this.endLocation,
@@ -18,11 +16,9 @@ class Legs {
       required this.distance,
       required this.duration});
 
-  /**
-   * factory constructor when data is passed from Json
-   * @param Map<dynamic, dynamic> parsed Json
-   * @return Legs
-   */
+  /// factory constructor when data is passed from Json
+  /// @param Map<dynamic, dynamic> parsed Json
+  /// @return Legs
   factory Legs.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Legs(
       startLocation: Location.fromJson(parsedJson['start_location']),
@@ -34,6 +30,7 @@ class Legs {
     );
   }
 
+  /// Default Legs object
   const Legs.legsNotFound(
       {this.startLocation = const Location.locationNotFound(),
       this.endLocation = const Location.locationNotFound(),
@@ -41,19 +38,15 @@ class Legs {
       this.duration = 0,
       this.distance = 0});
 
-  /**
-   * method override the toString method
-   * @return String of the toString of the object
-   */
+  /// method override the toString method
+  /// @return String of the toString of the object
   @override
   String toString() {
     return steps.toString();
   }
 
-  /**
-   * method override the == operator
-   * @return bool of whether the object is same or not
-   */
+  /// method override the == operator
+  /// @return bool of whether the object is same or not
   @override
   bool operator ==(Object other) {
     return other is Legs &&
@@ -64,10 +57,8 @@ class Legs {
         other.distance == distance;
   }
 
-  /**
-   * method override the get hashCode method
-   * @return int of the hashCode
-   */
+  /// method override the get hashCode method
+  /// @return int of the hashCode
   @override
   // TODO: implement hashCode
   int get hashCode =>

@@ -12,9 +12,7 @@ class Station {
   double distanceTo;
   Place place;
 
-  /**
-   * constructor with specified required inputs
-   */
+  /// constructor with specified required inputs
   Station(
       {required this.id,
       required this.name,
@@ -27,9 +25,7 @@ class Station {
       this.place = const Place.placeNotFound()
       });
 
-  /**
-   * constructor default assignments when station is not found
-   */
+  /// constructor default assignments when station is not found
   Station.stationNotFound(
       {this.id = 0,
       this.name = "Station Not Found",
@@ -42,10 +38,8 @@ class Station {
       this.place = const Place.placeNotFound()
       });
 
-  /**
-   * factory constructor when data is passed from Xml
-   * @param XmlElement element
-   */
+  /// factory constructor when data is passed from Xml
+  /// @param XmlElement element
   factory Station.fromXml(XmlElement element) {
     return Station(
       id: int.parse(element.findElements("id").first.text),
@@ -58,18 +52,14 @@ class Station {
     );
   }
 
-  /**
-   * method calculates the stations available
-   * @return double stations available
-   */
+  /// method calculates the stations available
+  /// @return double stations available
   double calculateStationAvailability() {
     return (bikes / totalDocks) * 50;
   }
 
-  /**
-   * method updates the station fields
-   * @param Station station, double distance
-   */
+  /// method updates the station fields
+  /// @param Station station, double distance
   void update(Station station, double distance) {
     bikes = station.bikes;
     emptyDocks = station.emptyDocks;
@@ -77,28 +67,22 @@ class Station {
     distanceTo = distance;
   }
 
-  /**
-   * method override the toString method
-   * @return String of the toString of the object
-   */
+  /// method override the toString method
+  /// @return String of the toString of the object
   @override
   String toString() {
     return name;
   }
 
-  /**
-   * method override the == operator
-   * @return bool of whether the object is same or not
-   */
+  /// method override the == operator
+  /// @return bool of whether the object is same or not
   @override
   bool operator ==(Object other) {
     return other is Station && other.id == id && other.name == name;
   }
 
-  /**
-   * method override the get hashCode method
-   * @return int of the hashCode
-   */
+  /// method override the get hashCode method
+  /// @return int of the hashCode
   @override
   int get hashCode => Object.hash(id, name);
 }
