@@ -12,11 +12,12 @@ import 'Helper.dart';
 /// DatabaseManager is a manager class that manages data transfer
 /// to and from the Firebase Database
 
+
 class DatabaseManager {
 
   //************Fields************
   late FirebaseDatabase _dbInstance;
-  late FirebaseAuth _auth;
+  var _auth;
 
   Map<String,Pathway> _routes = {};
 
@@ -63,8 +64,8 @@ class DatabaseManager {
 
   Future<List<int>> getFavouriteStations() async {
     var uid = _auth.currentUser?.uid;
-    DatabaseReference favouriteStations =
-        _dbInstance.ref('users/$uid/favouriteStations');
+    DatabaseReference favouriteStations = _dbInstance.ref('users/$uid/favouriteStations');
+
     List<int> output = [];
     print(_auth.currentUser);
     print(_dbInstance.databaseURL);
@@ -76,9 +77,8 @@ class DatabaseManager {
   }
 
   Future<bool> removeFavouriteStation(String stationId) async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
-    DatabaseReference favouriteRoutes =
-        _dbInstance.ref('users/$uid/favouriteStations');
+    var uid = _auth.currentUser?.uid;
+    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteStations');
     await favouriteRoutes.child(stationId).remove().then((_) {
       // Data removed successfully!
       return true;
@@ -126,9 +126,8 @@ class DatabaseManager {
   }
 
   Future<Map<String, Pathway>> getFavouriteRoutes() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
-    DatabaseReference favouriteRoutes =
-        _dbInstance.ref('users/$uid/favouriteRoutes');
+    var uid = _auth.currentUser?.uid;
+    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
     await favouriteRoutes.once().then((value) => {
       for (var child in value.snapshot.children) {
