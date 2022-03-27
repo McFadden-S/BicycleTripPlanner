@@ -105,6 +105,11 @@ class RouteManager {
     return Bounds(northeast: newNorthEast, southwest: newSouthWest);
   }
 
+  /// @param - Route; the route to create a marker for
+  /// @return void
+  /// @affects - Sets a marker at the start of the route and
+  ///            at the end of the route. If there are intermediate
+  ///            stops, they are also set.
   _createRouteMarker(R.Route route) {
     double color = route.routeType == RouteType.bike
         ? BitmapDescriptor.hueGreen
@@ -229,7 +234,11 @@ class RouteManager {
       distance += route.distance;
     }
 
-    _createRouteMarker(_bikingRoute);
+    // Display the pickup and dropoff station
+    _setRouteMarker(
+        _bikingRoute.legs.first.startLocation, BitmapDescriptor.hueGreen);
+    _setRouteMarker(
+        _bikingRoute.legs.last.endLocation, BitmapDescriptor.hueGreen);
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
