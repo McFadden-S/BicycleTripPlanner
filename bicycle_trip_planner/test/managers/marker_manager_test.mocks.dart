@@ -82,6 +82,10 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       super.noSuchMethod(Invocation.method(#clearSelectedStationDialog, []),
           returnValueForMissingStub: null);
   @override
+  List<_i4.PlaceSearch> getSearchResult() =>
+      (super.noSuchMethod(Invocation.method(#getSearchResult, []),
+          returnValue: <_i4.PlaceSearch>[]) as List<_i4.PlaceSearch>);
+  @override
   bool ifSearchResult() =>
       (super.noSuchMethod(Invocation.method(#ifSearchResult, []),
           returnValue: false) as bool);
@@ -172,10 +176,6 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       (super.noSuchMethod(Invocation.method(#isUserLogged, []),
           returnValue: false) as bool);
   @override
-  void toggleCycling() =>
-      super.noSuchMethod(Invocation.method(#toggleCycling, []),
-          returnValueForMissingStub: null);
-  @override
   void clearMap() => super.noSuchMethod(Invocation.method(#clearMap, []),
       returnValueForMissingStub: null);
   @override
@@ -184,10 +184,6 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
   @override
   void updateSettings() =>
       super.noSuchMethod(Invocation.method(#updateSettings, []),
-          returnValueForMissingStub: null);
-  @override
-  void loadFavouriteRoutes() =>
-      super.noSuchMethod(Invocation.method(#loadFavouriteRoutes, []),
           returnValueForMissingStub: null);
   @override
   void notifyListeningWidgets() =>

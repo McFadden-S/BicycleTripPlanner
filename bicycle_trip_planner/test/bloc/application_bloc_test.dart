@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as loc;
 import 'package:bicycle_trip_planner/models/place.dart';
+import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as r;
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
@@ -25,12 +29,15 @@ import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert' as convert;
 
 @GenerateMocks(
-    [LocationManager, PlacesService, DirectionsService, StationManager])
+    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager])
 void main() {
   var locationManager = MockLocationManager();
   var placesServices = MockPlacesService();
   var directionsService = MockDirectionsService();
   var stationManager = MockStationManager();
+  var dialogManager = MockDialogManager();
+  var userSettings = MockUserSettings();
+  var cameraManager = MockCameraManager();
 
   final routeManager = RouteManager();
   final navigationManager =
@@ -1959,68 +1966,72 @@ void main() {
           LatLng(51.508384, -0.125724), LatLng(51.50984, -0.126851)))
       .thenAnswer((_) => 29);
 
-  var appBloc = ApplicationBloc.forMock(locationManager, placesServices,
-      routeManager, navigationManager, directionsService, stationManager);
+  var appNavigationBloc = ApplicationBloc.forNavigationMock(locationManager, placesServices,
+      routeManager, navigationManager, directionsService, stationManager, cameraManager);
 
-  test("Application bloc is initialized", () async {
-    await untilCalled(locationManager.setCurrentLocation(currentPlace));
-    verify(locationManager.setCurrentLocation(currentPlace)).called(1);
-  });
+  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings);
+  group("Navigation Tests", () {
+    test("Application bloc is initialized", () async {
+      await untilCalled(locationManager.setCurrentLocation(currentPlace));
+      verify(locationManager.setCurrentLocation(currentPlace)).called(1);
+    });
 
-  test("Start navigation", () async {
-    StreamController<LocationData> controller =
-        StreamController<LocationData>();
-    Stream stream = controller.stream;
-    when(locationManager.onUserLocationChange(5.0))
-        .thenAnswer((_) => stream as Stream<LocationData>);
+    test("Start navigation", () async {
+      StreamController<LocationData> controller =
+          StreamController<LocationData>();
+      Stream stream = controller.stream;
+      when(locationManager.onUserLocationChange(5.0))
+          .thenAnswer((_) => stream as Stream<LocationData>);
 
-    routeManager.changeStart(Place(
-        geometry:
-            Geometry(location: loc.Location(lat: 51.51316, lng: -0.117254)),
-        name: "Start",
-        placeId: "start",
-        description: "start"));
+      routeManager.changeStart(Place(
+          geometry:
+              Geometry(location: loc.Location(lat: 51.51316, lng: -0.117254)),
+          name: "Start",
+          placeId: "start",
+          description: "start"));
 
-    routeManager.changeDestination(Place(
-        geometry:
-            Geometry(location: loc.Location(lat: 51.508384, lng: -0.125724)),
-        name: "Destination",
-        placeId: "destination",
-        description: "destination"));
+      routeManager.changeDestination(Place(
+          geometry:
+              Geometry(location: loc.Location(lat: 51.508384, lng: -0.125724)),
+          name: "Destination",
+          placeId: "destination",
+          description: "destination"));
 
-    for (Stop stop in routeManager.getStops()) {
-      print(stop.getStop().getLatLng());
-    }
+      for (Stop stop in routeManager.getStops()) {
+        print(stop.getStop().getLatLng());
+      }
 
-    Map<String, dynamic> locationChange_1 = {
-      "latitude": 51.513948,
-      "longitude": -0.119872,
-      "accuracy": 0.0,
-      "altitude": 0.0,
-      "speed": 0.0,
-      "speedAccuracy": 0.0,
-      "heading": 0.0,
-      "time": 0.0,
-      "isMock": false,
-      "verticalAccuracy": 0.0,
-      "headingAccuracy": 0.0,
-      "elapsedRealtimeNanos": 0.0,
-      "elapsedRealtimeUncertaintyNanos": 0.0,
-      "satelliteNumber": 0,
-      "provider": "asdf"
-    };
-    var x = LocationData.fromMap(locationChange_1);
+      Map<String, dynamic> locationChange_1 = {
+        "latitude": 51.513948,
+        "longitude": -0.119872,
+        "accuracy": 0.0,
+        "altitude": 0.0,
+        "speed": 0.0,
+        "speedAccuracy": 0.0,
+        "heading": 0.0,
+        "time": 0.0,
+        "isMock": false,
+        "verticalAccuracy": 0.0,
+        "headingAccuracy": 0.0,
+        "elapsedRealtimeNanos": 0.0,
+        "elapsedRealtimeUncertaintyNanos": 0.0,
+        "satelliteNumber": 0,
+        "provider": "asdf"
+      };
+      var x = LocationData.fromMap(locationChange_1);
 
-    appBloc.startNavigation();
+      appNavigationBloc.startNavigation();
 
-    List<Station> stations = [];
-    stations.add(navigationManager.getPickupStation());
-    stations.add(navigationManager.getDropoffStation());
-    when(stationManager.getStations()).thenAnswer((realInvocation) => stations);
+      List<Station> stations = [];
+      stations.add(navigationManager.getPickupStation());
+      stations.add(navigationManager.getDropoffStation());
+      when(stationManager.getStations())
+          .thenAnswer((realInvocation) => stations);
 
-    when(directionsService.getWalkingRoutes("MyCurrentLocation", "destination"))
-        .thenAnswer(
-            (realInvocation) async => r.Route.fromJson(convert.jsonDecode(r"""
+      when(directionsService.getWalkingRoutes(
+              "MyCurrentLocation", "destination"))
+          .thenAnswer(
+              (realInvocation) async => r.Route.fromJson(convert.jsonDecode(r"""
             {
    "geocoded_waypoints" : [
       {
@@ -2183,37 +2194,100 @@ void main() {
 
             """)['routes'][0] as Map<String, dynamic>, RouteType.walk));
 
-    await untilCalled(locationManager.onUserLocationChange(5.0));
-    verify(locationManager.onUserLocationChange(5.0)).called(1);
+      await untilCalled(locationManager.onUserLocationChange(5.0));
+      verify(locationManager.onUserLocationChange(5.0)).called(1);
 
-    controller.add(x);
-    await untilCalled(locationManager.distanceFromToInMeters(
-        LatLng(51.513206, -0.117373), LatLng(51.50984, -0.126851)));
+      controller.add(x);
+      await untilCalled(locationManager.distanceFromToInMeters(
+          LatLng(51.513206, -0.117373), LatLng(51.50984, -0.126851)));
 
-    Map<String, dynamic> locationChange_2 = {
-      "latitude": 51.508384,
-      "longitude": -0.125724,
-      "accuracy": 0.0,
-      "altitude": 0.0,
-      "speed": 0.0,
-      "speedAccuracy": 0.0,
-      "heading": 0.0,
-      "time": 0.0,
-      "isMock": false,
-      "verticalAccuracy": 0.0,
-      "headingAccuracy": 0.0,
-      "elapsedRealtimeNanos": 0.0,
-      "elapsedRealtimeUncertaintyNanos": 0.0,
-      "satelliteNumber": 0,
-      "provider": "asdf"
-    };
-    x = LocationData.fromMap(locationChange_2);
+      Map<String, dynamic> locationChange_2 = {
+        "latitude": 51.508384,
+        "longitude": -0.125724,
+        "accuracy": 0.0,
+        "altitude": 0.0,
+        "speed": 0.0,
+        "speedAccuracy": 0.0,
+        "heading": 0.0,
+        "time": 0.0,
+        "isMock": false,
+        "verticalAccuracy": 0.0,
+        "headingAccuracy": 0.0,
+        "elapsedRealtimeNanos": 0.0,
+        "elapsedRealtimeUncertaintyNanos": 0.0,
+        "satelliteNumber": 0,
+        "provider": "asdf"
+      };
+      x = LocationData.fromMap(locationChange_2);
 
-    //Verifies partial routes are being stored after initial walking route is done
-    verify(directionsService.getRoutes(
-        'firstStation', 'lastStation', ['start'], true));
+      //Verifies partial routes are being stored after initial walking route is done
+      verify(directionsService.getRoutes(
+          'firstStation', 'lastStation', ['start'], true));
 
-    currentLocationLatLng = LatLng(51.508384, -0.125724);
-    controller.add(x);
+      currentLocationLatLng = LatLng(51.508384, -0.125724);
+      controller.add(x);
+    });
+  });
+
+  group("Dialog Tests", (){
+    test("Show binary dialog",(){
+      appBloc.showBinaryDialog();
+      verify(dialogManager.showBinaryChoice());
+    });
+
+    test("Show selected station",() async {
+      final station = Station(id: 1, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 10, totalDocks: 20);
+      appBloc.showSelectedStationDialog(station);
+      await untilCalled(dialogManager.setSelectedStation(any));
+      verify(dialogManager.setSelectedStation(station)).called(1);
+      verify(dialogManager.showSelectedStation()).called(1);
+    });
+
+    test("Clear binary dialog",(){
+      appBloc.clearBinaryDialog();
+      verify(dialogManager.clearBinaryChoice()).called(1);
+    });
+
+    test("Clear selected binary dialog",(){
+      appBloc.clearSelectedStationDialog();
+      verify(dialogManager.clearSelectedStation()).called(1);
+    });
+  });
+
+  group("Search test",(){
+      test("Check is search result is empty on instantiation",(){
+        expect(appBloc.ifSearchResult(), false);
+      });
+
+      test("Check if search result is empty after data added",(){
+        List<PlaceSearch> searches = appBloc.getSearchResult();
+        searches.add(PlaceSearch(description: "description", placeId: "placeId"));
+        expect(appBloc.ifSearchResult(), true);
+      });
+
+      test("Search Places",() async {
+        when(placesServices.getAutocomplete('Waterloo')).thenAnswer((_) async=> [PlaceSearch(description: "Waterloo", placeId: "waterloo")]);
+        appBloc.searchPlaces("Waterloo");
+
+        await untilCalled(placesServices.getAutocomplete('Waterloo'));
+        expect(appBloc.getSearchResult().first.description, SearchType.current.description);
+      });
+
+      test("Get default search result",(){
+        Map<String, dynamic> places = {};
+        places["1"] = "1";
+        places["2"] = "2";
+        when(userSettings.getPlace()).thenAnswer((realInvocation) async=> places);
+        appBloc.getDefaultSearchResult();
+
+        expect(appBloc.getSearchResult().length,1);
+      });
+
+      test("Seach selected station",(){
+        final station = Station(id: 0, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 10, totalDocks: 10);
+        when(placesServices.getPlaceFromCoordinates(
+            station.lat, station.lng, "Santander Cycles: ${station.name}")).;
+        appBloc.searchSelectedStation(station, 5);
+      });
   });
 }

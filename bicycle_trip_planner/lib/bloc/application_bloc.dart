@@ -45,40 +45,49 @@ class ApplicationBloc with ChangeNotifier {
   late List<PlaceSearch> searchResults = [];
 
   StationManager _stationManager = StationManager();
-  final MarkerManager _markerManager = MarkerManager();
-  final DirectionManager _directionManager = DirectionManager();
+  MarkerManager _markerManager = MarkerManager();
+  DirectionManager _directionManager = DirectionManager();
   RouteManager _routeManager = RouteManager();
   LocationManager _locationManager = LocationManager();
-  final CameraManager _cameraManager = CameraManager.instance;
-  final DialogManager _dialogManager = DialogManager();
+  CameraManager _cameraManager = CameraManager.instance;
+  DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
-  // final DatabaseManager _databaseManager = DatabaseManager();
-  final UserSettings _userSettings = UserSettings();
+  //final DatabaseManager _databaseManager = DatabaseManager();
+  UserSettings _userSettings = UserSettings();
 
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
 
   ApplicationBloc() {
-    // Note: not async
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings){
+    _dialogManager = dialogManager;
+    _placesService = placesService;
+    _locationManager = locationManager;
+    _userSettings = userSettings;
+  }
+
+  @visibleForTesting
+  ApplicationBloc.forNavigationMock(
       LocationManager locationManager,
       PlacesService placesService,
       RouteManager routeManager,
       NavigationManager navigationManager,
       DirectionsService directionsService,
-      StationManager stationManager) {
+      StationManager stationManager,
+      CameraManager cameraManager) {
     _locationManager = locationManager;
     _placesService = placesService;
     _routeManager = routeManager;
     _navigationManager = navigationManager;
     _directionsService = directionsService;
     _stationManager = stationManager;
+    _cameraManager = cameraManager;
 
     changeUnits();
     fetchCurrentLocation();
@@ -118,6 +127,11 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Search **********
 
+  @visibleForTesting
+  List<PlaceSearch> getSearchResult(){
+    return searchResults;
+  }
+
   bool ifSearchResult() {
     return searchResults.isNotEmpty;
   }
@@ -130,6 +144,7 @@ class ApplicationBloc with ChangeNotifier {
             description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
+
   }
 
   getDefaultSearchResult() async {
@@ -170,7 +185,6 @@ class ApplicationBloc with ChangeNotifier {
     viewStationMarker(station, uid);
 
     if (station.place == const Place.placeNotFound()) {
-      var client = http.Client();
       Place place = await _placesService.getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
@@ -187,7 +201,7 @@ class ApplicationBloc with ChangeNotifier {
         .listen((LocationData currentLocation) async {
       // Print this if you suspect that data is loading more than expected
       //print("I loaded!");
-      CameraManager.instance.viewUser();
+      _cameraManager.viewUser();
       await _updateDirections();
     });
   }
