@@ -12,6 +12,7 @@ void main() {
   const String _key = 'dummy';
   const String _prefixedKey = 'flutter.' + _key;
 
+  // clear currently saved shared prefs, if any
   setUp(() async {
     final SharedPreferences prefs = await userSettings.getSharedPref();
     final removeRecentSearches = await prefs.remove('recentSearches');
@@ -646,4 +647,170 @@ void main() {
     expect(routeMap["4"]["end"]["id"], "12");
     expect(routeMap["4"]["end"]["description"], "the sixth route end description");
   });
+
+  test('test getNumberOfRoutes with a route with intermediate stops and a route without intermediate stops', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the description"
+    );
+
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
+
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    Place startPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the second route first description"
+    );
+
+    Place middleStop1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "4",
+        description: "the second route middle stop description"
+    );
+
+    Place endPlace1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "5",
+        description: "the second route end description"
+    );
+
+    List<Place> intermediates1 = [middleStop1];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+
+    expect(await userSettings.getNumberOfRoutes(), 2);
+  });
+
+  test('test getNumberOfRoutes with when there are no routes', () async {
+    expect(await userSettings.getNumberOfRoutes(), 0);
+  });
+
+  // test when 6 routes are added the number of routes remains at max 5
+  test('add more than max routes to see if recent routes are stored properly', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the first route start description"
+    );
+
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the first route end description"
+    );
+
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    Place startPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the second route start description"
+    );
+
+    Place endPlace1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "4",
+        description: "the second route end description"
+    );
+
+    List<Place> intermediates1 = [];
+
+    Place startPlace2 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "5",
+        description: "the third route start description"
+    );
+
+    Place endPlace2 = Place(
+        latlng: const LatLng(49.947584, -0.124837),
+        name: "Somerset House, Strand",
+        placeId: "6",
+        description: "the third route end description"
+    );
+
+    List<Place> intermediates2 = [];
+
+    Place startPlace3 = Place(
+        latlng: const LatLng(51.485573, -0.119585),
+        name: "Sardinia Street, Holborn",
+        placeId: "7",
+        description: "the fourth route start description"
+    );
+
+    Place endPlace3 = Place(
+        latlng: const LatLng(49.999233, -0.123456),
+        name: "Drury Lane, Covent Garden",
+        placeId: "8",
+        description: "the fourth route end description"
+    );
+
+    List<Place> intermediates3 = [];
+
+    Place startPlace4 = Place(
+        latlng: const LatLng(50.123456, -0.109834),
+        name: "Arundel Street, Temple",
+        placeId: "9",
+        description: "the fifth route start description"
+    );
+
+    Place endPlace4 = Place(
+        latlng: const LatLng(52.002232, -0.103432),
+        name: "Kingsway, Covent Garden",
+        placeId: "10",
+        description: "the fifth route end description"
+    );
+
+    List<Place> intermediates4 = [];
+
+    Place startPlace5 = Place(
+        latlng: const LatLng(50.457345, -0.2342353),
+        name: "Clifton Road, Maida Vale",
+        placeId: "11",
+        description: "the sixth route start description"
+    );
+
+    Place endPlace5 = Place(
+        latlng: const LatLng(52.532667, -0.2343256),
+        name: "Frampton Street, Paddington",
+        placeId: "12",
+        description: "the sixth route end description"
+    );
+
+    List<Place> intermediates5 = [];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+    userSettings.saveRoute(startPlace2, endPlace2, intermediates2);
+    userSettings.saveRoute(startPlace3, endPlace3, intermediates3);
+    userSettings.saveRoute(startPlace4, endPlace4, intermediates4);
+    userSettings.saveRoute(startPlace5, endPlace5, intermediates5);
+
+    expect(await userSettings.getNumberOfRoutes(), 5);
+  });
+
+  // test getRecentRoute() gets correct recent route
+
+
+  // test what happens if no recent routes
+
 }
