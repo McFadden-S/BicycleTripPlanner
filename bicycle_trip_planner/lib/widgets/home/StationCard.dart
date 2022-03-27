@@ -2,25 +2,20 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../managers/DatabaseManager.dart';
-
 class StationCard extends StatefulWidget {
-  final int index;
+  final Station station;
   final bool? isFavourite;
-  final Function(int)? toggleFavourite;
+  final Function(Station)? toggleFavourite;
 
   const StationCard(
-      {Key? key, required this.index, this.isFavourite, this.toggleFavourite})
+      {Key? key, required this.station, this.isFavourite, this.toggleFavourite})
       : super(key: key);
 
   @override
@@ -40,8 +35,7 @@ class _StationCardState extends State<StationCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        stationClicked(applicationBloc,
-            stationManager.getStationByIndex(widget.index), context);
+        stationClicked(applicationBloc, widget.station, context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -57,8 +51,7 @@ class _StationCardState extends State<StationCard> {
                     children: [
                       Expanded(
                         flex: 25,
-                        child: Text(
-                            stationManager.getStationByIndex(widget.index).name,
+                        child: Text(widget.station.name,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 17.0,
@@ -69,11 +62,13 @@ class _StationCardState extends State<StationCard> {
                       if (applicationBloc.isUserLogged())
                         if (widget.isFavourite != null)
                           IconButton(
-                            constraints: BoxConstraints(maxHeight: 25),
-                            padding: EdgeInsets.all(0),
+                            constraints: const BoxConstraints(maxHeight: 25),
+                            padding: const EdgeInsets.all(0),
                             iconSize: 20,
                             onPressed: () {
-                              widget.toggleFavourite!(widget.index);
+                              setState(() {
+                                widget.toggleFavourite!(widget.station);
+                              });
                             },
                             icon: widget.isFavourite!
                                 ? Icon(Icons.star,
@@ -92,7 +87,7 @@ class _StationCardState extends State<StationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).bikes.toString()} bikes available",
+                        "\t\t${widget.station.bikes.toString()} bikes available",
                         style: TextStyle(
                             fontSize: 15.0,
                             color: ThemeStyle.secondaryTextColor),
@@ -107,7 +102,7 @@ class _StationCardState extends State<StationCard> {
                         color: ThemeStyle.secondaryIconColor,
                       ),
                       Text(
-                        "\t\t${stationManager.getStationByIndex(widget.index).totalDocks.toString()} free docks",
+                        "\t\t${widget.station.totalDocks.toString()} free docks",
                         style: TextStyle(
                             fontSize: 15.0,
                             color: ThemeStyle.secondaryTextColor),
@@ -115,7 +110,7 @@ class _StationCardState extends State<StationCard> {
                       const Spacer(),
                       Container(
                         child: Text(
-                            "${stationManager.getStationByIndex(widget.index).distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
+                            "${widget.station.distanceTo.toStringAsFixed(1)}${locationManager.getUnits().units}",
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 fontSize: 12.0, color: Colors.blueAccent)),

@@ -49,12 +49,6 @@ class MockLocationManager extends _i1.Mock implements _i6.LocationManager {
               returnValue: Future<_i2.LatLng>.value(_FakeLatLng_0()))
           as _i7.Future<_i2.LatLng>);
   @override
-  _i7.Future<_i8.PermissionStatus> requestPermission() => (super.noSuchMethod(
-          Invocation.method(#requestPermission, []),
-          returnValue:
-              Future<_i8.PermissionStatus>.value(_i8.PermissionStatus.granted))
-      as _i7.Future<_i8.PermissionStatus>);
-  @override
   _i7.Future<bool> checkServiceEnabled() =>
       (super.noSuchMethod(Invocation.method(#checkServiceEnabled, []),
           returnValue: Future<bool>.value(false)) as _i7.Future<bool>);

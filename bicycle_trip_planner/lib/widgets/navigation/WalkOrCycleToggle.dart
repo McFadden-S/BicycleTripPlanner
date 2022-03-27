@@ -1,35 +1,40 @@
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../bloc/application_bloc.dart';
 
 class WalkOrCycleToggle extends StatefulWidget {
-  final DirectionManager directionManager;
-
-  const WalkOrCycleToggle({Key? key, required this.directionManager})
-      : super(key: key);
+  const WalkOrCycleToggle({Key? key}) : super(key: key);
 
   @override
   _WalkOrCycleToggleState createState() => _WalkOrCycleToggleState();
 }
 
 class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
-  late final ApplicationBloc appBloc;
+  final DialogManager _dialogManager = DialogManager();
+  final RouteManager _routeManager = RouteManager();
 
   void setCycling() {
-    setState(() => {appBloc.toggleCycling()});
-  }
-
-  @override
-  void initState() {
-    appBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    super.initState();
+    setState(() {
+      RouteType routeType = _routeManager.getCurrentRoute().routeType;
+      if (routeType == RouteType.walk) {
+        _routeManager.showBikeRoute();
+      } else {
+        _routeManager.showCurrentWalkingRoute();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final applicationBloc = Provider.of<ApplicationBloc>(context);
+    RouteType routeType = _routeManager.getCurrentRoute().routeType;
+
     return ElevatedButton(
       style: ButtonStyle(
           backgroundColor:
@@ -39,9 +44,7 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
         children: [
           Icon(
             Icons.directions_walk,
-            color: widget.directionManager.ifCycling()
-                ? Colors.black26
-                : Colors.red,
+            color: routeType == RouteType.bike ? Colors.black26 : Colors.red,
             size: 30,
           ),
           const Text(
@@ -50,15 +53,24 @@ class _WalkOrCycleToggleState extends State<WalkOrCycleToggle> {
           ),
           Icon(
             Icons.directions_bike,
-            color: widget.directionManager.ifCycling()
-                ? Colors.red
-                : Colors.black26,
+            color: routeType == RouteType.bike ? Colors.red : Colors.black26,
             size: 30,
           ),
         ],
       ),
       onPressed: () {
-        setCycling();
+        _dialogManager.setBinaryChoice(
+          "Toggle between walking and cycling?",
+          "Toggle",
+          () {
+            setCycling();
+          },
+          "Cancel",
+          () {},
+        );
+
+        applicationBloc.showBinaryDialog();
+        applicationBloc.notifyListeningWidgets();
       },
     );
   }

@@ -1,7 +1,13 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
+import 'package:mockito/mockito.dart';
+import 'locator_test.mocks.dart';
 
+
+@GenerateMocks([Geolocator])
 main(){
   final locator = Locator();
 

@@ -11,6 +11,8 @@ import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:location/location.dart';
@@ -495,9 +497,8 @@ void main() {
         }
         """)['routes'][0] as Map<String, dynamic>, RouteType.walk));
 
-  when(directionsService.getRoutes('firstStation', 'lastStation')).thenAnswer((realInvocation) async=>
-      r.Route.fromJson(convert.jsonDecode(
-        r"""
+  when(directionsService.getRoutes('firstStation', 'lastStation')).thenAnswer(
+      (realInvocation) async => r.Route.fromJson(convert.jsonDecode(r"""
           {
    "geocoded_waypoints" : [
       {
@@ -825,14 +826,11 @@ void main() {
    ],
    "status" : "OK"
 }       
-        """
-      )['routes'][0] as Map<String, dynamic>, RouteType.bike)
+        """)['routes'][0] as Map<String, dynamic>, RouteType.bike));
 
-  );
-
-  when(directionsService.getWalkingRoutes("lastStation", "destination")).thenAnswer((realInvocation) async=>
-    r.Route.fromJson(convert.jsonDecode(
-     r"""
+  when(directionsService.getWalkingRoutes("lastStation", "destination"))
+      .thenAnswer(
+          (realInvocation) async => r.Route.fromJson(convert.jsonDecode(r"""
      {
    "geocoded_waypoints" : [
       {
@@ -1040,14 +1038,11 @@ void main() {
    ],
    "status" : "OK"
 }
-     """
-    )["routes"][0] as Map<String, dynamic>
-    , RouteType.walk)
-  );
+     """)["routes"][0] as Map<String, dynamic>, RouteType.walk));
 
-  when(directionsService.getRoutes('firstStation', 'lastStation', ['start'], true)).thenAnswer((_) async=>
-      r.Route.fromJson(convert.jsonDecode(
-          r"""
+  when(directionsService.getRoutes(
+          'firstStation', 'lastStation', ['start'], true))
+      .thenAnswer((_) async => r.Route.fromJson(convert.jsonDecode(r"""
           {
    "geocoded_waypoints" : [
       {
@@ -1255,15 +1250,11 @@ void main() {
    ],
    "status" : "OK"
 }
-          """
-      )["routes"][0] as Map<String, dynamic>
-          , RouteType.walk)
-  );
+          """)["routes"][0] as Map<String, dynamic>, RouteType.walk));
 
-  when(placesServices.getPlaceFromCoordinates(51.508384, -0.125724, SearchType.current.description)).thenAnswer((_) async=>
-    Place.fromJson(
-    convert.jsonDecode(
-      r"""
+  when(placesServices.getPlaceFromCoordinates(
+          51.508384, -0.125724, SearchType.current.description))
+      .thenAnswer((_) async => Place.fromJson(convert.jsonDecode(r"""
       {
    "plus_code" : {
       "compound_code" : "GV5F+9P2 London, UK",
@@ -1954,22 +1945,19 @@ void main() {
    ],
    "status" : "OK"
 }
-      """
-    )['results'][0] as Map<String, dynamic>
-    , "myCurrentLocation")
-  );
+      """)['results'][0] as Map<String, dynamic>, "myCurrentLocation"));
 
-  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724), LatLng(51.51316, -0.117254))).thenAnswer((_) =>
-  791
-  );
+  when(locationManager.distanceFromToInMeters(
+          LatLng(51.508384, -0.125724), LatLng(51.51316, -0.117254)))
+      .thenAnswer((_) => 791);
 
-  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724), LatLng(51.514148, -0.119647))).thenAnswer((_) =>
-  766
-  );
+  when(locationManager.distanceFromToInMeters(
+          LatLng(51.508384, -0.125724), LatLng(51.514148, -0.119647)))
+      .thenAnswer((_) => 766);
 
-  when(locationManager.distanceFromToInMeters(LatLng(51.508384, -0.125724),  LatLng(51.50984, -0.126851))).thenAnswer((_) =>
-  29
-  );
+  when(locationManager.distanceFromToInMeters(
+          LatLng(51.508384, -0.125724), LatLng(51.50984, -0.126851)))
+      .thenAnswer((_) => 29);
 
   var appBloc = ApplicationBloc.forMock(locationManager, placesServices,
       routeManager, navigationManager, directionsService, stationManager);
@@ -2222,9 +2210,10 @@ void main() {
     x = LocationData.fromMap(locationChange_2);
 
     //Verifies partial routes are being stored after initial walking route is done
-    verify(directionsService.getRoutes('firstStation', 'lastStation', ['start'], true));
+    verify(directionsService.getRoutes(
+        'firstStation', 'lastStation', ['start'], true));
 
     currentLocationLatLng = LatLng(51.508384, -0.125724);
     controller.add(x);
-    });
+  });
 }
