@@ -90,7 +90,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ViewRouteButton(),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
-                                    _routeManager.getWaypoints().length > 1
+                                    _routeManager.getWaypoints().length > 1 &&
+                                    !_routeManager.ifCostOptimised()
                                 ? Column(
                                     children: [
                                       OptimisedButton(),

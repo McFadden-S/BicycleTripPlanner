@@ -141,7 +141,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
     List<Stop> stops = routeManager.getWaypoints();
     stops.forEach((stop) {
-      _addStopWidget(applicationBloc, stop, false);
+      _addStopWidget(applicationBloc, stop, routeManager.ifCostOptimised());
     });
 
     return InkWell(
