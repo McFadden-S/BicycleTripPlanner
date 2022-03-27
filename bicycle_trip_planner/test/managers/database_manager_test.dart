@@ -17,10 +17,8 @@ Future<void> main() async {
 
   setupFirebaseMocks();
   setupFirebaseAuthMocks();
-//>>>>>>> 70a28859dd8ba5f654840bebf080ec2b2439fcc2
 
-  var database = MockFirebaseDatabase();
-  var auth = MockFirebaseAuth();
+
 
   await Firebase.initializeApp();
 
@@ -69,12 +67,14 @@ Future<void> main() async {
       }
     }
   };
+  MockFirebaseDatabase().ref().set(fakeData);
+  var database = MockFirebaseDatabase();
+  var auth = MockFirebaseAuth();
 
 
-  MockFirebaseDatabase.instance.reference().set(fakeData);
   setUp(() async {
     WidgetsFlutterBinding.ensureInitialized();
-
+    await database.goOnline();
     final googleSignIn = MockGoogleSignIn();
     final signinAccount = await googleSignIn.signIn();
     final googleAuth = await signinAccount?.authentication;
