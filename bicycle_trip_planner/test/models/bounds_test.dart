@@ -17,4 +17,8 @@ main(){
     expect(bounds == bounds2, false);
   });
 
+  test('ensure hashCode returned is correct', (){
+    expect(bounds.hashCode, Object.hash(bounds.northeast, bounds.southwest));
+  });
+
 }

@@ -1,15 +1,12 @@
 import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants.dart';
-import '../../managers/DatabaseManager.dart';
 import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
@@ -61,7 +58,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
                 quarterTurns: 1,
                 child: IconButton(
                   icon: Icon(
-                    Icons.airline_stops,
+                    Icons.description,
                   ),
                   onPressed: null,
                 ),
@@ -144,7 +141,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
 
     List<Stop> stops = routeManager.getWaypoints();
     stops.forEach((stop) {
-      _addStopWidget(applicationBloc, stop, false);
+      _addStopWidget(applicationBloc, stop, routeManager.ifCostOptimised());
     });
 
     return InkWell(

@@ -116,8 +116,7 @@ class _NavigationState extends State<Navigation> {
                         Expanded(
                             child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: WalkOrCycleToggle(
-                              directionManager: directionManager),
+                          child: WalkOrCycleToggle(),
                         )),
                       ],
                     ),

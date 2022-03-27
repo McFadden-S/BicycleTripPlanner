@@ -1,4 +1,5 @@
 
+import 'package:bicycle_trip_planner/auth/Keys.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:http/http.dart' as http;
@@ -9,12 +10,12 @@ import 'stations_services_test.mocks.dart' as mock;
 
 void main(){
   group('getRoutes', () {
+    final String key = Keys.getApiKey();
     test('Get routes without waypoints', () async {
 
       final origin = "ChIJi3D0484EdkgRuYlzHV73TlY";
       final destination = "ChIJbcdbqcsEdkgReND4g9YagKY";
       final waypoints = "&waypoints=optimize:true";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(
@@ -195,11 +196,10 @@ void main(){
       final origin = "ChIJDewcaLUEdkgRByjdEk9z704";
       final destination = "ChIJaS6FAKMEdkgRgryaUMRNVEI";
       final waypoints = ["ChIJs4GOh8sEdkgRRiBFZKMP8ZE"];
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:ChIJDewcaLUEdkgRByjdEk9z704&destination=place_id:ChIJaS6FAKMEdkgRgryaUMRNVEI&waypoints=optimize:true|place_id:ChIJs4GOh8sEdkgRRiBFZKMP8ZE&mode=bicycling&key=AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0')))
+          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:ChIJDewcaLUEdkgRByjdEk9z704&destination=place_id:ChIJaS6FAKMEdkgRgryaUMRNVEI&waypoints=optimize:true|place_id:ChIJs4GOh8sEdkgRRiBFZKMP8ZE&mode=bicycling&key=$key')))
           .thenAnswer((_) async =>
           http.Response("""{
              "geocoded_waypoints" : [
@@ -665,11 +665,11 @@ void main(){
 
   group('getWalkingRoutes', ()
   {
+    final String key = Keys.getApiKey(); 
     test('Get walking routes without waypoints', () async {
       final origin = "ChIJN6skQs4EdkgRU24-sEUFmPw";
       final destination = "ChIJi3D0484EdkgRuYlzHV73TlY";
       final waypoints = "";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(

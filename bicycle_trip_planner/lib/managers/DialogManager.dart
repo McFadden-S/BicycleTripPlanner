@@ -1,4 +1,3 @@
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 
 /// Class Comment:
@@ -37,10 +36,10 @@ class DialogManager {
 
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final DialogManager _dialogManager = DialogManager._internal();
 
-  // @param void
-  // @return DialogManager
+  /// Singleton Constructor Override
   factory DialogManager() {
     return _dialogManager;
   }
@@ -165,7 +164,7 @@ class DialogManager {
   }
 
   /// @param void
-  /// @return String - the string promt shown to the user in binary choice dialogs
+  /// @return String - the string prompt shown to the user in binary choice dialogs
   String getChoicePrompt(){
     return _choicePrompt;
   }

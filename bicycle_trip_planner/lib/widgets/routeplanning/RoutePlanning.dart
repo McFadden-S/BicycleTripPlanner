@@ -1,22 +1,17 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
-import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/WalkToFirstButton.dart';
-import 'package:wakelock/wakelock.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -95,7 +90,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             ViewRouteButton(),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
-                                    _routeManager.getWaypoints().length > 1
+                                    _routeManager.getWaypoints().length > 1 &&
+                                    !_routeManager.ifCostOptimised()
                                 ? Column(
                                     children: [
                                       OptimisedButton(),
@@ -279,8 +275,6 @@ class _RoutePlanningState extends State<RoutePlanning> {
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();
-  final FavouriteRoutesManager favouriteRoutesManager =
-      FavouriteRoutesManager();
 
   bool successfullyAdded = await databaseManager
       .addToFavouriteRoutes(
@@ -291,7 +285,6 @@ saveRoute(context) async {
               .map((waypoint) => waypoint.getStop())
               .toList())
       .then((v) {
-    favouriteRoutesManager.updateRoutes();
     return v;
   });
   ;
