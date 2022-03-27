@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
@@ -808,9 +809,78 @@ void main() {
     expect(await userSettings.getNumberOfRoutes(), 5);
   });
 
-  // test getRecentRoute() gets correct recent route
+  test('test getRecentRoute() gets correct recent route', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the start description"
+    );
 
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
 
-  // test what happens if no recent routes
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    Place startPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the second route first description"
+    );
+
+    Place middleStop1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "4",
+        description: "the second route middle stop description"
+    );
+
+    Place endPlace1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "5",
+        description: "the second route end description"
+    );
+
+    List<Place> intermediates1 = [middleStop1];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+
+    Pathway pathway1 = await userSettings.getRecentRoute(0);
+    Pathway pathway2 = await userSettings.getRecentRoute(1);
+
+    expect(pathway1.getStart().getStop().name, "Bush House");
+    expect(pathway1.getStart().getStop().description, "the start description");
+    expect(pathway1.getStart().getStop().placeId, "1");
+    expect(pathway1.getStart().getStop().getLatLng(), const LatLng(51.511448, -0.116414));
+
+    expect(pathway1.getDestination().getStop().name, "Maida Vale");
+    expect(pathway1.getDestination().getStop().description, "the end description");
+    expect(pathway1.getDestination().getStop().placeId, "2");
+    expect(pathway1.getDestination().getStop().getLatLng(), const LatLng(51.400520, -0.138209));
+
+    expect(pathway2.getStart().getStop().name, "St. John's Wood Road");
+    expect(pathway2.getStart().getStop().description, "the second route first description");
+    expect(pathway2.getStart().getStop().placeId, "3");
+    expect(pathway2.getStart().getStop().getLatLng(), const LatLng(51.345439, -0.115543));
+
+    expect(pathway2.getDestination().getStop().name, "Southampton Street, Strand");
+    expect(pathway2.getDestination().getStop().description, "the second route end description");
+    expect(pathway2.getDestination().getStop().placeId, "5");
+    expect(pathway2.getDestination().getStop().getLatLng(), const LatLng(51.678345, -0.125942));
+
+    expect(pathway2.getWaypoints().length, 1);
+    for (var stop in pathway2.getWaypoints()) {
+      expect(stop.getStop().description.contains("middle stop description"), true);
+    }
+  });
+
 
 }
