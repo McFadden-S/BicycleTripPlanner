@@ -27,7 +27,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Container(
-              height: 200,
+              height: MediaQuery.of(context).size.height * 0.3,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
