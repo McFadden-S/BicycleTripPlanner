@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../setUp.dart';
-import '../login/mock.dart';
+import '../../../setUp.dart';
+import '../../login/mock.dart';
 
 void main() {
   setupFirebaseAuthMocks();
