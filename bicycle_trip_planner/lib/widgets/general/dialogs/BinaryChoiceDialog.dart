@@ -41,6 +41,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                         )),
                     Expanded(
                       child: ElevatedButton(
+                        key: Key('Binary Button 1'),
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromWidth(double.infinity),
                             primary: ThemeStyle.buttonPrimaryColor
@@ -57,6 +58,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                     const SizedBox(height: 10),
                     Expanded(
                       child: ElevatedButton(
+                        key: Key('Binary Button 2'),
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromWidth(double.infinity),
                             primary: ThemeStyle.buttonPrimaryColor
