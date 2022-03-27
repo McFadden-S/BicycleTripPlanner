@@ -55,7 +55,7 @@ void main() {
     await tester.tap(groupButton);
     await tester.pumpAndSettle();
 
-    final dropdownItem = find.text('First Item').last;
+    final dropdownItem = find.text('1').last;
 
     expect(dropdownItem, findsOneWidget);
   });
@@ -133,19 +133,22 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop');
+    final stopSearchBar1 = find.byKey(ValueKey('Stop 1'));
+    final stopSearchBar2 = find.byKey(ValueKey('Stop 2'));
 
-    expect(stopSearchBar, findsNothing);
-
-    await tester.tap(addStopsButton);
-    await tester.pumpAndSettle();
-
-    expect(stopSearchBar, findsOneWidget);
+    expect(stopSearchBar1, findsNothing);
+    expect(stopSearchBar2, findsNothing);
 
     await tester.tap(addStopsButton);
     await tester.pumpAndSettle();
 
-    expect(stopSearchBar, findsWidgets);
+    expect(stopSearchBar1, findsOneWidget);
+
+    await tester.tap(addStopsButton);
+    await tester.pumpAndSettle();
+
+    expect(stopSearchBar1, findsOneWidget);
+    expect(stopSearchBar2, findsOneWidget);
   });
 
 
