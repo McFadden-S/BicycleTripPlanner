@@ -54,7 +54,16 @@ void main(){
   });
 
   test('ensure marker is added for user location', (){
-    Position point = Position(longitude: 51.511448, latitude: -0.116414, timestamp: DateTime.now(), accuracy: 1, altitude: 1, heading: 1, speed: 1, speedAccuracy: 1);
+    Position point = Position(
+        longitude: 51.511448,
+        latitude: -0.116414,
+        timestamp: DateTime.now(),
+        accuracy: 1,
+        altitude: 1,
+        heading: 1,
+        speed: 1,
+        speedAccuracy: 1
+    );
     markerManager.setMarker(LatLng(51.511448, -51.511448), 'user');
     expect(markerManager.getMarkers().length,1);
     markerManager.setUserMarker(LatLng(point.latitude, point.longitude));
@@ -63,8 +72,26 @@ void main(){
 
   test('ensure marker for station is correct', (){
       List<Station> station = <Station>[
-        Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 12, distanceTo: 1),
-        Station(id: 2, name: 'Maida Vale Station', lat: 12.0, lng: 23.0, bikes: 5, emptyDocks: 3, totalDocks: 8, distanceTo: 4)
+        Station(
+            id: 1,
+            name: 'Holborn Station',
+            lat: 1.0,
+            lng: 2.0,
+            bikes: 10,
+            emptyDocks: 2,
+            totalDocks: 12,
+            distanceTo: 1
+        ),
+        Station(
+            id: 2,
+            name: 'Maida Vale Station',
+            lat: 12.0,
+            lng: 23.0,
+            bikes: 5,
+            emptyDocks: 3,
+            totalDocks: 8,
+            distanceTo: 4
+        )
       ];
     expect(markerManager.getMarkers().length,0);
     markerManager.setStationMarkers(station, mockAppBloc);
@@ -72,7 +99,16 @@ void main(){
   });
 
   test('ensure marker for station is correct', (){
-    Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
+    Station station = Station(
+        id: 1,
+        name: 'Holborn Station',
+        lat: 1.0,
+        lng: 2.0,
+        bikes: 10,
+        emptyDocks: 2,
+        totalDocks: 8,
+        distanceTo: 1
+    );
     expect(markerManager.getMarkers().length,0);
     markerManager.setStationMarker(station, mockAppBloc);
     expect(markerManager.getMarkers().length,1);
@@ -80,8 +116,26 @@ void main(){
 
   test('ensure marker for station is correct', (){
       List<Station> station = <Station>[
-        Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 12, distanceTo: 1),
-        Station(id: 2, name: 'Maida Vale Station', lat: 12.0, lng: 23.0, bikes: 5, emptyDocks: 3, totalDocks: 8, distanceTo: 4)
+        Station(
+            id: 1,
+            name: 'Holborn Station',
+            lat: 1.0,
+            lng: 2.0,
+            bikes: 10,
+            emptyDocks: 2,
+            totalDocks: 12,
+            distanceTo: 1
+        ),
+        Station(
+            id: 2,
+            name: 'Maida Vale Station',
+            lat: 12.0,
+            lng: 23.0,
+            bikes: 5,
+            emptyDocks: 3,
+            totalDocks: 8,
+            distanceTo: 4
+        )
       ];
       markerManager.setStationMarkers(station, mockAppBloc);
       expect(markerManager.getMarkers().length,2);
@@ -90,7 +144,16 @@ void main(){
   });
 
   test('ensure marker for station uid is correct', (){
-      Station station = Station(id: 1, name: 'Holborn Station', lat: 1.0, lng: 2.0, bikes: 10, emptyDocks: 2, totalDocks: 8, distanceTo: 1);
+      Station station = Station(
+          id: 1,
+          name: 'Holborn Station',
+          lat: 1.0,
+          lng: 2.0,
+          bikes: 10,
+          emptyDocks: 2,
+          totalDocks: 8,
+          distanceTo: 1
+      );
       markerManager.setStationMarkerWithUID(station, mockAppBloc);
       expect(markerManager.getMarkers().length,1);
   });
