@@ -62,10 +62,12 @@ class DatabaseManager {
   }
 
   Future<List<int>> getFavouriteStations() async {
-    var uid = FirebaseAuth.instance.currentUser?.uid;
+    var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteStations =
         _dbInstance.ref('users/$uid/favouriteStations');
     List<int> output = [];
+    print(_auth.currentUser);
+    print(_dbInstance.databaseURL);
     await favouriteStations.once().then((value) => {
           for (var id in value.snapshot.children.cast()) {output.add(id.value)}
         });

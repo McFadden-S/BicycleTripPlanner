@@ -9,6 +9,7 @@ import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 
 import 'mock_firebase.dart';
 
@@ -32,25 +33,49 @@ void main() {
   const fakeData = {
     'users': {
       userId: {
-        'name': userName,
-        'email': 'musk.email@tesla.com',
-        'photoUrl': 'url-to-photo.jpg',
-      },
-      'otherUserId': {
-        'name': 'userName',
-        'email': 'othermusk.email@tesla.com',
-        'photoUrl': 'other_url-to-photo.jpg',
+        'favouriteRoutes': {
+          favouriteRouteId: {
+            'end':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'start':{
+              'description':{description},
+              'id':{routeID},
+              'lat': {lat},
+              'lng': {lng},
+              'name': {name}
+            },
+            'stops':{
+              0: {
+                'description':{description},
+                'id':{routeID},
+                'lat': {lat},
+                'lng': {lng},
+                'name': {name}
+              }
+            }
+          },
+          'favouriteStations': {
+            favouriteStationsID: {favouriteStationsID}
+          }
+        }
       }
     }
   };
 
-  MockFirebaseDatabase.instance.ref().set(fakeData);
+
   setupFirebaseMocks();
   setupFirebaseAuthMocks();
   setupFirebaseDatabaseMocks();
-  setUpAll(() async {
+  setUp(() async {
     WidgetsFlutterBinding.ensureInitialized();
+
     firebaseDatabase = MockFirebaseDatabase.instance;
+    firebaseDatabase.ref().set(fakeData);
     final app = await Firebase.initializeApp(
       name: '1',
       options: const FirebaseOptions(
@@ -61,17 +86,25 @@ void main() {
       ),
     );
 
+    final googleSignIn = MockGoogleSignIn();
+    final signinAccount = await googleSignIn.signIn();
+    final googleAuth = await signinAccount?.authentication;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
     final user = MockUser(
       isAnonymous: false,
-      uid: 'someuid',
+      uid: userId,
       email: 'bob@somedomain.com',
       displayName: 'Bob',
     );
     auth = MockFirebaseAuth(mockUser: user);
+    final result = await auth.signInWithCredential(credential);
+    final loginInUser = await result.user;
 
-
-
-    databaseManager = DatabaseManager.forMock(MockFirebaseDatabase(), MockFirebaseAuth(mockUser: user));
+    databaseManager = DatabaseManager.forMock(firebaseDatabase, auth);
   });
 
   test('Get favourite station', () async {
@@ -94,7 +127,7 @@ void main() {
     expect(stationFromFakeDatabase, equals(null));
   });
 
-  test('Remove favourite route',()async{
+  test('Remove favourite route', ()async{
     await databaseManager.removeFavouriteRoute(routeID);
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
     expect(stationFromFakeDatabase, equals(null));
