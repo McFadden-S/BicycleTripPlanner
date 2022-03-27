@@ -299,6 +299,335 @@ void main() {
     expect(placeMap.values.last, "the fifth description");
   });
 
+  test('make save route works with a start and end stop only', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the description"
+    );
 
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
 
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+    String? routesString = prefs.getString("recentRoutes");
+    Map<String, dynamic> placeMap = json.decode(routesString!);
+
+    // stored one recent route
+    expect(placeMap.length, 1);
+    expect(placeMap.containsKey("0"), true);
+    expect(placeMap["0"].containsKey("start"), true);
+    expect(placeMap["0"].containsKey("end"), true);
+
+    // expect 5 attributes of the start stop
+    expect(placeMap["0"]["start"].length, 5);
+    expect(placeMap["0"]["start"]["name"], "Bush House");
+    expect(placeMap["0"]["start"]["description"], "the description");
+    expect(placeMap["0"]["start"]["id"], "1");
+    expect(placeMap["0"]["start"]["lat"], 51.511448);
+    expect(placeMap["0"]["start"]["lng"], -0.116414);
+
+    // expect 5 attributes of the end stop
+    expect(placeMap["0"]["end"].length, 5);
+    expect(placeMap["0"]["end"]["name"], "Maida Vale");
+    expect(placeMap["0"]["end"]["description"], "the end description");
+    expect(placeMap["0"]["end"]["id"], "2");
+    expect(placeMap["0"]["end"]["lat"], 51.400520);
+    expect(placeMap["0"]["end"]["lng"], -0.138209);
+
+    // no intermediary stops set so length should be 0
+    expect(placeMap["0"]["stops"].length, 0);
+  });
+
+  test('make save route works with a start and end stop only', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the description"
+    );
+
+    Place middleStopPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the first middle stop description"
+    );
+
+    Place middleStopPlace2 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "4",
+        description: "the second middle stop description"
+    );
+
+    Place middleStopPlace3 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "5",
+        description: "the third and final middle stop description"
+    );
+
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
+
+    List<Place> intermediates = [middleStopPlace1, middleStopPlace2, middleStopPlace3];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+    String? routesString = prefs.getString("recentRoutes");
+    Map<String, dynamic> placeMap = json.decode(routesString!);
+
+    // stored one recent route
+    expect(placeMap.length, 1);
+    expect(placeMap.containsKey("0"), true);
+    expect(placeMap["0"].containsKey("start"), true);
+    expect(placeMap["0"].containsKey("end"), true);
+
+    // expect 5 attributes of the start stop
+    expect(placeMap["0"]["start"].length, 5);
+    expect(placeMap["0"]["start"]["name"], "Bush House");
+    expect(placeMap["0"]["start"]["description"], "the description");
+    expect(placeMap["0"]["start"]["id"], "1");
+    expect(placeMap["0"]["start"]["lat"], 51.511448);
+    expect(placeMap["0"]["start"]["lng"], -0.116414);
+
+    expect(placeMap["0"]["stops"].length, 3);
+    // check each stop is actually a stop
+    for (var stop in placeMap["0"]["stops"]) {
+      expect(stop["description"].contains("stop description"), true);
+    }
+
+    // expect 5 attributes of the end stop
+    expect(placeMap["0"]["end"].length, 5);
+    expect(placeMap["0"]["end"]["name"], "Maida Vale");
+    expect(placeMap["0"]["end"]["description"], "the end description");
+    expect(placeMap["0"]["end"]["id"], "2");
+    expect(placeMap["0"]["end"]["lat"], 51.400520);
+    expect(placeMap["0"]["end"]["lng"], -0.138209);
+  });
+
+  test('add multiple different type of routes with and without stops', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the description"
+    );
+
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
+
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    Place startPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the second route first description"
+    );
+
+    Place middleStop1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "4",
+        description: "the second route middle stop description"
+    );
+
+    Place endPlace1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "5",
+        description: "the second route end description"
+    );
+
+    List<Place> intermediates1 = [middleStop1];
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+    String? routesString = prefs.getString("recentRoutes");
+    Map<String, dynamic> placeMap = json.decode(routesString!);
+
+    // stored two recent routes
+    expect(placeMap.length, 2);
+    expect(placeMap.containsKey("0"), true);
+    expect(placeMap.containsKey("1"), true);
+
+    expect(placeMap["0"]["start"]["name"], "Bush House");
+    expect(placeMap["0"]["start"]["description"], "the description");
+    expect(placeMap["0"]["start"]["id"], "1");
+    expect(placeMap["0"]["start"]["lat"], 51.511448);
+    expect(placeMap["0"]["start"]["lng"], -0.116414);
+
+    expect(placeMap["0"]["end"]["name"], "Maida Vale");
+    expect(placeMap["0"]["end"]["description"], "the end description");
+    expect(placeMap["0"]["end"]["id"], "2");
+    expect(placeMap["0"]["end"]["lat"], 51.400520);
+    expect(placeMap["0"]["end"]["lng"], -0.138209);
+
+    // no intermediary stops set so length should be 0
+    expect(placeMap["0"]["stops"].length, 0);
+
+    expect(placeMap["1"]["start"]["name"], "St. John's Wood Road");
+    expect(placeMap["1"]["start"]["description"], "the second route first description");
+    expect(placeMap["1"]["start"]["id"], "3");
+    expect(placeMap["1"]["start"]["lat"], 51.345439);
+    expect(placeMap["1"]["start"]["lng"], -0.115543);
+
+    expect(placeMap["1"]["end"]["name"], "Southampton Street, Strand");
+    expect(placeMap["1"]["end"]["description"], "the second route end description");
+    expect(placeMap["1"]["end"]["id"], "5");
+    expect(placeMap["1"]["end"]["lat"], 51.678345);
+    expect(placeMap["1"]["end"]["lng"], -0.125942);
+
+    // one intermediary stop set so length should be 1
+    expect(placeMap["1"]["stops"].length, 1);
+
+    for (var stop in placeMap["1"]["stops"]) {
+      expect(stop["description"].contains("stop description"), true);
+    }
+  });
+
+  test('add more than max routes to see if recent routes are stored properly', () async {
+    Place startPlace = Place(
+        latlng: const LatLng(51.511448, -0.116414),
+        name: 'Bush House',
+        placeId: "1",
+        description: "the description"
+    );
+
+    Place endPlace = Place(
+        latlng: const LatLng(51.400520, -0.138209),
+        name: "Maida Vale",
+        placeId: "2",
+        description: "the end description"
+    );
+
+    // no intermediary stops set
+    List<Place> intermediates = [];
+
+    Place startPlace1 = Place(
+        latlng: const LatLng(51.345439, -0.115543),
+        name: "St. John's Wood Road",
+        placeId: "3",
+        description: "the second route first description"
+    );
+
+    Place endPlace1 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Southampton Street, Strand",
+        placeId: "4",
+        description: "the second route end description"
+    );
+
+    List<Place> intermediates1 = [];
+
+    Place startPlace2 = Place(
+        latlng: const LatLng(51.678345, -0.125942),
+        name: "Caven Street, Strand",
+        placeId: "5",
+        description: "the third route start description"
+    );
+
+    Place endPlace2 = Place(
+        latlng: const LatLng(49.947584, -0.124837),
+        name: "Somerset House, Strand",
+        placeId: "6",
+        description: "the third route end description"
+    );
+
+    Place startPlace3 = Place(
+        latlng: const LatLng(51.485573, -0.119585),
+        name: "Sardinia Street, Holborn",
+        placeId: "5",
+        description: "the foruth route start description"
+    );
+
+    Place endPlace3 = Place(
+        latlng: const LatLng(49.999233, -0.123456),
+        name: "Drury Lane, Covent Garden",
+        placeId: "6",
+        description: "the fourth route end description"
+    );
+
+    Place startPlace3 = Place(
+        latlng: const LatLng(51.485573, -0.119585),
+        name: "Sardinia Street, Holborn",
+        placeId: "5",
+        description: "the foruth route start description"
+    );
+
+    Place endPlace3 = Place(
+        latlng: const LatLng(49.999233, -0.123456),
+        name: "Drury Lane, Covent Garden",
+        placeId: "6",
+        description: "the fourth route end description"
+    );
+
+    userSettings.saveRoute(startPlace, endPlace, intermediates);
+    userSettings.saveRoute(startPlace1, endPlace1, intermediates1);
+
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+    String? routesString = prefs.getString("recentRoutes");
+    Map<String, dynamic> placeMap = json.decode(routesString!);
+
+    // stored two recent routes
+    expect(placeMap.length, 2);
+    expect(placeMap.containsKey("0"), true);
+    expect(placeMap.containsKey("1"), true);
+
+    expect(placeMap["0"]["start"]["name"], "Bush House");
+    expect(placeMap["0"]["start"]["description"], "the description");
+    expect(placeMap["0"]["start"]["id"], "1");
+    expect(placeMap["0"]["start"]["lat"], 51.511448);
+    expect(placeMap["0"]["start"]["lng"], -0.116414);
+
+    expect(placeMap["0"]["end"]["name"], "Maida Vale");
+    expect(placeMap["0"]["end"]["description"], "the end description");
+    expect(placeMap["0"]["end"]["id"], "2");
+    expect(placeMap["0"]["end"]["lat"], 51.400520);
+    expect(placeMap["0"]["end"]["lng"], -0.138209);
+
+    // no intermediary stops set so length should be 0
+    expect(placeMap["0"]["stops"].length, 0);
+
+    expect(placeMap["1"]["start"]["name"], "St. John's Wood Road");
+    expect(placeMap["1"]["start"]["description"], "the second route first description");
+    expect(placeMap["1"]["start"]["id"], "3");
+    expect(placeMap["1"]["start"]["lat"], 51.345439);
+    expect(placeMap["1"]["start"]["lng"], -0.115543);
+
+    expect(placeMap["1"]["end"]["name"], "Southampton Street, Strand");
+    expect(placeMap["1"]["end"]["description"], "the second route end description");
+    expect(placeMap["1"]["end"]["id"], "5");
+    expect(placeMap["1"]["end"]["lat"], 51.678345);
+    expect(placeMap["1"]["end"]["lng"], -0.125942);
+
+    // one intermediary stop set so length should be 1
+    expect(placeMap["1"]["stops"].length, 1);
+
+    for (var stop in placeMap["1"]["stops"]) {
+      expect(stop["description"].contains("stop description"), true);
+    }
+  });
 }
