@@ -9,7 +9,6 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
-import 'package:bicycle_trip_planner/models/location.dart' as Loc;
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -298,15 +297,11 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   Future<Station> _getStartStation(Place origin, [int groupSize = 1]) async {
-    Loc.Location startLocation = origin.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    return await _stationManager.getPickupStationNear(origin.latlng, groupSize);
   }
 
   Future<Station> _getEndStation(Place destination, [int groupSize = 1]) async {
-    Loc.Location endLocation = destination.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(endLocation.lat, endLocation.lng), groupSize);
+    return await _stationManager.getPickupStationNear(destination.latlng, groupSize);
   }
 
   Future<void> findCostEfficientRoute(Place origin, Place destination,

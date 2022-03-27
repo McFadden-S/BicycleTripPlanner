@@ -30,22 +30,35 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the route has a start, destination and has been changed
   bool ifRouteSetAndChanged() {
     return routeManager.ifStartSet() &&
         routeManager.ifDestinationSet() &&
         routeManager.ifChanged();
   }
 
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the route has not been set but has been changed
   bool ifNoRouteAndChanged() {
     return (!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) &&
         routeManager.ifChanged();
   }
 
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the user is starting from their current location
   bool ifStartFromCurrentLocation() {
     return routeManager.getStart().getStop().description ==
         SearchType.current.description;
   }
 
+  ///@param ApplicationBloc
+  ///@return void
+  ///@effect - Sets and views the new route based on whether the cost
+  ///          is optimised or not
   void findRoute(ApplicationBloc applicationBloc) {
     Place origin = routeManager.getStart().getStop();
     Place destination = routeManager.getDestination().getStop();

@@ -482,8 +482,8 @@ void main(){
 
       final answer = await PlacesService().getPlace(placeId, description);
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, 51.51300070000001);
-      expect(answer.geometry.location.lng,   -0.1241621);
+      expect(answer.latlng.latitude, 51.51300070000001);
+      expect(answer.latlng.longitude,   -0.1241621);
     });
 
     test('Get place from invalid place id', () async {
@@ -502,11 +502,11 @@ void main(){
         }""", 200));
 
       final answer = await PlacesService().getPlace(placeId, description);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 
@@ -610,8 +610,8 @@ void main(){
       final answer = await PlacesService().getPlaceFromCoordinates(lat, lng, description);
       expect(answer.placeId, "ChIJT2mIkcwEdkgRYspzsBq1iAM");
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, lat);
-      expect(answer.geometry.location.lng, lng);
+      expect(answer.latlng.latitude, lat);
+      expect(answer.latlng.longitude, lng);
     });
     test('Get place from invalid coordinates', () async {
 
@@ -630,12 +630,12 @@ void main(){
             }""", 200));
 
       final answer = await PlacesService().getPlaceFromCoordinates(lat, lng, description);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 
@@ -734,8 +734,8 @@ void main(){
 
       final answer = await PlacesService().getPlaceFromAddress(address, description);
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, 51.5130007);
-      expect(answer.geometry.location.lng,   -0.1241621);
+      expect(answer.latlng.latitude, 51.5130007);
+      expect(answer.latlng.longitude,   -0.1241621);
       expect(answer.placeId, "ChIJT2mIkcwEdkgRYspzsBq1iAM");
     });
     test('Get place from invalid address', () async {
@@ -754,12 +754,12 @@ void main(){
             }""", 200));
 
       final answer = await PlacesService().getPlaceFromAddress(address, description);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 }

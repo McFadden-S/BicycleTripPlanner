@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/models/bounds.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
@@ -65,14 +64,14 @@ class RouteManager {
 
   //********** Private **********
 
-  /// @param void
+  /// @param - Route route, Bounds bounds
   /// @return void
-  /// @effects - Moves camera to start location
+  /// @effects - Moves camera to the route and views its bounds or the given bounds
   void _moveCameraTo(R.Route route,
       [Bounds bounds = const Bounds.boundsNotFound()]) {
     if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
-    _cameraManager.goToPlace(route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng, bounds.northeast, bounds.southwest);
+    _cameraManager.goToPlace(
+        route.legs.first.startLocation, bounds.northeast, bounds.southwest);
   }
 
   //********** Public **********
@@ -184,6 +183,10 @@ class RouteManager {
     }
   }
 
+  /// @param - Bounds route1Bounds, Bounds route2Bounds
+  /// @return Bounds
+  /// @effects - returns the new bounds depending on which inputted
+  ///            bounds covers a greater area
   Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
     Map<String, dynamic> newNorthEast = {};
     route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
