@@ -157,15 +157,14 @@ main() {
   });
 
   test("Move stop", () {
-    pathway.getStops().first.getUID();
     final firstID = pathway.getStops().first.getUID();
-    final secondID = pathway.getStops()[1].getUID();
-
     pathway.moveStop(firstID, 2);
     expect(pathway.getStops()[1].getUID(), firstID);
 
-
+    pathway.moveStop(firstID,0);
+    expect(pathway.getStops()[0].getUID(), firstID);
   });
+
   test('ensure toString is correct', () {
     expect(pathway.toString(), pathway.getStops().toString());
   });

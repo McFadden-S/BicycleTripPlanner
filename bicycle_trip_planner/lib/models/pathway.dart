@@ -198,14 +198,16 @@ class Pathway {
   void moveStop(int id, int newIndex) {
     Stop stop = getStop(id);
     int currentIndex = _stops.indexOf(stop);
+    print("---Current Index---");
+    print(currentIndex);
+    print("-------------------");
+
     if (currentIndex < newIndex) {
       _stops.insert(newIndex, stop);
       _stops.removeAt(currentIndex);
-      print("1");
-    } else if (newIndex > currentIndex) {
+    } else if (newIndex < currentIndex) {
       _stops.removeAt(currentIndex);
       _stops.insert(newIndex, stop);
-      print("2");
     }
     _updatePointers();
   }
