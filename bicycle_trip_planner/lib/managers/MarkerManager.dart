@@ -122,7 +122,6 @@ class MarkerManager {
       _markers.remove(_markers
           .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
     }
-    print(markerID);
   }
 
   /// @param void
