@@ -11,7 +11,9 @@ class LocationManager {
 
   // This is specifying the Locator class in locator.dart
   final Locator _locator = Locator();
+
   Place _currentPlace = const Place.placeNotFound();
+
   DistanceType _units = DistanceType.miles; // default
 
   //********** Singleton **********
@@ -26,19 +28,13 @@ class LocationManager {
 
   //********** Private **********
 
-  //********** Public *********
-
-  Future<LatLng> locate() async {
-    return _locator.locate();
+  @visibleForTesting
+  void isTest(geo.Geolocator geolocator){
+    _locator.locate();
   }
 
-  Future<bool> requestPermission() async {
-    bool permission = await checkPermission();
-    bool service = await checkServiceEnabled();
-    return permission && service;
-  }
-
-  Future<bool> checkServiceEnabled() async {
+  /// Returns true if device is turned on and GPS is turned on
+  Future<bool> _checkServiceEnabled() async {
     bool _serviceEnabled = true;
     // Device is on
     _serviceEnabled = await Location().serviceEnabled();
@@ -52,8 +48,8 @@ class LocationManager {
     return _serviceEnabled;
   }
 
-  // returns true or false based on user accepting or rejecting location services
-  Future<bool> checkPermission() async {
+  /// Returns true or false based on user accepting or rejecting location services
+  Future<bool> _checkPermission() async {
     bool grantedPermission = true;
     PermissionStatus _permissionGranted = await Location().hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
@@ -65,64 +61,80 @@ class LocationManager {
     return grantedPermission;
   }
 
-  Future<void> openLocationSettingsOnDevice() async {
-    await geo.Geolocator.openLocationSettings();
-  }
-
-  Future<double> distanceTo(LatLng pos) async {
-    return distanceFromTo(await locate(), pos);
-  }
-
-  double distanceFromTo(LatLng posFrom, LatLng posTo) {
-    return _units.convert(_calculateDistance(posFrom, posTo));
-  }
-
-  double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
-    return _calculateDistance(posFrom, posTo);
-  }
-
-  Future<bool> locationSettings([double distanceFilter = 0]) {
+  Future<bool> _locationSettings([double distanceFilter = 0]) {
     return Location().changeSettings(
         accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
   }
 
-  void setCurrentLocation(Place currentPlace) {
-    _currentPlace = currentPlace;
-  }
-
-  Place getCurrentLocation() {
-    return _currentPlace;
-  }
-
-  DistanceType getUnits() {
-    return _units;
-  }
-
-  //********** private *********
-
-  // Returns the distance between the two points in metres
+  /// Returns the distance between the two points in metres
   double _calculateDistance(LatLng pos1, LatLng pos2) {
     return geo.Geolocator.distanceBetween(
         pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
   }
 
+  //********** Public *********
+
+  /// Returns the users current location
+  Future<LatLng> locate() async {
+    return _locator.locate();
+  }
+
+  /// Requests the current location permissions
+  Future<bool> requestPermission() async {
+    bool permission = await _checkPermission();
+    bool service = await _checkServiceEnabled();
+    return permission && service;
+  }
+
+  Future<void> openLocationSettingsOnDevice() async {
+    await geo.Geolocator.openLocationSettings();
+  }
+
+  /// Returns the straight line distance from the users location to the passed coordinates
+  Future<double> distanceTo(LatLng pos) async {
+    return distanceFromTo(await locate(), pos);
+  }
+
+  /// Returns the straight line distance from the first passed coordinates to the
+  /// second passed coordinates in the set units
+  double distanceFromTo(LatLng posFrom, LatLng posTo) {
+    return _units.convert(_calculateDistance(posFrom, posTo));
+  }
+
+  /// Returns the straight line distance from the first passed coordinates to the
+  /// second passed coordinates in meters
+  double distanceFromToInMeters(LatLng posFrom, LatLng posTo) {
+    return _calculateDistance(posFrom, posTo);
+  }
+
+  /// Sets the cached current location
+  void setCurrentLocation(Place currentPlace) {
+    _currentPlace = currentPlace;
+  }
+
+  /// Returns cached current location
+  Place getCurrentLocation() {
+    return _currentPlace;
+  }
+
+  /// Returns the set units
+  DistanceType getUnits() {
+    return _units;
+  }
+
+  /// Returns Stream that updates on user's location change
+  /// distance filter adjusts the update sensitivity
   Stream<LocationData> onUserLocationChange([double distanceFilter = 0]) {
     Location location = Location();
-    print(distanceFilter);
-    locationSettings(distanceFilter);
+    _locationSettings(distanceFilter);
     return location.onLocationChanged;
   }
 
+  /// Set the units for distance
   void setUnits(DistanceType units) {
     _units = units;
-  }
-
-  @visibleForTesting
-  void isTest(geo.Geolocator geolocator){
-    _locator.locate();
-
   }
 
 
