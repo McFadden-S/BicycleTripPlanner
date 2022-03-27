@@ -2,7 +2,6 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
-import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -41,7 +40,7 @@ class _CountdownCardState extends State<CountdownCard> {
     RouteType routeType = RouteManager().getCurrentRoute().routeType;
 
     return Card(
-      color: ThemeStyle.cardOutlineColor,
+      color: ThemeStyle.cardColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: curColor,
@@ -75,7 +74,7 @@ class _CountdownCardState extends State<CountdownCard> {
                                   ? "0" + (time % 60).toInt().toString()
                                   : (time % 60).toInt().toString())),
                       style: TextStyle(
-                        color: curColor,
+                        color: ThemeStyle.primaryTextColor,
                       ),
                     );
                   },
@@ -88,10 +87,15 @@ class _CountdownCardState extends State<CountdownCard> {
                     );
                   },
                 )
-              : CustomCountdown(
-                  duration: directionManager.getDuration(),
-                  color: curColor,
+              : Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+               directionManager.getDuration(),
+                style: TextStyle(
+                  color: ThemeStyle.primaryTextColor,
                 ),
+              )
+          ),
         ));
   }
 }
