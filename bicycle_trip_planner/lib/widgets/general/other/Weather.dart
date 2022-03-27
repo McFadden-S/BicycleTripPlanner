@@ -38,6 +38,7 @@ class _WeatherState extends State<Weather> {
                             ),
                             Text(
                               '${weatherResponse.tempInfo.temperature.round()}°C',
+                              key: ValueKey('weatherText'),
                               style: TextStyle(
                                   color: ThemeStyle.primaryTextColor,
                                   fontSize: 20),
