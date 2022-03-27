@@ -81,15 +81,6 @@ class MarkerManager {
     return marker.markerId != falseMarker;
   }
 
-  /// @param - String; markerID in question
-  /// @affect - removes marker using markerID given
-  void _removeMarker(String markerID) {
-    if (_markerExists(markerID)) {
-      _markers.remove(_markers
-          .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
-    }
-  }
-
   /// @param - double; radius of marker
   /// @affect - creates format of marker icon
   Future<void> _initUserMarkerIcon(double radius) async {
@@ -105,10 +96,12 @@ class MarkerManager {
     userMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
   }
 
+  //********** Public **********
+
   @visibleForTesting
   void setMarker(LatLng point, String markerID) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
-    _removeMarker(markerID);
+    removeMarker(markerID);
 
     _markers.add(Marker(
       markerId: MarkerId(markerID),
@@ -116,7 +109,14 @@ class MarkerManager {
     ));
   }
 
-  //********** Public **********
+  /// @param - String; markerID in question
+  /// @affect - removes marker using markerID given
+  void removeMarker(String markerID) {
+    if (_markerExists(markerID)) {
+      _markers.remove(_markers
+          .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
+    }
+  }
 
   /// @param void
   /// @return Set<Marker> - returns set of markers and removes duplicates if any
@@ -128,7 +128,7 @@ class MarkerManager {
   /// @return void
   /// @affects - removes marker using UID given
   void clearMarker(int uid) {
-    _removeMarker(_generateMarkerID(uid));
+    removeMarker(_generateMarkerID(uid));
   }
 
   /// @param -
@@ -164,7 +164,7 @@ class MarkerManager {
 
     String userID = 'user';
 
-    _removeMarker(userID);
+    removeMarker(userID);
 
     Marker userMarker = Marker(
       icon: userMarkerIcon!,
@@ -208,7 +208,7 @@ class MarkerManager {
   /// @affects - removes station markers from a given list of stations
   void clearStationMarkers(List<Station> stations) {
     for (var station in stations) {
-      _removeMarker(station.name);
+      removeMarker(station.name);
     }
   }
 }

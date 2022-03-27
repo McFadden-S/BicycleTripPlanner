@@ -11,6 +11,7 @@ import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/place.dart';
 
@@ -50,7 +51,13 @@ class RouteManager {
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
 
+  /// Current route: The route the user is currently on. Decided by navigationManager
   R.Route _currentRoute = R.Route.routeNotFound();
+
+  /// Manage route markers
+  Set<String> _routeMarkers = {};
+  final String _markerPrefix = "Route";
+  int _markerId = 0;
 
   //********** Singleton **********
 
@@ -72,6 +79,43 @@ class RouteManager {
     if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
     _cameraManager.goToPlace(
         route.legs.first.startLocation, bounds.northeast, bounds.southwest);
+  }
+
+  /// @param - Bounds route1Bounds, Bounds route2Bounds
+  /// @return Bounds
+  /// @effects - returns the new bounds depending on which inputted
+  ///            bounds covers a greater area
+  Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
+    Map<String, dynamic> newNorthEast = {};
+    route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
+        ? newNorthEast['lat'] = route1Bounds.northeast['lat']
+        : newNorthEast['lat'] = route2Bounds.northeast['lat'];
+    route1Bounds.northeast['lng'] > route2Bounds.northeast['lng']
+        ? newNorthEast['lng'] = route1Bounds.northeast['lng']
+        : newNorthEast['lng'] = route2Bounds.northeast['lng'];
+
+    Map<String, dynamic> newSouthWest = {};
+    route1Bounds.southwest['lat'] < route2Bounds.southwest['lat']
+        ? newSouthWest['lat'] = route1Bounds.southwest['lat']
+        : newSouthWest['lat'] = route2Bounds.southwest['lat'];
+    route1Bounds.southwest['lng'] < route2Bounds.southwest['lng']
+        ? newSouthWest['lng'] = route1Bounds.southwest['lng']
+        : newSouthWest['lng'] = route2Bounds.southwest['lng'];
+
+    return Bounds(northeast: newNorthEast, southwest: newSouthWest);
+  }
+
+  _createRouteMarker(LatLng pos) {
+    String markerId = "$_markerPrefix${_markerId++}";
+    _markerManager.setMarker(pos, markerId);
+    _routeMarkers.add(markerId);
+  }
+
+  _clearRouteMarkers() {
+    for (String markerId in _routeMarkers) {
+      _markerManager.removeMarker(markerId);
+    }
+    _routeMarkers.clear();
   }
 
   //********** Public **********
@@ -151,25 +195,28 @@ class RouteManager {
   ///            Update duration and distance to give values for whole journey
   ///            if relocateMap = true, camera will move to the biking route
   void showAllRoutes([bool relocateMap = true]) {
+    List<R.Route> allRoutes = [
+      _startWalkingRoute,
+      _bikingRoute,
+      _endWalkingRoute
+    ];
+
     _polylineManager.clearPolyline();
-    _polylineManager.addPolyline(_startWalkingRoute.polyline.points,
-        _startWalkingRoute.routeType.polylineColor);
-    _polylineManager.addPolyline(
-        _bikingRoute.polyline.points, _bikingRoute.routeType.polylineColor);
-    _polylineManager.addPolyline(_endWalkingRoute.polyline.points,
-        _endWalkingRoute.routeType.polylineColor);
+    _clearRouteMarkers();
 
     int duration = 0;
     double distance = 0;
 
-    duration += _startWalkingRoute.duration;
-    distance += _startWalkingRoute.distance;
+    for (R.Route route in allRoutes) {
+      _polylineManager.addPolyline(
+          route.polyline.points, route.routeType.polylineColor);
 
-    duration += _bikingRoute.duration;
-    distance += _bikingRoute.distance;
+      _createRouteMarker(route.legs.first.startLocation);
+      _createRouteMarker(route.legs.last.endLocation);
 
-    duration += _endWalkingRoute.duration;
-    distance += _endWalkingRoute.distance;
+      duration += route.duration;
+      distance += route.distance;
+    }
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
@@ -181,30 +228,6 @@ class RouteManager {
     if (relocateMap) {
       _moveCameraTo(_bikingRoute, bounds);
     }
-  }
-
-  /// @param - Bounds route1Bounds, Bounds route2Bounds
-  /// @return Bounds
-  /// @effects - returns the new bounds depending on which inputted
-  ///            bounds covers a greater area
-  Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
-    Map<String, dynamic> newNorthEast = {};
-    route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
-        ? newNorthEast['lat'] = route1Bounds.northeast['lat']
-        : newNorthEast['lat'] = route2Bounds.northeast['lat'];
-    route1Bounds.northeast['lng'] > route2Bounds.northeast['lng']
-        ? newNorthEast['lng'] = route1Bounds.northeast['lng']
-        : newNorthEast['lng'] = route2Bounds.northeast['lng'];
-
-    Map<String, dynamic> newSouthWest = {};
-    route1Bounds.southwest['lat'] < route2Bounds.southwest['lat']
-        ? newSouthWest['lat'] = route1Bounds.southwest['lat']
-        : newSouthWest['lat'] = route2Bounds.southwest['lat'];
-    route1Bounds.southwest['lng'] < route2Bounds.southwest['lng']
-        ? newSouthWest['lng'] = route1Bounds.southwest['lng']
-        : newSouthWest['lng'] = route2Bounds.southwest['lng'];
-
-    return Bounds(northeast: newNorthEast, southwest: newSouthWest);
   }
 
   void setLoading(bool isLoading) {
@@ -221,6 +244,9 @@ class RouteManager {
   ///            If relocate map = true, camera will move to given route
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     setDirectionsData(route);
+    _clearRouteMarkers();
+    _createRouteMarker(route.legs.first.startLocation);
+    _createRouteMarker(route.legs.last.endLocation);
     _polylineManager.setPolyline(
         route.polyline.points, route.routeType.polylineColor);
     _currentRoute = route;
@@ -516,6 +542,7 @@ class RouteManager {
   /// @return void
   /// @effects - Clears all route markers
   void clearRouteMarkers() {
+    _clearRouteMarkers();
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for (int id in uids) {
       _markerManager.clearMarker(id);

@@ -272,6 +272,7 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
+
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
   }
@@ -301,7 +302,8 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   Future<Station> _getEndStation(Place destination, [int groupSize = 1]) async {
-    return await _stationManager.getPickupStationNear(destination.latlng, groupSize);
+    return await _stationManager.getPickupStationNear(
+        destination.latlng, groupSize);
   }
 
   Future<void> findCostEfficientRoute(Place origin, Place destination,
@@ -347,7 +349,6 @@ class ApplicationBloc with ChangeNotifier {
       setLocationMarker(
           station, _routeManager.addCostWaypoint(station).getUID());
     }
-    clearStationMarkersNotInRoute();
 
     await _setRoutes(
         origin, destination, startStation, endStation, intermediates);
@@ -489,7 +490,6 @@ class ApplicationBloc with ChangeNotifier {
               .map((waypoint) => waypoint.getStop().placeId)
               .toList());
     }
-    clearStationMarkersNotInRoute();
   }
 
   Future<void> setPartialRoutes(
@@ -521,16 +521,6 @@ class ApplicationBloc with ChangeNotifier {
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showCurrentRoute(false);
-  }
-
-  void clearStationMarkersNotInRoute() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-
-    Station pickupStation = _navigationManager.getPickupStation();
-    Station dropOffStation = _navigationManager.getDropoffStation();
-
-    _markerManager.setStationMarker(pickupStation, this);
-    _markerManager.setStationMarker(dropOffStation, this);
   }
 
   // ********** User Setting Management **********

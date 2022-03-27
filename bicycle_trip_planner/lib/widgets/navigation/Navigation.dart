@@ -37,27 +37,13 @@ class _NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
-
-    applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-
     // Move to the user when navigation starts
     CameraManager.instance.viewUser();
-
-    // locatorSubscription = locationManager
-    //     .onUserLocationChange()
-    //     .listen((LocationData currentLocation) {
-    //   setState(() {
-    //     CameraManager.instance.viewUser();
-    //   });
-    // });
-
-    applicationBloc.clearStationMarkersNotInRoute();
   }
 
   @override
   void dispose() {
     applicationBloc.filterStationMarkers();
-    //locatorSubscription.cancel();
     super.dispose();
   }
 
