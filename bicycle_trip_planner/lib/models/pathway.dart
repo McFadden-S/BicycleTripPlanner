@@ -49,7 +49,8 @@ class Pathway {
   /// @return List<Stop>
   ///   - Returns all waypoints in pathway
   List<Stop> getWaypoints() {
-    List<Stop> ret = size <= 2 ? [] : _stops.sublist(1, size - 1);
+    List<Stop> ret =
+        _stops.length <= 2 ? [] : _stops.sublist(1, _stops.length - 1);
     return ret;
   }
 
@@ -119,7 +120,6 @@ class Pathway {
   /// @effects adds waypoint to stops list
   void addWaypoint(Stop stop) {
     _stops.add(stop);
-    size = size +1;
     swapStops(stop.getUID(), _destination.getUID());
   }
 
