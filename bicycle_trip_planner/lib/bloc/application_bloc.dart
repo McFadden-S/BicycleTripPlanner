@@ -123,7 +123,6 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   searchPlaces(String searchTerm) async {
-    final client = http.Client();
     searchResults = await _placesService.getAutocomplete(searchTerm);
     searchResults.insert(
         0,
