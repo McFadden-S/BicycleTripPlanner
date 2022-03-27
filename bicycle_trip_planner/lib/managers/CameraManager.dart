@@ -17,6 +17,7 @@ class CameraManager {
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
 
+  //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
   late LatLng _routeBoundsSW;
   late LatLng _routeBoundsNE;
@@ -47,6 +48,7 @@ class CameraManager {
 
   //********** Private **********
 
+  ///Sets the bounds of the map's camera
   void _setCameraBounds(LatLng southwest, LatLng northeast) {
     googleMapController.animateCamera(
       CameraUpdate.newLatLngBounds(
@@ -60,6 +62,7 @@ class CameraManager {
 
   //********** Public **********
 
+  ///Sets the position of the camera on the map
   void setCameraPosition(LatLng position) {
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
@@ -69,6 +72,8 @@ class CameraManager {
     );
   }
 
+  ///Sets the necessary fields to allow the camera to view the route
+  ///Does Not Change Camera Position
   void setRouteCamera(LatLng origin, Map<String, dynamic> boundsSw,
       Map<String, dynamic> boundsNe) {
     _routeBoundsNE = LatLng(boundsNe['lat'], boundsNe['lng']);
@@ -76,25 +81,26 @@ class CameraManager {
     _routeOriginCamera = origin;
   }
 
-  Future<void> goToPlace(double lat, double lng, Map<String, dynamic> boundsNe,
+  /// Views the route to a location
+  Future<void> goToPlace(LatLng latLng, Map<String, dynamic> boundsNe,
       Map<String, dynamic> boundsSw) async {
-    setRouteCamera(LatLng(lat, lng), boundsSw, boundsNe);
+    setRouteCamera(latLng, boundsSw, boundsNe);
     viewRoute();
   }
 
+  /// Views a Place on the Map
   Future<void> viewPlace(Place place) async {
-    final double lat = place.geometry.location.lat;
-    final double lng = place.geometry.location.lng;
-
-    setCameraPosition(LatLng(lat, lng));
+    setCameraPosition(place.latlng);
   }
 
+  /// Views the Route
+  /// Set the route via setRouteCamera
   Future<void> viewRoute() async {
     setCameraPosition(_routeOriginCamera);
     _setCameraBounds(_routeBoundsSW, _routeBoundsNE);
   }
 
-  // Sets the camera to the user's location
+  /// Sets the camera to the user's location
   Future<void> viewUser() async {
     LatLng userLocation = await locationManager.locate();
     setCameraPosition(userLocation);

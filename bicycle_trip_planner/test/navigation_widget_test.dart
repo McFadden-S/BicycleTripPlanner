@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/CustomBottomSheet.dart';
-import 'package:bicycle_trip_planner/widgets/general/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndOfRouteDialog.dart';
-import 'package:bicycle_trip_planner/widgets/general/EndRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/WalkBikeToggleDialog.dart';
-import 'package:bicycle_trip_planner/widgets/navigation/Countdown.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -79,7 +76,7 @@ void main() {
 
     expect(distanceETACard, findsOneWidget);
   });
-  
+
   testWidgets("Navigation has Walk or Cycle button", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
@@ -91,7 +88,11 @@ void main() {
   testWidgets("Navigation has End of Route Dialog", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-    expect(find.byType(EndOfRouteDialog), findsOneWidget);
+  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
+    await pumpWidget(tester, Navigation());
+
+    final walkOrCycleButton = find.byType(CustomCountdown);
+
+    expect(walkOrCycleButton, findsOneWidget);
   });
 }
-

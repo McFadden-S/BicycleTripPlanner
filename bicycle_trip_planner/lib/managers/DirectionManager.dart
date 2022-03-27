@@ -5,15 +5,21 @@ import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 
+/// Class Comment:
+/// DirectionManager is a manager class that manages the directions for a planned
+/// route and is used in the display of navigation
+
 class DirectionManager {
+
   //********** Fields **********
 
   final LocationManager _locationManager = LocationManager();
 
-  bool _isCycling = false;
+  //holds duration in seconds
+  int _duration = 0;
 
-  String _duration = "No data";
-  String _distance = "No data";
+  //Holds the distance in Metres
+  double _distance = 0;
 
   List<Steps> _directions = <Steps>[];
 
@@ -21,9 +27,11 @@ class DirectionManager {
 
   //********** Singleton **********
 
+  /// Holds the singleton instance
   static final DirectionManager _directionManager =
       DirectionManager._internal();
 
+  /// Singleton Constructor Override
   factory DirectionManager() {
     return _directionManager;
   }
@@ -34,6 +42,7 @@ class DirectionManager {
 
   //********** Public **********
 
+  /// Removes and Returns the first direction
   Steps popDirection() {
     _directions.removeAt(0);
     return _directions.first;
@@ -41,18 +50,27 @@ class DirectionManager {
 
   //********** Getting **********
 
+  /// Returns Direction Duration in Minutes as an Int
+  int getDurationValue() {
+    return (_duration / 60).ceil();
+  }
+
+  /// Returns Direction Duration in Minutes as formatted text
   String getDuration() {
-    return _duration;
+    int minutes = (_duration / 60).ceil();
+    return "$minutes min";
   }
 
+  /// Returns Direction Distance in the set Unit
   String getDistance() {
-    return _distance;
+    DistanceType units = _locationManager.getUnits();
+    int distance = units.convert(_distance).ceil();
+    return "$distance ${units.units}";
   }
 
-  bool ifCycling() {
-    return _isCycling;
-  }
-
+  /// @param - index the index of direction
+  /// @return - Steps object of the direction looked for or Steps not found if invalid index
+  /// @effects - none
   Steps getDirection(int index) {
     if (index >= 0 && index <= _directions.length && _directions.isNotEmpty) {
       return _directions[index];
@@ -60,22 +78,27 @@ class DirectionManager {
     return Steps.stepsNotFound();
   }
 
+  /// Returns list of Steps as the direction
   List<Steps> getDirections() {
     return _directions;
   }
 
+  /// Returns Int number of directions stored
   int getNumberOfDirections() {
     return _directions.length;
   }
 
+  ///Returns the current displayed direction
   Steps getCurrentDirection() {
     return _currentDirection;
   }
 
+  /// Returns true if there are directions
   bool ifDirections() {
     return _directions.isNotEmpty;
   }
 
+  /// Returns Icon for a direction string based on its text
   Icon directionIcon(String direction) {
     late IconData icon;
     direction.toLowerCase().contains('left')
@@ -96,55 +119,49 @@ class DirectionManager {
 
   //********** Setting **********
 
+  /// Sets the durations in seconds
   void setDuration(int seconds) {
-    int minutes = (seconds / 60).ceil();
-    _duration = "$minutes min";
+    _duration = seconds;
   }
 
+  /// Sets the distance in metres
   void setDistance(double metre) {
-    DistanceType units = _locationManager.getUnits();
-    int distance = units.convert(metre).ceil();
-    _distance = "$distance ${units.units}";
+    _distance = metre;
   }
 
+  /// Sets the directions and sets the first direction as the current direction
   void setDirections(List<Steps> directions) {
     _directions = directions;
     _currentDirection =
         directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
   }
 
-  void toggleCycling([bool relocateMap = true]) {
-    _isCycling = !_isCycling;
-    if (_isCycling) {
-      print("Showing bike route...");
-      RouteManager().showBikeRoute(relocateMap);
-    } else {
-      RouteManager().showCurrentWalkingRoute(relocateMap);
-    }
-  }
-
   //********** Clearing **********
 
+  /// Clears all direction information to default information
   void clear() {
-    _isCycling = false;
     clearDuration();
     clearDistance();
     clearCurrentDirection();
     clearDirections();
   }
 
+  /// Sets Duration to default value
   void clearDuration() {
-    _duration = "No data";
+    _duration = 0;
   }
 
+  /// Sets Distance to default value
   void clearDistance() {
-    _distance = "No data";
+    _distance = 0;
   }
 
+  /// Clears Stored Directions
   void clearDirections() {
     _directions.clear();
   }
 
+  /// Sets Current Direction to default value
   void clearCurrentDirection() {
     _currentDirection = Steps.stepsNotFound();
   }

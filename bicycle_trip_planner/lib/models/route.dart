@@ -13,6 +13,7 @@ class Route {
   double distance = 0;
   int duration = 0;
 
+  /// constructor with specified required inputs
   Route(
       {required this.bounds,
       required this.legs,
@@ -25,12 +26,15 @@ class Route {
     }
   }
 
+  /// constructor default assignments when route is not found
   Route.routeNotFound(
       {this.bounds = const Bounds.boundsNotFound(),
       this.legs = const <Legs>[],
       this.routeType = RouteType.none,
       this.polyline = const OverviewPolyline.overviewPolylineNotFound()});
 
+  /// factory constructor when data is passed from Json
+  /// @param Map<String, dynamic> parsed Json
   factory Route.fromJson(Map<String, dynamic> parsedJson, RouteType routeType) {
     //TODO Find more suitable name than substitute 'xLegs'
     List<Legs> xLegs = [];
@@ -45,11 +49,15 @@ class Route {
         routeType: routeType);
   }
 
+  /// method override the toString method
+  /// @return String of the toString of the object
   @override
   String toString() {
     return legs.toString();
   }
 
+  /// method override the == operator
+  /// @return bool of whether the object is same or not
   @override
   bool operator ==(Object other) {
     return other is Route &&
@@ -58,6 +66,8 @@ class Route {
         other.legs == legs;
   }
 
+  /// method override the get hashCode method
+  /// @return int of the hashCode
   @override
   // TODO: implement hashCode
   int get hashCode => Object.hash(bounds, polyline, legs);

@@ -6,24 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
-
   final String labelTextIn;
   final TextEditingController searchController;
-  int uid; 
+  int uid;
 
-  Search({
-    Key? key,
-    required this.labelTextIn,
-    required this.searchController,
-    this.uid = -1
-  }): super(key: key);
+  Search(
+      {Key? key,
+      required this.labelTextIn,
+      required this.searchController,
+      this.uid = -1})
+      : super(key: key);
 
   @override
   _SearchState createState() => _SearchState();
 }
 
 class _SearchState extends State<Search> {
-
   bool isSearching = false;
 
   RouteManager routeManager = RouteManager();
@@ -34,13 +32,13 @@ class _SearchState extends State<Search> {
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 
-   @override
+  @override
   Widget build(BuildContext context) {
-
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if(!isSearching){
-        widget.searchController.text = routeManager.getStop(widget.uid).getStop().description;
+    if (!isSearching) {
+      widget.searchController.text =
+          routeManager.getStop(widget.uid).getStop().description;
     }
 
     String searchInput = "";
@@ -57,26 +55,20 @@ class _SearchState extends State<Search> {
                   return const Divider();
                 },
                 shrinkWrap: true,
-                itemCount:
-                applicationBloc.searchResults.length,
+                itemCount: applicationBloc.searchResults.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                    trailing: Visibility(child: const Icon(Icons.my_location), visible: (index == 0)),
+                    visualDensity:
+                        const VisualDensity(horizontal: 0, vertical: -4),
+                    trailing: Visibility(
+                        child: const Icon(Icons.my_location),
+                        visible: (index == 0)),
                     title: Text(
-                      applicationBloc
-                          .searchResults[index].description,
+                      applicationBloc.searchResults[index].description,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(color: ThemeStyle.secondaryTextColor),
                     ),
                     onTap: () {
-                      // TODO: This will create a marker that cannot be removed IF it's the home page one. 
-                      // Possible solution: we don't move to routeplanning when search is tapped   
-                      // Pass in an argument that holds this search as a placeholder in routemanager so we 
-                      // Have access to it and to pass onto destination OR have home search take a unique id/
-                      // Make a search type enum of search and route (search enum = has unique id only for marker
-                      // No need for any getText for this search) (route enum = behaves as it does currently i.e.
-                      // will have a unique id for marker + WILL also getText for this search)~
                       applicationBloc.setSelectedSearch(index, widget.uid);
 
                       //TODO Potential Side effect
@@ -97,13 +89,13 @@ class _SearchState extends State<Search> {
             style: TextStyle(color: ThemeStyle.secondaryTextColor),
             controller: widget.searchController,
             onChanged: (input) {
-                isSearching = true;
-                searchInput = input;
-              },
-            onTap: (){
-                isSearching = true;
-                applicationBloc.getDefaultSearchResult();
-              },
+              isSearching = true;
+              searchInput = input;
+            },
+            onTap: () {
+              isSearching = true;
+              applicationBloc.getDefaultSearchResult();
+            },
             decoration: InputDecoration(
               hintText: widget.labelTextIn,
               hintStyle: TextStyle(color: ThemeStyle.secondaryTextColor),
@@ -111,32 +103,35 @@ class _SearchState extends State<Search> {
               filled: true,
               enabledBorder: OutlineInputBorder(
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
+                borderSide:
+                    BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               border: OutlineInputBorder(
                 borderRadius: const BorderRadius.all(Radius.circular(15.0)),
-                borderSide: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
+                borderSide:
+                    BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor),
               ),
               prefixIcon: IconButton(
                 icon: Icon(
-                    Icons.search,
-                    color: ThemeStyle.primaryTextColor,
+                  Icons.search,
+                  color: ThemeStyle.primaryTextColor,
                 ),
-                onPressed: () {setState(() {
+                onPressed: () {
+                  setState(() {
                     applicationBloc.searchPlaces(searchInput);
                   });
                 },
               ),
               suffixIcon: IconButton(
                 icon: Icon(
-                    Icons.clear,
-                    color: ThemeStyle.primaryTextColor,
+                  Icons.clear,
+                  color: ThemeStyle.primaryTextColor,
                 ),
                 onPressed: () {
-                    applicationBloc.clearLocationMarker(widget.uid);
-                    if(widget.uid != -1){
-                      applicationBloc.clearSelectedLocation(widget.uid);
-                    }
+                  applicationBloc.clearLocationMarker(widget.uid);
+                  if (widget.uid != -1) {
+                    applicationBloc.clearSelectedLocation(widget.uid);
+                  }
                   hideSearch();
                 },
               ),

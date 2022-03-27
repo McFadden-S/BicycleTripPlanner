@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+/// Class Comment:
+/// PolylineManager is a manager class that organises and creates
+/// polylines to be displayed on the map as routes
+
 class PolylineManager {
   //********** Fields **********
 
@@ -23,10 +27,17 @@ class PolylineManager {
 
   //********** Public **********
 
+  /// @param void
+  /// @return Set<Polyline> - set of all the polylines on show
   Set<Polyline> getPolyLines() {
     return _polylines;
   }
 
+  /// @param -
+  ///  points - List<PointLatLng>; list of points to be added to the polyline route
+  ///  color - Color; color of polyline
+  /// @return Void
+  /// @affect adds polylines regardless of how many are currently on display
   void addPolyline(List<PointLatLng> points, Color color) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
@@ -43,6 +54,11 @@ class PolylineManager {
     ));
   }
 
+  /// @param -
+  ///  points - List<PointLatLng>; list of points to be added to the polyline route
+  ///  color - Color; color of polyline
+  /// @return Void
+  /// @affect sets a polyline and clears any existing ones
   void setPolyline(List<PointLatLng> points, Color color) {
     final String polylineIdVal = 'polyline_$_polylineIdCounter';
     _polylineIdCounter++;
@@ -60,6 +76,8 @@ class PolylineManager {
     ));
   }
 
+  /// @param void
+  /// @return Set<Polyline> - set of all the polylines on show
   void clearPolyline() {
     _polylines.clear();
   }

@@ -1,4 +1,5 @@
 
+import 'package:bicycle_trip_planner/auth/Keys.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:http/http.dart' as http;
@@ -10,10 +11,10 @@ import 'stations_services_test.mocks.dart' as mock;
 
 void main(){
   group('getAutocomplete', () {
+    final String key = Keys.getApiKey(); 
     test('Get automcomplete from non empty string', () async {
 
       const search = "Covent";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&components=country:gb&location=51.495830%2C-0.145607&radius=35000&strictbounds=true&key=$key';
 
@@ -235,7 +236,6 @@ void main(){
     test('Get automcomplete from empty string', () async {
 
       const search = "";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$search&components=country:gb&location=51.495830%2C-0.145607&radius=35000&strictbounds=true&key=$key';
 
@@ -256,12 +256,12 @@ void main(){
 
   group('getPlace', ()
   {
+    final String key = Keys.getApiKey();
     test('Get place from valid place id', () async {
 
       const placeId = "ChIJT2mIkcwEdkgRYspzsBq1iAM";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-      const url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
+      var url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(url)))
@@ -482,16 +482,15 @@ void main(){
 
       final answer = await PlacesService().getPlace(placeId, description);
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, 51.51300070000001);
-      expect(answer.geometry.location.lng,   -0.1241621);
+      expect(answer.latlng.latitude, 51.51300070000001);
+      expect(answer.latlng.longitude,   -0.1241621);
     });
 
     test('Get place from invalid place id', () async {
 
       const placeId = "";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
-      const url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
+      var url = "https://maps.googleapis.com/maps/api/place/details/json?key=$key&place_id=$placeId";
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(url)))
@@ -503,22 +502,22 @@ void main(){
         }""", 200));
 
       final answer = await PlacesService().getPlace(placeId, description);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 
   group('getPlaceFromCoordinates', ()
   {
+    final String key = Keys.getApiKey(); 
     test('Get place from valid coordinates', () async {
 
       const lat = 51.5130007;
       const lng = -0.1241621;
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
 
@@ -611,15 +610,14 @@ void main(){
       final answer = await PlacesService().getPlaceFromCoordinates(lat, lng, description);
       expect(answer.placeId, "ChIJT2mIkcwEdkgRYspzsBq1iAM");
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, lat);
-      expect(answer.geometry.location.lng, lng);
+      expect(answer.latlng.latitude, lat);
+      expect(answer.latlng.longitude, lng);
     });
     test('Get place from invalid coordinates', () async {
 
       const lat = 110000000.0;
       const lng = 100000000.0;
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&latlng=$lat,$lng';
 
@@ -632,22 +630,22 @@ void main(){
             }""", 200));
 
       final answer = await PlacesService().getPlaceFromCoordinates(lat, lng, description);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 
   group('getPlaceFromAddress', ()
   {
+    final String key = Keys.getApiKey(); 
     test('Get place from valid address', () async {
 
       const address = "Covent Garden, Long Acre, London WC2E 9JT, UK";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
 
@@ -736,15 +734,14 @@ void main(){
 
       final answer = await PlacesService().getPlaceFromAddress(address, description);
       expect(answer.description, description);
-      expect(answer.geometry.location.lat, 51.5130007);
-      expect(answer.geometry.location.lng,   -0.1241621);
+      expect(answer.latlng.latitude, 51.5130007);
+      expect(answer.latlng.longitude,   -0.1241621);
       expect(answer.placeId, "ChIJT2mIkcwEdkgRYspzsBq1iAM");
     });
     test('Get place from invalid address', () async {
 
       const address = "";
       const description = "Covent Garden, Long Acre, London, UK";
-      const key = 'AIzaSyBcUJrLd8uIYR2HFTNa6mj-7lVRyUIJXs0';
       var url =
           'https://maps.googleapis.com/maps/api/geocode/json?key=$key&address=$address';
 
@@ -757,12 +754,12 @@ void main(){
             }""", 200));
 
       final answer = await PlacesService().getPlaceFromAddress(address, description);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.name, Place.placeNotFound().name);
-      expect(answer.placeId, Place.placeNotFound().placeId);
-      expect(answer.description, Place.placeNotFound().description);
-      expect(answer.geometry.location.lat, Place.placeNotFound().geometry.location.lat);
-      expect(answer.geometry.location.lng, Place.placeNotFound().geometry.location.lng);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.name, const Place.placeNotFound().name);
+      expect(answer.placeId, const Place.placeNotFound().placeId);
+      expect(answer.description, const Place.placeNotFound().description);
+      expect(answer.latlng.latitude, const Place.placeNotFound().latlng.latitude);
+      expect(answer.latlng.longitude, const Place.placeNotFound().latlng.longitude);
     });
   });
 }

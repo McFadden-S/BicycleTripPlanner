@@ -15,6 +15,8 @@ class StationManager {
   // Used only for O(1) look up times for efficiency
   Set<Station> _stationsLookUp = <Station>{};
 
+  List<Station> _displayedStations = <Station>[];
+
   final LocationManager _locationManager = LocationManager();
 
   //********** Singleton **********
@@ -40,7 +42,7 @@ class StationManager {
     return nearPos;
   }
 
-  //********** Public **********
+  //********** Stations **********
 
   int getNumberOfStations() {
     return _stations.length;
@@ -50,31 +52,53 @@ class StationManager {
     return _stations;
   }
 
-  Station getStationByIndex(int stationIndex) {
-    return _stations[stationIndex];
+  List<Station> getStationsInRadius(LatLng pos, [double distance = 4.0]) {
+    List<Station> allStations = List.castFrom(_stations);
+
+    List<Station> nearbyStations = allStations
+        .where((s) =>
+            _locationManager.distanceFromTo(pos, LatLng(s.lat, s.lng)) <=
+            distance)
+        .toList();
+
+    return nearbyStations;
   }
 
-  Station getStationById(int stationId) {
-    return _stations.firstWhere((station) => station.id == stationId,
-        orElse: Station.stationNotFound);
-  }
-
-  Station getStationByName(String stationName) {
-    return _stations.singleWhere((station) => station.name == stationName,
-        orElse: Station.stationNotFound);
-  }
-
-  Future<Station> getPickupStationNear(LatLng pos,[int groupSize = 1]) async {
-    List<Station> nearPos = _getOrderedToFromStationList(pos);
-    Station station = nearPos.firstWhere(
-        (station) => station.bikes >= groupSize,
-        orElse: Station.stationNotFound);
+  Future<void> cachePlaceId(Station station) async {
+    if (station == Station.stationNotFound()) return;
     if (station.place == const Place.placeNotFound()) {
       Place place = await PlacesService().getPlaceFromCoordinates(
           station.lat, station.lng, "Santander Cycles: ${station.name}");
       station.place = place;
     }
-    //_pickUpStation = station;
+  }
+
+  Station getStationByIndex(int stationIndex) {
+    cachePlaceId(_stations[stationIndex]);
+    return _stations[stationIndex];
+  }
+
+  Station getStationById(int stationId) {
+    Station station = _stations.firstWhere((station) => station.id == stationId,
+        orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
+  }
+
+  Station getStationByName(String stationName) {
+    Station station = _stations.singleWhere(
+        (station) => station.name == stationName,
+        orElse: Station.stationNotFound);
+    cachePlaceId(station);
+    return station;
+  }
+
+  Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
+    List<Station> nearPos = _getOrderedToFromStationList(pos);
+    Station station = nearPos.firstWhere(
+        (station) => station.bikes >= groupSize,
+        orElse: Station.stationNotFound);
+    await cachePlaceId(station);
     return station;
   }
 
@@ -83,36 +107,24 @@ class StationManager {
     Station station = nearPos.firstWhere(
         (station) => station.emptyDocks >= groupSize,
         orElse: Station.stationNotFound);
-    if (station.place == const Place.placeNotFound()) {
-
-      Place place = await PlacesService().getPlaceFromCoordinates(
-          station.lat, station.lng, "Santander Cycles: ${station.name}");
-      station.place = place;
-    }
-    //_dropOffStation = station;
+    await cachePlaceId(station);
     return station;
   }
 
-  // TODO: Find a better method name
-  List<Station> getStationsWithAtLeastXBikes(
-      int bikes, List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes >= bikes).toList();
+  /// Returns a list of Stations with at least bikeNumber bikes
+  List<Station> getStationsWithBikes(
+      int bikeNumber, List<Station> filteredStations) {
+    return filteredStations
+        .where((station) => station.bikes >= bikeNumber)
+        .toList();
   }
 
-  List<Station> getStationsWithNoBikes(List<Station> filteredStations) {
-    return filteredStations.where((station) => station.bikes <= 0).toList();
+  /// Returns the list of all stations not including the ones passed into the function
+  List<Station> getStationsCompliment(List<Station> stations) {
+    return _stationsLookUp.difference(stations.toSet()).toList();
   }
 
-  List<Station> getFarStations(double range) {
-    List<Station> farStations = [];
-
-    farStations =
-        _stationsLookUp.difference(getNearStations(range).toSet()).toList();
-    //print(farStations);
-
-    return farStations;
-  }
-
+  /// Returns a list of stations that are within the range passed in
   List<Station> getNearStations(double range) {
     List<Station> nearbyStations = [];
 
@@ -120,17 +132,24 @@ class StationManager {
       return station.distanceTo < range;
     });
     nearbyStations = _stations.take(lastIndex + 1).toList();
-    //print(nearbyStations);
 
     return nearbyStations;
   }
 
-  Future<void> setStations(List<Station> newStations, {clear = false}) async {
-    if (clear) {
-      _stationsLookUp = {};
-      _stations = [];
-    }
-    LatLng currentPos = await _locationManager.locate();
+  // Returns a list of stations that the user has favourited
+  Future<List<Station>> getFavouriteStations() async {
+    if (!DatabaseManager().isUserLogged()) return [];
+    List<int> compare = await DatabaseManager().getFavouriteStations();
+    List<Station> favouriteStations = List.from(_stations);
+    favouriteStations.retainWhere((element) => compare.contains(element.id));
+    return favouriteStations;
+  }
+
+  Future<void> setStations(List<Station> newStations) async {
+    LatLng currentPos = LatLng(
+        _locationManager.getCurrentLocation().latlng.latitude,
+        _locationManager.getCurrentLocation().latlng.longitude
+    );
 
     for (Station newStation in newStations) {
       Station? station = _stationsLookUp.lookup(newStation);

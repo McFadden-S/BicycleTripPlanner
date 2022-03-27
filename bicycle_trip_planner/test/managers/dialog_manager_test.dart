@@ -15,23 +15,9 @@ main(){
 
   test('ensure end route dialogue is correct', (){
     dialogManager.setEndOfRouteDialog();
-    expect(dialogManager.getEndOfRouteDialogText(), "You have reached your destination!");
+    expect(dialogManager.getChoicePrompt(), "You have reached your destination!");
     expect(dialogManager.getOkButtonText(), "Ok");
     expect(dialogManager.getEndOfRouteFunction().toString(), (){dialogManager.clearEndOfRouteDialog();}.toString());
-  });
-
-  //PLEASE CHECK DIALOG MANAGER IF I CORRECTED THE REPETITION IN THE RIGHT ORDER FOR GETTOOGLETEXT AND TOGGLEDIALOGTEXT
-  test('ensure walk bike toggle dialogue is correct', (){
-    dialogManager.setWalkBikeToggle();
-    expect(dialogManager.getWalkBikeToggleText(), "Toggle between walking and biking?");
-    expect(dialogManager.getWalkBikeToggleDialogText(), "Toggle");
-  });
-
-  test('ensure can show and clear toggle dialog', (){
-    dialogManager.showWalkBikeToggleDialog();
-    expect(dialogManager.ifShowingWalkBikeToggleDialog(), true);
-    dialogManager.clearWalkBikeToggleDialog();
-    expect(dialogManager.ifShowingWalkBikeToggleDialog(), false);
   });
 
   test('ensure can show and clear end of route dialog', (){
