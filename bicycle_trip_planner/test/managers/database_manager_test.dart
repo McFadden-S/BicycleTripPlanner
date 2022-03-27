@@ -4,7 +4,6 @@ import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -17,7 +16,6 @@ Future<void> main() async {
 
   setupFirebaseMocks();
   setupFirebaseAuthMocks();
-//>>>>>>> 70a28859dd8ba5f654840bebf080ec2b2439fcc2
 
   var database = MockFirebaseDatabase();
   var auth = MockFirebaseAuth();
@@ -62,16 +60,16 @@ Future<void> main() async {
               }
             }
           },
-          'favouriteStations': {
-            favouriteStationsID: {favouriteStationsID}
-          }
+        },
+        'favouriteStations': {
+          favouriteStationsID: {favouriteStationsID}
         }
       }
     }
   };
 
 
-  MockFirebaseDatabase.instance.reference().set(fakeData);
+  MockFirebaseDatabase.instance.ref().set(fakeData);
   setUp(() async {
     WidgetsFlutterBinding.ensureInitialized();
 
@@ -91,7 +89,6 @@ Future<void> main() async {
     );
     auth = MockFirebaseAuth(mockUser: user);
     final result = await auth.signInWithCredential(credential);
-
   });
 
   test('Get favourite station', () async {
@@ -100,6 +97,7 @@ Future<void> main() async {
     print(result.snapshot.value);
     //databaseManager.isUserLogged();
     //databaseManager.getFavouriteRoutes();
+
 
   });
 
