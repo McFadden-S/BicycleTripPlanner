@@ -9,6 +9,7 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -262,15 +263,16 @@ class ApplicationBloc with ChangeNotifier {
     List<String> intermediatePlaceId =
         intermediates.map((place) => place.placeId).toList();
 
-    Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
-        origin.placeId, startStation.place.placeId);
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(
+        origin.placeId, startStation.place.placeId, RouteType.walk);
     Rou.Route bikeRoute = await _directionsService.getRoutes(
         startStation.place.placeId,
         endStation.place.placeId,
+        RouteType.bike,
         intermediatePlaceId,
         _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
-        endStation.place.placeId, destination.placeId);
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(
+        endStation.place.placeId, destination.placeId, RouteType.walk);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
@@ -279,7 +281,7 @@ class ApplicationBloc with ChangeNotifier {
   Future<int> _getDurationFromToStation(
       Station startStation, Station endStation) async {
     Rou.Route route = await _directionsService.getRoutes(
-        startStation.place.placeId, endStation.place.placeId);
+        startStation.place.placeId, endStation.place.placeId, RouteType.bike);
     int durationSeconds = route.duration;
     int durationMinutes = (durationSeconds / 60).ceil();
     return durationMinutes;
@@ -498,22 +500,23 @@ class ApplicationBloc with ChangeNotifier {
     String endStationId = _navigationManager.getDropoffStation().place.placeId;
 
     Rou.Route startWalkRoute = _navigationManager.ifBeginning()
-        ? await _directionsService.getWalkingRoutes(
-            originId, startStationId, first, false)
+        ? await _directionsService.getRoutes(
+            originId, startStationId, RouteType.walk, first, false)
         : Rou.Route.routeNotFound();
 
     Rou.Route bikeRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getRoutes(startStationId, endStationId,
-            intermediates, _routeManager.ifOptimised())
+            RouteType.bike, intermediates, _routeManager.ifOptimised())
         : _navigationManager.ifCycling()
             ? await _directionsService.getRoutes(originId, endStationId,
-                intermediates, _routeManager.ifOptimised())
+                RouteType.bike, intermediates, _routeManager.ifOptimised())
             : Rou.Route.routeNotFound();
 
     Rou.Route endWalkRoute = _navigationManager.ifEndWalking()
-        ? await _directionsService.getWalkingRoutes(originId, destinationId)
-        : await _directionsService.getWalkingRoutes(
-            endStationId, destinationId);
+        ? await _directionsService.getRoutes(
+            originId, destinationId, RouteType.walk)
+        : await _directionsService.getRoutes(
+            endStationId, destinationId, RouteType.walk);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showCurrentRoute(false);
