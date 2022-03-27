@@ -59,4 +59,50 @@ void main() {
 
     expect(icon, findsWidgets);
   });
+
+  testWidgets("CustomBottomSheet shows a different arrow icon when tapped", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+
+    final icon = find.byIcon(Icons.keyboard_arrow_up);
+
+    await tester.tap(find.byType(IconButton));
+    await tester.pumpAndSettle();
+
+    expect(icon, findsOneWidget);
+  });
+
+  testWidgets("CustomBottomSheet shrinks when first tapped", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+
+    final animatedContainer = find.byType(AnimatedContainer);
+    final Size origSize = tester.getSize(animatedContainer);
+
+    await tester.tap(find.byType(IconButton));
+    await tester.pumpAndSettle();
+
+    final Size expandedSize = tester.getSize(animatedContainer);
+
+    expect(expandedSize.height, equals(origSize.height / 3));
+  });
+
+  // testWidgets("CustomBottomSheet shrinks when first tapped, then expands when tapped again", (WidgetTester tester) async {
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
+  //
+  //   final animatedContainer = find.byType(AnimatedContainer);
+  //   final Size origSize = tester.getSize(animatedContainer);
+  //
+  //   await tester.tap(find.byType(IconButton));
+  //   await tester.pumpAndSettle();
+  //
+  //   final Size expandedSize = tester.getSize(animatedContainer);
+  //
+  //   expect(expandedSize.height, equals(origSize.height / 3));
+  //
+  //   await tester.tap(find.byType(IconButton));
+  //   await tester.pumpAndSettle();
+  //
+  //   final Size nextSize = tester.getSize(animatedContainer);
+  //
+  //   expect(nextSize.height, equals(expandedSize.height * 3));
+  // });
 }
