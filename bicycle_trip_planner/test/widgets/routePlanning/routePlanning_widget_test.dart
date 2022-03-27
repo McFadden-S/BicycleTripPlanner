@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
@@ -62,7 +65,7 @@ void main() {
   testWidgets("RoutePlanning has optimise button", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final optimiseButton = find.widgetWithIcon(CircleButton, Icons.alt_route);
+    final optimiseButton = find.widgetWithIcon(OptimisedButton, Icons.alt_route);
 
     expect(optimiseButton, findsOneWidget);
   });
