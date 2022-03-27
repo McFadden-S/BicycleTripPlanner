@@ -147,8 +147,8 @@ class StationManager {
 
   Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = LatLng(
-        _locationManager.getCurrentLocation().geometry.location.lat,
-        _locationManager.getCurrentLocation().geometry.location.lng
+        _locationManager.getCurrentLocation().latlng.latitude,
+        _locationManager.getCurrentLocation().latlng.longitude
     );
 
     for (Station newStation in newStations) {
