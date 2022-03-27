@@ -25,8 +25,10 @@ class MarkerManager {
 
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final MarkerManager _markerManager = MarkerManager._internal();
 
+  /// Singleton Constructor Override
   factory MarkerManager() {
     return _markerManager;
   }

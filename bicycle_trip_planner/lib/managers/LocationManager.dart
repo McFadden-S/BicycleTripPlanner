@@ -6,6 +6,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
+/// Class Comment:
+/// LocationManager is a manager class that manages finding the users current
+/// location
+
 class LocationManager {
   //********** Fields **********
 
@@ -18,8 +22,10 @@ class LocationManager {
 
   //********** Singleton **********
 
+  /// Holds Singleton instance
   static final LocationManager _locationManager = LocationManager._internal();
 
+  /// Singleton Constructor Override
   factory LocationManager() {
     return _locationManager;
   }
