@@ -19,11 +19,11 @@ main() {
   });
 
   test("Stops to string", () {
-    expect(pathway.toString(), "[ - 1,  - 2]");
+    expect(pathway.toString(), "[ - 0,  - 1]");
   });
 
   test('ensure can get stop by index', () {
-    expect(pathway.getStopByIndex(0).getUID(), 1);
+    expect(pathway.getStopByIndex(0).getUID(), 0);
   });
 
   test('ensure size is 2 when initialized', () {
@@ -54,7 +54,6 @@ main() {
   });
 
   test('ensure can remove stop on request', () {
-
     pathway.addWaypoint(stop);
     pathway.addWaypoint(stop2);
     expect(pathway.getStops().length, 4);
