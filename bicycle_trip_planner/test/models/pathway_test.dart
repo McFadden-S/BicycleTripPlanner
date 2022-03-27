@@ -127,10 +127,6 @@ main() {
     pathway.changeStop(pathway.getStopByIndex(0).getUID(), place2);
     pathway.changeStop(pathway.getStopByIndex(1).getUID(), place);
 
-    for(Stop x in pathway.getStops()){
-      print(x.getStop().name);
-    }
-
     expect(pathway.getStopByIndex(0).getStop().name, "Strand");
     expect(pathway.getStopByIndex(1).getStop().name, "Bush House");
 
@@ -154,15 +150,6 @@ main() {
     expect(pathway.getHasFirstWaypoint(), true);
     pathway.toggleHasFirstWaypoint();
     expect(pathway.getHasFirstWaypoint(), false);
-  });
-
-  test("Move stop", () {
-    final firstID = pathway.getStops().first.getUID();
-    pathway.moveStop(firstID, 2);
-    expect(pathway.getStops()[1].getUID(), firstID);
-
-    pathway.moveStop(firstID,0);
-    expect(pathway.getStops()[0].getUID(), firstID);
   });
 
   test('ensure toString is correct', () {

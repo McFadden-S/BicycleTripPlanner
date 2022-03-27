@@ -191,28 +191,6 @@ class Pathway {
   }
 
   /// @param -
-  ///   id - int; id of stop
-  ///   newIndex - int; index to move stop to
-  /// @return void
-  /// @effects - Moves stop to specified index
-  void moveStop(int id, int newIndex) {
-    Stop stop = getStop(id);
-    int currentIndex = _stops.indexOf(stop);
-    print("---Current Index---");
-    print(currentIndex);
-    print("-------------------");
-
-    if (currentIndex < newIndex) {
-      _stops.insert(newIndex, stop);
-      _stops.removeAt(currentIndex);
-    } else if (newIndex < currentIndex) {
-      _stops.removeAt(currentIndex);
-      _stops.insert(newIndex, stop);
-    }
-    _updatePointers();
-  }
-
-  /// @param -
   ///   int - stop1ID; id of first stop
   ///   int - stop2ID; id of second stop
   /// @return void
