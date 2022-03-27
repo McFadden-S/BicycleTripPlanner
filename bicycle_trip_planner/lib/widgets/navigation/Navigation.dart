@@ -8,19 +8,19 @@ import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/ZoomOnUserButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CostEffTimerButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
+import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 import 'package:timer_count_down/timer_controller.dart';
 
 import '../../managers/MarkerManager.dart';
 import '../../managers/StationManager.dart';
+import '../general/buttons/CircleButton.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
@@ -37,15 +37,17 @@ class _NavigationState extends State<Navigation> {
   final RouteManager routeManager = RouteManager();
   final MarkerManager markerManager = MarkerManager();
   final CountdownController controller = CountdownController();
+  final CameraManager cameraManager = CameraManager.instance;
 
   late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
+  late StreamSubscription<LocationData> navigationSubscription;
 
   @override
   void initState() {
     super.initState();
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    CameraManager.instance.viewUser();
+    zoomOnUser();
     markerManager.clearStationMarkers(StationManager().getStations());
   }
 
@@ -80,9 +82,15 @@ class _NavigationState extends State<Navigation> {
                         padding: const EdgeInsets.only(top: 10),
                         child: Column(
                           children: [
-                            CurrentLocationButton(),
+                            CircleButton(
+                                iconIn: Icons.center_focus_strong,
+                                onButtonClicked: () => zoomOnUser()
+                            ),
                             SizedBox(height: 10),
-                            ZoomOnUserButton(),
+                            CircleButton(
+                                iconIn: Icons.zoom_out_map,
+                                onButtonClicked: () => zoomOnRoute()
+                            ),
                             routeManager.ifCostOptimised()
                             ? Column(
                               children: [
@@ -125,7 +133,17 @@ class _NavigationState extends State<Navigation> {
     );
   }
 
-  testfff() {
-    print("+++++++++++++++++");
+  zoomOnUser() {
+    navigationSubscription = locationManager
+        .onUserLocationChange(5)
+        .listen((LocationData currentLocation) {
+      cameraManager.viewUser(zoomIn: 20.0);
+    });
+
+  }
+
+  zoomOnRoute() {
+    navigationSubscription.cancel();
+    cameraManager.viewRoute();
   }
 }
