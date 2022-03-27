@@ -3,8 +3,8 @@ import 'dart:ui';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
-import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
+import 'package:bicycle_trip_planner/models/bounds.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
 import 'package:bicycle_trip_planner/models/route_types.dart';
@@ -64,15 +64,14 @@ class RouteManager {
 
   //********** Private **********
 
-  /// @param void
+  /// @param - Route route, Bounds bounds
   /// @return void
-  /// @effects - Moves camera to start location
-  void _moveCameraTo(R.Route route) {
+  /// @effects - Moves camera to the route and views its bounds or the given bounds
+  void _moveCameraTo(R.Route route,
+      [Bounds bounds = const Bounds.boundsNotFound()]) {
+    if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
     _cameraManager.goToPlace(
-        route.legs.first.startLocation.lat,
-        route.legs.first.startLocation.lng,
-        route.bounds.northeast,
-        route.bounds.southwest);
+        route.legs.first.startLocation, bounds.northeast, bounds.southwest);
   }
 
   //********** Public **********
@@ -175,9 +174,37 @@ class RouteManager {
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
 
+    Bounds bounds = _addBounds(
+        _addBounds(_startWalkingRoute.bounds, _bikingRoute.bounds),
+        _endWalkingRoute.bounds);
+
     if (relocateMap) {
-      _moveCameraTo(_bikingRoute);
+      _moveCameraTo(_bikingRoute, bounds);
     }
+  }
+
+  /// @param - Bounds route1Bounds, Bounds route2Bounds
+  /// @return Bounds
+  /// @effects - returns the new bounds depending on which inputted
+  ///            bounds covers a greater area
+  Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
+    Map<String, dynamic> newNorthEast = {};
+    route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
+        ? newNorthEast['lat'] = route1Bounds.northeast['lat']
+        : newNorthEast['lat'] = route2Bounds.northeast['lat'];
+    route1Bounds.northeast['lng'] > route2Bounds.northeast['lng']
+        ? newNorthEast['lng'] = route1Bounds.northeast['lng']
+        : newNorthEast['lng'] = route2Bounds.northeast['lng'];
+
+    Map<String, dynamic> newSouthWest = {};
+    route1Bounds.southwest['lat'] < route2Bounds.southwest['lat']
+        ? newSouthWest['lat'] = route1Bounds.southwest['lat']
+        : newSouthWest['lat'] = route2Bounds.southwest['lat'];
+    route1Bounds.southwest['lng'] < route2Bounds.southwest['lng']
+        ? newSouthWest['lng'] = route1Bounds.southwest['lng']
+        : newSouthWest['lng'] = route2Bounds.southwest['lng'];
+
+    return Bounds(northeast: newNorthEast, southwest: newSouthWest);
   }
 
   void setLoading(bool isLoading) {

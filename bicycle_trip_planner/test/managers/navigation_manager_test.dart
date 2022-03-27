@@ -1,19 +1,12 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:bicycle_trip_planner/services/directions_service.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/annotations.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
-import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 
 @GenerateMocks([Locator])
 void main() {
@@ -27,7 +20,7 @@ void main() {
         placeId: 'place',
         name: 'name',
         description: 'description',
-        geometry: Geometry(location: Location(lng: lng, lat: lat))));
+        latlng: LatLng(lng, lat)));
   }
 
   void expectWalkingBikingEnd(bool walk, bool bike, bool end) {
@@ -50,7 +43,7 @@ void main() {
             placeId: 'place',
             name: 'name',
             description: 'description',
-            geometry: Geometry(location: Location(lng: lng, lat: lat))));
+            latlng: LatLng(lng, lat)));
   }
 
   // ************ SetUp ***************
@@ -125,12 +118,14 @@ void main() {
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
     final station_2 = createStation(2, "station_2", 51.5120, -0.118800);
 
-    //Setting pickup and dropoff stations
+    //Setting pickup and drop off stations
     navigationManager.setPickupStation(station_1);
     navigationManager.setDropoffStation(station_2);
 
     setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
+    navigationManager.setIfBeginning(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
@@ -141,17 +136,21 @@ void main() {
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
     final station_2 = createStation(2, "station_2", 60.5120, -0.128800);
 
-    //Setting pickup and dropoff stations
+    //Setting pickup and drop off stations
     navigationManager.setPickupStation(station_1);
     navigationManager.setDropoffStation(station_2);
 
     setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
 
+    navigationManager.setIfBeginning(false);
+    navigationManager.setIfCycling(true);
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.128800);
     navigationManager.checkPassedByPickUpDropOffStations();
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
@@ -178,7 +177,7 @@ void main() {
     setCurrentLocation(1, 2);
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
 
-    //Setting pickup and dropoff stations
+    //Setting pickup and drop off stations
     RouteManager().setStartFromCurrentLocation(true);
 
     expect(navigationManager.ifNavigating(), false);
@@ -192,12 +191,12 @@ void main() {
 
   test("Test start navigation from defined location with one waypoint", () {
     final start = Place(
-        geometry: Geometry(location: Location(lat: 1, lng: 1)),
+        latlng: const LatLng(1, 1),
         description: "Start",
         name: "Start",
         placeId: "12345");
     final middle = Place(
-        geometry: Geometry(location: Location(lat: 1, lng: 1)),
+        latlng: const LatLng(1, 1),
         description: "Middle",
         name: "Middle",
         placeId: "67890");
@@ -227,24 +226,28 @@ void main() {
 
     setCurrentLocation(51.511800, -0.118960);
     await navigationManager.updateRoute();
+    navigationManager.setIfCycling(true);
+    navigationManager.setIfBeginning(false);
 
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.128800);
     await navigationManager.updateRoute();
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
 
   test("Test route start to end", () async {
     final start = Place(
-        geometry: Geometry(location: Location(lat: 41.511800, lng: -0.118960)),
+        latlng: const LatLng(41.511800, -0.118960),
         description: "Start",
         name: "Start",
         placeId: "12345");
     final station_1 = createStation(1, "station_1", 51.511800, -0.118960);
     final middle = Place(
-        geometry: Geometry(location: Location(lat: 60.5120, lng: -0.118960)),
+        latlng: const LatLng(60.5120, -0.118960),
         description: "Middle",
         name: "Middle",
         placeId: "67890");
@@ -262,15 +265,20 @@ void main() {
     setCurrentLocation(51.511800, -0.118960);
     await navigationManager.updateRoute();
 
+    navigationManager.setIfCycling(true);
+    navigationManager.setIfBeginning(false);
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.118960);
     await navigationManager.updateRoute();
-
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(100.511800, -0.118960);
     await navigationManager.updateRoute();
+
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
+    expect(await navigationManager.checkWaypointPassed(),false);
 
     expectWalkingBikingEnd(false, false, true);
 
@@ -278,6 +286,14 @@ void main() {
     await navigationManager.updateRoute();
 
     navigationManager.clear();
+    expect(navigationManager.ifNavigating(), false);
+  });
+
+  test("ensure can clear all fields", () {
+    navigationManager.clear();
+    expect(navigationManager.ifBeginning(), true);
+    expect(navigationManager.ifCycling(), false);
+    expect(navigationManager.ifEndWalking(), false);
     expect(navigationManager.ifNavigating(), false);
   });
 }
