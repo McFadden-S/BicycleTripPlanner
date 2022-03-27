@@ -112,7 +112,6 @@ class RouteManager {
     _setRouteMarker(route.legs.first.startLocation, color);
     _setRouteMarker(route.legs.last.endLocation, color);
     // Add waypoints
-    print(route.legs.length);
     if (route.legs.length > 1) {
       color = BitmapDescriptor.hueRed;
       for (int i = 1; i < route.legs.length; i++) {
@@ -127,14 +126,14 @@ class RouteManager {
     _markerManager.setMarker(pos, markerId, color);
   }
 
-  _clearRouteMarkers() {
+  //********** Public **********
+
+  clearRouteMarkers() {
     for (String markerId in _routeMarkers) {
       _markerManager.removeMarker(markerId);
     }
     _routeMarkers.clear();
   }
-
-  //********** Public **********
 
   /// @param - Route startWalk, Route bike, Route endWalk
   /// @return void
@@ -218,7 +217,7 @@ class RouteManager {
     ];
 
     _polylineManager.clearPolyline();
-    _clearRouteMarkers();
+    clearRouteMarkers();
 
     int duration = 0;
     double distance = 0;
@@ -230,9 +229,7 @@ class RouteManager {
       distance += route.distance;
     }
 
-    _setRouteMarker(_startWalkingRoute.legs.first.startLocation);
     _createRouteMarker(_bikingRoute);
-    _setRouteMarker(_endWalkingRoute.legs.last.endLocation);
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
@@ -260,7 +257,8 @@ class RouteManager {
   ///            If relocate map = true, camera will move to given route
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     setDirectionsData(route);
-    _clearRouteMarkers();
+    clearPathwayMarkers();
+    clearRouteMarkers();
     _createRouteMarker(route);
     _polylineManager.setPolyline(
         route.polyline.points, route.routeType.polylineColor);
@@ -556,8 +554,7 @@ class RouteManager {
   /// @param void
   /// @return void
   /// @effects - Clears all route markers
-  void clearRouteMarkers() {
-    _clearRouteMarkers();
+  void clearPathwayMarkers() {
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for (int id in uids) {
       _markerManager.clearMarker(id);
@@ -583,13 +580,13 @@ class RouteManager {
   /// @effects - Clears all data
   void clear() {
     _polylineManager.clearPolyline();
-
     clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     _optimised = true;
     _costOptimised = false;
     clearRouteMarkers();
+    clearPathwayMarkers();
     removeWaypoints();
     clearStart();
     clearDestination();

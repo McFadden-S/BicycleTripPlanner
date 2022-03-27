@@ -102,12 +102,12 @@ class MarkerManager {
       [double color = BitmapDescriptor.hueRed]) {
     //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
     removeMarker(markerID);
-
     _markers.add(Marker(
       markerId: MarkerId(markerID),
       position: point,
       icon: BitmapDescriptor.defaultMarkerWithHue(color),
     ));
+    print(_markers.length);
   }
 
   /// @param - String; markerID in question
@@ -117,6 +117,7 @@ class MarkerManager {
       _markers.remove(_markers
           .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
     }
+    print(markerID);
   }
 
   /// @param void
@@ -137,6 +138,7 @@ class MarkerManager {
   /// @return void
   /// @affects - sets a marker for a given place object
   void setPlaceMarker(Place place, [int uid = -1]) {
+    print("Setting marker");
     setMarker(place.latlng, _generateMarkerID(uid));
   }
 
