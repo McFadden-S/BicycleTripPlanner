@@ -3,7 +3,6 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -53,8 +52,6 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-  final FavouriteRoutesManager _favouriteRoutesManager =
-      FavouriteRoutesManager();
   // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
@@ -66,7 +63,6 @@ class ApplicationBloc with ChangeNotifier {
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
-    loadFavouriteRoutes();
   }
 
   @visibleForTesting
@@ -81,7 +77,6 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   // ********** Group Size **********
-
 
   Future<void> updateGroupSize(int groupSize) async {
     _routeManager.setGroupSize(groupSize);
@@ -394,8 +389,6 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  // TODO: UpdateStation should not be responsible for setting stations in
-  // stationManager to favouriteStations only. Causes a lot of side effects
   updateStations() async {
     http.Client client = new http.Client();
     await _stationManager.setStations(
@@ -550,11 +543,6 @@ class ApplicationBloc with ChangeNotifier {
     return DatabaseManager().isUserLogged();
   }
 
-  void toggleCycling() {
-    _directionManager.toggleCycling();
-    notifyListeners();
-  }
-
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
@@ -574,10 +562,6 @@ class ApplicationBloc with ChangeNotifier {
     changeUnits();
     filterStationMarkers();
     notifyListeners();
-  }
-
-  void loadFavouriteRoutes() {
-    _favouriteRoutesManager.updateRoutes();
   }
 
   void notifyListeningWidgets() {

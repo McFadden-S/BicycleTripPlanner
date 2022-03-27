@@ -2,16 +2,7 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/managers/DialogManager.dart';
-import 'package:bicycle_trip_planner/managers/FavouriteRoutesManager.dart';
-import 'package:bicycle_trip_planner/managers/LocationManager.dart';
-import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/distance_types.dart';
-import 'package:bicycle_trip_planner/models/station.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +10,15 @@ import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
 
 class FavouriteRouteCard extends StatefulWidget {
-  final int index;
-  final Function(int)? deleteRoute;
+  final String keyRoute;
+  final Pathway valueRoute;
+  final Function(String)? deleteRoute;
 
   const FavouriteRouteCard(
-      {Key? key, required this.index, required this.deleteRoute})
+      {Key? key,
+      required this.keyRoute,
+      required this.valueRoute,
+      required this.deleteRoute})
       : super(key: key);
 
   @override
@@ -33,9 +28,6 @@ class FavouriteRouteCard extends StatefulWidget {
 class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
   late StreamSubscription locatorSubscription;
 
-  final FavouriteRoutesManager favouriteRoutesManager =
-      FavouriteRoutesManager();
-
   @override
   Widget build(BuildContext context) {
     final applicationBloc =
@@ -43,21 +35,16 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();
-        routeClicked(
-            applicationBloc,
-            favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!,
-            context);
+        routeClicked(applicationBloc, widget.valueRoute, context);
       },
       onDoubleTap: () {
         if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(
-              FavouriteRoutesManager().getKey(widget.index));
+          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
         }
       },
       onLongPress: () {
         if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(
-              FavouriteRoutesManager().getKey(widget.index));
+          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
         }
       },
       child: SizedBox(
@@ -79,7 +66,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
+                          "\t\t${widget.valueRoute.getStart().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -116,7 +103,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                            "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            "\t\t${widget.valueRoute.getWaypoints().map((e) => e.getStop().name).join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -147,7 +134,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-                          "\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getDestination().getStop().name}",
+                          "\t\t${widget.valueRoute.getDestination().getStop().name}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -167,7 +154,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                             color: ThemeStyle.secondaryIconColor,
                           ),
                           onPressed: () {
-                            widget.deleteRoute!(widget.index);
+                            widget.deleteRoute!(widget.keyRoute);
                           },
                         ),
                       ),

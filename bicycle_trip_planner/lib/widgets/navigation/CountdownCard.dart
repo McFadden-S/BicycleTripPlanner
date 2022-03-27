@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
 import 'package:flutter/material.dart';
 import 'package:timer_count_down/timer_controller.dart';
@@ -36,6 +37,8 @@ class _CountdownCardState extends State<CountdownCard> {
             ? _orange
             : _red;
 
+    RouteType routeType = RouteManager().getCurrentRoute().routeType;
+
     return Card(
         shape: RoundedRectangleBorder(
           side: BorderSide(
@@ -46,7 +49,7 @@ class _CountdownCardState extends State<CountdownCard> {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: RouteManager().ifCostOptimised() && RouteManager().ifCycling()
+          child: RouteManager().ifCostOptimised() && routeType == RouteType.bike
               ? Countdown(
                   controller: widget.ctdwnController,
                   seconds: 1800, // 1800 seconds == 30 minutes

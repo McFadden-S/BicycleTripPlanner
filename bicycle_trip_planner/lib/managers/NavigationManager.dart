@@ -8,6 +8,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+/// Class Comment:
+/// NavigationManager is a manager class that manages the data required for navigation
+
 class NavigationManager {
   final _locationManager = LocationManager();
   final _stationManager = StationManager();
@@ -25,9 +28,11 @@ class NavigationManager {
 
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final NavigationManager _navigationManager =
       NavigationManager._internal();
 
+  /// Singleton Constructor Override
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
@@ -68,17 +73,11 @@ class NavigationManager {
     _routeManager.changeStart(_locationManager.getCurrentLocation());
   }
 
-  //TODO get rid of parameters since they are from _routeManager
-  _updateRoute(Place origin,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
+  _updateRoute() async {
+    Location startLocation = _routeManager.getStart().getStop().geometry.location;
+    Location endLocation = _routeManager.getDestination().getStop().geometry.location;
 
-    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
-
-    // await setPartialRoutes([],
-    //     (intermediates.map((intermediate) => intermediate.placeId)).toList());
+    updatePickUpDropOffStations(startLocation, endLocation, _routeManager.getGroupSize());
   }
 
   //********** Public **********
@@ -128,13 +127,7 @@ class NavigationManager {
 
   Future<void> updateRoute() async {
     await _updateStartLocationAndStations();
-    await _updateRoute(
-        _routeManager.getStart().getStop(),
-        _routeManager
-            .getWaypoints()
-            .map((waypoint) => waypoint.getStop())
-            .toList(),
-        _routeManager.getGroupSize());
+    await _updateRoute();
   }
 
   Future<void> updateRouteWithWalking() async {
@@ -236,7 +229,6 @@ class NavigationManager {
     _passedPickUpStation = false;
     _pickUpStation = Station.stationNotFound();
     _dropOffStation = Station.stationNotFound();
-    _locationManager.locationSettings();
   }
 
   @visibleForTesting
