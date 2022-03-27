@@ -1,12 +1,16 @@
-import 'package:bicycle_trip_planner/managers/IDManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 
 class Stop {
   Place _stop;
-  final int _uid = IDManager().generateUID();
 
-  /// Strop constructor
-  Stop([this._stop = const Place.placeNotFound()]);
+  static int _currentUID = 0;
+  late final int _uid;
+
+  /// Stop constructor
+  Stop([this._stop = const Place.placeNotFound()]){
+    _uid = _currentUID;
+    _currentUID++;
+  }
 
   /// @return Place stop
   Place getStop() => _stop;
@@ -22,6 +26,6 @@ class Stop {
   /// @return String of the toString of the object
   @override
   String toString() {
-    return "${_stop.toString()} - ${_uid}";
+    return "${_stop.toString()} - $_uid";
   }
 }
