@@ -173,4 +173,30 @@ void main() {
       expect(stationManager.getStationByIndex(i).totalDocks, dummyStation[i].totalDocks);
     }
   });
+
+  test('Test getDropOffStationNear return correct station', () async {
+    Station s = await stationManager.getDropoffStationNear(LatLng(3,3));
+    List<Station> dummyStation = createDummyStations();
+    expect(s.name, dummyStation[2].name);
+    expect(s.lat, dummyStation[2].lat);
+    expect(s.lng, dummyStation[2].lng);
+    expect(s.id, dummyStation[2].id);
+    expect(s.bikes, dummyStation[2].bikes);
+    expect(s.emptyDocks, dummyStation[2].emptyDocks);
+    expect(s.totalDocks, dummyStation[2].totalDocks);
+
+  });
+
+  test('Test getPickUpStationNear return correct station', () async {
+    Station s = await stationManager.getPickupStationNear(LatLng(3,3));
+    List<Station> dummyStation = createDummyStations();
+    expect(s.name, dummyStation[2].name);
+    expect(s.lat, dummyStation[2].lat);
+    expect(s.lng, dummyStation[2].lng);
+    expect(s.id, dummyStation[2].id);
+    expect(s.bikes, dummyStation[2].bikes);
+    expect(s.emptyDocks, dummyStation[2].emptyDocks);
+    expect(s.totalDocks, dummyStation[2].totalDocks);
+
+  });
 }
