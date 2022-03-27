@@ -1,5 +1,7 @@
+import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:test/test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
@@ -8,7 +10,298 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'camera_manager_test.mocks.dart';
+@GenerateMocks([GoogleMapController])
 void main(){
+  final controller = MockGoogleMapController();
+  final cameraManager = CameraManager(googleMapController: controller);
+
+  final style = """[
+    {
+        "featureType": "administrative",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#444444"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.locality",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#6c3131"
+            }
+        ]
+    },
+    {
+        "featureType": "administrative.locality",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "saturation": "-1"
+            },
+            {
+                "lightness": "47"
+            },
+            {
+                "color": "#0b0303"
+            },
+            {
+                "visibility": "on"
+            },
+            {
+                "weight": "0.33"
+            },
+            {
+                "gamma": "0.00"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#d6d6d6"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.man_made",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#4d1010"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural.landcover",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#cacaca"
+            }
+        ]
+    },
+    {
+        "featureType": "landscape.natural.terrain",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#3c2403"
+            }
+        ]
+    },
+    {
+        "featureType": "poi",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.attraction",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#c72020"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#6fc46b"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "visibility": "on"
+            },
+            {
+                "color": "#4d9c3c"
+            }
+        ]
+    },
+    {
+        "featureType": "road",
+        "elementType": "all",
+        "stylers": [
+            {
+                "saturation": -100
+            },
+            {
+                "lightness": 45
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "simplified"
+            },
+            {
+                "color": "#ffffff"
+            }
+        ]
+    },
+    {
+        "featureType": "road.highway",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "visibility": "off"
+            },
+            {
+                "color": "#c5acac"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#f2f2f2"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#b0b0b0"
+            }
+        ]
+    },
+    {
+        "featureType": "road.arterial",
+        "elementType": "labels.icon",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#bdbdbd"
+            }
+        ]
+    },
+    {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#b2b2b2"
+            }
+        ]
+    },
+    {
+        "featureType": "transit",
+        "elementType": "all",
+        "stylers": [
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "all",
+        "stylers": [
+            {
+                "color": "#456b99"
+            },
+            {
+                "visibility": "on"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "geometry.fill",
+        "stylers": [
+            {
+                "color": "#5c8cd4"
+            }
+        ]
+    },
+    {
+        "featureType": "water",
+        "elementType": "labels.text.fill",
+        "stylers": [
+            {
+                "color": "#0e2951"
+            }
+        ]
+    }
+]
+ """;
+
+  //init method can't be called due to rootBundle
+  test("Initialise google map controller",() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    cameraManager.init();
+    await untilCalled(controller.setMapStyle(style)).whenComplete(() => print("hi"));
+    verify(controller.setMapStyle(style));
+  });
+
+  test("Set camera bounds",() async {
+    cameraManager.setCameraBounds(LatLng(10, 10), LatLng(20, 20));
+    await untilCalled(controller.animateCamera(
+      CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            southwest: LatLng(10, 10),
+            northeast: LatLng(20, 20),
+          ),
+          25),
+    ));
+
+    verify(controller.animateCamera(
+      CameraUpdate.newLatLngBounds(
+          LatLngBounds(
+            southwest: LatLng(10, 10),
+            northeast: LatLng(20, 20),
+          ),
+          25),
+      )
+    );
+  });
+
 //   final LocationManager locationManager = LocationManager();
 //   bool isInitPos = true;
 //   CameraManager? cameraManager;

@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -48,8 +49,9 @@ class CameraManager {
 
   //********** Private **********
 
+  @visibleForTesting
   ///Sets the bounds of the map's camera
-  void _setCameraBounds(LatLng southwest, LatLng northeast) {
+  void setCameraBounds(LatLng southwest, LatLng northeast) {
     googleMapController.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
@@ -100,7 +102,7 @@ class CameraManager {
   /// Set the route via setRouteCamera
   Future<void> viewRoute() async {
     setCameraPosition(_routeOriginCamera);
-    _setCameraBounds(_routeBoundsSW, _routeBoundsNE);
+    setCameraBounds(_routeBoundsSW, _routeBoundsNE);
   }
 
   /// Sets the camera to the user's location
