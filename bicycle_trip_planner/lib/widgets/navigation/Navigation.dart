@@ -4,6 +4,8 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
@@ -29,6 +31,8 @@ class Navigation extends StatefulWidget {
 class _NavigationState extends State<Navigation> {
   final LocationManager locationManager = LocationManager();
   final DirectionManager directionManager = DirectionManager();
+  final NavigationManager _navigationManager = NavigationManager();
+  final RouteManager _routeManager = RouteManager();
   late final ApplicationBloc applicationBloc;
   late StreamSubscription locatorSubscription;
   final CountdownController _controller = CountdownController();
@@ -82,16 +86,15 @@ class _NavigationState extends State<Navigation> {
                           CurrentLocationButton(),
                           SizedBox(height: 10),
                           ViewRouteButton(),
-                          SizedBox(height: 10),
-                          CostEffTimerButton(ctdwnController: _controller),
-                          SizedBox(height: 10),
-                          CountdownCard(ctdwnController: _controller),
-                          SizedBox(height: 10),
-                          // CircleButton(
-                          //     iconIn: Icons.access_alarm,
-                          //     onButtonClicked: () {_controller.start();}
-                          // ),
-                          // CostEffTimerButton(),
+                          _navigationManager.ifCycling() && _routeManager.ifCostOptimised()
+                          ? Column(
+                            children: [
+                              SizedBox(height: 10),
+                              CostEffTimerButton(ctdwnController: _controller),
+                              SizedBox(height: 10),
+                              CountdownCard(ctdwnController: _controller),
+                            ],)
+                          : SizedBox.shrink()
                         ],
                       ),
                     ),
@@ -102,27 +105,21 @@ class _NavigationState extends State<Navigation> {
           ),
           EndOfRouteDialog(),
           CustomBottomSheet(
-            child: Container(
-              margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  children: [
-                    DistanceETACard(),
-                    SizedBox(width: 10),
-                    Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: WalkOrCycleToggle(),
-                        )),
-                    Expanded(
-                      child: Expanded(
-                        child: EndRouteButton(),
-                      ),
-                    ),
-                  ],
+            child: Row(
+              children: [
+                DistanceETACard(),
+                SizedBox(width: 10),
+                Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: WalkOrCycleToggle(),
+                    )),
+                Expanded(
+                  child: Expanded(
+                    child: EndRouteButton(),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
