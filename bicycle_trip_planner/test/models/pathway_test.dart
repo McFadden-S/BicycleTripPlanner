@@ -1,20 +1,18 @@
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
 
 main() {
   final pathway = Pathway();
   final stop = Stop();
   final stop2 = Stop();
-  final location = Location(lat: 1, lng: -1);
-  final geometry = Geometry(location: location);
+  const location = LatLng(1, -1);
   final place = Place(
-      geometry: geometry, name: "Bush House", placeId: "1", description: "");
+      latlng: location, name: "Bush House", placeId: "1", description: "");
   final place2 =
-      Place(geometry: geometry, name: "Strand", placeId: "1", description: "");
+      Place(latlng: location, name: "Strand", placeId: "1", description: "");
 
   setUp(() {
     pathway.clear();

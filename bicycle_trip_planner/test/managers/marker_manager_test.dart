@@ -4,8 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
-import 'package:bicycle_trip_planner/models/geometry.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mockito/annotations.dart';
 import 'marker_manager_test.mocks.dart';
@@ -48,14 +46,8 @@ void main(){
   });
 
   test('ensure marker is added for place requested', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(
-        geometry: geometry,
-        name: 'Bush House',
-        placeId: "1",
-        description: "description"
-    );
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
@@ -167,14 +159,8 @@ void main(){
   });
 
   test('remove existing marker using uid', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(
-        geometry: geometry,
-        name: 'Bush House',
-        placeId: "1",
-        description: "description"
-    );
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);
@@ -183,14 +169,8 @@ void main(){
   });
 
   test('remove non-existing marker using uid', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(
-        geometry: geometry,
-        name: 'Bush House',
-        placeId: "1",
-        description: "description"
-    );
+    LatLng location = const LatLng(51.511448, -0.116414);
+    Place place = Place(latlng: location, name: 'Bush House', placeId: "1", description: "description");
     expect(markerManager.getMarkers().length,0);
     markerManager.setPlaceMarker(place, 1);
     expect(markerManager.getMarkers().length,1);

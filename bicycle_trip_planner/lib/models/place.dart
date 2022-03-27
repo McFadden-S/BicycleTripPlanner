@@ -1,22 +1,21 @@
-import 'package:bicycle_trip_planner/models/geometry.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Place {
-  final Geometry geometry;
+  final LatLng latlng;
   final String name;
   final String placeId;
   final String description;
 
   /// constructor with specified required inputs
   Place(
-      {required this.geometry,
+      {required this.latlng,
       required this.name,
       required this.placeId,
       required this.description});
 
   /// constructor default assignments when place is not found
   const Place.placeNotFound(
-      {this.geometry = const Geometry.geometryNotFound(),
+      {this.latlng = const LatLng(0, 0),
       this.name = "",
       this.placeId = "",
       this.description = ""});
@@ -25,17 +24,16 @@ class Place {
   /// @param Map<String, dynamic> parsed Json
   factory Place.fromJson(Map<String, dynamic> parsedJson, String description) {
     return Place(
-      geometry: Geometry.fromJson(parsedJson['geometry']),
+      latlng: LatLng(parsedJson['geometry']['location']['lat'], parsedJson['geometry']['location']['lng']),
       name: parsedJson['formatted_address'],
       placeId: parsedJson['place_id'],
       description: description,
     );
   }
 
-  // TODO: Make getLatLng for geometry
   /// @return LatLng coordinates of the place
   LatLng getLatLng() {
-    return LatLng(geometry.location.lat, geometry.location.lng);
+    return latlng;
   }
 
   /// method override the toString method

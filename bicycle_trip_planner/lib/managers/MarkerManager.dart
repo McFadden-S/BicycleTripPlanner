@@ -16,8 +16,6 @@ import '../widgets/home/Home.dart';
 class MarkerManager {
   //********** Fields **********
 
-  Widget home = Home();
-
   final Set<Marker> _markers = <Marker>{};
 
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
@@ -138,9 +136,7 @@ class MarkerManager {
   /// @return void
   /// @affects - sets a marker for a given place object
   void setPlaceMarker(Place place, [int uid = -1]) {
-    final double lat = place.geometry.location.lat;
-    final double lng = place.geometry.location.lng;
-    setMarker(LatLng(lat, lng), _generateMarkerID(uid));
+    setMarker(place.latlng, _generateMarkerID(uid));
   }
 
   /// @param -

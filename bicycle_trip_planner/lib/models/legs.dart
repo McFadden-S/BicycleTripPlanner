@@ -1,9 +1,10 @@
-import 'package:bicycle_trip_planner/models/location.dart';
+
 import 'package:bicycle_trip_planner/models/steps.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Legs {
-  final Location startLocation;
-  final Location endLocation;
+  final LatLng startLocation;
+  final LatLng endLocation;
   final List<Steps> steps;
   final int distance;
   final int duration;
@@ -21,8 +22,8 @@ class Legs {
   /// @return Legs
   factory Legs.fromJson(Map<dynamic, dynamic> parsedJson) {
     return Legs(
-      startLocation: Location.fromJson(parsedJson['start_location']),
-      endLocation: Location.fromJson(parsedJson['end_location']),
+      startLocation: LatLng(parsedJson['start_location']['lat'], parsedJson['start_location']['lng']),
+      endLocation: LatLng(parsedJson['end_location']['lat'], parsedJson['end_location']['lng']),
       steps:
           List<Steps>.from(parsedJson["steps"].map((s) => Steps.fromJson(s))),
       distance: parsedJson['distance']['value'],
@@ -32,8 +33,8 @@ class Legs {
 
   /// Default Legs object
   const Legs.legsNotFound(
-      {this.startLocation = const Location.locationNotFound(),
-      this.endLocation = const Location.locationNotFound(),
+      {this.startLocation = const LatLng(0, 0),
+      this.endLocation = const LatLng(0, 0),
       this.steps = const [],
       this.duration = 0,
       this.distance = 0});
