@@ -77,17 +77,16 @@ class NavigationManager {
     LatLng startLocation = _routeManager.getStart().getStop().latlng;
     LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
-    updatePickUpDropOffStations(
-        startLocation, endLocation, _routeManager.getGroupSize());
+    updatePickUpDropOffStations(startLocation, endLocation, _routeManager.getGroupSize());
   }
 
   //********** Public **********
 
-  bool ifLoading() {
+  bool ifLoading(){
     return _isLoading;
   }
 
-  void setLoading(bool loading) {
+  void setLoading(bool loading){
     _isLoading = loading;
   }
 
@@ -118,24 +117,18 @@ class NavigationManager {
   Future<void> start() async {
     _isNavigating = true;
     if (_routeManager.ifStartFromCurrentLocation()) {
-      await setInitialPickUpDropOffStations(
-          _routeManager.getStart().getStop().latlng,
-          _routeManager.getDestination().getStop().latlng);
+      await setInitialPickUpDropOffStations();
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
+        await setInitialPickUpDropOffStations();
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
-        print("FIRST STOP: $firstStop");
-        await setInitialPickUpDropOffStations(
-            firstStop.latlng, _routeManager.getDestination().getStop().latlng);
-        await updateRouteWithWalking();
+        updateRouteWithWalking();
       } else {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
         await updateRoute();
-        await setInitialPickUpDropOffStations(
-            _routeManager.getStart().getStop().latlng,
-            _routeManager.getDestination().getStop().latlng);
+        await setInitialPickUpDropOffStations();
       }
     }
   }
@@ -214,20 +207,19 @@ class NavigationManager {
   }
 
   Future<void> setNewPickUpStation(LatLng location, [int groupSize = 1]) async {
-    _pickUpStation =
-        await _stationManager.getPickupStationNear(location, groupSize);
+    _pickUpStation = await _stationManager.getPickupStationNear(location, groupSize);
   }
 
-  Future<void> setNewDropOffStation(LatLng location,
-      [int groupSize = 1]) async {
-    _dropOffStation =
-        await _stationManager.getDropoffStationNear(location, groupSize);
+  Future<void> setNewDropOffStation(LatLng location, [int groupSize = 1]) async {
+    _dropOffStation = await _stationManager.getDropoffStationNear(location, groupSize);
   }
 
-  Future<void> setInitialPickUpDropOffStations(
-      LatLng startLocation, LatLng endLocation) async {
-    setNewPickUpStation(startLocation, _routeManager.getGroupSize());
-    setNewDropOffStation(endLocation, _routeManager.getGroupSize());
+  Future<void> setInitialPickUpDropOffStations() async {
+    setNewPickUpStation(_routeManager.getStart().getStop().latlng,
+        _routeManager.getGroupSize());
+    setNewDropOffStation(
+        _routeManager.getDestination().getStop().latlng,
+        _routeManager.getGroupSize());
   }
 
   void clear() {
