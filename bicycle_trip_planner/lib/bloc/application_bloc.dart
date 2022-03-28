@@ -65,7 +65,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager){
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService){
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -74,6 +74,7 @@ class ApplicationBloc with ChangeNotifier {
     _markerManager = markerManager;
     _routeManager = routeManager;
     _navigationManager = navigationManager;
+    _directionsService = directionsService;
   }
 
   @visibleForTesting
@@ -287,23 +288,12 @@ class ApplicationBloc with ChangeNotifier {
         LatLng(endLocation.lat, endLocation.lng), groupSize);
   }
 
-  findRoute(Place origin, Place destination,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    _routeManager.setLoading(true);
-    Station startStation = await getStartStation(origin);
-    Station endStation = await getEndStation(destination);
-
-    await _setRoutes(origin, destination, startStation, endStation,
-        intermediates, groupSize);
-    _routeManager.setLoading(false);
-    notifyListeners();
-  }
-
-  _setRoutes(
+  @visibleForTesting
+  setRoutes(
       Place origin, Place destination, Station startStation, Station endStation,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     List<String> intermediatePlaceId =
-        intermediates.map((place) => place.placeId).toList();
+    intermediates.map((place) => place.placeId).toList();
 
     Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
         origin.placeId, startStation.place.placeId);
@@ -314,11 +304,25 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.ifOptimised());
     Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
         endStation.place.placeId, destination.placeId);
+
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
   }
 
-  Future<int> _getDurationFromToStation(
+  findRoute(Place origin, Place destination,
+      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
+    _routeManager.setLoading(true);
+    Station startStation = await getStartStation(origin);
+    Station endStation = await getEndStation(destination);
+
+    await setRoutes(origin, destination, startStation, endStation,
+        intermediates, groupSize);
+    _routeManager.setLoading(false);
+    notifyListeners();
+  }
+
+  @visibleForTesting
+  Future<int> getDurationFromToStation(
       Station startStation, Station endStation) async {
     Rou.Route route = await _directionsService.getRoutes(
         startStation.place.placeId, endStation.place.placeId);
@@ -352,7 +356,7 @@ class ApplicationBloc with ChangeNotifier {
     List<Station> intermediateStations = <Station>[];
 
     while (curStation != endStation) {
-      if (await _getDurationFromToStation(curStation, endStation) <= 25) {
+      if (await getDurationFromToStation(curStation, endStation) <= 25) {
         curStation = endStation;
       } else {
         List<Station> nearbyStations = _stationManager
@@ -363,7 +367,7 @@ class ApplicationBloc with ChangeNotifier {
                 _costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
           await _stationManager.cachePlaceId(nearbyStations[i]);
-          if ((await _getDurationFromToStation(
+          if ((await getDurationFromToStation(
                   curStation, nearbyStations[i])) <=
               25) {
             intermediateStations.add(nearbyStations[i]);
@@ -383,7 +387,7 @@ class ApplicationBloc with ChangeNotifier {
     }
     clearStationMarkersNotInRoute();
 
-    await _setRoutes(
+    await setRoutes(
         origin, destination, startStation, endStation, intermediates);
     _routeManager.setLoading(false);
     notifyListeners();

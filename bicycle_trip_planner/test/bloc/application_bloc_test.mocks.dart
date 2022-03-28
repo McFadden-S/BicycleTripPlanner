@@ -9,10 +9,12 @@ import 'package:bicycle_trip_planner/managers/CameraManager.dart' as _i20;
 import 'package:bicycle_trip_planner/managers/DialogManager.dart' as _i18;
 import 'package:bicycle_trip_planner/managers/LocationManager.dart' as _i7;
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart' as _i21;
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart' as _i24;
 import 'package:bicycle_trip_planner/managers/RouteManager.dart' as _i23;
 import 'package:bicycle_trip_planner/managers/StationManager.dart' as _i17;
 import 'package:bicycle_trip_planner/managers/UserSettings.dart' as _i19;
 import 'package:bicycle_trip_planner/models/distance_types.dart' as _i12;
+import 'package:bicycle_trip_planner/models/location.dart' as _i25;
 import 'package:bicycle_trip_planner/models/pathway.dart' as _i6;
 import 'package:bicycle_trip_planner/models/place.dart' as _i3;
 import 'package:bicycle_trip_planner/models/place_search.dart' as _i15;
@@ -790,4 +792,131 @@ class MockRouteManager extends _i1.Mock implements _i23.RouteManager {
   _i4.Route getEndWalkingRoute() =>
       (super.noSuchMethod(Invocation.method(#getEndWalkingRoute, []),
           returnValue: _FakeRoute_2()) as _i4.Route);
+}
+
+/// A class which mocks [NavigationManager].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNavigationManager extends _i1.Mock implements _i24.NavigationManager {
+  MockNavigationManager() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  void setIfBeginning(bool? isBeginning) =>
+      super.noSuchMethod(Invocation.method(#setIfBeginning, [isBeginning]),
+          returnValueForMissingStub: null);
+  @override
+  void setIfCycling(bool? isCycling) =>
+      super.noSuchMethod(Invocation.method(#setIfCycling, [isCycling]),
+          returnValueForMissingStub: null);
+  @override
+  void setIfEndWalking(bool? isEndWalking) =>
+      super.noSuchMethod(Invocation.method(#setIfEndWalking, [isEndWalking]),
+          returnValueForMissingStub: null);
+  @override
+  void setPickupStation(_i5.Station? station) =>
+      super.noSuchMethod(Invocation.method(#setPickupStation, [station]),
+          returnValueForMissingStub: null);
+  @override
+  void setDropoffStation(_i5.Station? station) =>
+      super.noSuchMethod(Invocation.method(#setDropoffStation, [station]),
+          returnValueForMissingStub: null);
+  @override
+  _i5.Station getPickupStation() =>
+      (super.noSuchMethod(Invocation.method(#getPickupStation, []),
+          returnValue: _FakeStation_3()) as _i5.Station);
+  @override
+  _i5.Station getDropoffStation() =>
+      (super.noSuchMethod(Invocation.method(#getDropoffStation, []),
+          returnValue: _FakeStation_3()) as _i5.Station);
+  @override
+  bool ifNavigating() =>
+      (super.noSuchMethod(Invocation.method(#ifNavigating, []),
+          returnValue: false) as bool);
+  @override
+  bool ifBeginning() => (super.noSuchMethod(Invocation.method(#ifBeginning, []),
+      returnValue: false) as bool);
+  @override
+  bool ifCycling() =>
+      (super.noSuchMethod(Invocation.method(#ifCycling, []), returnValue: false)
+          as bool);
+  @override
+  bool ifEndWalking() =>
+      (super.noSuchMethod(Invocation.method(#ifEndWalking, []),
+          returnValue: false) as bool);
+  @override
+  _i11.Future<void> start() => (super.noSuchMethod(
+      Invocation.method(#start, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i11.Future<void>);
+  @override
+  _i11.Future<void> updateRoute() => (super.noSuchMethod(
+      Invocation.method(#updateRoute, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i11.Future<void>);
+  @override
+  _i11.Future<void> updateRouteWithWalking() => (super.noSuchMethod(
+      Invocation.method(#updateRouteWithWalking, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i11.Future<void>);
+  @override
+  bool isWaypointPassed(_i2.LatLng? waypoint) =>
+      (super.noSuchMethod(Invocation.method(#isWaypointPassed, [waypoint]),
+          returnValue: false) as bool);
+  @override
+  void passedStation(_i5.Station? station, void Function(bool)? setFalse,
+          void Function(bool)? setTrue) =>
+      super.noSuchMethod(
+          Invocation.method(#passedStation, [station, setFalse, setTrue]),
+          returnValueForMissingStub: null);
+  @override
+  void checkPassedByPickUpDropOffStations() => super.noSuchMethod(
+      Invocation.method(#checkPassedByPickUpDropOffStations, []),
+      returnValueForMissingStub: null);
+  @override
+  _i11.Future<bool> checkWaypointPassed() =>
+      (super.noSuchMethod(Invocation.method(#checkWaypointPassed, []),
+          returnValue: Future<bool>.value(false)) as _i11.Future<bool>);
+  @override
+  dynamic walkToFirstLocation(_i3.Place? first,
+          [List<_i3.Place>? intermediates = const [], int? groupSize = 1]) =>
+      super.noSuchMethod(Invocation.method(
+          #walkToFirstLocation, [first, intermediates, groupSize]));
+  @override
+  _i11.Future<void> updatePickUpDropOffStations(_i25.Location? startLocation,
+          _i25.Location? endLocation, int? groupSize) =>
+      (super.noSuchMethod(
+              Invocation.method(#updatePickUpDropOffStations,
+                  [startLocation, endLocation, groupSize]),
+              returnValue: Future<void>.value(),
+              returnValueForMissingStub: Future<void>.value())
+          as _i11.Future<void>);
+  @override
+  _i11.Future<void> setNewPickUpStation(_i25.Location? location,
+          [int? groupSize = 1]) =>
+      (super.noSuchMethod(
+              Invocation.method(#setNewPickUpStation, [location, groupSize]),
+              returnValue: Future<void>.value(),
+              returnValueForMissingStub: Future<void>.value())
+          as _i11.Future<void>);
+  @override
+  _i11.Future<void> setNewDropOffStation(_i25.Location? location,
+          [int? groupSize = 1]) =>
+      (super.noSuchMethod(
+              Invocation.method(#setNewDropOffStation, [location, groupSize]),
+              returnValue: Future<void>.value(),
+              returnValueForMissingStub: Future<void>.value())
+          as _i11.Future<void>);
+  @override
+  _i11.Future<void> setInitialPickUpDropOffStations() => (super.noSuchMethod(
+      Invocation.method(#setInitialPickUpDropOffStations, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i11.Future<void>);
+  @override
+  void clear() => super.noSuchMethod(Invocation.method(#clear, []),
+      returnValueForMissingStub: null);
+  @override
+  void reset() => super.noSuchMethod(Invocation.method(#reset, []),
+      returnValueForMissingStub: null);
 }
