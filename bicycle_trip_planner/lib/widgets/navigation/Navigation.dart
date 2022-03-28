@@ -40,7 +40,6 @@ class _NavigationState extends State<Navigation> {
   final CameraManager cameraManager = CameraManager.instance;
 
   late final ApplicationBloc applicationBloc;
-  late StreamSubscription locatorSubscription;
   late StreamSubscription<LocationData> navigationSubscription;
 
   @override
@@ -65,8 +64,7 @@ class _NavigationState extends State<Navigation> {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          setState(() {
-          });
+          setState(() {});
         },
         child: Stack(
           children: [
@@ -84,22 +82,23 @@ class _NavigationState extends State<Navigation> {
                           children: [
                             CircleButton(
                                 iconIn: Icons.center_focus_strong,
-                                onButtonClicked: () => zoomOnUser()
-                            ),
+                                onButtonClicked: () => zoomOnUser()),
                             SizedBox(height: 10),
                             CircleButton(
                                 iconIn: Icons.zoom_out_map,
-                                onButtonClicked: () => zoomOnRoute()
-                            ),
+                                onButtonClicked: () => zoomOnRoute()),
                             routeManager.ifCostOptimised()
-                            ? Column(
-                              children: [
-                                SizedBox(height: 10),
-                                CostEffTimerButton(ctdwnController: controller),
-                                SizedBox(height: 10),
-                                CountdownCard(ctdwnController: controller),
-                              ],)
-                            : SizedBox.shrink()
+                                ? Column(
+                                    children: [
+                                      SizedBox(height: 10),
+                                      CostEffTimerButton(
+                                          ctdwnController: controller),
+                                      SizedBox(height: 10),
+                                      CountdownCard(
+                                          ctdwnController: controller),
+                                    ],
+                                  )
+                                : SizedBox.shrink()
                           ],
                         ),
                       ),
@@ -117,8 +116,7 @@ class _NavigationState extends State<Navigation> {
                     SizedBox(width: 10),
                     DistanceETACard(),
                     SizedBox(width: 10),
-                    Expanded(
-                        child: WalkOrCycleToggle()),
+                    Expanded(child: WalkOrCycleToggle()),
                     SizedBox(width: 10),
                     Expanded(
                       child: EndRouteButton(),
@@ -139,7 +137,6 @@ class _NavigationState extends State<Navigation> {
         .listen((LocationData currentLocation) {
       cameraManager.viewUser(zoomIn: 20.0);
     });
-
   }
 
   zoomOnRoute() {
