@@ -21,6 +21,8 @@ class MarkerManager {
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
   BitmapDescriptor? userMarkerIcon;
 
+  final String _userID = 'user';
+
   //********** Singleton **********
 
   /// Holds Singleton Instance
@@ -81,15 +83,6 @@ class MarkerManager {
     return marker.markerId != falseMarker;
   }
 
-  /// @param - String; markerID in question
-  /// @affect - removes marker using markerID given
-  void _removeMarker(String markerID) {
-    if (_markerExists(markerID)) {
-      _markers.remove(_markers
-          .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
-    }
-  }
-
   /// @param - double; radius of marker
   /// @affect - creates format of marker icon
   Future<void> _initUserMarkerIcon(double radius) async {
@@ -105,18 +98,33 @@ class MarkerManager {
     userMarkerIcon = BitmapDescriptor.fromBytes(markerIcon);
   }
 
-  @visibleForTesting
-  void setMarker(LatLng point, String markerID) {
-    //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
-    _removeMarker(markerID);
+  //********** Public **********
 
+  /// @param
+  ///   - LatLng; position of marker
+  ///   - String; id of marker
+  ///   - double; value of colour (default is red)
+  /// @return void
+  /// @affect - Sets a marker at the given point
+  void setMarker(LatLng point, String markerID,
+      [double color = BitmapDescriptor.hueRed]) {
+    //Removes marker before re-adding it, avoids issue of re-setting marker to previous location
+    removeMarker(markerID);
     _markers.add(Marker(
       markerId: MarkerId(markerID),
       position: point,
+      icon: BitmapDescriptor.defaultMarkerWithHue(color),
     ));
   }
 
-  //********** Public **********
+  /// @param - String; markerID in question
+  /// @affect - removes marker using markerID given
+  void removeMarker(String markerID) {
+    if (_markerExists(markerID)) {
+      _markers.remove(_markers
+          .firstWhere((marker) => marker.markerId == MarkerId(markerID)));
+    }
+  }
 
   /// @param void
   /// @return Set<Marker> - returns set of markers and removes duplicates if any
@@ -124,11 +132,15 @@ class MarkerManager {
     return _markers;
   }
 
+  Marker getUserMarker(){
+    return _markers.firstWhere((marker) => marker.markerId.value == _userID);
+  }
+
   /// @param - int; UID of marker
   /// @return void
   /// @affects - removes marker using UID given
   void clearMarker(int uid) {
-    _removeMarker(_generateMarkerID(uid));
+    removeMarker(_generateMarkerID(uid));
   }
 
   /// @param -
@@ -136,6 +148,7 @@ class MarkerManager {
   /// @return void
   /// @affects - sets a marker for a given place object
   void setPlaceMarker(Place place, [int uid = -1]) {
+    print("Setting marker");
     setMarker(place.latlng, _generateMarkerID(uid));
   }
 
@@ -162,13 +175,11 @@ class MarkerManager {
       await _initUserMarkerIcon(25);
     }
 
-    String userID = 'user';
-
-    _removeMarker(userID);
+    removeMarker(_userID);
 
     Marker userMarker = Marker(
       icon: userMarkerIcon!,
-      markerId: MarkerId(userID),
+      markerId: MarkerId(_userID),
       position: point,
       draggable: false,
       zIndex: 2,
@@ -208,7 +219,7 @@ class MarkerManager {
   /// @affects - removes station markers from a given list of stations
   void clearStationMarkers(List<Station> stations) {
     for (var station in stations) {
-      _removeMarker(station.name);
+      removeMarker(station.name);
     }
   }
 }

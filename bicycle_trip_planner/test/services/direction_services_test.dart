@@ -1,4 +1,3 @@
-
 import 'package:bicycle_trip_planner/auth/Keys.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
@@ -7,21 +6,18 @@ import 'package:mockito/mockito.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'stations_services_test.mocks.dart' as mock;
 
-
-void main(){
+void main() {
   group('getRoutes', () {
-    final String key = Keys.getApiKey();
+    String key = Keys.getApiKey();
     test('Get routes without waypoints', () async {
-
       final origin = "ChIJi3D0484EdkgRuYlzHV73TlY";
       final destination = "ChIJbcdbqcsEdkgReND4g9YagKY";
       final waypoints = "&waypoints=optimize:true";
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=bicycling&key=$key')))
-          .thenAnswer((_) async =>
-          http.Response("""{
+              'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=bicycling&key=$key')))
+          .thenAnswer((_) async => http.Response("""{
              "geocoded_waypoints" : [
                 {
                    "geocoder_status" : "OK",
@@ -181,27 +177,25 @@ void main(){
              "status" : "OK"
           }""", 200));
 
-      final answer = await DirectionsService().getRoutes(origin, destination);
+      final answer = await DirectionsService()
+          .getRoutes(origin, destination, RouteType.bike);
       expect(answer.distance, 1130);
       expect(answer.duration, 277);
       expect(answer.legs.length, 1);
       expect(answer.directions.length, 4);
       print(answer.polyline.points.length);
       expect(answer.routeType, RouteType.bike);
-
     });
 
     test('Get routes with waypoints', () async {
-
       final origin = "ChIJDewcaLUEdkgRByjdEk9z704";
       final destination = "ChIJaS6FAKMEdkgRgryaUMRNVEI";
       final waypoints = ["ChIJs4GOh8sEdkgRRiBFZKMP8ZE"];
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:ChIJDewcaLUEdkgRByjdEk9z704&destination=place_id:ChIJaS6FAKMEdkgRgryaUMRNVEI&waypoints=optimize:true|place_id:ChIJs4GOh8sEdkgRRiBFZKMP8ZE&mode=bicycling&key=$key')))
-          .thenAnswer((_) async =>
-          http.Response("""{
+              'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:ChIJDewcaLUEdkgRByjdEk9z704&destination=place_id:ChIJaS6FAKMEdkgRgryaUMRNVEI&waypoints=optimize:true|place_id:ChIJs4GOh8sEdkgRRiBFZKMP8ZE&mode=bicycling&key=$key')))
+          .thenAnswer((_) async => http.Response("""{
              "geocoded_waypoints" : [
                 {
                    "geocoder_status" : "OK",
@@ -653,19 +647,18 @@ void main(){
              "status" : "OK"
           }""", 200));
 
-      final answer = await DirectionsService().getRoutes(origin, destination, waypoints);
+      final answer = await DirectionsService()
+          .getRoutes(origin, destination, RouteType.bike, waypoints);
       expect(answer.distance, 3679);
       expect(answer.duration, 857);
       expect(answer.legs.length, 2);
       expect(answer.directions.length, 15);
       expect(answer.routeType, RouteType.bike);
-
     });
   });
 
-  group('getWalkingRoutes', ()
-  {
-    final String key = Keys.getApiKey(); 
+  group('getWalkingRoutes', () {
+    String key = Keys.getApiKey();
     test('Get walking routes without waypoints', () async {
       final origin = "ChIJN6skQs4EdkgRU24-sEUFmPw";
       final destination = "ChIJi3D0484EdkgRuYlzHV73TlY";
@@ -673,9 +666,8 @@ void main(){
 
       final client = mock.MockClient();
       when(client.get(Uri.parse(
-          'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key')))
-          .thenAnswer((_) async =>
-          http.Response("""{
+              'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key')))
+          .thenAnswer((_) async => http.Response("""{
              "geocoded_waypoints" : [
                 {
                    "geocoder_status" : "OK",
@@ -788,8 +780,8 @@ void main(){
           }
                     """, 200));
 
-      final answer = await DirectionsService().getWalkingRoutes(
-          origin, destination);
+      final answer = await DirectionsService()
+          .getRoutes(origin, destination, RouteType.walk);
       expect(answer.distance, 152);
       expect(answer.duration, 125);
       expect(answer.legs.length, 1);

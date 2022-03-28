@@ -11,6 +11,7 @@ import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../models/place.dart';
 
@@ -20,9 +21,9 @@ class RouteManager {
   //********** Fields **********
   /// Managers needed in route manager
   final PolylineManager _polylineManager = PolylineManager();
-  final MarkerManager _markerManager = MarkerManager();
+  MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
-  final CameraManager _cameraManager = CameraManager.instance;
+  CameraManager _cameraManager = CameraManager.instance;
   Pathway _pathway = Pathway();
 
   /// True if user is starting from current location
@@ -50,7 +51,13 @@ class RouteManager {
   R.Route _bikingRoute = R.Route.routeNotFound();
   R.Route _endWalkingRoute = R.Route.routeNotFound();
 
+  /// Current route: The route the user is currently on. Decided by navigationManager
   R.Route _currentRoute = R.Route.routeNotFound();
+
+  /// Manage route markers
+  final Set<String> _routeMarkers = {};
+  final String _markerPrefix = "Route";
+  int _markerId = 0;
 
   //********** Singleton **********
 
@@ -61,20 +68,88 @@ class RouteManager {
   factory RouteManager() => _routeManager;
 
   RouteManager._internal();
+  RouteManager.forMock(
+      CameraManager cameraManager, MarkerManager markerManager) {
+    _cameraManager = cameraManager;
+    _markerManager = markerManager;
+  }
 
   //********** Private **********
 
   /// @param - Route route, Bounds bounds
   /// @return void
   /// @effects - Moves camera to the route and views its bounds or the given bounds
-  void _moveCameraTo(R.Route route,
+  @visibleForTesting
+  void moveCameraTo(R.Route route,
       [Bounds bounds = const Bounds.boundsNotFound()]) {
     if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
     _cameraManager.goToPlace(
         route.legs.first.startLocation, bounds.northeast, bounds.southwest);
   }
 
+  /// @param - Bounds route1Bounds, Bounds route2Bounds
+  /// @return Bounds
+  /// @effects - returns the new bounds depending on which inputted
+  ///            bounds covers a greater area
+  Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
+    Map<String, dynamic> newNorthEast = {};
+    route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
+        ? newNorthEast['lat'] = route1Bounds.northeast['lat']
+        : newNorthEast['lat'] = route2Bounds.northeast['lat'];
+    route1Bounds.northeast['lng'] > route2Bounds.northeast['lng']
+        ? newNorthEast['lng'] = route1Bounds.northeast['lng']
+        : newNorthEast['lng'] = route2Bounds.northeast['lng'];
+
+    Map<String, dynamic> newSouthWest = {};
+    route1Bounds.southwest['lat'] < route2Bounds.southwest['lat']
+        ? newSouthWest['lat'] = route1Bounds.southwest['lat']
+        : newSouthWest['lat'] = route2Bounds.southwest['lat'];
+    route1Bounds.southwest['lng'] < route2Bounds.southwest['lng']
+        ? newSouthWest['lng'] = route1Bounds.southwest['lng']
+        : newSouthWest['lng'] = route2Bounds.southwest['lng'];
+
+    return Bounds(northeast: newNorthEast, southwest: newSouthWest);
+  }
+
+  /// @param - Route; the route to create a marker for
+  /// @return void
+  /// @affects - Sets a marker at the start of the route and
+  ///            at the end of the route. If there are intermediate
+  ///            stops, they are also set.
+  _createRouteMarker(R.Route route) {
+    double color = route.routeType == RouteType.bike
+        ? BitmapDescriptor.hueGreen
+        : BitmapDescriptor.hueRed;
+    setRouteMarker(route.legs.first.startLocation, color);
+    setRouteMarker(route.legs.last.endLocation, color);
+    // Add waypoints
+    if (route.legs.length > 1) {
+      color = BitmapDescriptor.hueRed;
+      for (int i = 1; i < route.legs.length; i++) {
+        setRouteMarker(route.legs[i].startLocation, color);
+      }
+    }
+  }
+
+  /// @param - LatLng; the position the marker will be placed
+  ///        - doube; color of the marker
+  /// @return void
+  /// @affects - Sets a marker with the given position and color.
+  @visibleForTesting
+  setRouteMarker(LatLng pos, [double color = BitmapDescriptor.hueRed]) {
+    String markerId = "$_markerPrefix${_markerId++}";
+    _routeMarkers.add(markerId);
+    _markerManager.setMarker(pos, markerId, color);
+  }
+
   //********** Public **********
+
+  clearRouteMarkers() {
+    for (String markerId in _routeMarkers) {
+      _markerManager.removeMarker(markerId);
+    }
+    _routeMarkers.clear();
+  }
 
   /// @param - Route startWalk, Route bike, Route endWalk
   /// @return void
@@ -151,25 +226,30 @@ class RouteManager {
   ///            Update duration and distance to give values for whole journey
   ///            if relocateMap = true, camera will move to the biking route
   void showAllRoutes([bool relocateMap = true]) {
+    List<R.Route> allRoutes = [
+      _startWalkingRoute,
+      _bikingRoute,
+      _endWalkingRoute
+    ];
+
     _polylineManager.clearPolyline();
-    _polylineManager.addPolyline(_startWalkingRoute.polyline.points,
-        _startWalkingRoute.routeType.polylineColor);
-    _polylineManager.addPolyline(
-        _bikingRoute.polyline.points, _bikingRoute.routeType.polylineColor);
-    _polylineManager.addPolyline(_endWalkingRoute.polyline.points,
-        _endWalkingRoute.routeType.polylineColor);
+    clearRouteMarkers();
 
     int duration = 0;
     double distance = 0;
 
-    duration += _startWalkingRoute.duration;
-    distance += _startWalkingRoute.distance;
+    for (R.Route route in allRoutes) {
+      _polylineManager.addPolyline(
+          route.polyline.points, route.routeType.polylineColor);
+      duration += route.duration;
+      distance += route.distance;
+    }
 
-    duration += _bikingRoute.duration;
-    distance += _bikingRoute.distance;
-
-    duration += _endWalkingRoute.duration;
-    distance += _endWalkingRoute.distance;
+    // Display the pickup and dropoff station
+    setRouteMarker(
+        _bikingRoute.legs.first.startLocation, BitmapDescriptor.hueGreen);
+    setRouteMarker(
+        _bikingRoute.legs.last.endLocation, BitmapDescriptor.hueGreen);
 
     _directionManager.setDuration(duration);
     _directionManager.setDistance(distance);
@@ -179,32 +259,8 @@ class RouteManager {
         _endWalkingRoute.bounds);
 
     if (relocateMap) {
-      _moveCameraTo(_bikingRoute, bounds);
+      moveCameraTo(_bikingRoute, bounds);
     }
-  }
-
-  /// @param - Bounds route1Bounds, Bounds route2Bounds
-  /// @return Bounds
-  /// @effects - returns the new bounds depending on which inputted
-  ///            bounds covers a greater area
-  Bounds _addBounds(Bounds route1Bounds, Bounds route2Bounds) {
-    Map<String, dynamic> newNorthEast = {};
-    route1Bounds.northeast['lat'] > route2Bounds.northeast['lat']
-        ? newNorthEast['lat'] = route1Bounds.northeast['lat']
-        : newNorthEast['lat'] = route2Bounds.northeast['lat'];
-    route1Bounds.northeast['lng'] > route2Bounds.northeast['lng']
-        ? newNorthEast['lng'] = route1Bounds.northeast['lng']
-        : newNorthEast['lng'] = route2Bounds.northeast['lng'];
-
-    Map<String, dynamic> newSouthWest = {};
-    route1Bounds.southwest['lat'] < route2Bounds.southwest['lat']
-        ? newSouthWest['lat'] = route1Bounds.southwest['lat']
-        : newSouthWest['lat'] = route2Bounds.southwest['lat'];
-    route1Bounds.southwest['lng'] < route2Bounds.southwest['lng']
-        ? newSouthWest['lng'] = route1Bounds.southwest['lng']
-        : newSouthWest['lng'] = route2Bounds.southwest['lng'];
-
-    return Bounds(northeast: newNorthEast, southwest: newSouthWest);
   }
 
   void setLoading(bool isLoading) {
@@ -221,11 +277,14 @@ class RouteManager {
   ///            If relocate map = true, camera will move to given route
   void setCurrentRoute(R.Route route, [relocateMap = true]) {
     setDirectionsData(route);
+    clearPathwayMarkers();
+    clearRouteMarkers();
+    _createRouteMarker(route);
     _polylineManager.setPolyline(
         route.polyline.points, route.routeType.polylineColor);
     _currentRoute = route;
     if (relocateMap) {
-      _moveCameraTo(route);
+      moveCameraTo(route);
     }
   }
 
@@ -515,17 +574,10 @@ class RouteManager {
   /// @param void
   /// @return void
   /// @effects - Clears all route markers
-  void clearRouteMarkers() {
+  void clearPathwayMarkers() {
     List<int> uids = _pathway.getStops().map((stop) => stop.getUID()).toList();
     for (int id in uids) {
       _markerManager.clearMarker(id);
-    }
-  }
-
-  void setRouteMarkers() {
-    List<Stop> stops = _pathway.getStops();
-    for (Stop stop in stops) {
-      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
     }
   }
 
@@ -548,25 +600,17 @@ class RouteManager {
   /// @effects - Clears all data
   void clear() {
     _polylineManager.clearPolyline();
-
     clearRoutes();
     _walkToFirstWaypoint = false;
     _startFromCurrentLocation = false;
     _optimised = true;
     _costOptimised = false;
     clearRouteMarkers();
+    clearPathwayMarkers();
     removeWaypoints();
     clearStart();
     clearDestination();
     _changed = false;
-  }
-
-  /// @param - pathway Pathway
-  /// @return void
-  /// @effects - sets the pathway
-  @visibleForTesting
-  void setPathway(Pathway pathway) {
-    _pathway = pathway;
   }
 
   /// @param void
@@ -588,5 +632,17 @@ class RouteManager {
   @visibleForTesting
   R.Route getEndWalkingRoute() {
     return _endWalkingRoute;
+  }
+
+  @visibleForTesting
+  bool getCostOptimised() {
+    return _costOptimised;
+  }
+
+  /// @param void
+  /// @return Route - returns loading
+  @visibleForTesting
+  bool getLoading() {
+    return _loading;
   }
 }

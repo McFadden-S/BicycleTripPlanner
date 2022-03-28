@@ -164,17 +164,9 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  void clearStationMarkersNotInRoute() =>
-      super.noSuchMethod(Invocation.method(#clearStationMarkersNotInRoute, []),
-          returnValueForMissingStub: null);
-  @override
   bool isUserLogged() =>
       (super.noSuchMethod(Invocation.method(#isUserLogged, []),
           returnValue: false) as bool);
-  @override
-  void toggleCycling() =>
-      super.noSuchMethod(Invocation.method(#toggleCycling, []),
-          returnValueForMissingStub: null);
   @override
   void clearMap() => super.noSuchMethod(Invocation.method(#clearMap, []),
       returnValueForMissingStub: null);
@@ -184,10 +176,6 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
   @override
   void updateSettings() =>
       super.noSuchMethod(Invocation.method(#updateSettings, []),
-          returnValueForMissingStub: null);
-  @override
-  void loadFavouriteRoutes() =>
-      super.noSuchMethod(Invocation.method(#loadFavouriteRoutes, []),
           returnValueForMissingStub: null);
   @override
   void notifyListeningWidgets() =>

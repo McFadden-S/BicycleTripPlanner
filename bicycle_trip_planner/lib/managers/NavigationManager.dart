@@ -24,6 +24,8 @@ class NavigationManager {
   bool _passedDropOffStation = false;
   bool _passedPickUpStation = false;
 
+  bool _isLoading = false;
+
   //********** Singleton **********
 
   /// Holds Singleton Instance
@@ -79,6 +81,14 @@ class NavigationManager {
   }
 
   //********** Public **********
+
+  bool ifLoading(){
+    return _isLoading;
+  }
+
+  void setLoading(bool loading){
+    _isLoading = loading;
+  }
 
   Station getPickupStation() {
     return _pickUpStation;

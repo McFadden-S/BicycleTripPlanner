@@ -88,6 +88,7 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
       routeManager.clearChanged();
     } else if (ifNoRouteAndChanged()) {
       polylineManager.clearPolyline();
+      routeManager.clearRouteMarkers();
       routeManager.clearChanged();
     }
 
