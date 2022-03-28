@@ -9,14 +9,14 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'camera_manager_test.mocks.dart';
+
 
 @GenerateMocks([GoogleMapController])
 void main(){
   final LocationManager locationManager = LocationManager();
   bool isInitPos = true;
-  final controller = MockGoogleMapController();
-  var cameraManager = CameraManager.forMock(controller);
+  //final controller = MockGoogleMapController();
+  //var cameraManager = CameraManager.forMock(controller);
 
   // GoogleMap(
   //   initialCameraPosition: CameraManager.initialCameraPosition,
@@ -33,14 +33,14 @@ void main(){
   // );
 
 
-  test('check if view place will move the camera position', (){
-    Location location = Location(lat: 51.511448, lng: -0.116414);
-    Geometry geometry = Geometry(location: location);
-    Place place = Place(geometry: geometry, name: 'Bush House', description: '', placeId: '');
-
-    cameraManager.init();
-
-  });
+  // test('check if view place will move the camera position', (){
+  //   Location location = Location(lat: 51.511448, lng: -0.116414);
+  //   Geometry geometry = Geometry(location: location);
+  //   Place place = Place(geometry: geometry, name: 'Bush House', description: '', placeId: '');
+  //
+  //   cameraManager.init();
+  //
+  // });
 
 
 }
