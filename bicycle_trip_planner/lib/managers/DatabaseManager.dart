@@ -189,12 +189,6 @@ class DatabaseManager {
     }
   }
 
-  void updateRoutes() {
-    if(isUserLogged()) {
-      getFavouriteRoutes().then((value) => _routes = value);
-    }
-  }
-
 
   //********** Private **********
 

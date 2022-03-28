@@ -558,7 +558,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   void loadFavouriteRoutes() {
-    DatabaseManager().updateRoutes();
+    DatabaseManager().getFavouriteRoutes();
   }
 
   void notifyListeningWidgets() {

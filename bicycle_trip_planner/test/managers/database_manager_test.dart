@@ -162,6 +162,11 @@ main()  async {
       expect(route.getStops().first.getStop().description, description);
     });
 
+    test('Get favourite route key by index', () async {
+      await databaseManager.getFavouriteRoutes();
+      final routekey =  databaseManager.getRouteKeyByIndex(0);
+      expect(routekey, favouriteRouteId);
+    });
     test('Get favourite routes', () async {
       final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
       var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
