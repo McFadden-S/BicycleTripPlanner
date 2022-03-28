@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

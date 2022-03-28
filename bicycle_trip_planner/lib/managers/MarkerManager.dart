@@ -15,6 +15,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class MarkerManager {
   //********** Fields **********
 
+  // set of all markers on display
   final Set<Marker> _markers = <Marker>{};
 
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
