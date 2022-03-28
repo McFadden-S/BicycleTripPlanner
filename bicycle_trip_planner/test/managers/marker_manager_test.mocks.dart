@@ -178,6 +178,10 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       super.noSuchMethod(Invocation.method(#updateSettings, []),
           returnValueForMissingStub: null);
   @override
+  void loadFavouriteRoutes() =>
+      super.noSuchMethod(Invocation.method(#loadFavouriteRoutes, []),
+          returnValueForMissingStub: null);
+  @override
   void notifyListeningWidgets() =>
       super.noSuchMethod(Invocation.method(#notifyListeningWidgets, []),
           returnValueForMissingStub: null);

@@ -104,6 +104,13 @@ class MockPlacesService extends _i1.Mock implements _i9.PlacesService {
   String get key =>
       (super.noSuchMethod(Invocation.getter(#key), returnValue: '') as String);
   @override
+  set key(String? _key) => super.noSuchMethod(Invocation.setter(#key, _key),
+      returnValueForMissingStub: null);
+  @override
+  String get prefixUrl =>
+      (super.noSuchMethod(Invocation.getter(#prefixUrl), returnValue: '')
+          as String);
+  @override
   _i6.Future<List<_i10.PlaceSearch>> getAutocomplete(String? search) =>
       (super.noSuchMethod(Invocation.method(#getAutocomplete, [search]),
               returnValue:
