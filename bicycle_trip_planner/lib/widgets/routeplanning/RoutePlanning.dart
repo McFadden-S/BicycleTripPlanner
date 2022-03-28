@@ -258,17 +258,18 @@ class _RoutePlanningState extends State<RoutePlanning> {
             "Walk",
             () {
               _routeManager.setWalkToFirstWaypoint(true);
+              applicationBloc.startNavigation();
             },
             "Route",
             () {
               _routeManager.setWalkToFirstWaypoint(false);
+              applicationBloc.startNavigation();
             },
           );
-
           applicationBloc.showBinaryDialog();
+        } else {
+          applicationBloc.startNavigation();
         }
-
-        applicationBloc.startNavigation();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("No route could be found!"),
