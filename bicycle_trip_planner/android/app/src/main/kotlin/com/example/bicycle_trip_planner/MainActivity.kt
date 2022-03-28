@@ -1,4 +1,4 @@
-package com.example.bicycle_trip_planner
+package bike.trip.planner
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,34 +1,41 @@
 {
   "project_info": {
-    "project_number": "407783421630",
-    "project_id": "bicycletripplanner-c1288",
-    "storage_bucket": "bicycletripplanner-c1288.appspot.com"
+    "project_number": "755682009749",
+    "project_id": "biketripplanner-2022",
+    "storage_bucket": "biketripplanner-2022.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:407783421630:android:1f98a4f09066a1f65a10ef",
+        "mobilesdk_app_id": "1:755682009749:android:9298104c19e0a955c0f19c",
         "android_client_info": {
-          "package_name": "com.example.bicycle_trip_planner"
+          "package_name": "bike.trip.planner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "407783421630-69lgk63sn4a8d01mov6273ir8q3uaatn.apps.googleusercontent.com",
+          "client_id": "755682009749-r5skdquevq94bbu8vfoavpteh7osfi4j.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDgvw8h5qbGO3N5ze7j-OzlZE2OE_szzfo"
+          "current_key": "AIzaSyC8N3a8w8YQ6gn9o-iRFMzbZo8a0l6_lMM"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "407783421630-69lgk63sn4a8d01mov6273ir8q3uaatn.apps.googleusercontent.com",
+              "client_id": "755682009749-r5skdquevq94bbu8vfoavpteh7osfi4j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "755682009749-7kks00cltft6b3umbr0aofqnk7jocshp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "BikeTripPlanner"
+              }
             }
           ]
         }

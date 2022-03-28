@@ -1,121 +1,129 @@
+import 'dart:io';
+
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+import 'package:provider/provider.dart';
+import 'constants.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Loading.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/weather.dart';
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Error.dart';
 
 Future<void> main() async {
+  ThemeStyle();
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  // TODO: Ensure firebase initialization only occurs once
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {};
+
+  LocationManager locationManager = LocationManager();
+
+  // location requested and if denied send to settings and close
+  if (!(await locationManager.requestPermission())) {
+    await locationManager.openLocationSettingsOnDevice();
+    exit(0);
+  }
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then(
+      (value) => runApp(ChangeNotifierProvider(
+          create: (context) => ApplicationBloc(), child: const MyApp())));
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      initialRoute: '/loading',
+      routes: <String, WidgetBuilder>{
+        // '/': (context) => const NavigateWindow(),
+        '/settings': (context) => const SettingsScreen(),
+        '/loading': (context) => const Loading(),
+        '/home': (context) => const Home(),
+        '/navigation': (context) => const Navigation(),
+        '/routePlanning': (context) => RoutePlanning(),
+        '/weather': (context) => Weather(),
+        '/error': (context) => Error(),
+      },
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+        brightness: Brightness.light,
+        primaryColor: ThemeStyle.buttonPrimaryColor,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            textStyle: ThemeStyle.buttonTextStyle,
+            padding: const EdgeInsets.fromLTRB(15, 8, 15, 8),
+            primary: ThemeStyle.buttonPrimaryColor,
+            shadowColor: ThemeStyle.boxShadow,
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(13.0),
+            ),
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+            backgroundColor: ThemeStyle.buttonSecondaryColor,
+            foregroundColor: ThemeStyle.secondaryTextColor,
+            elevation: 3,
+            splashColor: Colors.transparent,
+            extendedPadding: EdgeInsets.all(10)),
+        cardTheme: CardTheme(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+              side: BorderSide(width: 0.5, color: ThemeStyle.cardOutlineColor)),
+          elevation: 3,
+        ),
+        fontFamily: 'Outfit',
+        textTheme: const TextTheme(
+          headline6: TextStyle(fontSize: 36.0),
+          button: TextStyle(fontSize: 18.0),
+        ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+class NavigateWindow extends StatefulWidget {
+  const NavigateWindow({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _NavigateWindowState createState() => _NavigateWindowState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+class _NavigateWindowState extends State<NavigateWindow> {
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+          children: [
+            TextButton(
+                child: const Text("Login"),
+                onPressed: () => {Navigator.pushNamed(context, '/login')}),
+            TextButton(
+                child: const Text("Loading"),
+                onPressed: () => {Navigator.pushNamed(context, '/loading')}),
+            TextButton(
+                child: const Text("Home"),
+                onPressed: () => {Navigator.pushNamed(context, '/home')}),
+            TextButton(
+                child: const Text("Navigation"),
+                onPressed: () => {Navigator.pushNamed(context, '/navigation')}),
+            TextButton(
+                child: const Text("RoutePlanning"),
+                onPressed: () =>
+                    {Navigator.pushNamed(context, '/routePlanning')}),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
