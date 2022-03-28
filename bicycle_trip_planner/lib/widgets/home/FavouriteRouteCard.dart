@@ -39,16 +39,6 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
         Navigator.of(context).maybePop();
         routeClicked(applicationBloc, widget.valueRoute, context);
       },
-      onDoubleTap: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
-        }
-      },
-      onLongPress: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
-        }
-      },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
         child: Card(
