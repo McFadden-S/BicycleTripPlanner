@@ -6,7 +6,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:geolocator/geolocator.dart' as geo;
 
-
 /// Class Comment:
 /// LocationManager is a manager class that manages finding the users current
 /// location and distances
@@ -147,7 +146,4 @@ class LocationManager {
   void setUnits(DistanceType units) {
     _units = units;
   }
-
-
-
 }
