@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -150,10 +152,10 @@ class _RouteCardState extends State<RecentRouteCard> {
     Pathway recentRoute = await _userSettings.getRecentRoute((widget.index));
     setState(() {
       pathway = recentRoute;
-      startName = recentRoute.getStart().getStop().name;
-      endName = recentRoute.getDestination().getStop().name;
+      startName = recentRoute.getStart().getStop().description;
+      endName = recentRoute.getDestination().getStop().description;
       for (var stop in recentRoute.getWaypoints()) {
-        stopNames.add(stop.getStop().name);
+        stopNames.add(stop.getStop().description);
       }
     });
   }
@@ -162,12 +164,20 @@ class _RouteCardState extends State<RecentRouteCard> {
 Future<void> routeClicked(
     ApplicationBloc appBloc, Pathway pathway, context) async {
   RouteManager routeManager = RouteManager();
+  MarkerManager markerManager = MarkerManager();
+  routeManager.clearPathwayMarkers();
+  routeManager.clearRouteMarkers();
   routeManager.getStart().setStop(pathway.getStart().getStop());
   routeManager.getDestination().setStop(pathway.getDestination().getStop());
   routeManager.removeWaypoints();
   pathway.getWaypoints().forEach((element) {
-    routeManager.addWaypoint(element.getStop());
+    Stop stop = routeManager.addWaypoint(element.getStop());
+    markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
   });
+  markerManager.setPlaceMarker(
+      routeManager.getStart().getStop(), routeManager.getStart().getUID());
+  markerManager.setPlaceMarker(routeManager.getDestination().getStop(),
+      routeManager.getDestination().getUID());
 
   appBloc.findRoute(
       routeManager.getStart().getStop(),

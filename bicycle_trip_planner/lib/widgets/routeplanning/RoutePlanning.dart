@@ -1,19 +1,21 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/ViewRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 
@@ -32,15 +34,18 @@ class RoutePlanning extends StatefulWidget {
 class _RoutePlanningState extends State<RoutePlanning> {
   bool showRouteCard = true;
   bool isOptimised = false;
+  bool loadRoute = true;
   late int _recentRoutesCount;
 
   final RouteManager _routeManager = RouteManager();
+  final NavigationManager _navigationManager = NavigationManager();
   final UserSettings _userSettings = UserSettings();
   final DialogManager _dialogManager = DialogManager();
 
   @override
   void initState() {
     super.initState();
+    _recentRoutesCount = 0;
     getRecentRoutesCount();
   }
 
@@ -57,7 +62,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: Column(
               children: [
                 Visibility(
-                    child: RoutePlanningCard(),
+                    child: RoutePlanningCard(loadRoute: loadRoute),
                     maintainState: true,
                     visible: showRouteCard),
                 GestureDetector(
@@ -85,9 +90,8 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                     })
                                 : Container(),
                             !showRouteCard ? SizedBox(height: 10) : Container(),
-                            CurrentLocationButton(),
-                            SizedBox(height: 10),
-                            ViewRouteButton(),
+                            CurrentLocationButton(
+                                key: Key("currentLocationButton")),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
                                     _routeManager.getWaypoints().length > 1 &&
@@ -117,84 +121,58 @@ class _RoutePlanningState extends State<RoutePlanning> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Row(children: [
-                    _recentRoutesCount != 0
-                        ? CircleButton(
-                            iconIn: Icons.history,
-                            iconColor: ThemeStyle.primaryIconColor,
-                            onButtonClicked: () => showRecentRoutes())
-                        : const SizedBox.shrink(),
-                    Spacer(),
-                    CustomBackButton(context: context, backTo: 'home'),
-                  ]),
-                ),
-                CustomBottomSheet(
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Wrap(
-                          children: [DistanceETACard()],
+                        Column(
+                          children: [
+                            DatabaseManager().isUserLogged()
+                                ? CircleButton(
+                                    iconIn: Icons.star,
+                                    iconColor: ThemeStyle.primaryIconColor,
+                                    onButtonClicked: () => saveRoute(context))
+                                : SizedBox.shrink(),
+                            SizedBox(height: 10),
+                            _recentRoutesCount != 0
+                                ? CircleButton(
+                                    iconIn: Icons.history,
+                                    iconColor: ThemeStyle.primaryIconColor,
+                                    onButtonClicked: () => showRecentRoutes())
+                                : const SizedBox.shrink(),
+                          ],
                         ),
                         Spacer(),
-                        DatabaseManager().isUserLogged()
-                            ? SizedBox(
-                                width: 50,
-                                child: ElevatedButton(
-                                    onPressed: () {
-                                      saveRoute(context);
-                                    },
-                                    child: Icon(
-                                      Icons.save,
-                                      color: ThemeStyle.secondaryFontColor,
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(17.0),
-                                      ),
-                                      primary: ThemeStyle.buttonSecondaryColor,
-                                    )))
-                            : Container(),
-                        Spacer(),
-                        Expanded(
-                          flex: 20,
-                          child: RoundedRectangleButton(
-                              iconIn: Icons.directions_bike,
-                              buttonColor: ThemeStyle.goButtonColor,
-                              onButtonClicked: () {
-                                if (_routeManager.ifRouteSet()) {
-                                  if (_routeManager
-                                          .getStart()
-                                          .getStop()
-                                          .description !=
-                                      SearchType.current.description) {
-                                    _dialogManager.setBinaryChoice(
-                                      "Do you want to walk to start or be routed to it?",
-                                      "Walk",
-                                      () {
-                                        _routeManager
-                                            .setWalkToFirstWaypoint(true);
-                                      },
-                                      "Route",
-                                      () {
-                                        _routeManager
-                                            .setWalkToFirstWaypoint(false);
-                                      },
-                                    );
-
-                                    applicationBloc.showBinaryDialog();
-                                  }
-
-                                  applicationBloc.startNavigation();
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("No route could be found!"),
-                                  ));
-                                }
-                              }),
-                        )
+                        CustomBackButton(context: context, backTo: 'home'),
                       ]),
+                ),
+                CustomBottomSheet(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(width: 10),
+                          Expanded(child: DistanceETACard()),
+                          Expanded(
+                            flex: 2,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 10),
+                              child: _navigationManager.ifLoading()
+                                  ? CircularProgressIndicator(
+                                      color: Colors.blueGrey)
+                                  : ElevatedButton(
+                                      child: const Icon(Icons.directions_bike),
+                                      onPressed: () =>
+                                          startJourney(applicationBloc),
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.green)),
+                                    ),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ),
               ],
             ),
@@ -269,6 +247,37 @@ class _RoutePlanningState extends State<RoutePlanning> {
       _recentRoutesCount = recentRoutesCount;
     });
   }
+
+  startJourney(ApplicationBloc applicationBloc) {
+    if (!_navigationManager.ifLoading()) {
+      if (_routeManager.ifRouteSet()) {
+        _navigationManager.setLoading(true);
+        if (_routeManager.getStart().getStop().description !=
+            SearchType.current.description) {
+          _dialogManager.setBinaryChoice(
+            "Do you want to walk to start or be routed to it?",
+            "Walk",
+            () {
+              _routeManager.setWalkToFirstWaypoint(true);
+              applicationBloc.startNavigation();
+            },
+            "Route",
+            () {
+              _routeManager.setWalkToFirstWaypoint(false);
+              applicationBloc.startNavigation();
+            },
+          );
+          applicationBloc.showBinaryDialog();
+        } else {
+          applicationBloc.startNavigation();
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("No route could be found!"),
+        ));
+      }
+    }
+  }
 }
 
 // Note: This is outside of the state class...
@@ -287,7 +296,7 @@ saveRoute(context) async {
       .then((v) {
     return v;
   });
-  ;
+
   if (successfullyAdded) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Route saved correctly!"),

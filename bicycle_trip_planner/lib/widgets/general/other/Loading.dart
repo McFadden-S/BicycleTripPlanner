@@ -5,10 +5,10 @@ import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../auth/Keys.dart';
+import '../../../services/weather_service.dart';
 
 class Loading extends StatefulWidget {
   const Loading({Key? key}) : super(key: key);
@@ -19,6 +19,7 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   void setUpMap() async {
+    Keys();
     await Home();
     await HomeWidgets();
     await MapWidget();
@@ -33,10 +34,6 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     super.initState();
-    Keys keys = Keys();
-    if(Keys.areUndefined()){
-      keys.fetchKeys();
-    }
     setUpMap();
   }
 

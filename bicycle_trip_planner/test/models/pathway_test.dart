@@ -19,11 +19,11 @@ main() {
   });
 
   test("Stops to string", () {
-    expect(pathway.toString(), "[ - 1,  - 2]");
+    expect(pathway.toString(), "[ - 0,  - 1]");
   });
 
   test('ensure can get stop by index', () {
-    expect(pathway.getStopByIndex(0).getUID(), 1);
+    expect(pathway.getStopByIndex(0).getUID(), 0);
   });
 
   test('ensure size is 2 when initialized', () {
@@ -51,6 +51,14 @@ main() {
     pathway.addStop(Stop());
     pathway.addStop(Stop());
     expect(pathway.getWaypoints().length, 3);
+  });
+
+  test('ensure can remove stop on request', () {
+    pathway.addWaypoint(stop);
+    pathway.addWaypoint(stop2);
+    expect(pathway.getStops().length, 4);
+    pathway.removeStop(4);
+    expect(pathway.getStops().length, 3);
   });
 
   test('ensure firstWaypoint is a stop', () {
@@ -107,14 +115,6 @@ main() {
         stop.getUID());
   });
 
-  test('ensure can remove stop on request', () {
-    pathway.addWaypoint(stop);
-    pathway.addWaypoint(stop2);
-    expect(pathway.getStops().length, 5);
-    pathway.removeStop(4);
-    expect(pathway.getStops().length, 4);
-  });
-
   test('ensure can get empty stop when index is -1', () {
     expect(pathway.getStop(-1).getStop(), const Place.placeNotFound());
   });
@@ -149,13 +149,6 @@ main() {
     expect(pathway.getHasFirstWaypoint(), false);
   });
 
-  test("Move stop", () {
-    pathway.getStops().first.getUID();
-    final initID = pathway.getStops().first.getUID();
-
-    pathway.moveStop(initID, 2);
-    expect(pathway.getStops()[1].getUID(), initID);
-  });
   test('ensure toString is correct', () {
     expect(pathway.toString(), pathway.getStops().toString());
   });

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/place.dart';
@@ -103,6 +104,15 @@ class UserSettings {
   /// @effects - saves a route using in shared pref
   saveRoute(Place origin, Place destination, List<Place> intermediates) async {
     final SharedPreferences prefs = await _prefs;
+    // if origin is user's current location
+    if(origin.description == SearchType.current.description){
+      origin = Place(
+          latlng: origin.latlng,
+          description: origin.name,
+          placeId: origin.placeId,
+          name: origin.name);
+    }
+
     String savedElements = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
     // check if there are already 5 routes saved beforehand
