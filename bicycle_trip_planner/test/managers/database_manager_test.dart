@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/models/pathway.dart';
@@ -120,16 +119,6 @@ main()  async {
       expect(stationFromFakeDatabase.removeWhere((e) => e == null), null);
     });
 
-    test('Remove favourite route', () async {
-      Future<bool> promise = databaseManager.removeFavouriteRoute(routeID);
-      final stationFromFakeDatabase = await databaseManager
-          .getFavouriteRoutes();
-      promise.then((v){
-        expect(stationFromFakeDatabase[routeID], equals(null));
-      });
-
-    });
-
     test('Add favourite station', () async {
       await databaseManager.addToFavouriteStations(260);
 
@@ -147,6 +136,32 @@ main()  async {
           ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
     });
 
+    test('Get number of favourite routes', () async {
+      await databaseManager.getFavouriteRoutes();
+      final nRoutes =  databaseManager.getNumberOfRoutes();
+      expect(nRoutes, 1);
+    });
+
+    test('Get favourite route by index', () async {
+      await databaseManager.getFavouriteRoutes();
+      final Pathway route =  databaseManager.getFavouriteRouteByIndex(0);
+      expect(route.getStart().getStop().name, name);
+      expect(route.getStart().getStop().latlng.latitude, lat);
+      expect(route.getStart().getStop().latlng.longitude, lng);
+      expect(route.getStart().getStop().placeId, routeID);
+      expect(route.getStart().getStop().description, description);
+      expect(route.getDestination().getStop().name, name);
+      expect(route.getDestination().getStop().latlng.latitude, lat);
+      expect(route.getDestination().getStop().latlng.longitude, lng);
+      expect(route.getDestination().getStop().placeId, routeID);
+      expect(route.getDestination().getStop().description, description);
+      expect(route.getStops().first.getStop().name, name);
+      expect(route.getStops().first.getStop().latlng.latitude, lat);
+      expect(route.getStops().first.getStop().latlng.longitude, lng);
+      expect(route.getStops().first.getStop().placeId, routeID);
+      expect(route.getStops().first.getStop().description, description);
+    });
+
     test('Get favourite routes', () async {
       final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
       var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
@@ -156,6 +171,18 @@ main()  async {
           routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
     });
 
+    test('Remove favourite route', () async {
+      Future<bool> promise = databaseManager.removeFavouriteRoute(routeID);
+      final stationFromFakeDatabase = await databaseManager
+          .getFavouriteRoutes();
+      promise.then((v){
+        expectLater(stationFromFakeDatabase[routeID], equals(null));
+      });
+      expectLater(promise, completes);
+    });
+
+    // firebase_database_mocks does not provide an interface for method push() on DatabaseReference, making this test to fail
+    // Can uncomment if in newer versions this interface is going to be provided.
     /*test('Add favourite route',() async{
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
     //expect(stationFromFakeDatabase.toString(), equals(null));

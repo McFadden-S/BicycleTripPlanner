@@ -141,6 +141,7 @@ class DatabaseManager {
     final result = await favouriteRoutes.once();
     final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
     map.forEach((key, value) => { pathways[key] =  Helper.mapToPathway(value)});
+    _routes = pathways;
     return pathways;
   }
 
