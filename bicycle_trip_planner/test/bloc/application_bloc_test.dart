@@ -2316,7 +2316,44 @@ void main() {
         verify(userSettings.savePlace(place));
         verify(mockRouteManager.changeStop(5, place));
       });
+  });
 
+  group("Location test",(){
+    test("Set selected current location",() async {
+      final place = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+      final stop = Stop();
 
+      final uid = stop.getUID();
+      when(locationManager.locate()).thenAnswer((realInvocation) async=> LatLng(10.0,10.0));
+      when(placesServices.getPlaceFromCoordinates(10.0, 10.0, "My current location")).thenAnswer((realInvocation) async=> place);
+      when(locationManager.getCurrentLocation()).thenAnswer((realInvocation) => place);
+      when(mockRouteManager.getStart()).thenAnswer((realInvocation) => stop);
+
+      appBloc.setSelectedCurrentLocation();
+      await untilCalled(mockRouteManager.changeStop(any, any));
+
+      verify(cameraManager.viewPlace(place));
+      verify(markerManager.setPlaceMarker(place, uid));
+      verify(mockRouteManager.changeStop(uid, place));
+    });
+
+    test("Clear location marker", () async {
+      final uid =0;
+      appBloc.clearLocationMarker(uid);
+      await untilCalled(markerManager.clearMarker(any));
+      verify(markerManager.clearMarker(uid));
+    });
+
+    test("Clear selected location",() async{
+      final uid =0;
+      appBloc.clearSelectedLocation(uid);
+      verify(mockRouteManager.clearStop(uid));
+    });
+
+    test("Remove selected location",() {
+      final uid =0;
+      appBloc.removeSelectedLocation(uid);
+      verify(mockRouteManager.removeStop(uid));
+    });
   });
 }

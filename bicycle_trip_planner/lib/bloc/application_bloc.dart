@@ -244,8 +244,6 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-
-
   setLocationMarker(Place place, [int uid = -1]) async {
     _cameraManager.viewPlace(place);
     _markerManager.setPlaceMarker(place, uid);
