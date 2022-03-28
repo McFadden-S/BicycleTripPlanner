@@ -164,10 +164,6 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  void clearStationMarkersNotInRoute() =>
-      super.noSuchMethod(Invocation.method(#clearStationMarkersNotInRoute, []),
-          returnValueForMissingStub: null);
-  @override
   bool isUserLogged() =>
       (super.noSuchMethod(Invocation.method(#isUserLogged, []),
           returnValue: false) as bool);

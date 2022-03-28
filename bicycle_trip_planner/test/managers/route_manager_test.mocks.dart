@@ -2,17 +2,15 @@
 // in bicycle_trip_planner/test/managers/route_manager_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart' as _i10;
-import 'package:bicycle_trip_planner/managers/CameraManager.dart' as _i5;
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart' as _i9;
+import 'package:bicycle_trip_planner/managers/CameraManager.dart' as _i4;
 import 'package:bicycle_trip_planner/managers/LocationManager.dart' as _i3;
-import 'package:bicycle_trip_planner/managers/MarkerManager.dart' as _i8;
-import 'package:bicycle_trip_planner/models/place.dart' as _i7;
-import 'package:bicycle_trip_planner/models/station.dart' as _i9;
-import 'package:flutter/material.dart' as _i4;
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart' as _i7;
+import 'package:bicycle_trip_planner/models/place.dart' as _i6;
+import 'package:bicycle_trip_planner/models/station.dart' as _i8;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -30,18 +28,12 @@ class _FakeGoogleMapController_0 extends _i1.Fake
 
 class _FakeLocationManager_1 extends _i1.Fake implements _i3.LocationManager {}
 
-class _FakeWidget_2 extends _i1.Fake implements _i4.Widget {
-  @override
-  String toString({_i4.DiagnosticLevel? minLevel = _i4.DiagnosticLevel.info}) =>
-      super.toString();
-}
-
-class _FakeMarker_3 extends _i1.Fake implements _i2.Marker {}
+class _FakeMarker_2 extends _i1.Fake implements _i2.Marker {}
 
 /// A class which mocks [CameraManager].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockCameraManager extends _i1.Mock implements _i5.CameraManager {
+class MockCameraManager extends _i1.Mock implements _i4.CameraManager {
   MockCameraManager() {
     _i1.throwOnMissingStub(this);
   }
@@ -76,56 +68,54 @@ class MockCameraManager extends _i1.Mock implements _i5.CameraManager {
           Invocation.method(#setRouteCamera, [origin, boundsSw, boundsNe]),
           returnValueForMissingStub: null);
   @override
-  _i6.Future<void> goToPlace(LatLng latlng, Map<String, dynamic>? boundsNe,
+  _i5.Future<void> goToPlace(_i2.LatLng? latLng, Map<String, dynamic>? boundsNe,
           Map<String, dynamic>? boundsSw) =>
       (super.noSuchMethod(
-          Invocation.method(#goToPlace, [latlng, boundsNe, boundsSw]),
+          Invocation.method(#goToPlace, [latLng, boundsNe, boundsSw]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i6.Future<void> viewPlace(_i7.Place? place) =>
+  _i5.Future<void> viewPlace(_i6.Place? place) =>
       (super.noSuchMethod(Invocation.method(#viewPlace, [place]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i6.Future<void> viewRoute() =>
+  _i5.Future<void> viewRoute() =>
       (super.noSuchMethod(Invocation.method(#viewRoute, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i6.Future<void> viewUser() =>
+  _i5.Future<void> viewUser() =>
       (super.noSuchMethod(Invocation.method(#viewUser, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
 }
 
 /// A class which mocks [MarkerManager].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockMarkerManager extends _i1.Mock implements _i8.MarkerManager {
+class MockMarkerManager extends _i1.Mock implements _i7.MarkerManager {
   MockMarkerManager() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i4.Widget get home => (super.noSuchMethod(Invocation.getter(#home),
-      returnValue: _FakeWidget_2()) as _i4.Widget);
-  @override
-  set home(_i4.Widget? _home) =>
-      super.noSuchMethod(Invocation.setter(#home, _home),
-          returnValueForMissingStub: null);
-  @override
   set userMarkerIcon(_i2.BitmapDescriptor? _userMarkerIcon) =>
       super.noSuchMethod(Invocation.setter(#userMarkerIcon, _userMarkerIcon),
           returnValueForMissingStub: null);
   @override
-  _i6.Stream<Set<_i2.Marker>> get mapMarkerStream =>
+  _i5.Stream<Set<_i2.Marker>> get mapMarkerStream =>
       (super.noSuchMethod(Invocation.getter(#mapMarkerStream),
               returnValue: Stream<Set<_i2.Marker>>.empty())
-          as _i6.Stream<Set<_i2.Marker>>);
+          as _i5.Stream<Set<_i2.Marker>>);
   @override
-  void setMarker(_i2.LatLng? point, String? markerID) =>
-      super.noSuchMethod(Invocation.method(#setMarker, [point, markerID]),
+  void setMarker(_i2.LatLng? point, String? markerID, [double? color = 0.0]) =>
+      super.noSuchMethod(
+          Invocation.method(#setMarker, [point, markerID, color]),
+          returnValueForMissingStub: null);
+  @override
+  void removeMarker(String? markerID) =>
+      super.noSuchMethod(Invocation.method(#removeMarker, [markerID]),
           returnValueForMissingStub: null);
   @override
   Set<_i2.Marker> getMarkers() =>
@@ -136,34 +126,34 @@ class MockMarkerManager extends _i1.Mock implements _i8.MarkerManager {
       super.noSuchMethod(Invocation.method(#clearMarker, [uid]),
           returnValueForMissingStub: null);
   @override
-  void setPlaceMarker(_i7.Place? place, [int? uid = -1]) =>
+  void setPlaceMarker(_i6.Place? place, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#setPlaceMarker, [place, uid]),
           returnValueForMissingStub: null);
   @override
   void setStationMarkerWithUID(
-          _i9.Station? station, _i10.ApplicationBloc? appBloc,
+          _i8.Station? station, _i9.ApplicationBloc? appBloc,
           [int? uid = -1]) =>
       super.noSuchMethod(
           Invocation.method(#setStationMarkerWithUID, [station, appBloc, uid]),
           returnValueForMissingStub: null);
   @override
-  _i6.Future<_i2.Marker> setUserMarker(_i2.LatLng? point) =>
+  _i5.Future<_i2.Marker> setUserMarker(_i2.LatLng? point) =>
       (super.noSuchMethod(Invocation.method(#setUserMarker, [point]),
-              returnValue: Future<_i2.Marker>.value(_FakeMarker_3()))
-          as _i6.Future<_i2.Marker>);
+              returnValue: Future<_i2.Marker>.value(_FakeMarker_2()))
+          as _i5.Future<_i2.Marker>);
   @override
-  void setStationMarker(_i9.Station? station, _i10.ApplicationBloc? appBloc) =>
+  void setStationMarker(_i8.Station? station, _i9.ApplicationBloc? appBloc) =>
       super.noSuchMethod(
           Invocation.method(#setStationMarker, [station, appBloc]),
           returnValueForMissingStub: null);
   @override
   void setStationMarkers(
-          List<_i9.Station>? stations, _i10.ApplicationBloc? appBloc) =>
+          List<_i8.Station>? stations, _i9.ApplicationBloc? appBloc) =>
       super.noSuchMethod(
           Invocation.method(#setStationMarkers, [stations, appBloc]),
           returnValueForMissingStub: null);
   @override
-  void clearStationMarkers(List<_i9.Station>? stations) =>
+  void clearStationMarkers(List<_i8.Station>? stations) =>
       super.noSuchMethod(Invocation.method(#clearStationMarkers, [stations]),
           returnValueForMissingStub: null);
 }

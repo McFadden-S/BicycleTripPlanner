@@ -1135,10 +1135,11 @@ void main() {
 
   test("Set and clear route markers", () {
     clearInteractions(markerManager);
-    routeManager.setRouteMarkers();
-    verify(markerManager.setPlaceMarker(any, any)).called(2);
+    routeManager.setRouteMarker(LatLng(0, 0));
+    verify(markerManager.setMarker(LatLng(0, 0), any, BitmapDescriptor.hueRed))
+        .called(1);
     routeManager.clearRouteMarkers();
-    verify(markerManager.clearMarker(any)).called(2);
+    verify(markerManager.removeMarker(any)).called(1);
   });
 
   test("Add cost waypoint", () {

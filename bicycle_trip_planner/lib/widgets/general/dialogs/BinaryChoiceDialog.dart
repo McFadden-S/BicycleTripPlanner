@@ -22,6 +22,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
       return  const SizedBox.shrink();
     } else {
       return Dialog(
+        key: Key('binaryChoiceDialog'),
           backgroundColor: ThemeStyle.cardColor,
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
