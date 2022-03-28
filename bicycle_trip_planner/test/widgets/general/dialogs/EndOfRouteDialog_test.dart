@@ -30,4 +30,21 @@ void main() {
 
     expect(dialog, findsOneWidget);
   });
+
+  testWidgets("Binary choice dialog contains one button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: EndOfRouteDialog())));
+
+    final button = find.byType(ElevatedButton);
+    expect(button, findsOneWidget);
+  });
+
+  testWidgets("Binary choice dialog buttons contains correct text", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: EndOfRouteDialog())));
+
+    final button = find.byType(ElevatedButton);
+    final text = find.descendant(of: button, matching: find.byType(Text)).first;
+    expect(button, findsOneWidget);
+    Text s = text.evaluate().single.widget as Text;
+    expect(s.data, DialogManager().getOkButtonText());
+  });
 }
