@@ -9,8 +9,6 @@ import '../constants.dart';
 import 'TimeManager.dart';
 
 class CameraManager {
-  final _time = CurrentTime();
-
   static const initialCameraPosition = CameraPosition(
     target: LatLng(51.509865, -0.118092),
     zoom: 12.5,
@@ -18,7 +16,7 @@ class CameraManager {
 
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
-  final MarkerManager markerManager = MarkerManager();
+  MarkerManager markerManager = MarkerManager();
 
   //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
@@ -37,6 +35,10 @@ class CameraManager {
 
   CameraManager._internal();
 
+  CameraManager.forMock(MarkerManager manager, GoogleMapController controller){
+    markerManager = manager;
+    googleMapController = controller;
+  }
   //********** Setup/Teardown **********
 
   void init() {
