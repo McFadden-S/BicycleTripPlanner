@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/SelectStationDialog.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,6 +17,7 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+    DialogManager().showSelectedStation();
   });
 
   testWidgets("Select station dialog contains a dialog", (WidgetTester tester) async {
@@ -25,6 +27,7 @@ void main() {
 
     expect(dialog, findsOneWidget);
   });
+
 
   testWidgets("Select station dialog contains four buttons", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: SelectStationDialog())));
