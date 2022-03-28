@@ -6,7 +6,7 @@ import 'dart:convert' as convert;
 import '../auth/Keys.dart';
 
 class PlacesService {
-  String key = Keys.getApiKey();
+  String key = Keys.API_KEY;
   final String prefixUrl = 'https://maps.googleapis.com/maps/api';
   Future<List<PlaceSearch>> getAutocomplete(String search) async {
     var url =
