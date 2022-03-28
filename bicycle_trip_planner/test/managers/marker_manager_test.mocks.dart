@@ -177,6 +177,10 @@ class MockApplicationBloc extends _i1.Mock implements _i4.ApplicationBloc {
   void endRoute() => super.noSuchMethod(Invocation.method(#endRoute, []),
       returnValueForMissingStub: null);
   @override
+  void setNavigationSubscription() =>
+      super.noSuchMethod(Invocation.method(#setNavigationSubscription, []),
+          returnValueForMissingStub: null);
+  @override
   _i6.Future<void> filterStationMarkers() =>
       (super.noSuchMethod(Invocation.method(#filterStationMarkers, []),
           returnValue: Future<void>.value(),
