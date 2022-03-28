@@ -19,6 +19,7 @@ class Loading extends StatefulWidget {
 
 class _LoadingState extends State<Loading> {
   void setUpMap() async {
+    Keys();
     await Home();
     await HomeWidgets();
     await MapWidget();
@@ -33,10 +34,6 @@ class _LoadingState extends State<Loading> {
   @override
   void initState() {
     super.initState();
-    Keys keys = Keys();
-    if(Keys.areUndefined()){
-      keys.fetchKeys();
-    }
     setUpMap();
   }
 

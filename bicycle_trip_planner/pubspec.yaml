@@ -60,7 +60,6 @@ dependencies:
   firebase_database_mocks: ^0.3.2
   shared_preferences: ^2.0.13
   timer_count_down: ^2.2.1
-  firebase_remote_config: ^2.0.2
 
 dev_dependencies:
   flutter_test:

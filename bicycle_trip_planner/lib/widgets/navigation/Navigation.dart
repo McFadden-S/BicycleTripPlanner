@@ -83,7 +83,9 @@ class _NavigationState extends State<Navigation> {
                       children: [
                         CircleButton(
                             iconIn: Icons.center_focus_strong,
-                            onButtonClicked: () => zoomOnUser()),
+                            onButtonClicked: () async {
+                              await zoomOnUser();
+                            }),
                         SizedBox(height: 10),
                         CircleButton(
                             iconIn: Icons.zoom_out_map,
@@ -137,8 +139,8 @@ class _NavigationState extends State<Navigation> {
   zoomOnUser() {
     navigationSubscription = locationManager
         .onUserLocationChange(5)
-        .listen((LocationData currentLocation) {
-      cameraManager.viewUser(zoomIn: 20.0);
+        .listen((LocationData currentLocation) async {
+      await cameraManager.viewUser(zoomIn: 20.0);
     });
   }
 
