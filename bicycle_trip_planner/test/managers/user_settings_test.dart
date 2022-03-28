@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
@@ -18,6 +19,9 @@ void main() {
     final SharedPreferences prefs = await userSettings.getSharedPref();
     final removeRecentSearches = await prefs.remove('recentSearches');
     final removeRecentRoutes = await prefs.remove('recentRoutes');
+    final removeDistanceUnit = await prefs.remove('distanceUnit');
+    final removeRefreshRate = await prefs.remove('stationsRefreshRate');
+    final removeNearbyStations = await prefs.remove('nearbyStationsRange');
   });
 
   test('check shared pref works', () async {
@@ -882,5 +886,93 @@ void main() {
     }
   });
 
+  test('test correct distance type is output based on what is passed in (km)', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
 
+    userSettings.setDistanceUnit("km");
+    var distanceUnit = await userSettings.distanceUnit();
+    expect(distanceUnit.runtimeType, DistanceType);
+    String? distanceUnitString = prefs.getString("distanceUnit");
+    expect(distanceUnitString, "km");
+  });
+
+  test('test correct distance type is output based on what is passed in (miles)', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setDistanceUnit("miles");
+    var distanceUnit = await userSettings.distanceUnit();
+    expect(distanceUnit.runtimeType, DistanceType);
+    String? distanceUnitString = prefs.getString("distanceUnit");
+    expect(distanceUnitString, "miles");
+  });
+
+  test('test default miles is output if null distance is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    await userSettings.setDistanceUnit(null);
+    var distanceUnit = await userSettings.distanceUnit();
+    expect(distanceUnit.runtimeType, DistanceType);
+    String? distanceUnitString = prefs.getString("distanceUnit");
+    expect(distanceUnitString, "miles");
+  });
+
+  test('test correct refresh rate is output after 60 is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setStationsRefreshRate(60);
+    var refreshRate = await userSettings.stationsRefreshRate();
+    expect(refreshRate.runtimeType, int);
+    int? refreshRateInt = prefs.getInt("stationsRefreshRate");
+    expect(refreshRateInt, 60);
+  });
+
+  test('test correct refresh rate is output after 30 is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setStationsRefreshRate(30);
+    var refreshRate = await userSettings.stationsRefreshRate();
+    expect(refreshRate.runtimeType, int);
+    int? refreshRateInt = prefs.getInt("stationsRefreshRate");
+    expect(refreshRateInt, 30);
+  });
+
+  test('test default refresh rate (30) is output if null rate is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setStationsRefreshRate(null);
+    var refreshRate = await userSettings.stationsRefreshRate();
+    expect(refreshRate.runtimeType, int);
+    int? refreshRateInt = prefs.getInt("stationsRefreshRate");
+    expect(refreshRateInt, 30);
+  });
+
+  test('test correct station range is output after 0.5 is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setNearbyStationsRange(0.5);
+    var nearbyStations = await userSettings.nearbyStationsRange();
+    expect(nearbyStations.runtimeType, double);
+    double? nearbyStationDouble = prefs.getDouble("nearbyStationsRange");
+    expect(nearbyStationDouble, 0.5);
+  });
+
+  test('test correct station range is output after 30.5 is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setNearbyStationsRange(30.5);
+    var nearbyStations = await userSettings.nearbyStationsRange();
+    expect(nearbyStations.runtimeType, double);
+    double? nearbyStationDouble = prefs.getDouble("nearbyStationsRange");
+    expect(nearbyStationDouble, 30.5);
+  });
+
+  test('test default station range (30.5) is output if null range is input', () async {
+    final SharedPreferences prefs = await userSettings.getSharedPref();
+
+    userSettings.setNearbyStationsRange(null);
+    var nearbyStations = await userSettings.nearbyStationsRange();
+    expect(nearbyStations.runtimeType, double);
+    double? nearbyStationDouble = prefs.getDouble("nearbyStationsRange");
+    expect(nearbyStationDouble, 30.5);
+  });
 }

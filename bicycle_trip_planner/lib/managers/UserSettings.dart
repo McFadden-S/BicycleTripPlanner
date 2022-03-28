@@ -11,7 +11,8 @@ class UserSettings {
   //********** Singleton **********
   static final UserSettings _userSettings = UserSettings._internal();
 
-  static int MAX_RECENT_ROUTES_COUNT = 5;
+  static const int MAX_RECENT_ROUTES_COUNT = 5;
+
   factory UserSettings() {
     return _userSettings;
   }
@@ -19,6 +20,20 @@ class UserSettings {
 
 //********** Fields **********
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+//********** Private **********
+
+  Map<String, dynamic> _capRoutes(Map<String, dynamic> savedRoutes) {
+    Map<String, dynamic> output = {};
+    // update item keys
+    for (var key in savedRoutes.keys) {
+      output[(int.parse(key) - 1).toString()] = savedRoutes[key];
+    }
+    // remove oldest
+    output.remove('-1');
+
+    return output;
+  }
 
 //********** Public **********
 
@@ -67,7 +82,7 @@ class UserSettings {
     Map<String, dynamic> savedRoutes = jsonDecode(savedElements);
     // check if there are already 5 routes saved beforehand
     if (savedRoutes.length == MAX_RECENT_ROUTES_COUNT) {
-      savedRoutes = capRoutes(savedRoutes);
+      savedRoutes = _capRoutes(savedRoutes);
     }
     Map<String, dynamic> newRoute = {};
     Map<String, dynamic> start = Helper.place2Map(origin);
@@ -166,17 +181,5 @@ class UserSettings {
     });
     //no error caught
     return true;
-  }
-
-  Map<String, dynamic> capRoutes(Map<String, dynamic> savedRoutes) {
-    Map<String, dynamic> output = {};
-    // update item keys
-    for (var key in savedRoutes.keys) {
-      output[(int.parse(key) - 1).toString()] = savedRoutes[key];
-    }
-    // remove oldest
-    output.remove('-1');
-
-    return output;
   }
 }
