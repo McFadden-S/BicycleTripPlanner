@@ -2,16 +2,15 @@
 // in bicycle_trip_planner/test/bloc/application_bloc_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i6;
+import 'dart:async' as _i5;
 
 import 'package:bicycle_trip_planner/managers/LocationManager.dart' as _i4;
-import 'package:bicycle_trip_planner/models/distance_types.dart' as _i7;
+import 'package:bicycle_trip_planner/models/distance_types.dart' as _i6;
 import 'package:bicycle_trip_planner/models/place.dart' as _i3;
-import 'package:bicycle_trip_planner/models/place_search.dart' as _i10;
-import 'package:bicycle_trip_planner/services/places_service.dart' as _i9;
-import 'package:geolocator/geolocator.dart' as _i5;
+import 'package:bicycle_trip_planner/models/place_search.dart' as _i9;
+import 'package:bicycle_trip_planner/services/places_service.dart' as _i8;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
-import 'package:location/location.dart' as _i8;
+import 'package:location/location.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -37,27 +36,35 @@ class MockLocationManager extends _i1.Mock implements _i4.LocationManager {
   }
 
   @override
-  void isTest(_i5.Geolocator? geolocator) =>
-      super.noSuchMethod(Invocation.method(#isTest, [geolocator]),
-          returnValueForMissingStub: null);
+  _i5.Future<bool> checkServiceEnabled() =>
+      (super.noSuchMethod(Invocation.method(#checkServiceEnabled, []),
+          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
   @override
-  _i6.Future<_i2.LatLng> locate() =>
+  _i5.Future<bool> checkPermission() =>
+      (super.noSuchMethod(Invocation.method(#checkPermission, []),
+          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
+  @override
+  _i5.Future<bool> locationSettings([double? distanceFilter = 0.0]) => (super
+      .noSuchMethod(Invocation.method(#locationSettings, [distanceFilter]),
+          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
+  @override
+  _i5.Future<_i2.LatLng> locate() =>
       (super.noSuchMethod(Invocation.method(#locate, []),
               returnValue: Future<_i2.LatLng>.value(_FakeLatLng_0()))
-          as _i6.Future<_i2.LatLng>);
+          as _i5.Future<_i2.LatLng>);
   @override
-  _i6.Future<bool> requestPermission() =>
+  _i5.Future<bool> requestPermission() =>
       (super.noSuchMethod(Invocation.method(#requestPermission, []),
-          returnValue: Future<bool>.value(false)) as _i6.Future<bool>);
+          returnValue: Future<bool>.value(false)) as _i5.Future<bool>);
   @override
-  _i6.Future<void> openLocationSettingsOnDevice() =>
+  _i5.Future<void> openLocationSettingsOnDevice() =>
       (super.noSuchMethod(Invocation.method(#openLocationSettingsOnDevice, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
-  _i6.Future<double> distanceTo(_i2.LatLng? pos) =>
+  _i5.Future<double> distanceTo(_i2.LatLng? pos) =>
       (super.noSuchMethod(Invocation.method(#distanceTo, [pos]),
-          returnValue: Future<double>.value(0.0)) as _i6.Future<double>);
+          returnValue: Future<double>.value(0.0)) as _i5.Future<double>);
   @override
   double distanceFromTo(_i2.LatLng? posFrom, _i2.LatLng? posTo) =>
       (super.noSuchMethod(Invocation.method(#distanceFromTo, [posFrom, posTo]),
@@ -76,18 +83,18 @@ class MockLocationManager extends _i1.Mock implements _i4.LocationManager {
       (super.noSuchMethod(Invocation.method(#getCurrentLocation, []),
           returnValue: _FakePlace_1()) as _i3.Place);
   @override
-  _i7.DistanceType getUnits() =>
+  _i6.DistanceType getUnits() =>
       (super.noSuchMethod(Invocation.method(#getUnits, []),
-          returnValue: _i7.DistanceType.miles) as _i7.DistanceType);
+          returnValue: _i6.DistanceType.miles) as _i6.DistanceType);
   @override
-  _i6.Stream<_i8.LocationData> onUserLocationChange(
+  _i5.Stream<_i7.LocationData> onUserLocationChange(
           [double? distanceFilter = 0.0]) =>
       (super.noSuchMethod(
               Invocation.method(#onUserLocationChange, [distanceFilter]),
-              returnValue: Stream<_i8.LocationData>.empty())
-          as _i6.Stream<_i8.LocationData>);
+              returnValue: Stream<_i7.LocationData>.empty())
+          as _i5.Stream<_i7.LocationData>);
   @override
-  void setUnits(_i7.DistanceType? units) =>
+  void setUnits(_i6.DistanceType? units) =>
       super.noSuchMethod(Invocation.method(#setUnits, [units]),
           returnValueForMissingStub: null);
 }
@@ -95,7 +102,7 @@ class MockLocationManager extends _i1.Mock implements _i4.LocationManager {
 /// A class which mocks [PlacesService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPlacesService extends _i1.Mock implements _i9.PlacesService {
+class MockPlacesService extends _i1.Mock implements _i8.PlacesService {
   MockPlacesService() {
     _i1.throwOnMissingStub(this);
   }
@@ -111,29 +118,29 @@ class MockPlacesService extends _i1.Mock implements _i9.PlacesService {
       (super.noSuchMethod(Invocation.getter(#prefixUrl), returnValue: '')
           as String);
   @override
-  _i6.Future<List<_i10.PlaceSearch>> getAutocomplete(String? search) =>
+  _i5.Future<List<_i9.PlaceSearch>> getAutocomplete(String? search) =>
       (super.noSuchMethod(Invocation.method(#getAutocomplete, [search]),
               returnValue:
-                  Future<List<_i10.PlaceSearch>>.value(<_i10.PlaceSearch>[]))
-          as _i6.Future<List<_i10.PlaceSearch>>);
+                  Future<List<_i9.PlaceSearch>>.value(<_i9.PlaceSearch>[]))
+          as _i5.Future<List<_i9.PlaceSearch>>);
   @override
-  _i6.Future<_i3.Place> getPlace(String? placeId, String? description) =>
+  _i5.Future<_i3.Place> getPlace(String? placeId, String? description) =>
       (super.noSuchMethod(Invocation.method(#getPlace, [placeId, description]),
               returnValue: Future<_i3.Place>.value(_FakePlace_1()))
-          as _i6.Future<_i3.Place>);
+          as _i5.Future<_i3.Place>);
   @override
-  _i6.Future<_i3.Place> getPlaceFromCoordinates(
+  _i5.Future<_i3.Place> getPlaceFromCoordinates(
           double? lat, double? lng, String? description) =>
       (super.noSuchMethod(
           Invocation.method(#getPlaceFromCoordinates, [lat, lng, description]),
           returnValue:
-              Future<_i3.Place>.value(_FakePlace_1())) as _i6
+              Future<_i3.Place>.value(_FakePlace_1())) as _i5
           .Future<_i3.Place>);
   @override
-  _i6.Future<_i3.Place> getPlaceFromAddress(
+  _i5.Future<_i3.Place> getPlaceFromAddress(
           String? address, String? description) =>
       (super.noSuchMethod(
               Invocation.method(#getPlaceFromAddress, [address, description]),
               returnValue: Future<_i3.Place>.value(_FakePlace_1()))
-          as _i6.Future<_i3.Place>);
+          as _i5.Future<_i3.Place>);
 }
