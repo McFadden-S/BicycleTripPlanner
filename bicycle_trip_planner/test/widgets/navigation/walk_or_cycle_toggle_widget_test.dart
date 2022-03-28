@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'setUp.dart';
+import '../../setUp.dart';
 
 void main() {
   setUpAll(() async {
@@ -13,8 +13,7 @@ void main() {
   });
 
   testWidgets('WalkOrCycleToggle has a button', (WidgetTester tester) async {
-    DirectionManager directionManager = DirectionManager();
-    await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
+    await pumpWidget(tester, WalkOrCycleToggle());
 
     final button = find.byType(ElevatedButton);
 
@@ -22,8 +21,7 @@ void main() {
   });
 
   testWidgets('WalkOrCycleToggle has a walk icon', (WidgetTester tester) async {
-    DirectionManager directionManager = DirectionManager();
-    await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
+    await pumpWidget(tester, WalkOrCycleToggle());
 
     final walkIcon = find.byIcon(Icons.directions_walk);
 
@@ -31,8 +29,7 @@ void main() {
   });
 
   testWidgets('WalkOrCycleToggle has a bike icon', (WidgetTester tester) async {
-    DirectionManager directionManager = DirectionManager();
-    await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
+    await pumpWidget(tester, WalkOrCycleToggle());
 
     final bikeIcon = find.byIcon(Icons.directions_bike);
 
@@ -58,7 +55,7 @@ void main() {
     if(!directionManager.ifCycling()){
       directionManager.toggleCycling();
     }
-    await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
+    await pumpWidget(tester, WalkOrCycleToggle());
 
     final walkIcon = tester.widget(find.byIcon(Icons.directions_walk));
     final bikeIcon = tester.widget(find.byIcon(Icons.directions_bike));
@@ -72,7 +69,7 @@ void main() {
     if(!directionManager.ifCycling()){
       directionManager.toggleCycling();
     }
-    await pumpWidget(tester, WalkOrCycleToggle(directionManager: directionManager));
+    await pumpWidget(tester, WalkOrCycleToggle());
 
     expect(directionManager.ifCycling(), true);
 

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'weather_model.dart';
+import '../models/weather_model.dart';
 
 class WeatherService {
   Future<WeatherResponse> getWeather(String city) async {

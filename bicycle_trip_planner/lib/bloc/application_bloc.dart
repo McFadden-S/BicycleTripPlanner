@@ -9,14 +9,13 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
-import 'package:bicycle_trip_planner/models/location.dart' as Loc;
+import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/models/place.dart';
@@ -27,28 +26,36 @@ import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:wakelock/wakelock.dart';
-
 import '../managers/NavigationManager.dart';
 
+/// Class Comment:
+/// ApplicationBloc is a responsible for combining most of the
+/// functionality of the application
+
 class ApplicationBloc with ChangeNotifier {
+  /// Service APIs being used
   var _placesService = PlacesService();
   var _directionsService = DirectionsService();
   var _stationsService = StationsService();
 
   Widget selectedScreen = HomeWidgets();
+  /// Screens available
   final screens = <String, Widget>{
     'home': HomeWidgets(),
     'navigation': Navigation(),
     'routePlanning': RoutePlanning(),
   };
 
+  // List of recent searches
   late List<PlaceSearch> searchResults = [];
 
+  /// Managers being used
   StationManager _stationManager = StationManager();
   MarkerManager _markerManager = MarkerManager();
   DirectionManager _directionManager = DirectionManager();
   RouteManager _routeManager = RouteManager();
   LocationManager _locationManager = LocationManager();
+
   CameraManager _cameraManager = CameraManager.instance;
   DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
@@ -58,6 +65,7 @@ class ApplicationBloc with ChangeNotifier {
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
 
+  /// Constructor that sets up the application bloc
   ApplicationBloc() {
     changeUnits();
     fetchCurrentLocation();
@@ -104,10 +112,11 @@ class ApplicationBloc with ChangeNotifier {
     updateStationsPeriodically();
   }
 
-
-
   // ********** Group Size **********
 
+  /// @param groupSize - int; new group size number
+  /// @return void
+  /// @effects - sets group size based on parameter
   Future<void> updateGroupSize(int groupSize) async {
     _routeManager.setGroupSize(groupSize);
     await filterStationMarkers();
@@ -116,22 +125,34 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Dialog **********
 
+  /// @param void
+  /// @return void
+  /// @effects - displays pop up with 2 options
   void showBinaryDialog() {
     _dialogManager.showBinaryChoice();
     notifyListeners();
   }
 
+  /// @param station - Station;
+  /// @return void
+  /// @effects - shows pop up with details of selected station
   void showSelectedStationDialog(Station station) {
     _dialogManager.setSelectedStation(station);
     _dialogManager.showSelectedStation();
     notifyListeners();
   }
 
+  /// @param void
+  /// @return void
+  /// @effects - clears the binary choice dialog
   void clearBinaryDialog() {
     _dialogManager.clearBinaryChoice();
     notifyListeners();
   }
 
+  /// @param void
+  /// @return void
+  /// @effects - clears the set station dialog
   void clearSelectedStationDialog() {
     _dialogManager.clearSelectedStation();
     notifyListeners();
@@ -144,10 +165,15 @@ class ApplicationBloc with ChangeNotifier {
     return searchResults;
   }
 
+  /// @param void
+  /// @return bool - whether the list of recent searches is empty
   bool ifSearchResult() {
     return searchResults.isNotEmpty;
   }
 
+  /// @param searchTerm - String; what is typed into search bar
+  /// @return
+  /// @effects - shows drop down menu of places based on what is typed in
   searchPlaces(String searchTerm) async {
     searchResults = await _placesService.getAutocomplete(searchTerm);
     searchResults.insert(
@@ -156,9 +182,11 @@ class ApplicationBloc with ChangeNotifier {
             description: SearchType.current.description,
             placeId: _locationManager.getCurrentLocation().placeId));
     notifyListeners();
-
   }
 
+  /// @param void
+  /// @return void
+  /// @effects - shows drop down menu of recent searches in search bar when clicked
   getDefaultSearchResult() async {
     searchResults = [];
 
@@ -183,7 +211,7 @@ class ApplicationBloc with ChangeNotifier {
             i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
       }
     } else {
-      // max of 6 recent searches in the drop down
+      // Max of 6 recent searches in the drop down
       for (int i = 0; i < 5; i++) {
         searchResults.insert(
             i + 1, PlaceSearch(description: names[i], placeId: placeIds[i]));
@@ -192,6 +220,11 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   station - Station; station selected by user
+  ///   uid - int; unique identifier for station
+  /// @return void
+  /// @effects - searches the selected station
   searchSelectedStation(Station station, int uid) async {
     // Do not set new location marker. Use the station marker
     viewStationMarker(station, uid);
@@ -207,6 +240,11 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   searchIndex - int; search number
+  ///   uid - int; unique identifier for station
+  /// @return void
+  /// @effects - searches the place input
   setSelectedSearch(int searchIndex, int uid) async {
     Place place = await _placesService.getPlace(
         searchResults[searchIndex].placeId,
@@ -222,17 +260,22 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Location **********
 
+  /// @param - void
+  /// @return void
+  /// @effects - listens for updates of user location regularly
   Future<void> updateLocationLive() async {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
-      // Print this if you suspect that data is loading more than expected
-      //print("I loaded!");
+
       _cameraManager.viewUser();
       await _updateDirections();
     });
   }
 
+  /// @param - void
+  /// @return void
+  /// @effects - gets the current location
   fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
@@ -242,6 +285,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return void
+  /// @effects - sets the current location to display marker
   setSelectedCurrentLocation() async {
     await fetchCurrentLocation();
 
@@ -253,27 +299,45 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   place - Place; the place we want to put marker
+  /// @return - void
+  /// @effects - puts a marker on the place passed in as parameter
   setLocationMarker(Place place, [int uid = -1]) async {
     _cameraManager.viewPlace(place);
     _markerManager.setPlaceMarker(place, uid);
     notifyListeners();
   }
 
+  /// @param -
+  ///   stop - Place; a stop
+  ///   uid - int; unique identifier for stop
+  /// @return - void
+  /// @effects - sets the place given
   setSelectedLocation(Place stop, int uid) {
     _routeManager.changeStop(uid, stop);
     notifyListeners();
   }
 
+  /// @param uid - int; unique identifier of marker
+  /// @return - void
+  /// @effects - clears the location marker
   clearLocationMarker(int uid) {
     _markerManager.clearMarker(uid);
     notifyListeners();
   }
 
+  /// @param uid - int; unique identifier of marker
+  /// @return - void
+  /// @effects - clears the marker for given uid
   clearSelectedLocation(int uid) {
     _routeManager.clearStop(uid);
     notifyListeners();
   }
 
+  /// @param uid - int; unique identifier of marker
+  /// @return - void
+  /// @effects - removes stop for given uid
   removeSelectedLocation(int uid) {
     _routeManager.removeStop(uid);
     notifyListeners();
@@ -283,15 +347,13 @@ class ApplicationBloc with ChangeNotifier {
 
   @visibleForTesting
   Future<Station> getStartStation(Place origin, [int groupSize = 1]) async {
-    Loc.Location startLocation = origin.geometry.location;
-    return await _stationManager.getPickupStationNear(LatLng(startLocation.lat, startLocation.lng), groupSize);
+    return await _stationManager.getPickupStationNear(origin.latlng, groupSize);
   }
 
   @visibleForTesting
   Future<Station> getEndStation(Place destination, [int groupSize = 1]) async {
-    Loc.Location endLocation = destination.geometry.location;
     return await _stationManager.getPickupStationNear(
-        LatLng(endLocation.lat, endLocation.lng), groupSize);
+        destination.latlng, groupSize);
   }
 
   @visibleForTesting
@@ -301,20 +363,27 @@ class ApplicationBloc with ChangeNotifier {
     List<String> intermediatePlaceId =
     intermediates.map((place) => place.placeId).toList();
 
-    Rou.Route startWalkRoute = await _directionsService.getWalkingRoutes(
-        origin.placeId, startStation.place.placeId);
+    Rou.Route startWalkRoute = await _directionsService.getRoutes(
+        origin.placeId, startStation.place.placeId, RouteType.walk);
     Rou.Route bikeRoute = await _directionsService.getRoutes(
         startStation.place.placeId,
         endStation.place.placeId,
+        RouteType.bike,
         intermediatePlaceId,
         _routeManager.ifOptimised());
-    Rou.Route endWalkRoute = await _directionsService.getWalkingRoutes(
-        endStation.place.placeId, destination.placeId);
+
+    Rou.Route endWalkRoute = await _directionsService.getRoutes(
+        endStation.place.placeId, destination.placeId, RouteType.walk);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showAllRoutes();
   }
 
+  /// @param -
+  ///   origin - Place; start point for route
+  ///   destination - Place; end point for route
+  /// @return - void
+  /// @effects - finds a route based on start and end places, adding any intermediate stops as well
   findRoute(Place origin, Place destination,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     _routeManager.setLoading(true);
@@ -331,7 +400,7 @@ class ApplicationBloc with ChangeNotifier {
   Future<int> getDurationFromToStation(
       Station startStation, Station endStation) async {
     Rou.Route route = await _directionsService.getRoutes(
-        startStation.place.placeId, endStation.place.placeId);
+        startStation.place.placeId, endStation.place.placeId, RouteType.bike);
     int durationSeconds = route.duration;
     int durationMinutes = (durationSeconds / 60).ceil();
     return durationMinutes;
@@ -349,11 +418,16 @@ class ApplicationBloc with ChangeNotifier {
     return endHeuristic / startHeuristic;
   }
 
+  /// @param -
+  ///   origin - Place; start point for route
+  ///   destination - Place; end point for route
+  /// @return - void
+  /// @effects - finds optimal route based on start and end point
   Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
     _routeManager.clearRouteMarkers();
+    _routeManager.clearPathwayMarkers();
     _routeManager.removeWaypoints();
-    _routeManager.setRouteMarkers();
     _routeManager.setLoading(true);
     Station startStation = await getStartStation(origin);
     Station endStation = await getEndStation(destination);
@@ -388,11 +462,15 @@ class ApplicationBloc with ChangeNotifier {
     List<Place> intermediates =
         intermediateStations.map((station) => station.place).toList();
 
+    _markerManager.setPlaceMarker(
+        _routeManager.getStart().getStop(), _routeManager.getStart().getUID());
+    _markerManager.setPlaceMarker(_routeManager.getDestination().getStop(),
+        _routeManager.getDestination().getUID());
+
     for (Place station in intermediates) {
-      setLocationMarker(
-          station, _routeManager.addCostWaypoint(station).getUID());
+      Stop stop = _routeManager.addCostWaypoint(station);
+      _markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
     }
-    clearStationMarkersNotInRoute();
 
     await setRoutes(
         origin, destination, startStation, endStation, intermediates);
@@ -400,6 +478,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - ends the route and goes back to home page
   void endRoute() {
     _navigationSubscription.cancel();
     Wakelock.disable();
@@ -425,30 +506,43 @@ class ApplicationBloc with ChangeNotifier {
     return _stationTimer;
   }
 
+  /// @param -
+  /// @return - void
+  /// @effects - ends station timer
   cancelStationTimer() {
     _stationTimer.cancel();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - update bike station data based on how much user wants it to
   updateStationsPeriodically() async {
     int duration = await _userSettings.stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
-      filterStationMarkers();
     });
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - sets up bike stations and displays them as markers on map
   setupStations() async {
     await updateStations();
-    filterStationMarkers();
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - updates bike stations based on TFL API
   updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
     filterStationMarkers();
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - filter the station markers to show the ones with bikes in and within selected range
   Future<void> filterStationMarkers() async {
     if (_navigationManager.ifNavigating()) {
       return;
@@ -470,6 +564,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - station - Station; station want to look at
+  /// @return - void
+  /// @effects - sets map to focus on a given station
   viewStationMarker(Station station, [int uid = -1]) {
     // Do this in case station marker is not on the map
     _markerManager.setStationMarkerWithUID(station, this, uid);
@@ -478,15 +575,24 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Screen Management **********
 
+  /// @param - void
+  /// @return - Widget; the selected screen
+  /// @effects - returns screen currently on
   Widget getSelectedScreen() {
     return selectedScreen;
   }
 
+  /// @param - screenName - String; sets app to this screen
+  /// @return - void
+  /// @effects - sets screen to one in parameter
   void setSelectedScreen(String screenName) {
     selectedScreen = screens[screenName] ?? HomeWidgets();
     notifyListeners();
   }
 
+  /// @param - backTo - String; sets app to this screen
+  /// @return - void
+  /// @effects - goes back to previous screen
   void goBack(String backTo) {
     clearMap();
 
@@ -496,25 +602,30 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Navigation Management **********
 
+  /// @param - void
+  /// @return - void
+  /// @effects - starts the navigation phase once route planned
   Future<void> startNavigation() async {
     _routeManager.setLoading(true);
     await fetchCurrentLocation();
     setSelectedScreen('navigation');
-    await _navigationManager.start();
-    await updateLocationLive();
-    _routeManager.showCurrentRoute();
     _userSettings.saveRoute(
         _routeManager.getStart().getStop(),
         _routeManager.getDestination().getStop(),
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
+    await _navigationManager.start();
+    print("I have finished start");
+    await updateLocationLive();
+    print("I update location");
+    _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
+    _navigationManager.setLoading(false);
+
     notifyListeners();
   }
 
   Future<void> _updateDirections() async {
-    // End subscription if not navigating?
-
     if (!_navigationManager.ifNavigating()) return;
 
     await fetchCurrentLocation();
@@ -545,9 +656,11 @@ class ApplicationBloc with ChangeNotifier {
               .map((waypoint) => waypoint.getStop().placeId)
               .toList());
     }
-    clearStationMarkersNotInRoute();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - sets the routes for the 3 routes (biking, and both walking)
   Future<void> setPartialRoutes(
       [List<String> first = const <String>[],
       List<String> intermediates = const <String>[]]) async {
@@ -557,50 +670,48 @@ class ApplicationBloc with ChangeNotifier {
     String startStationId = _navigationManager.getPickupStation().place.placeId;
     String endStationId = _navigationManager.getDropoffStation().place.placeId;
     Rou.Route startWalkRoute = _navigationManager.ifBeginning()
-        ? await _directionsService.getWalkingRoutes(
-            originId, startStationId, first, false)
+        ? await _directionsService.getRoutes(
+            originId, startStationId, RouteType.walk, first, false)
         : Rou.Route.routeNotFound();
 
     Rou.Route bikeRoute = _navigationManager.ifBeginning()
         ? await _directionsService.getRoutes(startStationId, endStationId,
-            intermediates, _routeManager.ifOptimised())
+            RouteType.bike, intermediates, _routeManager.ifOptimised())
         : _navigationManager.ifCycling()
             ? await _directionsService.getRoutes(originId, endStationId,
-                intermediates, _routeManager.ifOptimised())
+                RouteType.bike, intermediates, _routeManager.ifOptimised())
             : Rou.Route.routeNotFound();
 
     Rou.Route endWalkRoute = _navigationManager.ifEndWalking()
-        ? await _directionsService.getWalkingRoutes(originId, destinationId)
-        : await _directionsService.getWalkingRoutes(
-            endStationId, destinationId);
+        ? await _directionsService.getRoutes(
+            originId, destinationId, RouteType.walk)
+        : await _directionsService.getRoutes(
+            endStationId, destinationId, RouteType.walk);
 
     _routeManager.setRoutes(startWalkRoute, bikeRoute, endWalkRoute);
     _routeManager.showCurrentRoute(false);
   }
 
-  void clearStationMarkersNotInRoute() {
-    _markerManager.clearStationMarkers(_stationManager.getStations());
-
-    Station pickupStation = _navigationManager.getPickupStation();
-    Station dropOffStation = _navigationManager.getDropoffStation();
-
-    _markerManager.setStationMarker(pickupStation, this);
-    _markerManager.setStationMarker(dropOffStation, this);
-  }
-
   // ********** User Setting Management **********
 
+  /// @param - void
+  /// @return - bool; whether user is logged in
   bool isUserLogged() {
     return _databaseManager.isUserLogged();
   }
 
-  // Clears selected route and directions
+  /// @param - void
+  /// @return - void
+  /// @affects -  Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
     _directionManager.clear();
   }
 
+  /// @param - void
+  /// @return - bool; whether user is logged in
+  /// @affects - toggles distance unit to miles or km
   void changeUnits() async {
     DistanceType units = await _userSettings.distanceUnit();
     _locationManager.setUnits(units);
@@ -608,6 +719,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @affects - updates settings with new data
   void updateSettings() {
     cancelStationTimer();
     updateStationsPeriodically();
@@ -616,6 +730,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @affects - informs widgets about any variable changes
   void notifyListeningWidgets() {
     notifyListeners();
   }
