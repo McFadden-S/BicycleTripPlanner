@@ -299,6 +299,10 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   place - Place; the place we want to put marker
+  /// @return - void
+  /// @effects - puts a marker on the place passed in as parameter
   setLocationMarker(Place place, [int uid = -1]) async {
     _cameraManager.viewPlace(place);
     _markerManager.setPlaceMarker(place, uid);
@@ -414,8 +418,11 @@ class ApplicationBloc with ChangeNotifier {
     return endHeuristic / startHeuristic;
   }
 
-
-
+  /// @param -
+  ///   origin - Place; start point for route
+  ///   destination - Place; end point for route
+  /// @return - void
+  /// @effects - finds optimal route based on start and end point
   Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
     _routeManager.clearRouteMarkers();
