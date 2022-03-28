@@ -137,11 +137,11 @@ class _NavigationState extends State<Navigation> {
   }
 
   zoomOnUser() {
-    cameraManager.viewUser(zoomIn: 20.0);
+    cameraManager.viewUser(zoomIn: 17.0);
     navigationSubscription = locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
-      cameraManager.viewUser(zoomIn: 20.0);
+      cameraManager.viewUser(zoomIn: 17.0);
     });
   }
 

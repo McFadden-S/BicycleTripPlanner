@@ -460,6 +460,8 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
+    _navigationManager.setLoading(false);
+
     notifyListeners();
   }
 

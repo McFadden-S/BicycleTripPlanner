@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
@@ -35,6 +36,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   late int _recentRoutesCount;
 
   final RouteManager _routeManager = RouteManager();
+  final NavigationManager _navigationManager = NavigationManager();
   final UserSettings _userSettings = UserSettings();
   final DialogManager _dialogManager = DialogManager();
 
@@ -155,8 +157,10 @@ class _RoutePlanningState extends State<RoutePlanning> {
                             flex: 2,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
-                              child: ElevatedButton(
-                                  child: Icon(Icons.directions_bike),
+                              child: _navigationManager.ifLoading()
+                                  ? CircularProgressIndicator(color: Colors.blueGrey)
+                                  : ElevatedButton(
+                                  child: const Icon(Icons.directions_bike),
                                   onPressed: () => startJourney(applicationBloc),
                                   style: ButtonStyle(
                                       backgroundColor: MaterialStateProperty.all(Colors.green)
@@ -242,34 +246,37 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   startJourney(ApplicationBloc applicationBloc) {
-    if (_routeManager.ifRouteSet()) {
-      if (_routeManager
-          .getStart()
-          .getStop()
-          .description !=
-          SearchType.current.description) {
-        _dialogManager.setBinaryChoice(
-          "Do you want to walk to start or be routed to it?",
-          "Walk",
-              () {
-            _routeManager
-                .setWalkToFirstWaypoint(true);
-          },
-          "Route",
-              () {
-            _routeManager
-                .setWalkToFirstWaypoint(false);
-          },
-        );
+    if(!_navigationManager.ifLoading()) {
+      if (_routeManager.ifRouteSet()) {
+        _navigationManager.setLoading(true);
+        if (_routeManager
+            .getStart()
+            .getStop()
+            .description !=
+            SearchType.current.description) {
+          _dialogManager.setBinaryChoice(
+            "Do you want to walk to start or be routed to it?",
+            "Walk",
+                () {
+              _routeManager
+                  .setWalkToFirstWaypoint(true);
+            },
+            "Route",
+                () {
+              _routeManager
+                  .setWalkToFirstWaypoint(false);
+            },
+          );
 
-        applicationBloc.showBinaryDialog();
+          applicationBloc.showBinaryDialog();
+        }
+
+        applicationBloc.startNavigation();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("No route could be found!"),
+            ));
       }
-
-      applicationBloc.startNavigation();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("No route could be found!"),
-      ));
     }
   }
 }
