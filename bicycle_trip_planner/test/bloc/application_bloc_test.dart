@@ -30,7 +30,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert' as convert;
 
 @GenerateMocks(
-    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager, MarkerManager, RouteManager])
+    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager, MarkerManager, RouteManager, NavigationManager])
 void main() {
   var locationManager = MockLocationManager();
   var placesServices = MockPlacesService();
@@ -41,6 +41,7 @@ void main() {
   var cameraManager = MockCameraManager();
   var markerManager = MockMarkerManager();
   var mockRouteManager = MockRouteManager();
+  var mockNavigationManager = MockNavigationManager();
 
   final routeManager = RouteManager();
   final navigationManager =
@@ -1972,7 +1973,7 @@ void main() {
   var appNavigationBloc = ApplicationBloc.forNavigationMock(locationManager, placesServices,
       routeManager, navigationManager, directionsService, stationManager, cameraManager);
 
-  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings, cameraManager, markerManager, mockRouteManager);
+  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings, cameraManager, markerManager, mockRouteManager, mockNavigationManager);
   group("Navigation Tests", () {
     test("Application bloc is initialized", () async {
       await untilCalled(locationManager.setCurrentLocation(currentPlace));
@@ -2355,5 +2356,33 @@ void main() {
       appBloc.removeSelectedLocation(uid);
       verify(mockRouteManager.removeStop(uid));
     });
+  });
+
+  group("Route tests",(){
+    final origin = Place(geometry: Geometry(location: loc.Location(lat: 10.0,lng: 10.0)), name: "origin", placeId: "origin", description: "origin");
+    final destination = Place(geometry: Geometry(location: loc.Location(lat: 10.0,lng: 10.0)), name: "destination", placeId: "destination", description: "destination");
+
+    test("Get start station",() async {
+      final station = Station(id: 1, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 0, totalDocks: 10);
+      when(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1)).thenAnswer((realInvocation) async=> station);
+      appBloc.getStartStation(origin);
+      await untilCalled(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
+      verify(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
+
+    });
+
+    test("Get end station",() async {
+      final station = Station(id: 1, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 0, totalDocks: 10);
+      when(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1)).thenAnswer((realInvocation) async=> station);
+      appBloc.getEndStation(destination);
+      await untilCalled(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
+      verify(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
+    });
+
+    test("Find route",(){
+
+      appBloc.findRoute(origin, destination);
+    });
+
   });
 }

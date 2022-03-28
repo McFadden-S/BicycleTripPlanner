@@ -65,7 +65,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager){
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager){
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -73,6 +73,7 @@ class ApplicationBloc with ChangeNotifier {
     _cameraManager = cameraManager;
     _markerManager = markerManager;
     _routeManager = routeManager;
+    _navigationManager = navigationManager;
   }
 
   @visibleForTesting
@@ -272,11 +273,25 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Routes **********
 
+  @visibleForTesting
+  Future<Station> getStartStation(Place origin, [int groupSize = 1]) async {
+    Loc.Location startLocation = origin.geometry.location;
+    return await _stationManager.getPickupStationNear(
+        LatLng(startLocation.lat, startLocation.lng), groupSize);
+  }
+
+  @visibleForTesting
+  Future<Station> getEndStation(Place destination, [int groupSize = 1]) async {
+    Loc.Location endLocation = destination.geometry.location;
+    return await _stationManager.getPickupStationNear(
+        LatLng(endLocation.lat, endLocation.lng), groupSize);
+  }
+
   findRoute(Place origin, Place destination,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     _routeManager.setLoading(true);
-    Station startStation = await _getStartStation(origin);
-    Station endStation = await _getEndStation(destination);
+    Station startStation = await getStartStation(origin);
+    Station endStation = await getEndStation(destination);
 
     await _setRoutes(origin, destination, startStation, endStation,
         intermediates, groupSize);
@@ -323,26 +338,14 @@ class ApplicationBloc with ChangeNotifier {
     return endHeuristic / startHeuristic;
   }
 
-  Future<Station> _getStartStation(Place origin, [int groupSize = 1]) async {
-    Loc.Location startLocation = origin.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(startLocation.lat, startLocation.lng), groupSize);
-  }
-
-  Future<Station> _getEndStation(Place destination, [int groupSize = 1]) async {
-    Loc.Location endLocation = destination.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(endLocation.lat, endLocation.lng), groupSize);
-  }
-
   Future<void> findCostEfficientRoute(Place origin, Place destination,
       [int groupSize = 1]) async {
     _routeManager.clearRouteMarkers();
     _routeManager.removeWaypoints();
     _routeManager.setRouteMarkers();
     _routeManager.setLoading(true);
-    Station startStation = await _getStartStation(origin);
-    Station endStation = await _getEndStation(destination);
+    Station startStation = await getStartStation(origin);
+    Station endStation = await getEndStation(destination);
 
     Station curStation = startStation;
 
@@ -426,7 +429,7 @@ class ApplicationBloc with ChangeNotifier {
       return;
     }
 
-    double range = await UserSettings().nearbyStationsRange();
+    double range = await _userSettings.nearbyStationsRange();
     int groupSize = _routeManager.getGroupSize();
 
     List<Station> nearbyStations = _stationManager.getNearStations(range);
