@@ -33,6 +33,7 @@ class RoutePlanning extends StatefulWidget {
 class _RoutePlanningState extends State<RoutePlanning> {
   bool showRouteCard = true;
   bool isOptimised = false;
+  bool loadRoute = true;
   late int _recentRoutesCount;
 
   final RouteManager _routeManager = RouteManager();
@@ -60,7 +61,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: Column(
               children: [
                 Visibility(
-                    child: RoutePlanningCard(),
+                    child: RoutePlanningCard(loadRoute: loadRoute),
                     maintainState: true,
                     visible: showRouteCard),
                 GestureDetector(
@@ -257,11 +258,13 @@ class _RoutePlanningState extends State<RoutePlanning> {
             "Walk",
             () {
               _routeManager.setWalkToFirstWaypoint(true);
+              loadRoute = false;
               applicationBloc.startNavigation();
             },
             "Route",
             () {
               _routeManager.setWalkToFirstWaypoint(false);
+              loadRoute = false;
               applicationBloc.startNavigation();
             },
           );

@@ -11,7 +11,9 @@ import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:provider/provider.dart';
 
 class RoutePlanningCard extends StatefulWidget {
-  const RoutePlanningCard({Key? key}) : super(key: key);
+  final loadRoute;
+  const RoutePlanningCard({Key? key, required this.loadRoute})
+      : super(key: key);
 
   @override
   _RoutePlanningCardState createState() => _RoutePlanningCardState();
@@ -79,17 +81,19 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if (ifRouteSetAndChanged()) {
-      polylineManager.clearPolyline();
-      ifStartFromCurrentLocation()
-          ? routeManager.setStartFromCurrentLocation(true)
-          : routeManager.setStartFromCurrentLocation(false);
-      findRoute(applicationBloc);
-      routeManager.clearChanged();
-    } else if (ifNoRouteAndChanged()) {
-      polylineManager.clearPolyline();
-      routeManager.clearRouteMarkers();
-      routeManager.clearChanged();
+    if (widget.loadRoute) {
+      if (ifRouteSetAndChanged()) {
+        polylineManager.clearPolyline();
+        ifStartFromCurrentLocation()
+            ? routeManager.setStartFromCurrentLocation(true)
+            : routeManager.setStartFromCurrentLocation(false);
+        findRoute(applicationBloc);
+        routeManager.clearChanged();
+      } else if (ifNoRouteAndChanged()) {
+        polylineManager.clearPolyline();
+        routeManager.clearRouteMarkers();
+        routeManager.clearChanged();
+      }
     }
 
     return Container(
