@@ -15,7 +15,7 @@ void main() {
   });
 
   test('ensure polyline is added when requested', () {
-    List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
+    List<PointLatLng> points = [const PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length, 0);
     polyLineManager.setPolyline(points, Colors.grey);
     expect(polyLineManager.getPolyLines().length, 1);
@@ -33,7 +33,7 @@ void main() {
   });
 
   test('be able to add multiple polylines', () {
-    List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
+    List<PointLatLng> points = [const PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length, 0);
     for (int i = 0; i < 100; i++) {
       polyLineManager.addPolyline(points, Colors.grey);
@@ -42,7 +42,7 @@ void main() {
   });
 
   test('be able to remove multiple polylines from addPolyline', () {
-    List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
+    List<PointLatLng> points = [const PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length, 0);
     for (int i = 0; i < 100; i++) {
       polyLineManager.addPolyline(points, Colors.grey);
@@ -53,7 +53,7 @@ void main() {
   });
 
   test('ensure polyline is cleared when created with setPolyline', () {
-    List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
+    List<PointLatLng> points = [const PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length, 0);
     polyLineManager.setPolyline(points, Colors.grey);
     expect(polyLineManager.getPolyLines().length, 1);
@@ -62,7 +62,7 @@ void main() {
   });
 
   test('ensure setPolyline replaces old polyline', () {
-    List<PointLatLng> points = [PointLatLng(51.511448, -0.116414)];
+    List<PointLatLng> points = [const PointLatLng(51.511448, -0.116414)];
     expect(polyLineManager.getPolyLines().length, 0);
     for (int i = 0; i < 100; i++) {
       polyLineManager.addPolyline(points, Colors.grey);

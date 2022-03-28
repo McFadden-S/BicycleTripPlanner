@@ -6,36 +6,24 @@ import 'dart:convert' as convert;
 import '../auth/Keys.dart';
 
 class DirectionsService {
-  final String key = Keys.getApiKey();
-  Future<Route> getRoutes(String origin, String destination,
+  String key = Keys.API_KEY;
+  final String urlPrefix =
+      'https://maps.googleapis.com/maps/api/directions/json?';
+
+  Future<Route> getRoutes(
+      String origin, String destination, RouteType routeType,
       [List<String> intermediates = const <String>[],
       bool optimised = true]) async {
-
     var waypoints = _generateWaypoints(intermediates, optimised);
     var url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=bicycling&key=$key';
+        '${urlPrefix}origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=${routeType.mode}&key=$key';
 
     var response = await http.get(Uri.parse(url));
 
     var json = convert.jsonDecode(response.body);
     var jsonResults = json['routes'][0] as Map<String, dynamic>;
 
-    return Route.fromJson(jsonResults, RouteType.bike);
-  }
-
-  Future<Route> getWalkingRoutes(String origin, String destination,
-      [List<String> intermediates = const <String>[],
-      bool optimised = true]) async {
-    var waypoints = _generateWaypoints(intermediates, optimised);
-    var url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=place_id:$origin&destination=place_id:$destination$waypoints&mode=walking&key=$key';
-
-    var response = await http.get(Uri.parse(url));
-
-    var json = convert.jsonDecode(response.body);
-    var jsonResults = json['routes'][0] as Map<String, dynamic>;
-
-    return Route.fromJson(jsonResults, RouteType.walk);
+    return Route.fromJson(jsonResults, routeType);
   }
 
   String _generateWaypoints(List<String> intermediates,

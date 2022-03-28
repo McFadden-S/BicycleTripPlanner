@@ -36,10 +36,10 @@ class DialogManager {
 
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final DialogManager _dialogManager = DialogManager._internal();
 
-  // @param void
-  // @return DialogManager
+  /// Singleton Constructor Override
   factory DialogManager() {
     return _dialogManager;
   }

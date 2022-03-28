@@ -22,11 +22,12 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
       return  const SizedBox.shrink();
     } else {
       return Dialog(
+        key: Key('binaryChoiceDialog'),
           backgroundColor: ThemeStyle.cardColor,
           shape:
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           child: Container(
-              height: 200,
+              height: MediaQuery.of(context).size.height * 0.3,
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Column(
@@ -40,6 +41,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                         )),
                     Expanded(
                       child: ElevatedButton(
+                        key: Key('Binary Button 1'),
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromWidth(double.infinity),
                             primary: ThemeStyle.buttonPrimaryColor
@@ -56,6 +58,7 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                     const SizedBox(height: 10),
                     Expanded(
                       child: ElevatedButton(
+                        key: Key('Binary Button 2'),
                         style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromWidth(double.infinity),
                             primary: ThemeStyle.buttonPrimaryColor

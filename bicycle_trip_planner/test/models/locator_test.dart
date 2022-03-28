@@ -4,22 +4,19 @@ import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/models/locator.dart';
 import 'package:mockito/mockito.dart';
-import 'locator_test.mocks.dart';
 
-
-@GenerateMocks([Geolocator])
-main(){
+main() {
   final locator = Locator();
 
-  test('ensure accuracy is a LocationAccuracy', (){
+  test('ensure accuracy is a LocationAccuracy', () {
     expect(locator.settings.runtimeType, LocationSettings);
   });
 
-  test('ensure accuracy is a LocationAccuracy', (){
+  test('ensure accuracy is a LocationAccuracy', () {
     expect(locator.accuracy.runtimeType, LocationAccuracy);
   });
 
-  test('ensure distanceFilter is an int', (){
+  test('ensure distanceFilter is an int', () {
     expect(locator.distanceFilter.runtimeType, int);
   });
 }

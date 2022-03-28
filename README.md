@@ -1,2 +1,23 @@
 # BicycleTripPlanner
-Mobile application to plan rental bicycle trips throughout London 
+## It's Not a Bug, It's a Feature
+A mobile application to plan rental bicycle trips throughout London 
+
+###### Authors
+- Shae McFadden
+- Sean Pan
+- Ahmed Banko
+- Linda Melichercikova
+- Riccardo Gugliermini
+- Aadit Jain
+- Aarjav Jain
+- Edward Reamer
+- Michael Mulianto
+- Alvin Lam
+
+###### Deployment
+Prefered Setting: Pixel 4, Android 12.0
+Android was decided because the current location for IOS emulator is hard coded in America however the application works fine on iPhone devices
+
+Deployment Demo URL: https://appetize.io/app/dm74fua5zw84d7a402cg13a70c?device=pixel4&osVersion=12.0&scale=100&deviceColor=black
+
+

@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +18,7 @@ class CameraManager {
 
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
+  final MarkerManager markerManager = MarkerManager();
 
   //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
@@ -68,11 +70,11 @@ class CameraManager {
   //********** Public **********
 
   ///Sets the position of the camera on the map
-  void setCameraPosition(LatLng position) {
+  void setCameraPosition(LatLng position, {double zoomIn = 16}) {
     googleMapController.animateCamera(
       CameraUpdate.newCameraPosition(CameraPosition(
         target: position,
-        zoom: 16.0,
+        zoom: zoomIn,
       )),
     );
   }
@@ -92,18 +94,15 @@ class CameraManager {
   }
 
   /// Views the route to a location
-  Future<void> goToPlace(double lat, double lng, Map<String, dynamic> boundsNe,
+  Future<void> goToPlace(LatLng latLng, Map<String, dynamic> boundsNe,
       Map<String, dynamic> boundsSw) async {
-    setRouteCamera(LatLng(lat, lng), boundsSw, boundsNe);
+    setRouteCamera(latLng, boundsSw, boundsNe);
     viewRoute();
   }
 
   /// Views a Place on the Map
   Future<void> viewPlace(Place place) async {
-    final double lat = place.geometry.location.lat;
-    final double lng = place.geometry.location.lng;
-
-    setCameraPosition(LatLng(lat, lng));
+    setCameraPosition(place.latlng);
   }
 
   /// Views the Route
@@ -114,8 +113,7 @@ class CameraManager {
   }
 
   /// Sets the camera to the user's location
-  Future<void> viewUser() async {
-    LatLng userLocation = await locationManager.locate();
-    setCameraPosition(userLocation);
+  void viewUser({double zoomIn = 16}) {
+    setCameraPosition(markerManager.getUserMarker().position, zoomIn: zoomIn);
   }
 }

@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,16 +39,6 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
         Navigator.of(context).maybePop();
         routeClicked(applicationBloc, widget.valueRoute, context);
       },
-      onDoubleTap: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
-        }
-      },
-      onLongPress: () {
-        if (DatabaseManager().isUserLogged()) {
-          DatabaseManager().removeFavouriteRoute(widget.keyRoute);
-        }
-      },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
         child: Card(
@@ -66,7 +58,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                          "\t\t${widget.valueRoute.getStart().getStop().name}",
+                          "\t\t${widget.valueRoute.getStart().getStop().description}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -103,7 +95,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                            "\t\t${widget.valueRoute.getWaypoints().map((e) => e.getStop().name).join(", ")}",
+                            "\t\t${widget.valueRoute.getWaypoints().map((e) => e.getStop().description).join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 15.0,
@@ -134,7 +126,7 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 80.0,
                         child: Text(
-                          "\t\t${widget.valueRoute.getDestination().getStop().name}",
+                          "\t\t${widget.valueRoute.getDestination().getStop().description}",
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 15.0,
@@ -172,12 +164,20 @@ class _FavouriteRouteCardState extends State<FavouriteRouteCard> {
 Future<void> routeClicked(
     ApplicationBloc appBloc, Pathway pathway, context) async {
   RouteManager routeManager = RouteManager();
+  MarkerManager markerManager = MarkerManager();
+  routeManager.clearPathwayMarkers();
+  routeManager.clearRouteMarkers();
   routeManager.getStart().setStop(pathway.getStart().getStop());
   routeManager.getDestination().setStop(pathway.getDestination().getStop());
   routeManager.removeWaypoints();
   pathway.getWaypoints().forEach((element) {
-    routeManager.addWaypoint(element.getStop());
+    Stop stop = routeManager.addWaypoint(element.getStop());
+    markerManager.setPlaceMarker(stop.getStop(), stop.getUID());
   });
+  markerManager.setPlaceMarker(
+      routeManager.getStart().getStop(), routeManager.getStart().getUID());
+  markerManager.setPlaceMarker(routeManager.getDestination().getStop(),
+      routeManager.getDestination().getUID());
 
   appBloc.setSelectedScreen('routePlanning');
 

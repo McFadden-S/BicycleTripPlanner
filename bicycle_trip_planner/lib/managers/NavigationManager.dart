@@ -1,12 +1,13 @@
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
-import 'package:bicycle_trip_planner/models/location.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:geolocator/geolocator.dart' as geo;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+/// Class Comment:
+/// NavigationManager is a manager class that manages the data required for navigation
 
 class NavigationManager {
   final _locationManager = LocationManager();
@@ -23,11 +24,15 @@ class NavigationManager {
   bool _passedDropOffStation = false;
   bool _passedPickUpStation = false;
 
+  bool _isLoading = false;
+
   //********** Singleton **********
 
+  /// Holds Singleton Instance
   static final NavigationManager _navigationManager =
       NavigationManager._internal();
 
+  /// Singleton Constructor Override
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
@@ -68,20 +73,23 @@ class NavigationManager {
     _routeManager.changeStart(_locationManager.getCurrentLocation());
   }
 
-  //TODO get rid of parameters since they are from _routeManager
-  _updateRoute(Place origin,
-      [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location startLocation = origin.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
+  _updateRoute() async {
+    LatLng startLocation = _routeManager.getStart().getStop().latlng;
+    LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
-    updatePickUpDropOffStations(startLocation, endLocation, groupSize);
-
-    // await setPartialRoutes([],
-    //     (intermediates.map((intermediate) => intermediate.placeId)).toList());
+    updatePickUpDropOffStations(
+        startLocation, endLocation, _routeManager.getGroupSize());
   }
 
   //********** Public **********
+
+  bool ifLoading() {
+    return _isLoading;
+  }
+
+  void setLoading(bool loading) {
+    _isLoading = loading;
+  }
 
   Station getPickupStation() {
     return _pickUpStation;
@@ -109,32 +117,35 @@ class NavigationManager {
 
   Future<void> start() async {
     _isNavigating = true;
+    print("I START NAVIGATING");
     if (_routeManager.ifStartFromCurrentLocation()) {
-      await setInitialPickUpDropOffStations();
+      print("I START FROM CURRENT LOCATION");
+      await setInitialPickUpDropOffStations(
+          _routeManager.getStart().getStop().latlng,
+          _routeManager.getDestination().getStop().latlng);
+      print("I SET STATION");
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
-        await setInitialPickUpDropOffStations();
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
+        await setInitialPickUpDropOffStations(
+            firstStop.latlng, _routeManager.getDestination().getStop().latlng);
+        await updateRouteWithWalking();
         updateRouteWithWalking();
       } else {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
         await updateRoute();
-        await setInitialPickUpDropOffStations();
+        await setInitialPickUpDropOffStations(
+            _routeManager.getStart().getStop().latlng,
+            _routeManager.getDestination().getStop().latlng);
       }
     }
   }
 
   Future<void> updateRoute() async {
     await _updateStartLocationAndStations();
-    await _updateRoute(
-        _routeManager.getStart().getStop(),
-        _routeManager
-            .getWaypoints()
-            .map((waypoint) => waypoint.getStop())
-            .toList(),
-        _routeManager.getGroupSize());
+    await _updateRoute();
   }
 
   Future<void> updateRouteWithWalking() async {
@@ -188,15 +199,14 @@ class NavigationManager {
 
   walkToFirstLocation(Place first,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
-    Location firstLocation = first.geometry.location;
-    Location endLocation =
-        _routeManager.getDestination().getStop().geometry.location;
+    LatLng firstLocation = first.latlng;
+    LatLng endLocation = _routeManager.getDestination().getStop().latlng;
 
     updatePickUpDropOffStations(firstLocation, endLocation, groupSize);
   }
 
   Future<void> updatePickUpDropOffStations(
-      Location startLocation, Location endLocation, int groupSize) async {
+      LatLng startLocation, LatLng endLocation, int groupSize) async {
     // Looks like some code duplication here too??
     if (_pickUpStation.bikes < groupSize && !_passedPickUpStation) {
       await setNewPickUpStation(startLocation, groupSize);
@@ -206,27 +216,25 @@ class NavigationManager {
     }
   }
 
-  Future<void> setNewPickUpStation(Location location,
+  Future<void> setNewPickUpStation(LatLng location, [int groupSize = 1]) async {
+    _pickUpStation =
+        await _stationManager.getPickupStationNear(location, groupSize);
+  }
+
+  Future<void> setNewDropOffStation(LatLng location,
       [int groupSize = 1]) async {
-    _pickUpStation = await _stationManager.getPickupStationNear(
-        LatLng(location.lat, location.lng), groupSize);
+    _dropOffStation =
+        await _stationManager.getDropoffStationNear(location, groupSize);
   }
 
-  Future<void> setNewDropOffStation(Location location,
-      [int groupSize = 1]) async {
-    _dropOffStation = await _stationManager.getDropoffStationNear(
-        LatLng(location.lat, location.lng), groupSize);
-  }
-
-  Future<void> setInitialPickUpDropOffStations() async {
-    setNewPickUpStation(_routeManager.getStart().getStop().geometry.location,
+  Future<void> setInitialPickUpDropOffStations(
+      LatLng startLocation, LatLng endLocation) async {
+    setNewPickUpStation(_routeManager.getStart().getStop().latlng,
         _routeManager.getGroupSize());
-    setNewDropOffStation(
-        _routeManager.getDestination().getStop().geometry.location,
+    setNewDropOffStation(_routeManager.getDestination().getStop().latlng,
         _routeManager.getGroupSize());
   }
 
-  // TODO: Include in relevant places and clear up any left behidn variables
   void clear() {
     _isBeginning = true;
     _isCycling = false;
