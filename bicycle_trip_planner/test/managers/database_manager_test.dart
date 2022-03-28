@@ -1,6 +1,7 @@
 
 import 'dart:async';
 
+import 'package:bicycle_trip_planner/models/pathway.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
@@ -80,7 +81,7 @@ main()  async {
 
 
     MockFirebaseDatabase.instance.ref().set(fakeData);
-    setUpAll(() async {
+    setUp(() async {
       WidgetsFlutterBinding.ensureInitialized();
 
       final googleSignIn = MockGoogleSignIn();
@@ -119,12 +120,15 @@ main()  async {
       expect(stationFromFakeDatabase.removeWhere((e) => e == null), null);
     });
 
-    /*test('Remove favourite route', () async {
-      await databaseManager.removeFavouriteRoute(routeID);
+    test('Remove favourite route', () async {
+      Future<bool> promise = databaseManager.removeFavouriteRoute(routeID);
       final stationFromFakeDatabase = await databaseManager
           .getFavouriteRoutes();
-      expect(stationFromFakeDatabase[routeID], equals(null));
-    });*/
+      promise.then((v){
+        expect(stationFromFakeDatabase[routeID], equals(null));
+      });
+
+    });
 
     test('Add favourite station', () async {
       await databaseManager.addToFavouriteStations(260);
@@ -143,17 +147,14 @@ main()  async {
           ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
     });
 
-    /*test('Get favourite routes', () async {
+    test('Get favourite routes', () async {
       final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
       var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
+      Future<Map<String, Pathway>> future = databaseManager.getFavouriteRoutes();
       expect(routeFromFakeDatabase.length, mockRoute?.length);
       expect(DeepCollectionEquality().equals(
           routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
-    });*/
-
-
-
-
+    });
 
     /*test('Add favourite route',() async{
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
