@@ -17,15 +17,13 @@ import 'firebase_mocks/firebase_auth_mocks.dart';
 
 
 @GenerateMocks([FirebaseDatabase, FirebaseAuth])
-main()  {
-  group("Database Manager", ()
-  {
+main()  async {
     late Timer timeout;
     setupFirebaseMocks();
     setupFirebaseAuthMocks();
 
 
-    //await Firebase.initializeApp();
+    await Firebase.initializeApp();
 
     const userId = 'userId';
     const userName = 'Elon musk';
@@ -111,23 +109,6 @@ main()  {
       timeout.cancel();
     });
 
-    test('Get favourite stations', () async {
-      final stationsFromFakeDatabase = await databaseManager
-          .getFavouriteStations();
-      var mockStations = fakeData['users']!['userId']!['favouriteStations']
-          ?.values.toList();
-      expect(
-          ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
-    });
-
-    test('Get favourite routes', () async {
-      final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-      var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
-      expect(routeFromFakeDatabase.length, mockRoute?.length);
-      expect(DeepCollectionEquality().equals(
-          routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
-    });
-
     test('Remove favourite station', () async {
       await databaseManager.removeFavouriteStation(
           favouriteStationsID.toString());
@@ -138,23 +119,41 @@ main()  {
       expect(stationFromFakeDatabase.removeWhere((e) => e == null), null);
     });
 
-    test('Remove favourite route', () async {
+    /*test('Remove favourite route', () async {
       await databaseManager.removeFavouriteRoute(routeID);
       final stationFromFakeDatabase = await databaseManager
           .getFavouriteRoutes();
       expect(stationFromFakeDatabase[routeID], equals(null));
-    });
+    });*/
 
     test('Add favourite station', () async {
-      final initialStationFromFakeDatabase = await databaseManager
-          .getFavouriteStations();
-
       await databaseManager.addToFavouriteStations(260);
 
       final stationFromFakeDatabase = await databaseManager
           .getFavouriteStations();
       expect(stationFromFakeDatabase.last.toString(), equals("260"));
     });
+
+    test('Get favourite stations', () async {
+      final stationsFromFakeDatabase = await databaseManager
+          .getFavouriteStations();
+      var mockStations = fakeData['users']!['userId']!['favouriteStations']
+          ?.values.toList();
+      expect(
+          ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
+    });
+
+    /*test('Get favourite routes', () async {
+      final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
+      var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
+      expect(routeFromFakeDatabase.length, mockRoute?.length);
+      expect(DeepCollectionEquality().equals(
+          routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
+    });*/
+
+
+
+
 
     /*test('Add favourite route',() async{
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
@@ -193,5 +192,4 @@ main()  {
     print(databaseManager.getFavouriteRoutes());
     //Need to add place data to create test
   });*/
-  });
 }
