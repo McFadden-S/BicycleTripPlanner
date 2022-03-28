@@ -33,6 +33,7 @@ class RoutePlanning extends StatefulWidget {
 class _RoutePlanningState extends State<RoutePlanning> {
   bool showRouteCard = true;
   bool isOptimised = false;
+  bool loadRoute = true;
   late int _recentRoutesCount;
 
   final RouteManager _routeManager = RouteManager();
@@ -60,7 +61,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
             child: Column(
               children: [
                 Visibility(
-                    child: RoutePlanningCard(),
+                    child: RoutePlanningCard(loadRoute: loadRoute),
                     maintainState: true,
                     visible: showRouteCard),
                 GestureDetector(
@@ -89,8 +90,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                                 : Container(),
                             !showRouteCard ? SizedBox(height: 10) : Container(),
                             CurrentLocationButton(
-                              key: Key("currentLocationButton")
-                            ),
+                                key: Key("currentLocationButton")),
                             SizedBox(height: 10),
                             _routeManager.ifRouteSet() &&
                                     _routeManager.getWaypoints().length > 1 &&
@@ -123,26 +123,26 @@ class _RoutePlanningState extends State<RoutePlanning> {
                   child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                    Column(
-                      children: [
-                        DatabaseManager().isUserLogged()
-                            ? CircleButton(
-                            iconIn: Icons.star,
-                            iconColor: ThemeStyle.primaryIconColor,
-                            onButtonClicked: () => saveRoute(context))
-                            : SizedBox.shrink(),
-                        SizedBox(height: 10),
-                        _recentRoutesCount != 0
-                            ? CircleButton(
-                            iconIn: Icons.history,
-                            iconColor: ThemeStyle.primaryIconColor,
-                            onButtonClicked: () => showRecentRoutes())
-                            : const SizedBox.shrink(),
-                      ],
-                    ),
-                    Spacer(),
-                    CustomBackButton(context: context, backTo: 'home'),
-                  ]),
+                        Column(
+                          children: [
+                            DatabaseManager().isUserLogged()
+                                ? CircleButton(
+                                    iconIn: Icons.star,
+                                    iconColor: ThemeStyle.primaryIconColor,
+                                    onButtonClicked: () => saveRoute(context))
+                                : SizedBox.shrink(),
+                            SizedBox(height: 10),
+                            _recentRoutesCount != 0
+                                ? CircleButton(
+                                    iconIn: Icons.history,
+                                    iconColor: ThemeStyle.primaryIconColor,
+                                    onButtonClicked: () => showRecentRoutes())
+                                : const SizedBox.shrink(),
+                          ],
+                        ),
+                        Spacer(),
+                        CustomBackButton(context: context, backTo: 'home'),
+                      ]),
                 ),
                 CustomBottomSheet(
                   child: Padding(
@@ -151,21 +151,23 @@ class _RoutePlanningState extends State<RoutePlanning> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(width: 10),
-                          Expanded(
-                              child: DistanceETACard()),
+                          Expanded(child: DistanceETACard()),
                           Expanded(
                             flex: 2,
                             child: Padding(
                               padding: const EdgeInsets.only(right: 10),
                               child: _navigationManager.ifLoading()
-                                  ? CircularProgressIndicator(color: Colors.blueGrey)
+                                  ? CircularProgressIndicator(
+                                      color: Colors.blueGrey)
                                   : ElevatedButton(
-                                  child: const Icon(Icons.directions_bike),
-                                  onPressed: () => startJourney(applicationBloc),
-                                  style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(Colors.green)
-                                  ),
-                              ),
+                                      child: const Icon(Icons.directions_bike),
+                                      onPressed: () =>
+                                          startJourney(applicationBloc),
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  Colors.green)),
+                                    ),
                             ),
                           ),
                         ]),
@@ -246,36 +248,32 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 
   startJourney(ApplicationBloc applicationBloc) {
-    if(!_navigationManager.ifLoading()) {
+    if (!_navigationManager.ifLoading()) {
       if (_routeManager.ifRouteSet()) {
         _navigationManager.setLoading(true);
-        if (_routeManager
-            .getStart()
-            .getStop()
-            .description !=
+        if (_routeManager.getStart().getStop().description !=
             SearchType.current.description) {
           _dialogManager.setBinaryChoice(
             "Do you want to walk to start or be routed to it?",
             "Walk",
-                () {
-              _routeManager
-                  .setWalkToFirstWaypoint(true);
+            () {
+              _routeManager.setWalkToFirstWaypoint(true);
+              loadRoute = false;
+              applicationBloc.startNavigation();
             },
             "Route",
-                () {
-              _routeManager
-                  .setWalkToFirstWaypoint(false);
+            () {
+              _routeManager.setWalkToFirstWaypoint(false);
+              loadRoute = false;
+              applicationBloc.startNavigation();
             },
           );
-
           applicationBloc.showBinaryDialog();
         }
-
-        applicationBloc.startNavigation();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("No route could be found!"),
-            ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("No route could be found!"),
+        ));
       }
     }
   }
@@ -298,12 +296,12 @@ saveRoute(context) async {
     return v;
   });
   if (successfullyAdded) {
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Route saved correctly!"),
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Route saved correctly!"),
     ));
   } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error while saving the route!"),
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text("Error while saving the route!"),
     ));
   }
 }
