@@ -259,17 +259,17 @@ class _RoutePlanningState extends State<RoutePlanning> {
             "Walk",
             () {
               _routeManager.setWalkToFirstWaypoint(true);
-              loadRoute = false;
               applicationBloc.startNavigation();
             },
             "Route",
             () {
               _routeManager.setWalkToFirstWaypoint(false);
-              loadRoute = false;
               applicationBloc.startNavigation();
             },
           );
           applicationBloc.showBinaryDialog();
+        } else {
+          applicationBloc.startNavigation();
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

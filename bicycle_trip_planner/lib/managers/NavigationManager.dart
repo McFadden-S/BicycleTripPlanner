@@ -117,18 +117,21 @@ class NavigationManager {
 
   Future<void> start() async {
     _isNavigating = true;
+    print("I START NAVIGATING");
     if (_routeManager.ifStartFromCurrentLocation()) {
+      print("I START FROM CURRENT LOCATION");
       await setInitialPickUpDropOffStations(
           _routeManager.getStart().getStop().latlng,
           _routeManager.getDestination().getStop().latlng);
+      print("I SET STATION");
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
-        print("FIRST STOP: $firstStop");
         await setInitialPickUpDropOffStations(
             firstStop.latlng, _routeManager.getDestination().getStop().latlng);
         await updateRouteWithWalking();
+        updateRouteWithWalking();
       } else {
         Place firstStop = _routeManager.getStart().getStop();
         _routeManager.addFirstWaypoint(firstStop);
@@ -226,8 +229,10 @@ class NavigationManager {
 
   Future<void> setInitialPickUpDropOffStations(
       LatLng startLocation, LatLng endLocation) async {
-    setNewPickUpStation(startLocation, _routeManager.getGroupSize());
-    setNewDropOffStation(endLocation, _routeManager.getGroupSize());
+    setNewPickUpStation(_routeManager.getStart().getStop().latlng,
+        _routeManager.getGroupSize());
+    setNewDropOffStation(_routeManager.getDestination().getStop().latlng,
+        _routeManager.getGroupSize());
   }
 
   void clear() {
