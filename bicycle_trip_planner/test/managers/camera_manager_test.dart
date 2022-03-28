@@ -12,9 +12,16 @@ import 'camera_manager_test.mocks.dart';
 void main() {
   final controller = MockGoogleMapController();
   final cameraManager = CameraManager(googleMapController: controller);
+  final style = r'''"featureType": "administrative"''';
 
   Map<String, dynamic> boundsSw = {};
   Map<String, dynamic> boundsNe = {};
+  boundsSw["lat"] = 10.0;
+  boundsSw["lng"] = 10.0;
+
+  boundsNe["lat"] = 20.0;
+  boundsNe["lng"] = 20.0;
+
   final place = Place(
       geometry: Geometry.geometryNotFound(),
       name: "name",
@@ -25,7 +32,7 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     cameraManager.init();
     await untilCalled(controller.setMapStyle(any));
-    verify(controller.setMapStyle(captureAny));
+    verify(controller.setMapStyle(captureThat(contains(style))));
   });
 
   test("Set camera bounds", () async {
@@ -33,17 +40,22 @@ void main() {
     const ne = LatLng(20.0, 20.0);
 
     cameraManager.setCameraBounds(sw, ne);
-    untilCalled(controller.animateCamera(any));
+    await untilCalled(controller.animateCamera(any));
 
-    verify(controller.animateCamera(captureAny)).captured.single.toString();
+   (verify(controller.animateCamera(captureAny)));
+
   });
 
-  test("Set camera position", () {
+  test("Set camera position", () async{
     cameraManager.setCameraPosition(const LatLng(20, 10));
+    await untilCalled(controller.animateCamera(any));
+
+    verify(controller.animateCamera(any));
   });
 
   test("Set route camera", () {
     cameraManager.setRouteCamera(const LatLng(10, 20), boundsSw, boundsNe);
+    expect(cameraManager.getRouteOriginCamera(),LatLng(10.0, 20.0));
   });
 
   test("Go to place", () {
@@ -61,36 +73,4 @@ void main() {
   test("View user", () {
     cameraManager.viewUser();
   });
-//   final LocationManager locationManager = LocationManager();
-//   bool isInitPos = true;
-//   CameraManager? cameraManager;
-//   GoogleMap(
-//     initialCameraPosition: CameraManager.initialCameraPosition,
-//       onMapCreated: (controller) {
-//         cameraManager = CameraManager(
-//             googleMapController: controller,
-//             locationManager: locationManager
-//         );
-//         cameraManager?.init();
-//       },
-//       onCameraMove: (value) {
-//         isInitPos = false;
-//       },
-//   );
-
-  // test('check if view place will move the camera position', (){
-  //   Location location = Location(lat: 51.511448, lng: -0.116414);
-  //   Geometry geometry = Geometry(location: location);
-  //   Place place = Place(geometry: geometry, name: 'Bush House');
-  //
-  //   // double middleX = 100;
-  //   // double middleY = 100;
-  //   //
-  //   // ScreenCoordinate screenCoordinate = ScreenCoordinate(x: middleX.round(), y: middleY.round());
-  //   //
-  //   // Future<LatLng>? initPos = cameraManager?.googleMapController.getLatLng(screenCoordinate);
-  //   cameraManager?.viewPlace(place);
-  //   // Future<LatLng>? finalPos = cameraManager?.googleMapController.getLatLng(screenCoordinate);
-  //   expect(isInitPos, false);
-  // });
 }

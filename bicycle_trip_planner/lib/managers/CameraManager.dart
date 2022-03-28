@@ -41,6 +41,7 @@ class CameraManager {
     rootBundle.loadString(ThemeStyle.mapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
+
   }
 
   void dispose() {
@@ -49,14 +50,11 @@ class CameraManager {
 
   //********** Private **********
 
-  @visibleForTesting
+
 
   ///Sets the bounds of the map's camera
+  @visibleForTesting
   void setCameraBounds(LatLng southwest, LatLng northeast) {
-    print("-------Manager begin----------");
-    print(southwest);
-    print(northeast);
-
     googleMapController.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
@@ -65,8 +63,6 @@ class CameraManager {
           ),
           25),
     );
-    print("Manager says hi");
-    print("-------Manager end----------");
   }
 
   //********** Public **********
@@ -88,6 +84,11 @@ class CameraManager {
     _routeBoundsNE = LatLng(boundsNe['lat'], boundsNe['lng']);
     _routeBoundsSW = LatLng(boundsSw['lat'], boundsSw['lng']);
     _routeOriginCamera = origin;
+  }
+
+  @visibleForTesting
+  getRouteOriginCamera(){
+    return _routeOriginCamera;
   }
 
   /// Views the route to a location
