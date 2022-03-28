@@ -64,14 +64,16 @@ class DatabaseManager {
 
   Future<List<int>> getFavouriteStations() async {
     var uid = _auth.currentUser?.uid;
-    DatabaseReference favouriteStations = _dbInstance.ref('users/$uid/favouriteStations');
-
+    var favouriteStations = await _dbInstance.ref('users/$uid/favouriteStations');
     List<int> output = [];
-    print(_auth.currentUser);
-    print(_dbInstance.databaseURL);
-    await favouriteStations.once().then((value) => {
-          for (var id in value.snapshot.children.cast()) {output.add(id.value)}
-        });
+
+    final result = await favouriteStations.once();
+    final map = result.snapshot.value as Map<String, int>;
+    map.forEach((key, value) => {output.add(value)});
+
+    /*await favouriteStations.once().then((v) => {
+          for (var id in v.snapshot.children.cast()) {output.add(id.value)}
+        });*/
 
     return output;
   }
@@ -129,11 +131,9 @@ class DatabaseManager {
     var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
-    await favouriteRoutes.once().then((value) => {
-      for (var child in value.snapshot.children) {
-        pathways[child.key.toString()] =  Helper.mapToPathway(child.value)
-      }
-    });
+    final result = await favouriteRoutes.once();
+    final map = result.snapshot.value as Map<String, Object>;
+    map.forEach((key, value) => { pathways[key] =  Helper.mapToPathway(value)});
     updateRoutes();
     return pathways;
   }
