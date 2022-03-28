@@ -65,11 +65,14 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings){
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager){
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
     _userSettings = userSettings;
+    _cameraManager = cameraManager;
+    _markerManager = markerManager;
+    _routeManager = routeManager;
   }
 
   @visibleForTesting
@@ -195,6 +198,21 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  setSelectedSearch(int searchIndex, int uid) async {
+    Place place = await _placesService.getPlace(
+        searchResults[searchIndex].placeId,
+        searchResults[searchIndex].description);
+    setLocationMarker(place, uid);
+
+    _userSettings.savePlace(place);
+
+    if (uid != -1) {
+      setSelectedLocation(place, uid);
+    }
+  }
+
+  // ********** Location **********
+
   Future<void> updateLocationLive() async {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
@@ -226,19 +244,7 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
-  setSelectedSearch(int searchIndex, int uid) async {
-    Place place = await _placesService.getPlace(
-        searchResults[searchIndex].placeId,
-        searchResults[searchIndex].description);
-    setLocationMarker(place, uid);
 
-    _userSettings.savePlace(place);
-
-    if (uid != -1) {
-      setSelectedLocation(place, uid);
-    }
-    // _routeManager.printPathway();
-  }
 
   setLocationMarker(Place place, [int uid = -1]) async {
     _cameraManager.viewPlace(place);

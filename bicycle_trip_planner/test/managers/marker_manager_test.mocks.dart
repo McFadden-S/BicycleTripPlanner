@@ -96,13 +96,13 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
   dynamic searchSelectedStation(_i6.Station? station, int? uid) => super
       .noSuchMethod(Invocation.method(#searchSelectedStation, [station, uid]));
   @override
+  dynamic setSelectedSearch(int? searchIndex, int? uid) => super
+      .noSuchMethod(Invocation.method(#setSelectedSearch, [searchIndex, uid]));
+  @override
   _i5.Future<void> updateLocationLive() =>
       (super.noSuchMethod(Invocation.method(#updateLocationLive, []),
           returnValue: Future<void>.value(),
           returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
-  @override
-  dynamic setSelectedSearch(int? searchIndex, int? uid) => super
-      .noSuchMethod(Invocation.method(#setSelectedSearch, [searchIndex, uid]));
   @override
   dynamic setLocationMarker(_i7.Place? place, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#setLocationMarker, [place, uid]));

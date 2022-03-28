@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
@@ -29,7 +30,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert' as convert;
 
 @GenerateMocks(
-    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager])
+    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager, MarkerManager, RouteManager])
 void main() {
   var locationManager = MockLocationManager();
   var placesServices = MockPlacesService();
@@ -38,6 +39,8 @@ void main() {
   var dialogManager = MockDialogManager();
   var userSettings = MockUserSettings();
   var cameraManager = MockCameraManager();
+  var markerManager = MockMarkerManager();
+  var mockRouteManager = MockRouteManager();
 
   final routeManager = RouteManager();
   final navigationManager =
@@ -1969,7 +1972,7 @@ void main() {
   var appNavigationBloc = ApplicationBloc.forNavigationMock(locationManager, placesServices,
       routeManager, navigationManager, directionsService, stationManager, cameraManager);
 
-  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings);
+  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings, cameraManager, markerManager, mockRouteManager);
   group("Navigation Tests", () {
     test("Application bloc is initialized", () async {
       await untilCalled(locationManager.setCurrentLocation(currentPlace));
@@ -2283,11 +2286,37 @@ void main() {
         expect(appBloc.getSearchResult().length,1);
       });
 
-      test("Seach selected station",(){
+      test("Seach selected station",() async {
         final station = Station(id: 0, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 10, totalDocks: 10);
+        final place = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+
         when(placesServices.getPlaceFromCoordinates(
-            station.lat, station.lng, "Santander Cycles: ${station.name}")).;
+            station.lat, station.lng, "Santander Cycles: ${station.name}")).thenAnswer((realInvocation) async=> place);
         appBloc.searchSelectedStation(station, 5);
+
+        await untilCalled(mockRouteManager.changeStop(any, any));
+        verify(cameraManager.setCameraPosition(LatLng(10.0, 10.0)));
+        verify(markerManager.setStationMarkerWithUID(station,appBloc, 5));
+        verify(mockRouteManager.changeStop(5, place));
       });
+
+      test("Set selected search", () async {
+        final place = Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "placeId", description: "description");
+
+        final searchResults = appBloc.getSearchResult();
+        searchResults.add(PlaceSearch(description: "description", placeId: "placeId"));
+        when(placesServices.getPlace("placeId", "description")).thenAnswer((realInvocation) async=> place);
+        when(userSettings.savePlace(place)).thenAnswer((realInvocation) => null);
+
+        appBloc.setSelectedSearch(0, 5);
+
+        await untilCalled(mockRouteManager.changeStop(any, any));
+        verify(cameraManager.viewPlace(place));
+        verify(markerManager.setPlaceMarker(place, 5));
+        verify(userSettings.savePlace(place));
+        verify(mockRouteManager.changeStop(5, place));
+      });
+
+
   });
 }
