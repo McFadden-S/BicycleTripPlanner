@@ -1,4 +1,7 @@
-// @dart=2.9
+
+import 'dart:async';
+
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,131 +16,147 @@ import 'package:mockito/annotations.dart';
 import 'firebase_mocks/firebase_auth_mocks.dart';
 
 
-@GenerateMocks([MockFirebaseDatabase, MockFirebaseAuth])
-Future<void> main() async {
+@GenerateMocks([FirebaseDatabase, FirebaseAuth])
+main()  {
+  group("Database Manager", ()
+  {
+    late Timer timeout;
+    setupFirebaseMocks();
+    setupFirebaseAuthMocks();
 
-  setupFirebaseMocks();
-  setupFirebaseAuthMocks();
 
+    //await Firebase.initializeApp();
 
-
-  await Firebase.initializeApp();
-
-  const userId = 'userId';
-  const userName = 'Elon musk';
-  const favouriteRouteId = 'routeID';
-  final favouriteStationsID = 158;
-  final favouriteStationsID2 = 250;
-  const description = "description";
-  const routeID = "endRouteID";
-  const lat = 50.54631;
-  const lng = -0.15413;
-  const name = "locationName";
-  final fakeData = {
-    'users': {
-      userId: {
-        'favouriteRoutes': {
-          favouriteRouteId: {
-            'end':{
-              'description':description,
-              'id':routeID,
-              'lat':lat,
-              'lng':lng,
-              'name': name
-            },
-            'start':{
-              'description':description,
-              'id':routeID,
-              'lat': lat,
-              'lng': lng,
-              'name': name
-            },
-            'stops':[
-              {
-                'description':description,
-                'id':routeID,
+    const userId = 'userId';
+    const userName = 'Elon musk';
+    const favouriteRouteId = 'routeID';
+    final favouriteStationsID = 158;
+    final favouriteStationsID2 = 250;
+    const description = "description";
+    const routeID = "endRouteID";
+    const lat = 50.54631;
+    const lng = -0.15413;
+    const name = "locationName";
+    final fakeData = {
+      'users': {
+        userId: {
+          'favouriteRoutes': {
+            favouriteRouteId: {
+              'end': {
+                'description': description,
+                'id': routeID,
                 'lat': lat,
                 'lng': lng,
                 'name': name
-              }
-            ]
+              },
+              'start': {
+                'description': description,
+                'id': routeID,
+                'lat': lat,
+                'lng': lng,
+                'name': name
+              },
+              'stops': [
+                {
+                  'description': description,
+                  'id': routeID,
+                  'lat': lat,
+                  'lng': lng,
+                  'name': name
+                }
+              ]
+            },
           },
-        },
-        'favouriteStations': {
-          favouriteStationsID.toString(): favouriteStationsID,
-          favouriteStationsID2.toString(): favouriteStationsID2
+          'favouriteStations': {
+            favouriteStationsID.toString(): favouriteStationsID,
+            favouriteStationsID2.toString(): favouriteStationsID2
+          }
         }
       }
-    }
-  };
-  MockFirebaseDatabase().ref().set(fakeData);
+    };
+    MockFirebaseDatabase().ref().set(fakeData);
 
-  var database = MockFirebaseDatabase();
-  var auth = MockFirebaseAuth();
-  var databaseManager = null;
-
+    var database = MockFirebaseDatabase();
+    var auth = MockFirebaseAuth();
+    var databaseManager = null;
 
 
-  MockFirebaseDatabase.instance.ref().set(fakeData);
-  setUp(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+    MockFirebaseDatabase.instance.ref().set(fakeData);
+    setUpAll(() async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    final googleSignIn = MockGoogleSignIn();
-    final signinAccount = await googleSignIn.signIn();
-    final googleAuth = await signinAccount?.authentication;
-    final AuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth?.accessToken,
-      idToken: googleAuth?.idToken,
-    );
+      final googleSignIn = MockGoogleSignIn();
+      final signinAccount = await googleSignIn.signIn();
+      final googleAuth = await signinAccount?.authentication;
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
 
-    final user = MockUser(
-      isAnonymous: false,
-      uid: userId,
-      email: 'bob@somedomain.com',
-      displayName: 'Bob',
-    );
-    auth = MockFirebaseAuth(mockUser: user);
-    final result = await auth.signInWithCredential(credential);
-    database.ref().set(fakeData);
-    databaseManager = DatabaseManager.forMock(database, auth);
-  });
+      final user = MockUser(
+        isAnonymous: false,
+        uid: userId,
+        email: 'bob@somedomain.com',
+        displayName: 'Bob',
+      );
+      auth = MockFirebaseAuth(mockUser: user);
+      final result = await auth.signInWithCredential(credential);
+      database.ref().set(fakeData);
+      databaseManager = DatabaseManager.forMock(database, auth);
+      timeout = new Timer(new Duration(seconds: 1), () => fail("timed out"));
+    });
 
-  test('Get favourite stations', () async {
-    final stationsFromFakeDatabase = await databaseManager.getFavouriteStations();
-    var mockStations = fakeData['users']['userId']['favouriteStations']?.values.toList();
-    expect(ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
-  });
+    tearDown(() async{
+      // if the test already ended, cancel the timeout
+      timeout.cancel();
+    });
 
-  test('Get favourite routes', () async {
-    final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    var mockRoute = fakeData['users']['userId']['favouriteRoutes'];
-    expect(routeFromFakeDatabase.length, mockRoute?.length);
-    expect(DeepCollectionEquality().equals(routeFromFakeDatabase[routeID], mockRoute[routeID]), true);
-  });
+    test('Get favourite stations', () async {
+      final stationsFromFakeDatabase = await databaseManager
+          .getFavouriteStations();
+      var mockStations = fakeData['users']!['userId']!['favouriteStations']
+          ?.values.toList();
+      expect(
+          ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
+    });
 
-  test('Remove favourite station',() async{
-    await databaseManager.removeFavouriteStation(favouriteStationsID.toString());
-    await databaseManager.removeFavouriteStation(favouriteStationsID2.toString());
-    final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
-    expect(stationFromFakeDatabase.removeWhere((e) => e==null), null);
-  });
+    test('Get favourite routes', () async {
+      final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
+      var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
+      expect(routeFromFakeDatabase.length, mockRoute?.length);
+      expect(DeepCollectionEquality().equals(
+          routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
+    });
 
-  test('Remove favourite route',()async{
-    await databaseManager.removeFavouriteRoute(routeID);
-    final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    expect(stationFromFakeDatabase[routeID], equals(null));
-  });
+    test('Remove favourite station', () async {
+      await databaseManager.removeFavouriteStation(
+          favouriteStationsID.toString());
+      await databaseManager.removeFavouriteStation(
+          favouriteStationsID2.toString());
+      final stationFromFakeDatabase = await databaseManager
+          .getFavouriteStations();
+      expect(stationFromFakeDatabase.removeWhere((e) => e == null), null);
+    });
 
-  test('Add favourite station',()async{
-    final initialStationFromFakeDatabase = await databaseManager.getFavouriteStations();
+    test('Remove favourite route', () async {
+      await databaseManager.removeFavouriteRoute(routeID);
+      final stationFromFakeDatabase = await databaseManager
+          .getFavouriteRoutes();
+      expect(stationFromFakeDatabase[routeID], equals(null));
+    });
 
-    await databaseManager.addToFavouriteStations(260);
+    test('Add favourite station', () async {
+      final initialStationFromFakeDatabase = await databaseManager
+          .getFavouriteStations();
 
-    final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
-    expect(stationFromFakeDatabase.last.toString(), equals("260"));
-  });
+      await databaseManager.addToFavouriteStations(260);
 
-  /*test('Add favourite route',() async{
+      final stationFromFakeDatabase = await databaseManager
+          .getFavouriteStations();
+      expect(stationFromFakeDatabase.last.toString(), equals("260"));
+    });
+
+    /*test('Add favourite route',() async{
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
     //expect(stationFromFakeDatabase.toString(), equals(null));
     final routeID2 = "routeID2";
@@ -174,5 +193,5 @@ Future<void> main() async {
     print(databaseManager.getFavouriteRoutes());
     //Need to add place data to create test
   });*/
-
+  });
 }
