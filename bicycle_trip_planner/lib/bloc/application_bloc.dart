@@ -53,7 +53,6 @@ class ApplicationBloc with ChangeNotifier {
   final CameraManager _cameraManager = CameraManager.instance;
   final DialogManager _dialogManager = DialogManager();
   final NavigationManager _navigationManager = NavigationManager();
-  // final DatabaseManager _databaseManager = DatabaseManager();
   final UserSettings _userSettings = UserSettings();
 
   late Timer _stationTimer;
@@ -555,6 +554,10 @@ class ApplicationBloc with ChangeNotifier {
     changeUnits();
     filterStationMarkers();
     notifyListeners();
+  }
+
+  void loadFavouriteRoutes() {
+    DatabaseManager().getFavouriteRoutes();
   }
 
   void notifyListeningWidgets() {

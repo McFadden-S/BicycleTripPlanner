@@ -1,5 +1,6 @@
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -295,6 +296,7 @@ saveRoute(context) async {
       .then((v) {
     return v;
   });
+
   if (successfullyAdded) {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       content: Text("Route saved correctly!"),
