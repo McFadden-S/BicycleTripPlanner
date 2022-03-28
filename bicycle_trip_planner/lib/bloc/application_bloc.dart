@@ -380,19 +380,18 @@ class ApplicationBloc with ChangeNotifier {
   updateStationsPeriodically() async {
     int duration = await UserSettings().stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
-      fetchCurrentLocation();
       updateStations();
-      filterStationMarkers();
     });
   }
 
   setupStations() async {
     await updateStations();
-    filterStationMarkers();
     notifyListeners();
   }
 
   updateStations() async {
+    await fetchCurrentLocation();
+
     http.Client client = new http.Client();
     await _stationManager.setStations(
       await _stationsService.getStations(client),
