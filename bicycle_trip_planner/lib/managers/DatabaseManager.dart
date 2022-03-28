@@ -116,7 +116,6 @@ class DatabaseManager {
           for (var child in value.snapshot.children)
             {pathways[child.key.toString()] = Helper.mapToPathway(child.value)}
         });
-    print("Pathsways: $pathways");
     return pathways;
   }
 

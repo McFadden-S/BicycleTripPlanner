@@ -186,7 +186,6 @@ void main(){
       expect(answer.duration, 277);
       expect(answer.legs.length, 1);
       expect(answer.directions.length, 4);
-      print(answer.polyline.points.length);
       expect(answer.routeType, RouteType.bike);
 
     });

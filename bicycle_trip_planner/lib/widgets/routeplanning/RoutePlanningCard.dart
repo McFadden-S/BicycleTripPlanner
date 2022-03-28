@@ -43,9 +43,6 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
               SearchType.current.description
           ? routeManager.setStartFromCurrentLocation(true)
           : routeManager.setStartFromCurrentLocation(false);
-      print("Start: ${routeManager.getStart().getStop()}");
-      print(
-          "destination: ${routeManager.getDestination().getStop().description}");
       routeManager.ifCostOptimised()
           ? applicationBloc.findCostEfficientRoute(
               routeManager.getStart().getStop(),

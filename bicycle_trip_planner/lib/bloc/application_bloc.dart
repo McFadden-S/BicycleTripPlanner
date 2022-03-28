@@ -52,7 +52,7 @@ class ApplicationBloc with ChangeNotifier {
   CameraManager _cameraManager = CameraManager.instance;
   DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
-  //final DatabaseManager _databaseManager = DatabaseManager();
+  late DatabaseManager _databaseManager;
   UserSettings _userSettings = UserSettings();
 
   late Timer _stationTimer;
@@ -62,10 +62,11 @@ class ApplicationBloc with ChangeNotifier {
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
+    _databaseManager = DatabaseManager();
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager, StationsService stationsService){
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager, StationsService stationsService, DirectionManager directionManager, DatabaseManager databaseManager){
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -77,6 +78,8 @@ class ApplicationBloc with ChangeNotifier {
     _directionsService = directionsService;
     _stationManager = stationManager;
     _stationsService = stationsService;
+    _directionManager = directionManager;
+    _databaseManager = databaseManager;
   }
 
   @visibleForTesting
@@ -400,14 +403,22 @@ class ApplicationBloc with ChangeNotifier {
   void endRoute() {
     _navigationSubscription.cancel();
     Wakelock.disable();
-    print("hi");
     _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
     notifyListeners();
   }
 
+  @visibleForTesting
+  void setNavigationSubscription(){
+    updateLocationLive();
+  }
   // ********** Stations **********
+
+  @visibleForTesting
+  setStationTimer(){
+    _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) { });
+  }
 
   @visibleForTesting
   getStationTimer(){
@@ -580,17 +591,18 @@ class ApplicationBloc with ChangeNotifier {
   // ********** User Setting Management **********
 
   bool isUserLogged() {
-    return DatabaseManager().isUserLogged();
+    return _databaseManager.isUserLogged();
   }
 
   // Clears selected route and directions
   void clearMap() {
     _routeManager.clear();
     _directionManager.clear();
+    _directionManager.clear();
   }
 
   void changeUnits() async {
-    DistanceType units = await UserSettings().distanceUnit();
+    DistanceType units = await _userSettings.distanceUnit();
     _locationManager.setUnits(units);
     updateStations();
     notifyListeners();
