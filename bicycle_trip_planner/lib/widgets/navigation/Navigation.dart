@@ -68,44 +68,47 @@ class _NavigationState extends State<Navigation> {
         },
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, left: 10),
-              child: Column(
-                children: [
-                  Directions(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 10),
-                        child: Column(
-                          children: [
-                            CircleButton(
-                                iconIn: Icons.center_focus_strong,
-                                onButtonClicked: () => zoomOnUser()),
-                            SizedBox(height: 10),
-                            CircleButton(
-                                iconIn: Icons.zoom_out_map,
-                                onButtonClicked: () => zoomOnRoute()),
-                            routeManager.ifCostOptimised()
-                                ? Column(
-                                    children: [
-                                      SizedBox(height: 10),
-                                      CostEffTimerButton(
-                                          ctdwnController: controller),
-                                      SizedBox(height: 10),
-                                      CountdownCard(
-                                          ctdwnController: controller),
-                                    ],
-                                  )
-                                : SizedBox.shrink()
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+            Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Directions(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        CircleButton(
+                            iconIn: Icons.center_focus_strong,
+                            onButtonClicked: () => zoomOnUser()),
+                        SizedBox(height: 10),
+                        CircleButton(
+                            iconIn: Icons.zoom_out_map,
+                            onButtonClicked: () => zoomOnRoute()),
+                        SizedBox(height: 10),
+                      routeManager.ifCostOptimised()
+                            ? Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  CostEffTimerButton(
+                                      ctdwnController: controller),
+                                  SizedBox(height: 10),
+                                  CountdownCard(
+                                      ctdwnController: controller),
+
+
+                                ],
+                              )
+                            : SizedBox.shrink()
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
             EndOfRouteDialog(),
             CustomBottomSheet(
