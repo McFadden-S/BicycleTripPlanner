@@ -21,9 +21,9 @@ class RouteManager {
   //********** Fields **********
   /// Managers needed in route manager
   final PolylineManager _polylineManager = PolylineManager();
-  final MarkerManager _markerManager = MarkerManager();
+  MarkerManager _markerManager = MarkerManager();
   final DirectionManager _directionManager = DirectionManager();
-  final CameraManager _cameraManager = CameraManager.instance;
+  CameraManager _cameraManager = CameraManager.instance;
   Pathway _pathway = Pathway();
 
   /// True if user is starting from current location
@@ -68,13 +68,19 @@ class RouteManager {
   factory RouteManager() => _routeManager;
 
   RouteManager._internal();
+  RouteManager.forMock(
+      CameraManager cameraManager, MarkerManager markerManager) {
+    _cameraManager = cameraManager;
+    _markerManager = markerManager;
+  }
 
   //********** Private **********
 
   /// @param - Route route, Bounds bounds
   /// @return void
   /// @effects - Moves camera to the route and views its bounds or the given bounds
-  void _moveCameraTo(R.Route route,
+  @visibleForTesting
+  void moveCameraTo(R.Route route,
       [Bounds bounds = const Bounds.boundsNotFound()]) {
     if (bounds == const Bounds.boundsNotFound()) bounds = route.bounds;
     _cameraManager.goToPlace(
@@ -114,18 +120,23 @@ class RouteManager {
     double color = route.routeType == RouteType.bike
         ? BitmapDescriptor.hueGreen
         : BitmapDescriptor.hueRed;
-    _setRouteMarker(route.legs.first.startLocation, color);
-    _setRouteMarker(route.legs.last.endLocation, color);
+    setRouteMarker(route.legs.first.startLocation, color);
+    setRouteMarker(route.legs.last.endLocation, color);
     // Add waypoints
     if (route.legs.length > 1) {
       color = BitmapDescriptor.hueRed;
       for (int i = 1; i < route.legs.length; i++) {
-        _setRouteMarker(route.legs[i].startLocation, color);
+        setRouteMarker(route.legs[i].startLocation, color);
       }
     }
   }
 
-  _setRouteMarker(LatLng pos, [double color = BitmapDescriptor.hueRed]) {
+  /// @param - LatLng; the position the marker will be placed
+  ///        - doube; color of the marker
+  /// @return void
+  /// @affects - Sets a marker with the given position and color.
+  @visibleForTesting
+  setRouteMarker(LatLng pos, [double color = BitmapDescriptor.hueRed]) {
     String markerId = "$_markerPrefix${_markerId++}";
     _routeMarkers.add(markerId);
     _markerManager.setMarker(pos, markerId, color);
@@ -235,9 +246,9 @@ class RouteManager {
     }
 
     // Display the pickup and dropoff station
-    _setRouteMarker(
+    setRouteMarker(
         _bikingRoute.legs.first.startLocation, BitmapDescriptor.hueGreen);
-    _setRouteMarker(
+    setRouteMarker(
         _bikingRoute.legs.last.endLocation, BitmapDescriptor.hueGreen);
 
     _directionManager.setDuration(duration);
@@ -248,7 +259,7 @@ class RouteManager {
         _endWalkingRoute.bounds);
 
     if (relocateMap) {
-      _moveCameraTo(_bikingRoute, bounds);
+      moveCameraTo(_bikingRoute, bounds);
     }
   }
 
@@ -273,7 +284,7 @@ class RouteManager {
         route.polyline.points, route.routeType.polylineColor);
     _currentRoute = route;
     if (relocateMap) {
-      _moveCameraTo(route);
+      moveCameraTo(route);
     }
   }
 
@@ -602,14 +613,6 @@ class RouteManager {
     _changed = false;
   }
 
-  /// @param - pathway Pathway
-  /// @return void
-  /// @effects - sets the pathway
-  @visibleForTesting
-  void setPathway(Pathway pathway) {
-    _pathway = pathway;
-  }
-
   /// @param void
   /// @return Route - returns startWalkingRoute
   @visibleForTesting
@@ -629,5 +632,17 @@ class RouteManager {
   @visibleForTesting
   R.Route getEndWalkingRoute() {
     return _endWalkingRoute;
+  }
+
+  @visibleForTesting
+  bool getCostOptimised() {
+    return _costOptimised;
+  }
+
+  /// @param void
+  /// @return Route - returns loading
+  @visibleForTesting
+  bool getLoading() {
+    return _loading;
   }
 }

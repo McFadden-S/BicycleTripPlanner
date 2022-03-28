@@ -200,9 +200,16 @@ class Pathway {
     Stop stop2 = getStop(stop2ID);
     int stop1Index = _stops.indexOf(stop1);
     int stop2Index = _stops.indexOf(stop2);
+
+    print(_stops.indexOf(stop1));
+    print(_stops.indexOf(stop2));
     _stops[stop1Index] = _stops[stop2Index];
     _stops[stop2Index] = stop1;
     _updatePointers();
+    print(_stops.indexOf(stop1));
+    print(_stops.indexOf(stop2));
+
+    print(_stops.indexOf(_destination));
   }
 
   /// @param -
