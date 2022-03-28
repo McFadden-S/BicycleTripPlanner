@@ -1,38 +1,17 @@
-import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'dart:io';
-
 class Keys {
-  FirebaseRemoteConfig firebaseRemoteConfig = FirebaseRemoteConfig.instance;
-  static String _iOS_API_KEY = '';
-  static String _ANDROID_API_KEY = '';
 
-  Keys(){
-    _iOS_API_KEY = firebaseRemoteConfig.getString('iosApiKey');
-    _ANDROID_API_KEY = firebaseRemoteConfig.getString('androidApiKey');
+  //********** Singleton **********
+
+  /// Holds Singleton Instance
+  static final Keys _keys = Keys._internal();
+
+  /// Singleton Constructor Override
+  factory Keys() {
+    return _keys;
   }
 
-  fetchKeys() async {
-    bool updated = await firebaseRemoteConfig.fetchAndActivate();
-    if (updated) {
-      _iOS_API_KEY = firebaseRemoteConfig.getString('iosApiKey');
-      _ANDROID_API_KEY = firebaseRemoteConfig.getString('androidApiKey');
-    } else {
-      // the config values were previously updated.
-    }
-  }
+  Keys._internal();
 
-  static String getApiKey() {
-    if(Platform.isIOS){
-      return _iOS_API_KEY;
-    }
-    if(Platform.isAndroid){
-      return _ANDROID_API_KEY;
-    }
-    return 'NO API KEY';
-  }
+  static String API_KEY = 'AIzaSyDxZUAHlrTTckkPJVXS4G15zL8zDWghb6c';
 
-  static bool areUndefined() {
-    return Keys._ANDROID_API_KEY == ''
-        || Keys._iOS_API_KEY == '';
-  }
 }

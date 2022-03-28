@@ -1,9 +1,10 @@
 import 'dart:io';
 
-import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/EndOfRouteDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
-import 'package:bicycle_trip_planner/widgets/navigation/CustomCountdown.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/CountdownCard.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Directions.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
@@ -11,8 +12,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'setUp.dart';
-import 'widgets/login/mock.dart';
+import '../../setUp.dart';
+import '../login/mock.dart';
 
 
 void main() {
@@ -29,7 +30,7 @@ void main() {
     await tester.runAsync(
             () async {
               await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
-              final countdown = find.byType(Countdown);
+              final countdown = find.byType(CountdownCard);
               expect(countdown, findsOneWidget);
             }
     );
@@ -43,7 +44,7 @@ void main() {
   testWidgets("Navigation has Walk/Bike Toggle Dialog", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-    expect(find.byType(WalkBikeToggleDialog), findsOneWidget);
+    expect(find.byType(WalkOrCycleToggle), findsOneWidget);
   });
 
   testWidgets("Navigation has bottom sheet", (WidgetTester tester) async {
@@ -87,12 +88,6 @@ void main() {
 
   testWidgets("Navigation has End of Route Dialog", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
-
-  testWidgets("Navigation has countdown timer", (WidgetTester tester) async {
-    await pumpWidget(tester, Navigation());
-
-    final walkOrCycleButton = find.byType(CustomCountdown);
-
-    expect(walkOrCycleButton, findsOneWidget);
+    expect(find.byType(EndOfRouteDialog), findsOneWidget);
   });
 }

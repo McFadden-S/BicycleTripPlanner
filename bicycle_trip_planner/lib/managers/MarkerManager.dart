@@ -21,6 +21,8 @@ class MarkerManager {
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
   BitmapDescriptor? userMarkerIcon;
 
+  final String _userID = 'user';
+
   //********** Singleton **********
 
   /// Holds Singleton Instance
@@ -130,6 +132,10 @@ class MarkerManager {
     return _markers;
   }
 
+  Marker getUserMarker(){
+    return _markers.firstWhere((marker) => marker.markerId.value == _userID);
+  }
+
   /// @param - int; UID of marker
   /// @return void
   /// @affects - removes marker using UID given
@@ -169,13 +175,11 @@ class MarkerManager {
       await _initUserMarkerIcon(25);
     }
 
-    String userID = 'user';
-
-    removeMarker(userID);
+    removeMarker(_userID);
 
     Marker userMarker = Marker(
       icon: userMarkerIcon!,
-      markerId: MarkerId(userID),
+      markerId: MarkerId(_userID),
       position: point,
       draggable: false,
       zIndex: 2,

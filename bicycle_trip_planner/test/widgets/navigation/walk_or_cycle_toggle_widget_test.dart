@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/widgets/navigation/WalkOrCycleToggle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'setUp.dart';
+import '../../setUp.dart';
 
 void main() {
   setUpAll(() async {

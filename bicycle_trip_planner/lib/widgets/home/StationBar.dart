@@ -257,7 +257,7 @@ class _StationBarState extends State<StationBar> {
                                                 }
                                                 return stationListBuilder(
                                                     favouriteStations,
-                                                    "You don't have any favourite stations currently.");
+                                                    "You don't have any favourite stations.");
                                               })
                                           : FutureBuilder<double>(
                                               future: UserSettings()
@@ -282,7 +282,8 @@ class _StationBarState extends State<StationBar> {
                                                 }
                                                 return stationListBuilder(
                                                   nearbyStations,
-                                                  "You don't have any nearby stations at the moment.",
+                                                  "You don't have any nearby stations,"
+                                                      "\ntry changing the range in the settings.",
                                                 );
                                               }))
                             ],
@@ -391,7 +392,8 @@ class _StationBarState extends State<StationBar> {
                                           }
                                           return stationListBuilder(
                                               nearbyStations,
-                                              "You don't have any nearby stations at the moment.",
+                                              "You don't have any nearby stations,"
+                                                  "\ntry changing the range in the settings.",
                                               Axis.horizontal);
                                         })
                             : const Center(),

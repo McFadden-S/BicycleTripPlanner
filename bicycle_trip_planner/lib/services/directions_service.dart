@@ -6,7 +6,7 @@ import 'dart:convert' as convert;
 import '../auth/Keys.dart';
 
 class DirectionsService {
-  final String key = Keys.getApiKey();
+  String key = Keys.API_KEY;
   final String urlPrefix =
       'https://maps.googleapis.com/maps/api/directions/json?';
 
