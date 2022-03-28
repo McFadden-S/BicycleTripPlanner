@@ -28,6 +28,13 @@ void main() {
     expect(dialog, findsOneWidget);
   });
 
+  testWidgets("Select station dialog contains propmt text", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: SelectStationDialog())));
+    final text = find.text('Set as:');
+
+    expect(text, findsOneWidget);
+  });
+
 
   testWidgets("Select station dialog contains four buttons", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: SelectStationDialog())));
