@@ -8,7 +8,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 
 /// Class Comment:
 /// LocationManager is a manager class that manages finding the users current
-/// location
+/// location and distances
 
 class LocationManager {
   //********** Fields **********
@@ -35,7 +35,7 @@ class LocationManager {
   //********** Private **********
 
   @visibleForTesting
-  void isTest(geo.Geolocator geolocator){
+  void isTest(geo.Geolocator geolocator) {
     _locator.locate();
   }
 
@@ -142,6 +142,4 @@ class LocationManager {
   void setUnits(DistanceType units) {
     _units = units;
   }
-
-
 }
