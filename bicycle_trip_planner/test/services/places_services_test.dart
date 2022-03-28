@@ -11,7 +11,7 @@ import 'stations_services_test.mocks.dart' as mock;
 
 void main(){
   group('getAutocomplete', () {
-    final String key = Keys.getApiKey(); 
+    String key = Keys.getApiKey(); 
     test('Get automcomplete from non empty string', () async {
 
       const search = "Covent";
@@ -256,7 +256,7 @@ void main(){
 
   group('getPlace', ()
   {
-    final String key = Keys.getApiKey();
+    String key = Keys.getApiKey();
     test('Get place from valid place id', () async {
 
       const placeId = "ChIJT2mIkcwEdkgRYspzsBq1iAM";
@@ -512,7 +512,7 @@ void main(){
 
   group('getPlaceFromCoordinates', ()
   {
-    final String key = Keys.getApiKey(); 
+    String key = Keys.getApiKey(); 
     test('Get place from valid coordinates', () async {
 
       const lat = 51.5130007;
@@ -641,7 +641,7 @@ void main(){
 
   group('getPlaceFromAddress', ()
   {
-    final String key = Keys.getApiKey(); 
+    String key = Keys.getApiKey();
     test('Get place from valid address', () async {
 
       const address = "Covent Garden, Long Acre, London WC2E 9JT, UK";

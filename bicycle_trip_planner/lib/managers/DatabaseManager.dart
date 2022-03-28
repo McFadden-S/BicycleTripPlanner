@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import '../models/search_types.dart';
 import '../models/stop.dart';
 import 'Helper.dart';
 
@@ -88,6 +89,13 @@ class DatabaseManager {
 
     if (start.description.isEmpty || end.description.isEmpty) {
       return false;
+    }
+    if(start.description == SearchType.current.description){
+      start = Place(
+          latlng: start.latlng,
+          description: start.name,
+          placeId: start.placeId,
+          name: start.name);
     }
     var uid = FirebaseAuth.instance.currentUser?.uid;
     DatabaseReference favouriteRoutes =

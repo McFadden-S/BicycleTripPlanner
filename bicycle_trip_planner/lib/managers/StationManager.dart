@@ -8,6 +8,7 @@ import '../models/place.dart';
 import '../services/places_service.dart';
 
 class StationManager {
+
   //********** Fields **********
 
   List<Station> _stations = <Station>[];
@@ -146,10 +147,7 @@ class StationManager {
   }
 
   Future<void> setStations(List<Station> newStations) async {
-    LatLng currentPos = LatLng(
-        _locationManager.getCurrentLocation().latlng.latitude,
-        _locationManager.getCurrentLocation().latlng.longitude
-    );
+    LatLng currentPos = _locationManager.getCurrentLocation().latlng;
 
     for (Station newStation in newStations) {
       Station? station = _stationsLookUp.lookup(newStation);

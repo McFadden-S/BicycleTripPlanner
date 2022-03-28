@@ -152,10 +152,10 @@ class _RouteCardState extends State<RecentRouteCard> {
     Pathway recentRoute = await _userSettings.getRecentRoute((widget.index));
     setState(() {
       pathway = recentRoute;
-      startName = recentRoute.getStart().getStop().name;
-      endName = recentRoute.getDestination().getStop().name;
+      startName = recentRoute.getStart().getStop().description;
+      endName = recentRoute.getDestination().getStop().description;
       for (var stop in recentRoute.getWaypoints()) {
-        stopNames.add(stop.getStop().name);
+        stopNames.add(stop.getStop().description);
       }
     });
   }
