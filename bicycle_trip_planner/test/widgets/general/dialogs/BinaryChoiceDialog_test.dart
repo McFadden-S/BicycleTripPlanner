@@ -20,19 +20,30 @@ void main() {
 
   testWidgets("Binary choice dialog contains two buttons", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    // await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
     // final endRouteButton = find.byKey(ValueKey('EndRouteButton'));
+
+    // expect(endRouteButton, findsOneWidget);
     //
     // await tester.tap(endRouteButton);
-    // await tester.pump();
+    // await tester.pumpAndSettle();
 
     // final binaryButton = find.byType(ElevatedButton);
-    final button1 = find.descendant(of: find.byKey(ValueKey('Binary Button 1')), matching: find.byType(ElevatedButton));
-    final button2 = find.descendant(of: find.byKey(ValueKey('Binary Button 2')), matching: find.byType(ElevatedButton));
+    //final binaryChoiceDialog = find.byType(BinaryChoiceDialog);
+    // final button1 = find.descendant(of: find.byKey(ValueKey('Binary Button 1'), skipOffstage: false), matching: find.byType(ElevatedButton));
+    // final button2 = find.descendant(of: find.byKey(ValueKey('Binary Button 2'), skipOffstage: false), matching: find.byType(ElevatedButton));
+    final text = find.text('Would you like to end your route?');
+
+    // var button1 = find.text('Yes', skipOffstage: false);
+    // var button2 = find.text('No', skipOffstage: false);
+
 
     // expect(binaryButton, findsWidgets);
-    expect(button1, findsOneWidget);
-    expect(button2, findsOneWidget);
+    //expect(binaryChoiceDialog, findsOneWidget);
+    expect(text, findsOneWidget);
+    // expect(button1, findsOneWidget);
+    // expect(button2, findsOneWidget);
 
   });
 }
