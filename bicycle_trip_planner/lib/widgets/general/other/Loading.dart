@@ -5,7 +5,7 @@ import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather_service.dart';
+import 'package:bicycle_trip_planner/services/weather_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../../auth/Keys.dart';

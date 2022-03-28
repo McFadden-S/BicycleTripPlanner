@@ -124,6 +124,8 @@ void main() {
 
     setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
+    navigationManager.setIfBeginning(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
@@ -141,10 +143,14 @@ void main() {
     setCurrentLocation(51.511805, -0.118960);
     navigationManager.checkPassedByPickUpDropOffStations();
 
+    navigationManager.setIfBeginning(false);
+    navigationManager.setIfCycling(true);
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.128800);
     navigationManager.checkPassedByPickUpDropOffStations();
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
@@ -220,11 +226,15 @@ void main() {
 
     setCurrentLocation(51.511800, -0.118960);
     await navigationManager.updateRoute();
+    navigationManager.setIfCycling(true);
+    navigationManager.setIfBeginning(false);
 
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.128800);
     await navigationManager.updateRoute();
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
 
     expectWalkingBikingEnd(false, false, true);
   });
@@ -255,15 +265,20 @@ void main() {
     setCurrentLocation(51.511800, -0.118960);
     await navigationManager.updateRoute();
 
+    navigationManager.setIfCycling(true);
+    navigationManager.setIfBeginning(false);
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(60.5120, -0.118960);
     await navigationManager.updateRoute();
-
     expectWalkingBikingEnd(false, true, false);
 
     setCurrentLocation(100.511800, -0.118960);
     await navigationManager.updateRoute();
+
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfEndWalking(true);
+    expect(await navigationManager.checkWaypointPassed(),false);
 
     expectWalkingBikingEnd(false, false, true);
 
@@ -271,6 +286,14 @@ void main() {
     await navigationManager.updateRoute();
 
     navigationManager.clear();
+    expect(navigationManager.ifNavigating(), false);
+  });
+
+  test("ensure can clear all fields", () {
+    navigationManager.clear();
+    expect(navigationManager.ifBeginning(), true);
+    expect(navigationManager.ifCycling(), false);
+    expect(navigationManager.ifEndWalking(), false);
     expect(navigationManager.ifNavigating(), false);
   });
 }
