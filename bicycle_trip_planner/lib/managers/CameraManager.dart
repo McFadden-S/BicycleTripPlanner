@@ -1,3 +1,4 @@
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +17,7 @@ class CameraManager {
 
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
+  final MarkerManager markerManager = MarkerManager();
 
   //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
@@ -101,8 +103,7 @@ class CameraManager {
   }
 
   /// Sets the camera to the user's location
-  Future<void> viewUser({double zoomIn = 16}) async {
-    LatLng userLocation = await locationManager.locate();
-    setCameraPosition(userLocation, zoomIn: zoomIn);
+  void viewUser({double zoomIn = 16}) {
+    setCameraPosition(markerManager.getUserMarker().position, zoomIn: zoomIn);
   }
 }
