@@ -68,4 +68,32 @@ void main() {
     Text s = text.evaluate().single.widget as Text;
     expect(s.data, DialogManager().getOptionTwoText());
   });
+
+  testWidgets("Binary choice dialog button1 on tap hides dialog",(WidgetTester tester) async {
+    DialogManager().setBinaryChoice("TEST DESCRIPTION", "option1", (){}, "option2", (){});
+    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    final button1 = find.byKey(Key('Binary Button 1'));
+    var dialog = find.byType(Dialog);
+    expect(dialog, findsOneWidget);
+
+    await tester.tap(button1);
+
+    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    dialog = find.byType(Dialog);
+    expect(dialog, findsNothing);
+  });
+
+  testWidgets("Binary choice dialog button2 on tap hides dialog",(WidgetTester tester) async {
+    DialogManager().setBinaryChoice("TEST DESCRIPTION", "option1", (){}, "option2", (){});
+    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    final button2 = find.byKey(Key('Binary Button 2'));
+    var dialog = find.byType(Dialog);
+    expect(dialog, findsOneWidget);
+
+    await tester.tap(button2);
+
+    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    dialog = find.byType(Dialog);
+    expect(dialog, findsNothing);
+  });
 }
