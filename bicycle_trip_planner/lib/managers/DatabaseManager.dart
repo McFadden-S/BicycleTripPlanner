@@ -49,9 +49,7 @@ class DatabaseManager {
     var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteStations =
         _dbInstance.ref('users/$uid/favouriteStations');
-    Map<String, int> favorites = {};
-    favorites['$stationID'] = stationID;
-    await favouriteStations.update(favorites).then((_) {
+    favouriteStations.child(stationID.toString()).set(stationID).then((_) {
       // Data saved successfully!
       return true;
     }).catchError((error) {
@@ -68,7 +66,8 @@ class DatabaseManager {
     List<int> output = [];
 
     final result = await favouriteStations.once();
-    final map = result.snapshot.value as Map<String, int>;
+    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
+    //final map = result.snapshot.value as Map<String, int>;
     map.forEach((key, value) => {output.add(value)});
 
     /*await favouriteStations.once().then((v) => {
@@ -81,7 +80,7 @@ class DatabaseManager {
   Future<bool> removeFavouriteStation(String stationId) async {
     var uid = _auth.currentUser?.uid;
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteStations');
-    await favouriteRoutes.child(stationId).remove().then((_) {
+    favouriteRoutes.child(stationId).set(null).then((_) {
       // Data removed successfully!
       return true;
     }).catchError((error) {
@@ -132,7 +131,7 @@ class DatabaseManager {
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
     final result = await favouriteRoutes.once();
-    final map = result.snapshot.value as Map<String, Object>;
+    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
     map.forEach((key, value) => { pathways[key] =  Helper.mapToPathway(value)});
     updateRoutes();
     return pathways;
@@ -142,7 +141,7 @@ class DatabaseManager {
     var uid = FirebaseAuth.instance.currentUser?.uid;
     DatabaseReference favouriteRoutes =
         _dbInstance.ref('users/$uid/favouriteRoutes');
-    await favouriteRoutes.child(routeKey).remove().then((_) {
+    await favouriteRoutes.child(routeKey).set(null).then((_) {
       // Data removed successfully!
       return true;
     }).catchError((error) {

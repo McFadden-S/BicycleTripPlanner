@@ -1,18 +1,19 @@
-import 'dart:math';
-
+// @dart=2.9
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
-
+import 'package:mockito/annotations.dart';
 import 'firebase_mocks/firebase_auth_mocks.dart';
 
+
+@GenerateMocks([MockFirebaseDatabase, MockFirebaseAuth])
 Future<void> main() async {
 
   setupFirebaseMocks();
@@ -73,7 +74,7 @@ Future<void> main() async {
 
   var database = MockFirebaseDatabase();
   var auth = MockFirebaseAuth();
-  late final databaseManager;
+  var databaseManager = null;
 
 
 
@@ -103,45 +104,75 @@ Future<void> main() async {
 
   test('Get favourite stations', () async {
     final stationsFromFakeDatabase = await databaseManager.getFavouriteStations();
-    var mockStations = fakeData['users']!['userId']!['favouriteStations']?.values.toList();
+    var mockStations = fakeData['users']['userId']['favouriteStations']?.values.toList();
     expect(ListEquality().equals(stationsFromFakeDatabase, mockStations), true);
   });
 
   test('Get favourite routes', () async {
     final routeFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    var mockRoute = fakeData['users']!['userId']!['favouriteRoutes'];
+    var mockRoute = fakeData['users']['userId']['favouriteRoutes'];
     expect(routeFromFakeDatabase.length, mockRoute?.length);
-    expect(DeepCollectionEquality().equals(routeFromFakeDatabase[routeID], mockRoute![routeID]), true);
+    expect(DeepCollectionEquality().equals(routeFromFakeDatabase[routeID], mockRoute[routeID]), true);
   });
 
   test('Remove favourite station',() async{
-    await databaseManager.removeFavouriteStation(favouriteStationsID);
+    await databaseManager.removeFavouriteStation(favouriteStationsID.toString());
+    await databaseManager.removeFavouriteStation(favouriteStationsID2.toString());
     final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
-    expect(stationFromFakeDatabase, equals(null));
+    expect(stationFromFakeDatabase.removeWhere((e) => e==null), null);
   });
 
   test('Remove favourite route',()async{
     await databaseManager.removeFavouriteRoute(routeID);
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    expect(stationFromFakeDatabase, equals(null));
+    expect(stationFromFakeDatabase[routeID], equals(null));
   });
 
   test('Add favourite station',()async{
     final initialStationFromFakeDatabase = await databaseManager.getFavouriteStations();
-    expect(initialStationFromFakeDatabase, equals(null));
 
-    await databaseManager.addToFavouriteStations(favouriteStationsID);
+    await databaseManager.addToFavouriteStations(260);
 
     final stationFromFakeDatabase = await databaseManager.getFavouriteStations();
-    expect(stationFromFakeDatabase.first.toString(), equals(favouriteStationsID));
+    expect(stationFromFakeDatabase.last.toString(), equals("260"));
   });
 
-  test('Add favourite route',() async{
+  /*test('Add favourite route',() async{
     final stationFromFakeDatabase = await databaseManager.getFavouriteRoutes();
-    expect(stationFromFakeDatabase, equals(null));
+    //expect(stationFromFakeDatabase.toString(), equals(null));
+    final routeID2 = "routeID2";
+    final newRoute = {
+      'end': {
+        'description':"AAAA",
+        'id': routeID2,
+        'lat':lat,
+        'lng':lng,
+        'name': name
+      },
+      'start':{
+        'description':"AAAA",
+        'id':routeID2,
+        'lat': lat,
+        'lng': lng,
+        'name': name
+      },
+      'stops':[
+        {
+          'description':"AAAA",
+          'id':routeID2,
+          'lat': lat,
+          'lng': lng,
+          'name': name
+        }
+      ]
+    };
 
-    //await databaseManager.addToFavouriteRoutes(start, end, stops)
+    await databaseManager.addToFavouriteRoutes(
+      Place(latlng: LatLng(1,2), description: "AAAA", placeId: "12", name: "12 AAAA"),
+      Place(latlng: LatLng(3,4), description: "BBBB", placeId: "34", name: "34 BBBB"), <Place>[]);
+
+    print(databaseManager.getFavouriteRoutes());
     //Need to add place data to create test
-  });
+  });*/
 
 }
