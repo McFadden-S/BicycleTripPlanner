@@ -23,6 +23,7 @@ import 'package:bicycle_trip_planner/models/station.dart' as _i5;
 import 'package:bicycle_trip_planner/models/stop.dart' as _i9;
 import 'package:bicycle_trip_planner/services/directions_service.dart' as _i16;
 import 'package:bicycle_trip_planner/services/places_service.dart' as _i14;
+import 'package:bicycle_trip_planner/services/stations_service.dart' as _i26;
 import 'package:flutter/cupertino.dart' as _i8;
 import 'package:geolocator/geolocator.dart' as _i10;
 import 'package:google_maps_flutter/google_maps_flutter.dart' as _i2;
@@ -919,4 +920,19 @@ class MockNavigationManager extends _i1.Mock implements _i24.NavigationManager {
   @override
   void reset() => super.noSuchMethod(Invocation.method(#reset, []),
       returnValueForMissingStub: null);
+}
+
+/// A class which mocks [StationsService].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockStationsService extends _i1.Mock implements _i26.StationsService {
+  MockStationsService() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i11.Future<List<_i5.Station>> getStations() =>
+      (super.noSuchMethod(Invocation.method(#getStations, []),
+              returnValue: Future<List<_i5.Station>>.value(<_i5.Station>[]))
+          as _i11.Future<List<_i5.Station>>);
 }

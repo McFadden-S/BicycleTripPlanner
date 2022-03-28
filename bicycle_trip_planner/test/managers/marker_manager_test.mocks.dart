@@ -135,11 +135,6 @@ class MockApplicationBloc extends _i1.Mock implements _i4.ApplicationBloc {
               returnValue: Future<_i3.Station>.value(_FakeStation_1()))
           as _i6.Future<_i3.Station>);
   @override
-  dynamic findRoute(_i7.Place? origin, _i7.Place? destination,
-          [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
-      super.noSuchMethod(Invocation.method(
-          #findRoute, [origin, destination, intermediates, groupSize]));
-  @override
   dynamic setRoutes(_i7.Place? origin, _i7.Place? destination,
           _i3.Station? startStation, _i3.Station? endStation,
           [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
@@ -151,6 +146,25 @@ class MockApplicationBloc extends _i1.Mock implements _i4.ApplicationBloc {
         intermediates,
         groupSize
       ]));
+  @override
+  dynamic findRoute(_i7.Place? origin, _i7.Place? destination,
+          [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
+      super.noSuchMethod(Invocation.method(
+          #findRoute, [origin, destination, intermediates, groupSize]));
+  @override
+  _i6.Future<int> getDurationFromToStation(
+          _i3.Station? startStation, _i3.Station? endStation) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #getDurationFromToStation, [startStation, endStation]),
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
+  @override
+  double costEfficiencyHeuristic(_i3.Station? curStation,
+          _i3.Station? intermediaryStation, _i3.Station? endStation) =>
+      (super.noSuchMethod(
+          Invocation.method(#costEfficiencyHeuristic,
+              [curStation, intermediaryStation, endStation]),
+          returnValue: 0.0) as double);
   @override
   _i6.Future<void> findCostEfficientRoute(
           _i7.Place? origin, _i7.Place? destination, [int? groupSize = 1]) =>

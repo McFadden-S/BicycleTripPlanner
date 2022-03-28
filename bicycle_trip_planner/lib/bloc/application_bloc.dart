@@ -33,7 +33,7 @@ import '../managers/NavigationManager.dart';
 class ApplicationBloc with ChangeNotifier {
   var _placesService = PlacesService();
   var _directionsService = DirectionsService();
-  final _stationsService = StationsService();
+  var _stationsService = StationsService();
 
   Widget selectedScreen = HomeWidgets();
   final screens = <String, Widget>{
@@ -65,7 +65,7 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService){
+  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager, StationsService stationsService){
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -75,6 +75,8 @@ class ApplicationBloc with ChangeNotifier {
     _routeManager = routeManager;
     _navigationManager = navigationManager;
     _directionsService = directionsService;
+    _stationManager = stationManager;
+    _stationsService = stationsService;
   }
 
   @visibleForTesting
@@ -98,6 +100,8 @@ class ApplicationBloc with ChangeNotifier {
     fetchCurrentLocation();
     updateStationsPeriodically();
   }
+
+
 
   // ********** Group Size **********
 
@@ -277,8 +281,7 @@ class ApplicationBloc with ChangeNotifier {
   @visibleForTesting
   Future<Station> getStartStation(Place origin, [int groupSize = 1]) async {
     Loc.Location startLocation = origin.geometry.location;
-    return await _stationManager.getPickupStationNear(
-        LatLng(startLocation.lat, startLocation.lng), groupSize);
+    return await _stationManager.getPickupStationNear(LatLng(startLocation.lat, startLocation.lng), groupSize);
   }
 
   @visibleForTesting
@@ -331,7 +334,8 @@ class ApplicationBloc with ChangeNotifier {
     return durationMinutes;
   }
 
-  double _costEfficiencyHeuristic(
+  @visibleForTesting
+  double costEfficiencyHeuristic(
       Station curStation, Station intermediaryStation, Station endStation) {
     double startHeuristic = _locationManager.distanceFromTo(
         LatLng(curStation.lat, curStation.lng),
@@ -361,10 +365,10 @@ class ApplicationBloc with ChangeNotifier {
       } else {
         List<Station> nearbyStations = _stationManager
             .getStationsInRadius(LatLng(curStation.lat, curStation.lng));
-        nearbyStations.sort((stationA, stationB) => _costEfficiencyHeuristic(
+        nearbyStations.sort((stationA, stationB) => costEfficiencyHeuristic(
                 curStation, stationA, endStation)
             .compareTo(
-                _costEfficiencyHeuristic(curStation, stationB, endStation)));
+                costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
           await _stationManager.cachePlaceId(nearbyStations[i]);
           if ((await getDurationFromToStation(
@@ -396,6 +400,7 @@ class ApplicationBloc with ChangeNotifier {
   void endRoute() {
     _navigationSubscription.cancel();
     Wakelock.disable();
+    print("hi");
     _navigationManager.clear();
     clearMap();
     setSelectedScreen('home');
@@ -404,12 +409,17 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Stations **********
 
+  @visibleForTesting
+  getStationTimer(){
+    return _stationTimer;
+  }
+
   cancelStationTimer() {
     _stationTimer.cancel();
   }
 
   updateStationsPeriodically() async {
-    int duration = await UserSettings().stationsRefreshRate();
+    int duration = await _userSettings.stationsRefreshRate();
     _stationTimer = Timer.periodic(Duration(seconds: duration), (timer) {
       updateStations();
       filterStationMarkers();

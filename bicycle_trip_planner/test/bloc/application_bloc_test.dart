@@ -8,6 +8,7 @@ import 'package:bicycle_trip_planner/managers/StationManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/bounds.dart';
 import 'package:bicycle_trip_planner/models/geometry.dart';
+import 'package:bicycle_trip_planner/models/legs.dart';
 import 'package:bicycle_trip_planner/models/location.dart' as loc;
 import 'package:bicycle_trip_planner/models/overview_polyline.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
@@ -16,10 +17,13 @@ import 'package:bicycle_trip_planner/models/route.dart' as r;
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
+import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
+import 'package:bicycle_trip_planner/services/stations_service.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:location/location.dart';
@@ -32,7 +36,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'dart:convert' as convert;
 
 @GenerateMocks(
-    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager, MarkerManager, RouteManager, NavigationManager])
+    [LocationManager, PlacesService, DirectionsService, StationManager, DialogManager, UserSettings, CameraManager, MarkerManager, RouteManager, NavigationManager, StationsService])
 void main() {
   var locationManager = MockLocationManager();
   var placesServices = MockPlacesService();
@@ -44,6 +48,7 @@ void main() {
   var markerManager = MockMarkerManager();
   var mockRouteManager = MockRouteManager();
   var mockNavigationManager = MockNavigationManager();
+  var stationsService = MockStationsService();
 
   final routeManager = RouteManager();
   final navigationManager =
@@ -1975,7 +1980,7 @@ void main() {
   var appNavigationBloc = ApplicationBloc.forNavigationMock(locationManager, placesServices,
       routeManager, navigationManager, directionsService, stationManager, cameraManager);
 
-  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings, cameraManager, markerManager, mockRouteManager, mockNavigationManager, directionsService);
+  var appBloc = ApplicationBloc.forMock(dialogManager, placesServices, locationManager, userSettings, cameraManager, markerManager, mockRouteManager, mockNavigationManager, directionsService, stationManager, stationsService);
   group("Navigation Tests", () {
     test("Application bloc is initialized", () async {
       await untilCalled(locationManager.setCurrentLocation(currentPlace));
@@ -2360,39 +2365,78 @@ void main() {
     });
   });
 
-  group("Route tests",(){
-    final origin = Place(geometry: Geometry(location: loc.Location(lat: 10.0,lng: 10.0)), name: "origin", placeId: "origin", description: "origin");
-    final destination = Place(geometry: Geometry(location: loc.Location(lat: 10.0,lng: 10.0)), name: "destination", placeId: "destination", description: "destination");
+  group("Stations test",(){
     final station_1 = Station(id: 1, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 0, totalDocks: 10, place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "Start station", description: "start"));
     final station_2 = Station(id: 2, name: "name", lat: 20.0, lng: 20.0, bikes: 10, emptyDocks: 0, totalDocks: 10,  place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "End station", description: "end"));
+    final station_3 = Station(id: 2, name: "name", lat: 10.0, lng: 20.0, bikes: 10, emptyDocks: 0, totalDocks: 10,  place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "End station", description: "end"));
+
+    when(mockNavigationManager.ifNavigating()).thenAnswer((realInvocation) => false);
+    when(userSettings.nearbyStationsRange()).thenAnswer((realInvocation) async=> 0.0);
+    when(mockRouteManager.getGroupSize()).thenAnswer((realInvocation) => 5);
+    when(stationManager.getNearStations(0.0)).thenAnswer((realInvocation) => [station_1,station_2]);
+    when(stationManager.getStationsWithBikes(5, [station_1, station_2])).thenAnswer((realInvocation) => [station_1]);
+    when(stationManager.getStationsCompliment([station_1])).thenAnswer((realInvocation) => [station_2]);
+
+    test("Cancel station timer",(){
+      appBloc.cancelStationTimer();
+    });
+
+    test("Update stations periodically",(){
+      when(userSettings.stationsRefreshRate()).thenAnswer((realInvocation) => 2);
+      appBloc.updateStationsPeriodically();
+    });
+
+    test("Update stations",(){
+      appBloc.updateStations();
+    });
+
+    test("Filter station markers",() async {
+      appBloc.filterStationMarkers();
+      await untilCalled(markerManager.clearStationMarkers(any));
+      verify(markerManager.setStationMarkers([station_1], appBloc));
+      verify(markerManager.clearStationMarkers([station_2]));
+    });
+  });
+
+  group("Route tests",(){
+    final origin = Place(geometry: Geometry(location: loc.Location(lat: 10.0,lng: 10.0)), name: "origin", placeId: "origin", description: "origin");
+    final destination = Place(geometry: Geometry(location: loc.Location(lat: 20.0,lng: 10.0)), name: "destination", placeId: "destination", description: "destination");
+    final station_1 = Station(id: 1, name: "name", lat: 10.0, lng: 10.0, bikes: 10, emptyDocks: 0, totalDocks: 10, place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "Start station", description: "start"));
+    final station_2 = Station(id: 2, name: "name", lat: 20.0, lng: 20.0, bikes: 10, emptyDocks: 0, totalDocks: 10,  place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "End station", description: "end"));
+    final station_3 = Station(id: 2, name: "name", lat: 10.0, lng: 20.0, bikes: 10, emptyDocks: 0, totalDocks: 10,  place: Place(geometry: Geometry.geometryNotFound(), name: "name", placeId: "End station", description: "end"));
+    final route1 = r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.walk);
+    var route2 =  r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.bike);
+    final route3 = r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.walk);
+
+    when(directionsService.getWalkingRoutes('origin', 'Start station', [], true)).thenAnswer((realInvocation) async=> route1);
+    when(directionsService.getRoutes('Start station', 'End station', [], true)).thenAnswer((realInvocation) async=> route2);
+    when(directionsService.getWalkingRoutes('End station', 'destination', [], true)).thenAnswer((realInvocation) async=> route3);
+    when(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1)).thenAnswer((realInvocation) async=> station_1);
+    when(stationManager.getPickupStationNear(LatLng(20.0, 10.0), 1)).thenAnswer((realInvocation) async=> station_2);
+    when(locationManager.distanceFromTo(LatLng(station_1.lat, station_1.lng),LatLng(station_2.lat,station_2.lng))).thenAnswer((realInvocation) => 2);
+    when(locationManager.distanceFromTo(LatLng(station_2.lat, station_2.lng),LatLng(station_3.lat,station_3.lng))).thenAnswer((realInvocation) => 10);
+    when(mockRouteManager.ifOptimised()).thenAnswer((realInvocation) => true);
+    when(mockNavigationManager.getPickupStation()).thenAnswer((realInvocation) => station_1);
+    when(mockNavigationManager.getDropoffStation()).thenAnswer((realInvocation) => station_2);
+    when(stationManager.getStations()).thenAnswer((realInvocation) => []);
+    when(mockNavigationManager.getPickupStation()).thenAnswer((realInvocation) => station_1);
+    when(mockNavigationManager.getDropoffStation()).thenAnswer((realInvocation) => station_2);
 
     test("Get start station",() async {
 
-      when(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1)).thenAnswer((realInvocation) async=> station_1);
       appBloc.getStartStation(origin);
       await untilCalled(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
       verify(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
-
     });
 
     test("Get end station",() async {
 
-      when(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1)).thenAnswer((realInvocation) async=> station_1);
       appBloc.getEndStation(destination);
-      await untilCalled(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
-      verify(stationManager.getPickupStationNear(LatLng(10.0, 10.0), 1));
+      await untilCalled(stationManager.getPickupStationNear(LatLng(20.0, 10.0), 1));
+      verify(stationManager.getPickupStationNear(LatLng(20.0, 10.0), 1));
     });
 
     test("Set route",() async {
-      final route1 = r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.walk);
-      final route2 =  r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.bike);
-      final route3 = r.Route(bounds: Bounds.boundsNotFound(), legs: [], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.walk);
-
-      when(directionsService.getWalkingRoutes('origin', 'Start station', [], true)).thenAnswer((realInvocation) async=> route1);
-      when(directionsService.getRoutes('Start station', 'End station', [], true)).thenAnswer((realInvocation) async=> route2);
-      when(directionsService.getWalkingRoutes('End station', 'destination', [], true)).thenAnswer((realInvocation) async=> route3);
-      when(mockRouteManager.ifOptimised()).thenAnswer((realInvocation) => true);
-
       appBloc.setRoutes(origin, destination, station_1, station_2);
 
       await untilCalled(mockRouteManager.showAllRoutes());
@@ -2400,12 +2444,64 @@ void main() {
       verify(mockRouteManager.showAllRoutes());
     });
 
-    test("Find route",(){
-
+    test("Find route",() async{
       appBloc.findRoute(origin, destination);
-
+      await untilCalled(mockRouteManager.setLoading(false));
+      verify(mockRouteManager.setRoutes(route1, route2, route3));
       verify(mockRouteManager.setLoading(true));
     });
+
+    test("Get duration from to station",() async {
+      expect(await appBloc.getDurationFromToStation(station_1, station_2),0);
+    });
+
+    test("Get cost efficiency heuristic",(){
+      expect(appBloc.costEfficiencyHeuristic(station_1, station_2, station_3),5);
+    });
+
+    test("Clear station markers that are not in current route",() async {
+      appBloc.clearStationMarkersNotInRoute();
+      await untilCalled(markerManager.setStationMarker(station_2,any));
+      verify(markerManager.clearStationMarkers([]));
+      verify(markerManager.setStationMarker(station_1, appBloc));
+      verify(markerManager.setStationMarker(station_2, appBloc));
+    });
+
+    test("Find cost efficient route when under 25 mins",() async {
+      appBloc.findCostEfficientRoute(origin, destination);
+      await untilCalled(mockRouteManager.setLoading(any));
+      verify(mockRouteManager.clearRouteMarkers());
+      verify(mockRouteManager.removeWaypoints());
+      verify(mockRouteManager.setRouteMarkers());
+      verify(mockRouteManager.setLoading(true));
+    });
+
+    test("Find cost efficient route when over 25 mins",() async {
+      route2 =  r.Route(bounds: Bounds.boundsNotFound(), legs: [Legs(startLocation: loc.Location(lat:10.0,lng:10.0), endLocation: loc.Location(lat:20.0,lng:20.0), steps: [], distance: 10, duration: 26*60)], polyline: OverviewPolyline.overviewPolylineNotFound(), routeType: RouteType.bike);
+      when(directionsService.getRoutes('Start station', 'End station', [], true)).thenAnswer((realInvocation) async=> route2);
+      when(stationManager.getStationsInRadius(any)).thenAnswer((realInvocation) => [station_1,station_2]);
+      when(locationManager.distanceFromTo(LatLng(10.0, 10.0), LatLng(10.0, 10.0))).thenAnswer((realInvocation) => 0.0);
+      when(locationManager.distanceFromTo(LatLng(20.0, 20.0), LatLng(20.0, 20.0))).thenAnswer((realInvocation) => 50.0);
+      when(directionsService.getRoutes('Start station', 'Start station', [], true)).thenAnswer((realInvocation) async=> route1);
+
+      appBloc.findCostEfficientRoute(origin, destination);
+      await untilCalled(mockRouteManager.setLoading(any));
+      verify(mockRouteManager.clearRouteMarkers());
+      verify(mockRouteManager.removeWaypoints());
+      verify(mockRouteManager.setRouteMarkers());
+      verify(mockRouteManager.setLoading(true));
+
+      await untilCalled(stationManager.cachePlaceId(any));
+      verify(stationManager.cachePlaceId(station_2));
+    });
+
+    // test("End route", () async {
+    //   print(appBloc.getSelectedScreen());
+    //   appBloc.endRoute();
+    //   await untilCalled(mockNavigationManager.clear());
+    //   verify(mockNavigationManager.clear());
+    //
+    // });
 
   });
 }
