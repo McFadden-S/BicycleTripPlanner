@@ -1,7 +1,8 @@
+import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/route_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:flutter/material.dart';
@@ -12,23 +13,12 @@ import 'package:bicycle_trip_planner/models/route.dart' as R;
 void main() {
   final directionManager = DirectionManager();
 
-  List<Steps> createDummyDirections() {
-    List<Steps> steps = [];
-    steps.add(Steps(instruction: "Turn right", distance: 50, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    steps.add(Steps(instruction: "Roundabout", distance: 150, duration: 16));
-    steps.add(
-        Steps(instruction: "Continue straight", distance: 250, duration: 16));
-    steps.add(Steps(instruction: "Turn left", distance: 150, duration: 16));
-    return steps;
-  }
-
   test('ensure duration is no data when initialized', () {
-    expect(directionManager.getDuration(), "No data");
+    expect(directionManager.getDuration(), "0 min");
   });
 
   test('ensure distance is no data when initialized', () {
-    expect(directionManager.getDistance(), "No data");
+    expect(directionManager.getDistance(), "0 mi");
   });
 
   test('ensure directions is empty when initialized', () {
@@ -47,11 +37,19 @@ void main() {
     expect(directionManager.getDuration(), '1 min');
   });
 
-  // TODO: Check this test, this test shouldn't work???
+  test('test calculation conversion from duration to minutes', () {
+    directionManager.setDuration(360);
+    expect(directionManager.getDurationValue(), 6);
+  });
+
   test('test calculation conversion for distance is correct', () {
     directionManager.setDistance(1000);
+    LocationManager().setUnits(DistanceType.km);
+    expect(directionManager.getDistance(), '1 km');
+    LocationManager().setUnits(DistanceType.miles);
     expect(directionManager.getDistance(), '1 mi');
   });
+
   test('ensure the right icons are being returned depending on input', () {
     expect(
         directionManager.directionIcon("left").toString(),
@@ -584,6 +582,7 @@ void main() {
 
     expect(directionManager.getDirections(), r2Directions);
     expect(directionManager.getNumberOfDirections(), 5);
+    expect(directionManager.ifDirections(), true);
 
     List<Steps> r1Directions = [];
     r1Directions.addAll(route_1.directions);
@@ -605,10 +604,49 @@ void main() {
 
   test('ensure can clear directions', () {
     directionManager.clear();
-    expect(directionManager.getDuration(), "No data");
-    expect(directionManager.getDistance(), "No data");
+    expect(directionManager.getDuration(), "0 min");
+    expect(directionManager.getDistance(), "0 mi");
     expect(directionManager.getDirections().length, 0);
     expect(directionManager.getCurrentDirection(), Steps.stepsNotFound());
+  });
+
+  test('ensure clear methods work as intended', () {
+    directionManager.setDirections([Steps(duration: 0, distance: 0, instruction: 'instruction'), Steps.stepsNotFound(), Steps.stepsNotFound()]);
+    directionManager.setDistance(1000);
+    directionManager.setDuration(60);
+
+    expect(directionManager.getDuration(), "1 min");
+    expect(directionManager.getDistance(), "1 mi");
+    expect(directionManager.getDirections().length, 2);
+    expect(directionManager.getCurrentDirection().instruction, 'instruction');
+
+    directionManager.clearDuration();
+
+    expect(directionManager.getDuration(), "0 min");
+    expect(directionManager.getDistance(), "1 mi");
+    expect(directionManager.getDirections().length, 2);
+    expect(directionManager.getCurrentDirection().instruction, 'instruction');
+
+    directionManager.clearDistance();
+
+    expect(directionManager.getDuration(), "0 min");
+    expect(directionManager.getDistance(), "0 mi");
+    expect(directionManager.getDirections().length, 2);
+    expect(directionManager.getCurrentDirection().instruction, 'instruction');
+
+    directionManager.clearDirections();
+
+    expect(directionManager.getDuration(), "0 min");
+    expect(directionManager.getDistance(), "0 mi");
+    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.getCurrentDirection().instruction, 'instruction');
+
+    directionManager.clearCurrentDirection();
+
+    expect(directionManager.getDuration(), "0 min");
+    expect(directionManager.getDistance(), "0 mi");
+    expect(directionManager.getDirections().length, 0);
+    expect(directionManager.getCurrentDirection().instruction, '');
   });
 
 }

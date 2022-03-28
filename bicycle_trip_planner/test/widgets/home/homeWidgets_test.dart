@@ -9,7 +9,7 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart'
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Weather.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

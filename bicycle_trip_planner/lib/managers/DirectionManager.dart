@@ -5,6 +5,10 @@ import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 
+/// Class Comment:
+/// DirectionManager is a manager class that manages the directions for a planned
+/// route and is used in the display of navigation
+
 class DirectionManager {
 
   //********** Fields **********
@@ -27,7 +31,7 @@ class DirectionManager {
   static final DirectionManager _directionManager =
       DirectionManager._internal();
 
-  /// Singleton Constructor
+  /// Singleton Constructor Override
   factory DirectionManager() {
     return _directionManager;
   }

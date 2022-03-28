@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/search_types.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,9 @@ import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:provider/provider.dart';
 
 class RoutePlanningCard extends StatefulWidget {
-  const RoutePlanningCard({Key? key}) : super(key: key);
+  final loadRoute;
+  const RoutePlanningCard({Key? key, required this.loadRoute})
+      : super(key: key);
 
   @override
   _RoutePlanningCardState createState() => _RoutePlanningCardState();
@@ -29,38 +32,68 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
   }
 
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the route has a start, destination and has been changed
+  bool ifRouteSetAndChanged() {
+    return routeManager.ifStartSet() &&
+        routeManager.ifDestinationSet() &&
+        routeManager.ifChanged();
+  }
+
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the route has not been set but has been changed
+  bool ifNoRouteAndChanged() {
+    return (!routeManager.ifStartSet() || !routeManager.ifDestinationSet()) &&
+        routeManager.ifChanged();
+  }
+
+  ///@param void
+  ///@return bool
+  ///@effect - Returns whether the user is starting from their current location
+  bool ifStartFromCurrentLocation() {
+    return routeManager.getStart().getStop().description ==
+        SearchType.current.description;
+  }
+
+  ///@param ApplicationBloc
+  ///@return void
+  ///@effect - Sets and views the new route based on whether the cost
+  ///          is optimised or not
+  void findRoute(ApplicationBloc applicationBloc) {
+    Place origin = routeManager.getStart().getStop();
+    Place destination = routeManager.getDestination().getStop();
+    int groupSize = routeManager.getGroupSize();
+    bool ifCostOptimised = routeManager.ifCostOptimised();
+    List<Place> places = routeManager
+        .getWaypoints()
+        .map((waypoint) => waypoint.getStop())
+        .toList();
+    ifCostOptimised
+        ? applicationBloc.findCostEfficientRoute(origin, destination, groupSize)
+        : applicationBloc.findRoute(origin, destination, places, groupSize);
+  }
+
   //TODO:Look into preventing rebuild
   //Build method is called one more time before navigation starts resulting in a waste of api calls
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
 
-    if (routeManager.ifStartSet() &&
-        routeManager.ifDestinationSet() &&
-        routeManager.ifChanged()) {
-      polylineManager.clearPolyline();
-      routeManager.getStart().getStop().description ==
-              SearchType.current.description
-          ? routeManager.setStartFromCurrentLocation(true)
-          : routeManager.setStartFromCurrentLocation(false);
-      routeManager.ifCostOptimised()
-          ? applicationBloc.findCostEfficientRoute(
-              routeManager.getStart().getStop(),
-              routeManager.getDestination().getStop())
-          : applicationBloc.findRoute(
-              routeManager.getStart().getStop(),
-              routeManager.getDestination().getStop(),
-              routeManager
-                  .getWaypoints()
-                  .map((waypoint) => waypoint.getStop())
-                  .toList(),
-              routeManager.getGroupSize());
-      routeManager.clearChanged();
-    } else if ((!routeManager.ifStartSet() ||
-            !routeManager.ifDestinationSet()) &&
-        routeManager.ifChanged()) {
-      polylineManager.clearPolyline();
-      routeManager.clearChanged();
+    if (widget.loadRoute) {
+      if (ifRouteSetAndChanged()) {
+        polylineManager.clearPolyline();
+        ifStartFromCurrentLocation()
+            ? routeManager.setStartFromCurrentLocation(true)
+            : routeManager.setStartFromCurrentLocation(false);
+        findRoute(applicationBloc);
+        routeManager.clearChanged();
+      } else if (ifNoRouteAndChanged()) {
+        polylineManager.clearPolyline();
+        routeManager.clearRouteMarkers();
+        routeManager.clearChanged();
+      }
     }
 
     return Container(

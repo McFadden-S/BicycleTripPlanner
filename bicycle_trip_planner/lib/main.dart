@@ -11,7 +11,7 @@ import 'package:bicycle_trip_planner/widgets/general/other/Loading.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
-import 'package:bicycle_trip_planner/widgets/weather/weather.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/weather.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Error.dart';
 
