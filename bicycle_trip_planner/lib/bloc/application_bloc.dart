@@ -461,7 +461,6 @@ class ApplicationBloc with ChangeNotifier {
     Wakelock.enable();
     _routeManager.setLoading(false);
     _navigationManager.setLoading(false);
-
     notifyListeners();
   }
 
