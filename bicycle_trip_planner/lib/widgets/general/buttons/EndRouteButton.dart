@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class EndRouteButton extends StatefulWidget {
-  const EndRouteButton({Key? key}) : super(key: key);
+  Function onPressed;
+  
+  EndRouteButton({Key? key, required this.onPressed}) : super(key: key);
 
   @override
   _EndRouteButtonState createState() => _EndRouteButtonState();
@@ -35,6 +37,7 @@ class _EndRouteButtonState extends State<EndRouteButton> {
               () {
                 applicationBloc.endRoute();
                 applicationBloc.setSelectedScreen('home');
+                widget.onPressed();
               },
               "No",
               () {

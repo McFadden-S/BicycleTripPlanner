@@ -124,7 +124,7 @@ class _NavigationState extends State<Navigation> {
                     Expanded(child: WalkOrCycleToggle()),
                     SizedBox(width: 10),
                     Expanded(
-                      child: EndRouteButton(),
+                      child: EndRouteButton(onPressed: (){navigationSubscription.cancel();}),
                     ),
                   ],
                 ),
@@ -137,6 +137,7 @@ class _NavigationState extends State<Navigation> {
   }
 
   zoomOnUser() {
+    cameraManager.viewUser(zoomIn: 20.0);
     navigationSubscription = locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
