@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -38,5 +37,24 @@ void main() {
     expect(find.byType(Container), findsOneWidget);
   });
 
+  testWidgets("StationBar returns type container", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
+    final widget = find.byKey(ValueKey("first_page"));
+    expect(widget, findsOneWidget);
+  });
 
+  testWidgets("Tapping menu icon returns another widget", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
+    final widget = find.byKey(ValueKey("menu"));
+    expect(widget, findsOneWidget);
+
+    await tester.tap(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
+
+  testWidgets("StationBar returns type container", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
+    expect(find.byType(Container), findsOneWidget);
+  });
 }

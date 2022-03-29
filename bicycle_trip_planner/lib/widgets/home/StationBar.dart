@@ -336,12 +336,14 @@ class _StationBarState extends State<StationBar> {
                           ),
                     const Spacer(),
                     IconButton(
+                      key: Key("first_page"),
                       padding: const EdgeInsets.all(0),
                       onPressed: () => stationsPageViewController.jumpTo(0),
                       icon: Icon(Icons.first_page,
                           color: ThemeStyle.secondaryIconColor),
                     ),
                     IconButton(
+                      key: Key("menu"),
                       onPressed: () => showExpandedList(),
                       icon: Icon(Icons.menu,
                           color: ThemeStyle.secondaryIconColor),

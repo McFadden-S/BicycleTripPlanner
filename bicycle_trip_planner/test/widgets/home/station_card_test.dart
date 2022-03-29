@@ -61,4 +61,13 @@ void main() {
     expect(find.byType(InkWell), findsWidgets);
   });
 
+  testWidgets("Tapping widget moves to another widget", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station))));
+    final widget = find.byType(InkWell);
+    expect(widget, findsOneWidget);
+
+    await tester.tap(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
 }
