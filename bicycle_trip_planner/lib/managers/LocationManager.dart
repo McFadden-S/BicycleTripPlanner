@@ -14,7 +14,8 @@ class LocationManager {
   //********** Fields **********
 
   // This is specifying the Locator class in locator.dart
-  final Locator _locator = Locator();
+  Locator _locator = Locator();
+  var _location = Location();
 
   Place _currentPlace = const Place.placeNotFound();
 
@@ -32,21 +33,22 @@ class LocationManager {
 
   LocationManager._internal();
 
-  //********** Private **********
-
   @visibleForTesting
-  void isTest(geo.Geolocator geolocator) {
-    _locator.locate();
+  LocationManager.forMock(Location location, Locator locator){
+    _location = location;
+    _locator = locator;
   }
 
+  //********** Private **********
   /// Returns true if device is turned on and GPS is turned on
-  Future<bool> _checkServiceEnabled() async {
+  @visibleForTesting
+  Future<bool> checkServiceEnabled() async {
     bool _serviceEnabled = true;
     // Device is on
-    _serviceEnabled = await Location().serviceEnabled();
+    _serviceEnabled = await _location.serviceEnabled();
     if (!_serviceEnabled) {
       // GPS Device is turned on
-      _serviceEnabled = await Location().requestService();
+      _serviceEnabled = await _location.requestService();
       if (!_serviceEnabled) {
         _serviceEnabled = false;
       }
@@ -55,11 +57,12 @@ class LocationManager {
   }
 
   /// Returns true or false based on user accepting or rejecting location services
-  Future<bool> _checkPermission() async {
+  @visibleForTesting
+  Future<bool> checkPermission() async {
     bool grantedPermission = true;
-    PermissionStatus _permissionGranted = await Location().hasPermission();
+    PermissionStatus _permissionGranted = await _location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await Location().requestPermission();
+      _permissionGranted = await _location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         grantedPermission = false;
       }
@@ -73,7 +76,7 @@ class LocationManager {
   }
 
   Future<bool> locationSettings([double distanceFilter = 0]) {
-    return Location().changeSettings(
+    return _location.changeSettings(
         accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
@@ -96,8 +99,8 @@ class LocationManager {
 
   /// Requests the current location permissions
   Future<bool> requestPermission() async {
-    bool permission = await _checkPermission();
-    bool service = await _checkServiceEnabled();
+    bool permission = await checkPermission();
+    bool service = await checkServiceEnabled();
     return permission && service;
   }
 
@@ -129,15 +132,15 @@ class LocationManager {
   }
 
   /// Returns the set units
-  DistanceType getUnits() {
+  DistanceType getUnits()   {
     return _units;
   }
 
   /// Returns Stream that updates on user's location change
   /// distance filter adjusts the update sensitivity
   Stream<LocationData> onUserLocationChange([double distanceFilter = 0]) {
-    Location location = Location();
-    _locationSettings(distanceFilter);
+    Location location = _location;
+    locationSettings(distanceFilter);
     return location.onLocationChanged;
   }
 
