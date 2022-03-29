@@ -35,8 +35,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
 
   //********** Camera **********
 
-  // TODO: CHANGE THIS BACK WHEN POSSIBLE
-  // WAS TEMPORARILY REVERTED TO ALLOW TESTS TO PASS
   CameraManager? cameraManager;
 
   //********** User Position **********
