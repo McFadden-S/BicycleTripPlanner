@@ -192,8 +192,6 @@ class MockApplicationBloc extends _i1.Mock {
           returnValueForMissingStub: Future<void>.value()) as _i8.Future<void>);
   @override
   bool isWaypointPassed(_i9.LatLng waypoint, _i9.LatLng currentLocation, location.LocationManager locationManager) {
-
-    print((locationManager.distanceFromToInMeters(currentLocation, waypoint)));
     return (locationManager.distanceFromToInMeters(currentLocation, waypoint) <= 30);
   }
   @override

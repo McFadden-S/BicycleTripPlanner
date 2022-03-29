@@ -177,9 +177,6 @@ class ApplicationBloc with ChangeNotifier {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
-      // Print this if you suspect that data is loading more than expected
-      //print("I loaded!");
-      //CameraManager.instance.viewUser();
       await _updateDirections();
     });
   }
@@ -449,15 +446,12 @@ class ApplicationBloc with ChangeNotifier {
   Future<void> startNavigation() async {
     _routeManager.setLoading(true);
     await fetchCurrentLocation();
-    setSelectedScreen('navigation');
     _userSettings.saveRoute(
         _routeManager.getStart().getStop(),
         _routeManager.getDestination().getStop(),
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     await _navigationManager.start();
-    print("I have finished start");
     await updateLocationLive();
-    print("I update location");
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
