@@ -33,6 +33,8 @@ class _StationCardState extends State<DistanceETACard> {
               : Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Expanded(
+                  child:
                   Row(
                     children: [
                       Icon(Icons.access_time_outlined,
@@ -42,14 +44,18 @@ class _StationCardState extends State<DistanceETACard> {
                       )
                     ],
                   ),
-                  Row(
+                ),
+                  Expanded(
+                    child:
+                    Row(
                     children: [
                       Icon(Icons.pin_drop,
                           color: ThemeStyle.secondaryIconColor),
                       Text(' ${_directionManager.getDistance()}',
                         style: TextStyle(color: ThemeStyle.secondaryTextColor)),
                     ],
-                  )
+                  ),
+                )
           ]),
         ],
       ),
