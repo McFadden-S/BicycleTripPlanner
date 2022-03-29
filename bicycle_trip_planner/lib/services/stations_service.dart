@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:xml/xml.dart';
 
 class StationsService {
-  Future<List<Station>> getStations(http.Client client) async {
+  Future<List<Station>> getStations() async {
     var url =
         'https://tfl.gov.uk/tfl/syndication/feeds/cycle-hire/livecyclehireupdates.xml';
-    var response = await client.get(Uri.parse(url));
+    var response = await http.get(Uri.parse(url));
     var xmlResponse = XmlDocument.parse(response.body); 
     
     var elements = xmlResponse.findAllElements("station"); 

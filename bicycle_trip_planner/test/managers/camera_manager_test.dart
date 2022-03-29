@@ -1,4 +1,7 @@
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mockito/annotations.dart';
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
