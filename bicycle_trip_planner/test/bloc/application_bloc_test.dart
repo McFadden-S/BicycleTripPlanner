@@ -21,6 +21,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:location/location.dart';
@@ -61,6 +62,10 @@ void main() {
   var stationsService = MockStationsService();
   var directionManager = MockDirectionManager();
   var databaseManager = MockDatabaseManager();
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+
 
   final routeManager = RouteManager();
   final navigationManager =
