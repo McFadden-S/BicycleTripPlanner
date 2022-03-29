@@ -10,14 +10,18 @@ import '../settings/LoginScreen.dart';
 import '../settings/SignUpScreen.dart';
 
 class SettingsScreen extends StatefulWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  var settings;
+  var auth;
+  var bloc;
+
+  SettingsScreen({Key? key, this.auth, this.settings, this.bloc}) : super(key: key);
 
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  UserSettings userSettings = UserSettings();
+  late UserSettings userSettings;
   List<int> stationsRefreshRateOptions = <int>[30, 40, 50, 60];
   List<double> nearbyStationsRangeOptions = <double>[
     0.5,
@@ -36,19 +40,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
+  late var _auth;
+
+  late var applicationBloc;
 
   @override
   void initState() {
     super.initState();
+    userSettings = widget.settings ?? UserSettings();
+    _auth = widget.auth ?? FirebaseAuth.instance;
+    applicationBloc = widget.bloc ?? Provider.of<ApplicationBloc>(context, listen: false);
     updateVariables();
   }
 
   @override
   Widget build(BuildContext context) {
-    final _auth = FirebaseAuth.instance;
-    final applicationBloc =
-    Provider.of<ApplicationBloc>(context, listen: false);
-
     return Scaffold(
       backgroundColor: ThemeStyle.cardColor,
       body: Stack(
@@ -77,11 +83,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ),
                           IconButton(
+                            key: Key("infoButton"),
                             icon: Icon(Icons.info_outline,
                                 color: ThemeStyle.secondaryIconColor),
                             onPressed: () {
                               // set up the AlertDialog
                               AlertDialog alert = AlertDialog(
+                                key: Key("informationText"),
                                 backgroundColor: ThemeStyle.cardColor,
                                 title: Text("Account advantages",
                                     style: TextStyle(
@@ -95,7 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       color: ThemeStyle.primaryTextColor,
                                     )),
                               );
-
                               // show the dialog
                               showDialog(
                                 context: context,
@@ -138,8 +145,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     ),
                                     SizedBox(height: 10),
                                     ElevatedButton(
+                                      key: Key("logOut"),
                                       child: Text("Log out"),
                                       onPressed: () async {
+
                                         await _auth.signOut();
                                         setState(() {});
                                       },
@@ -157,6 +166,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           padding: const EdgeInsets.only(
                                               left: 10.0, right: 5.0),
                                           child: ElevatedButton(
+                                            key: Key("logIn"),
                                             child: Text("Login"),
                                             onPressed: () async {
                                               if (_auth.currentUser == null) {
@@ -184,6 +194,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           padding: const EdgeInsets.only(
                                               left: 10.0, right: 5.0),
                                           child: ElevatedButton(
+                                            key: Key("signUp"),
                                             child: Text("Sign up"),
                                             onPressed: () async {
                                               if (_auth.currentUser == null) {
@@ -254,6 +265,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<int>(
+                                key: Key("stationUpdate"),
                                 alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: stationsRefreshRate,
@@ -310,6 +322,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<double>(
+                                key: Key("nearbyStation"),
                                 alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: nearbyStationsRange,
@@ -368,6 +381,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               DropdownButton<String>(
+                                key: Key("distance"),
                                 alignment: AlignmentDirectional.topEnd,
                                 dropdownColor: ThemeStyle.cardColor,
                                 value: distanceUnit,
