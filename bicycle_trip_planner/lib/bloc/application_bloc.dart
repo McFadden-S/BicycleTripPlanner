@@ -62,7 +62,7 @@ class ApplicationBloc with ChangeNotifier {
   DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
   late DatabaseManager _databaseManager;
-  UserSettings _userSettings = UserSettings();
+  late UserSettings _userSettings;
 
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
@@ -73,6 +73,7 @@ class ApplicationBloc with ChangeNotifier {
     fetchCurrentLocation();
     updateStationsPeriodically();
     _databaseManager = DatabaseManager();
+    _userSettings = UserSettings();
   }
 
   @visibleForTesting
