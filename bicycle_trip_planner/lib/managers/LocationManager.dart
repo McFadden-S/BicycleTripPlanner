@@ -67,12 +67,19 @@ class LocationManager {
     return grantedPermission;
   }
 
-  Future<bool> _locationSettings([double distanceFilter = 0]) {
+
+  Future<void> openLocationSettingsOnDevice() async {
+    await geo.Geolocator.openLocationSettings();
+  }
+
+  Future<bool> locationSettings([double distanceFilter = 0]) {
     return Location().changeSettings(
         accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
   }
+
+  //********** private *********
 
   /// Returns the distance between the two points in metres
   double _calculateDistance(LatLng pos1, LatLng pos2) {
@@ -92,10 +99,6 @@ class LocationManager {
     bool permission = await _checkPermission();
     bool service = await _checkServiceEnabled();
     return permission && service;
-  }
-
-  Future<void> openLocationSettingsOnDevice() async {
-    await geo.Geolocator.openLocationSettings();
   }
 
   /// Returns the straight line distance from the users location to the passed coordinates
@@ -136,6 +139,13 @@ class LocationManager {
     Location location = Location();
     _locationSettings(distanceFilter);
     return location.onLocationChanged;
+  }
+
+  Future<bool> _locationSettings([double distanceFilter = 0]) {
+    return Location().changeSettings(
+        accuracy: LocationAccuracy.navigation,
+        interval: 1000,
+        distanceFilter: distanceFilter);
   }
 
   /// Set the units for distance
