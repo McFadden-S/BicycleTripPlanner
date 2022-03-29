@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
@@ -11,6 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:mockito/annotations.dart';
 import 'firebase_mocks/firebase_auth_mocks.dart';
