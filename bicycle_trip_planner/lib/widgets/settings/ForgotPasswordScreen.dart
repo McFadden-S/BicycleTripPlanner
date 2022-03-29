@@ -6,14 +6,26 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'components/ErrorSnackbar.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  const ForgotPasswordScreen({Key? key}) : super(key: key);
+  var auth;
+  var email;
+  ForgotPasswordScreen({Key? key, this.auth, this.email}) : super(key: key);
 
   @override
   _ForgotPasswordScreen createState() => _ForgotPasswordScreen();
+
 }
 
 class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
   late String email;
+  var _auth;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = widget.auth ?? FirebaseAuth.instance;
+    email = widget.email;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -76,7 +88,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
 
   Future resetPassword() async{
     try{
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      await _auth.sendPasswordResetEmail(email: email);
       ErrorSnackBar.buildErrorSnackbar(context, "password-reset-sent");
     } catch(e) {
       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
