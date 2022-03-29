@@ -148,7 +148,6 @@ class MarkerManager {
   /// @return void
   /// @affects - sets a marker for a given place object
   void setPlaceMarker(Place place, [int uid = -1]) {
-    print("Setting marker");
     setMarker(place.latlng, _generateMarkerID(uid));
   }
 

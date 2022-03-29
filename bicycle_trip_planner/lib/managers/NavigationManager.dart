@@ -10,9 +10,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// NavigationManager is a manager class that manages the data required for navigation
 
 class NavigationManager {
-  final _locationManager = LocationManager();
-  final _stationManager = StationManager();
-  final _routeManager = RouteManager();
+  var _locationManager = LocationManager();
+  var _stationManager = StationManager();
+  var _routeManager = RouteManager();
 
   bool _isNavigating = false;
   bool _isBeginning = true;
@@ -36,6 +36,12 @@ class NavigationManager {
   factory NavigationManager() => _navigationManager;
 
   NavigationManager._internal();
+
+  NavigationManager.forMock(StationManager stationManager, RouteManager routeManager, LocationManager locationManager){
+    _stationManager = stationManager;
+    _routeManager = routeManager;
+    _locationManager = locationManager;
+  }
 
   //********** Private **********
 
@@ -117,13 +123,10 @@ class NavigationManager {
 
   Future<void> start() async {
     _isNavigating = true;
-    print("I START NAVIGATING");
     if (_routeManager.ifStartFromCurrentLocation()) {
-      print("I START FROM CURRENT LOCATION");
       await setInitialPickUpDropOffStations(
           _routeManager.getStart().getStop().latlng,
           _routeManager.getDestination().getStop().latlng);
-      print("I SET STATION");
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
         Place firstStop = _routeManager.getStart().getStop();
@@ -161,6 +164,7 @@ class NavigationManager {
   }
 
   bool isWaypointPassed(LatLng waypoint) {
+
     return (_locationManager.distanceFromToInMeters(
             _locationManager.getCurrentLocation().getLatLng(), waypoint) <=
         30);

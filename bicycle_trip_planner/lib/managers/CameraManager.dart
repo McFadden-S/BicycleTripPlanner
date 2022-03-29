@@ -34,6 +34,10 @@ class CameraManager {
     return _cameraManager;
   }
 
+  CameraManager.forMock(GoogleMapController controller){
+    googleMapController = controller;
+  }
+
   CameraManager._internal();
 
   //********** Setup/Teardown **********
