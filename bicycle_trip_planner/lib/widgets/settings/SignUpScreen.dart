@@ -8,17 +8,25 @@ import 'components/ErrorSnackbar.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  var auth;
+  SignUpScreen({Key? key, this.auth}) : super(key: key);
 
   @override
   _SignUpScreen createState() => _SignUpScreen();
 }
 
 class _SignUpScreen extends State<SignUpScreen> {
-  final _auth = FirebaseAuth.instance;
+  late var _auth;
   late String email;
   late String password;
   late String confirmPassword;
+
+  @override
+  void initState() {
+    super.initState();
+    _auth = widget.auth ?? FirebaseAuth.instance;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
