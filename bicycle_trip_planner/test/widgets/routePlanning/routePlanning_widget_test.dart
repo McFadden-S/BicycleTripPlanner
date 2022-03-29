@@ -3,8 +3,11 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
@@ -62,18 +65,20 @@ void main() {
     expect(dropdownItem, findsOneWidget);
   });
 
-  testWidgets("RoutePlanning has optimise button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
-
-    final optimiseButton = find.widgetWithIcon(OptimisedButton, Icons.alt_route);
-
-    expect(optimiseButton, findsOneWidget);
-  });
-
   testWidgets("RoutePlanning has bike button", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final bikeButton = find.widgetWithIcon(RoundedRectangleButton, Icons.directions_bike);
+    final bottomCard = find.byType(CustomBottomSheet);
+
+    final bikeButton = find.descendant(of: bottomCard, matching: find.widgetWithIcon(ElevatedButton, Icons.directions_bike));
+
+    expect(bikeButton, findsOneWidget);
+  });
+
+  testWidgets("RoutePlanning has dollar icon", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final bikeButton = find.widgetWithIcon(OptimiseCostButton, Icons.money_off);
 
     expect(bikeButton, findsOneWidget);
   });
@@ -158,7 +163,7 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop');
+    final stopSearchBar = find.widgetWithText(Search, 'Stop');
     final removeStopButton = find.byIcon(Icons.remove_circle_outline);
 
     expect(stopSearchBar, findsNothing);
@@ -166,7 +171,7 @@ void main() {
     await tester.tap(addStopsButton);
     await tester.pumpAndSettle();
 
-    expect(stopSearchBar, findsOneWidget);
+    expect(stopSearchBar, findsWidgets);
 
     await tester.tap(removeStopButton);
     await tester.pumpAndSettle();
@@ -179,7 +184,7 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
-    final stopSearchBar = find.text('Stop');
+    final stopSearchBar = find.widgetWithText(Search, 'Stop');
     final removeStopButton = find.byKey(Key("Remove 1"));
 
     expect(stopSearchBar, findsNothing);
@@ -187,7 +192,7 @@ void main() {
     await tester.tap(addStopsButton);
     await tester.pumpAndSettle();
 
-    expect(stopSearchBar, findsOneWidget);
+    expect(stopSearchBar, findsWidgets);
 
     await tester.tap(addStopsButton);
     await tester.pumpAndSettle();
@@ -200,33 +205,22 @@ void main() {
     expect(stopSearchBar, findsOneWidget);
   });
 
-  testWidgets("When the bike button is clicked the user should be taken to the navigation screen", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
-
-    final bikeButton = find.widgetWithIcon(RoundedRectangleButton, Icons.directions_bike);
-    final navigationWidget = find.byWidget(Navigation());
-
-    expect(navigationWidget, findsNothing);
-
-    await tester.tap(bikeButton);
-    await tester.pumpAndSettle();
-
-    expect(bikeButton, findsOneWidget);
-  });
-
   testWidgets("When the optimise button is clicked the user should be shown a dialog box with choices", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final optimiseButton = find.widgetWithIcon(CircleButton, Icons.alt_route);
-    final binaryDialog = find.byKey(ValueKey("binaryChoiceDialog"));
+    final optimiseButton = find.widgetWithIcon(OptimiseCostButton, Icons.money_off);
+    final button1 = find.descendant(of: find.byWidget(BinaryChoiceDialog()), matching: find.byKey(Key('Binary Button 1')));
+    final button2 = find.descendant(of: find.byWidget(BinaryChoiceDialog()), matching: find.byKey(Key('Binary Button 2')));
 
     expect(optimiseButton, findsOneWidget);
-    expect(binaryDialog, findsNothing);
+    expect(button1, findsNothing);
+    expect(button2, findsNothing);
 
     await tester.tap(optimiseButton);
     await tester.pump();
 
-    expect(binaryDialog, findsOneWidget);
+    expect(button1, findsOneWidget);
+    expect(button2, findsOneWidget);
   });
 
 }
