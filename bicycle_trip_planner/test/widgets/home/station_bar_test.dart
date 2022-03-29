@@ -51,6 +51,12 @@ void main() {
     await tester.tap(widget);
     await tester.pump();
     expect(widget, findsOneWidget);
+
+    final widget2 = find.byType(StatefulBuilder);
+    expect(widget2, findsOneWidget);
+
+    expect(find.byType(Expanded), findsWidgets);
+    expect(find.byType(Container), findsWidgets);
   });
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {

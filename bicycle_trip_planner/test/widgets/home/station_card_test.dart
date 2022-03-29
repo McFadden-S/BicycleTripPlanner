@@ -70,4 +70,10 @@ void main() {
     await tester.pump();
     expect(widget, findsOneWidget);
   });
+
+  testWidgets("StationCard has contents inside", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true,))));
+
+    expect(find.byType(IconButton), findsWidgets);
+  });
 }

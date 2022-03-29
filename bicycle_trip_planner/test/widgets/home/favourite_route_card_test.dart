@@ -115,4 +115,24 @@ void main() {
     expect(find.byIcon(Icons.delete_forever), findsWidgets);
   });
 
+  testWidgets("Tapping the widget returns another widget", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:FavouriteRouteCard(keyRoute: key, valueRoute: valueRoute, deleteRoute: deleteRoute,))));
+    final widget = find.byType(InkWell);
+    expect(widget, findsOneWidget);
+
+    await tester.tap(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
+
+  testWidgets("Tapping the widget returns another widget", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:FavouriteRouteCard(keyRoute: key, valueRoute: valueRoute, deleteRoute: deleteRoute,))));
+    final widget = find.byIcon(Icons.delete_forever);
+    expect(widget, findsOneWidget);
+
+    await tester.press(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
+
 }
