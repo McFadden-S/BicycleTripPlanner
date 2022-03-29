@@ -60,5 +60,4 @@ void main() {
     expect(station.totalDocks, station2.totalDocks);
     expect(station.distanceTo, 50);
   });
-
 }
