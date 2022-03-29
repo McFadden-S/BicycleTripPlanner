@@ -48,7 +48,7 @@ void main(){
                   '</stations>',
               200));
 
-      final answer = await StationsService().getStations(client);
+      final answer = await StationsService().getStations();
       expect(answer.first.id,1);
       expect(answer.first.emptyDocks, 10);
       expect(answer.first.lat, 51.52916347);

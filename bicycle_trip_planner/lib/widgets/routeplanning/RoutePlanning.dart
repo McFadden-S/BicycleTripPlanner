@@ -270,6 +270,9 @@ class _RoutePlanningState extends State<RoutePlanning> {
             },
           );
           applicationBloc.showBinaryDialog();
+        } else {
+          loadRoute = false;
+          applicationBloc.startNavigation();
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -7,7 +7,6 @@ import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../widgets/home/Home.dart';
 
 /// Class Comment:
 /// MarkerManager is a manager class that organises and creates
@@ -16,6 +15,7 @@ import '../widgets/home/Home.dart';
 class MarkerManager {
   //********** Fields **********
 
+  // set of all markers on display
   final Set<Marker> _markers = <Marker>{};
 
   final _mapMarkerSC = StreamController<Set<Marker>>.broadcast();
@@ -148,7 +148,6 @@ class MarkerManager {
   /// @return void
   /// @affects - sets a marker for a given place object
   void setPlaceMarker(Place place, [int uid = -1]) {
-    print("Setting marker");
     setMarker(place.latlng, _generateMarkerID(uid));
   }
 

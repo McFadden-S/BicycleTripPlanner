@@ -705,6 +705,7 @@ void main() {
   });
 
   test('ensure route manager sets routes correctly', () {
+
     expect(routeManager.ifRouteSet(), false);
     routeManager.setRoutes(route_1, route_2, route_3);
     expect(routeManager.ifRouteSet(), true);
@@ -945,6 +946,7 @@ void main() {
   });
 
   test("Set current route", () {
+
     routeManager.setCurrentRoute(route_1, true);
 
     final polylineManager = PolylineManager();
