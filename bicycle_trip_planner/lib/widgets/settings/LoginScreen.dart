@@ -1,3 +1,4 @@
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/settings/ForgotPasswordScreen.dart';
@@ -11,12 +12,21 @@ import '../settings/GoogleSignIn.dart';
 import 'components/ErrorSnackbar.dart';
 
 class LoginScreen extends StatefulWidget {
+
+  var auth;
+  var email;
+  var password;
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
+
+  @visibleForTesting
+  LoginScreen({Key? key, this.auth, this.email, this.password}) : super(key:key);
+
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
+  late var _auth;
   late String email;
   late String password;
 
@@ -24,8 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    email = "!";
-    password = "!";
+    email = widget.email ?? "!";
+    password = widget.password ?? "!";
+    _auth = widget.auth ?? FirebaseAuth.instance;
   }
 
   @override
@@ -78,8 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   text: "Login",
                   press: () async {
                     try {
-                      await _auth.signInWithEmailAndPassword(
-                          email: email, password: password);
+                      await _auth.signInWithEmailAndPassword(email: email, password: password);
                       Navigator.pop(context, true);
                     } catch (e) {
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
@@ -122,6 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: TextStyle(color: ThemeStyle.primaryTextColor),
                   ),
                   GestureDetector(
+                    key: Key("signUp"),
                     onTap: (){
                       Navigator.pushReplacement(
                         context,
