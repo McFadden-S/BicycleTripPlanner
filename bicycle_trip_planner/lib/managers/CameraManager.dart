@@ -1,6 +1,7 @@
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -8,8 +9,6 @@ import '../constants.dart';
 import 'TimeManager.dart';
 
 class CameraManager {
-  final _time = CurrentTime();
-
   static const initialCameraPosition = CameraPosition(
     target: LatLng(51.509865, -0.118092),
     zoom: 12.5,
@@ -17,7 +16,7 @@ class CameraManager {
 
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
-  final MarkerManager markerManager = MarkerManager();
+  MarkerManager markerManager = MarkerManager();
 
   //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
@@ -34,18 +33,19 @@ class CameraManager {
     return _cameraManager;
   }
 
-  CameraManager.forMock(GoogleMapController controller){
-    googleMapController = controller;
-  }
-
   CameraManager._internal();
 
+  CameraManager.forMock(MarkerManager manager, GoogleMapController controller){
+    markerManager = manager;
+    googleMapController = controller;
+  }
   //********** Setup/Teardown **********
 
   void init() {
     rootBundle.loadString(ThemeStyle.mapStyle).then((style) {
       googleMapController.setMapStyle(style);
     });
+
   }
 
   void dispose() {
@@ -54,8 +54,11 @@ class CameraManager {
 
   //********** Private **********
 
+
+
   ///Sets the bounds of the map's camera
-  void _setCameraBounds(LatLng southwest, LatLng northeast) {
+  @visibleForTesting
+  void setCameraBounds(LatLng southwest, LatLng northeast) {
     googleMapController.animateCamera(
       CameraUpdate.newLatLngBounds(
           LatLngBounds(
@@ -87,6 +90,11 @@ class CameraManager {
     _routeOriginCamera = origin;
   }
 
+  @visibleForTesting
+  getRouteOriginCamera(){
+    return _routeOriginCamera;
+  }
+
   /// Views the route to a location
   Future<void> goToPlace(LatLng latLng, Map<String, dynamic> boundsNe,
       Map<String, dynamic> boundsSw) async {
@@ -103,7 +111,7 @@ class CameraManager {
   /// Set the route via setRouteCamera
   Future<void> viewRoute() async {
     setCameraPosition(_routeOriginCamera);
-    _setCameraBounds(_routeBoundsSW, _routeBoundsNE);
+    setCameraBounds(_routeBoundsSW, _routeBoundsNE);
   }
 
   /// Sets the camera to the user's location

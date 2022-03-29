@@ -18,7 +18,7 @@ void main() {
   });
 
   testWidgets("EndRouteButton is a button", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: EndRouteButton())));
+    await pumpWidget(tester, MaterialApp(home: Material(child: EndRouteButton(onPressed: null,))));
 
     final button = find.byType(EndRouteButton);
 
@@ -26,7 +26,7 @@ void main() {
   });
 
   testWidgets("EndRouteButton has end text", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: EndRouteButton())));
+    await pumpWidget(tester, MaterialApp(home: Material(child: EndRouteButton(onPressed: null,))));
 
     final text = find.text("End");
 
