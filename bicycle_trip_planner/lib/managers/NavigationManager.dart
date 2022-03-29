@@ -123,13 +123,10 @@ class NavigationManager {
 
   Future<void> start() async {
     _isNavigating = true;
-    print("I START NAVIGATING");
     if (_routeManager.ifStartFromCurrentLocation()) {
-      print("I START FROM CURRENT LOCATION");
       await setInitialPickUpDropOffStations(
           _routeManager.getStart().getStop().latlng,
           _routeManager.getDestination().getStop().latlng);
-      print("I SET STATION");
     } else {
       if (_routeManager.ifWalkToFirstWaypoint()) {
         Place firstStop = _routeManager.getStart().getStop();

@@ -267,8 +267,6 @@ class ApplicationBloc with ChangeNotifier {
     _navigationSubscription = _locationManager
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
-
-      _cameraManager.viewUser();
       await _updateDirections();
     });
   }
@@ -614,9 +612,7 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.getDestination().getStop(),
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     await _navigationManager.start();
-    print("I have finished start");
     await updateLocationLive();
-    print("I update location");
     _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
