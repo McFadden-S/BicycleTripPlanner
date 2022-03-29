@@ -13,6 +13,7 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
+  @visibleForTesting
   const StationBar({Key? key}) : super(key: key);
 
   @override
@@ -285,9 +286,12 @@ class _StationBarState extends State<StationBar> {
                                                   "You don't have any nearby stations,"
                                                       "\ntry changing the range in the settings.",
                                                 );
-                                              }))
+                                              })
+                              )
                             ],
-                          ))),
+                          )
+                      )
+                  ),
                 ],
               ),
             );
@@ -403,7 +407,8 @@ class _StationBarState extends State<StationBar> {
                 ),
               ),
             ],
-          )),
+          )
+      ),
     );
   }
 }

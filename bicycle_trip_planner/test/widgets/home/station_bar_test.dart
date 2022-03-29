@@ -33,4 +33,10 @@ void main() {
     expect(find.widgetWithIcon(IconButton, Icons.menu), findsOneWidget);
   });
 
+  testWidgets("StationBar returns type container", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
+    expect(find.byType(Container), findsOneWidget);
+  });
+
+
 }
