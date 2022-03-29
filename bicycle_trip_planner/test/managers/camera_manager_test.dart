@@ -86,6 +86,7 @@ void main() {
 
     await untilCalled(controller.animateCamera(any));
     verify(controller.animateCamera(any));
+    cameraManager.dispose();
   });
 
 }
