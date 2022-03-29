@@ -39,6 +39,7 @@ class ApplicationBloc with ChangeNotifier {
   var _stationsService = StationsService();
 
   Widget selectedScreen = HomeWidgets();
+
   /// Screens available
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -74,7 +75,20 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager, StationsService stationsService, DirectionManager directionManager, DatabaseManager databaseManager){
+  ApplicationBloc.forMock(
+      DialogManager dialogManager,
+      PlacesService placesService,
+      LocationManager locationManager,
+      UserSettings userSettings,
+      CameraManager cameraManager,
+      MarkerManager markerManager,
+      RouteManager routeManager,
+      NavigationManager navigationManager,
+      DirectionsService directionsService,
+      StationManager stationManager,
+      StationsService stationsService,
+      DirectionManager directionManager,
+      DatabaseManager databaseManager) {
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -161,7 +175,7 @@ class ApplicationBloc with ChangeNotifier {
   // ********** Search **********
 
   @visibleForTesting
-  List<PlaceSearch> getSearchResult(){
+  List<PlaceSearch> getSearchResult() {
     return searchResults;
   }
 
@@ -268,6 +282,7 @@ class ApplicationBloc with ChangeNotifier {
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
       await _updateDirections();
+      notifyListeners();
     });
   }
 
@@ -359,7 +374,7 @@ class ApplicationBloc with ChangeNotifier {
       Place origin, Place destination, Station startStation, Station endStation,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     List<String> intermediatePlaceId =
-    intermediates.map((place) => place.placeId).toList();
+        intermediates.map((place) => place.placeId).toList();
 
     Rou.Route startWalkRoute = await _directionsService.getRoutes(
         origin.placeId, startStation.place.placeId, RouteType.walk);
@@ -440,14 +455,12 @@ class ApplicationBloc with ChangeNotifier {
       } else {
         List<Station> nearbyStations = _stationManager
             .getStationsInRadius(LatLng(curStation.lat, curStation.lng));
-        nearbyStations.sort((stationA, stationB) => costEfficiencyHeuristic(
-                curStation, stationA, endStation)
-            .compareTo(
+        nearbyStations.sort((stationA, stationB) =>
+            costEfficiencyHeuristic(curStation, stationA, endStation).compareTo(
                 costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
           await _stationManager.cachePlaceId(nearbyStations[i]);
-          if ((await getDurationFromToStation(
-                  curStation, nearbyStations[i])) <=
+          if ((await getDurationFromToStation(curStation, nearbyStations[i])) <=
               25) {
             intermediateStations.add(nearbyStations[i]);
             curStation = nearbyStations[i];
@@ -489,18 +502,18 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   @visibleForTesting
-  void setNavigationSubscription(){
+  void setNavigationSubscription() {
     updateLocationLive();
   }
   // ********** Stations **********
 
   @visibleForTesting
-  setStationTimer(){
-    _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) { });
+  setStationTimer() {
+    _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) {});
   }
 
   @visibleForTesting
-  getStationTimer(){
+  getStationTimer() {
     return _stationTimer;
   }
 
@@ -613,11 +626,9 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     await _navigationManager.start();
     await updateLocationLive();
-    _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
     _navigationManager.setLoading(false);
-
     notifyListeners();
   }
 
