@@ -2006,7 +2006,9 @@ void main() {
       navigationManager,
       directionsService,
       stationManager,
-      cameraManager);
+      cameraManager,
+      userSettings
+  );
 
   var appBloc = ApplicationBloc.forMock(
       dialogManager,
