@@ -1,22 +1,17 @@
 import 'dart:io';
-
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Weather.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
 import '../login/mock.dart';
-
 
 void main() {
   setupFirebaseAuthMocks();
@@ -78,7 +73,6 @@ void main() {
     expect(find.byType(Weather), findsOneWidget);
   });
 
-
   testWidgets('settings button navigate user to settings screen',
           (WidgetTester tester) async {
         await pumpWidget(tester, MaterialApp(
@@ -99,9 +93,7 @@ void main() {
         expect(find.byType(CurrentLocationButton), findsNothing);
         expect(find.byType(GroupSizeSelector), findsNothing);
         expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
-
       });
-
 
   testWidgets('Go to routePlanning button loads routePlanning widgets',
           (WidgetTester tester) async {
@@ -127,9 +119,7 @@ void main() {
         //check that there are no homeWidgets on the screen
         expect(find.byKey(Key('settingsButton')), findsNothing);
         expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
-
       });
-
 
   testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
           (WidgetTester tester) async {
@@ -149,6 +139,4 @@ void main() {
           expect(find.byKey(Key(i.toString()), skipOffstage: false), findsOneWidget);
         }
       });
-
 }
-
