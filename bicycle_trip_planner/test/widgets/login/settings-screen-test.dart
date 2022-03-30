@@ -87,7 +87,7 @@ void main(){
     expect(widget, findsOneWidget);
 
     await tester.tap(widget);
-    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.pumpAndSettle();
 
     expect(find.byType(SignUpScreen), findsOneWidget);
   });

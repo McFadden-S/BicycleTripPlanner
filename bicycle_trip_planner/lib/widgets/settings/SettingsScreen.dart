@@ -9,6 +9,12 @@ import '../../managers/UserSettings.dart';
 import '../settings/LoginScreen.dart';
 import '../settings/SignUpScreen.dart';
 
+
+/// Settings screen displays settings that the user can change. This includes
+/// the radius of stations they want to see near them, how often the stations list
+/// is updated and what unit of distance they prefer.
+/// Settings screen also allows the user to log in, sign up and log out,
+/// depending on their login status
 class SettingsScreen extends StatefulWidget {
   var settings;
   var auth;
@@ -19,7 +25,8 @@ class SettingsScreen extends StatefulWidget {
   @override
   State<SettingsScreen> createState() => _SettingsScreenState();
 }
-
+// List of distance
+// Used to find the maximum distance range for nearby stations
 class _SettingsScreenState extends State<SettingsScreen> {
   late UserSettings userSettings;
   List<int> stationsRefreshRateOptions = <int>[30, 40, 50, 60];
@@ -37,11 +44,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   ];
   List<String> distanceUnitOptions = <String>['miles', 'kilometres'];
 
+  // Default values
   int stationsRefreshRate = 30;
   double nearbyStationsRange = 0.5;
   String distanceUnit = 'miles';
   late var _auth;
-
   late var applicationBloc;
 
   @override
@@ -82,6 +89,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               color: ThemeStyle.primaryTextColor,
                             ),
                           ),
+                          // Creates info button that displays a descriptive text
+                          // which explains the advantages of having an account
                           IconButton(
                             key: Key("infoButton"),
                             icon: Icon(Icons.info_outline,
@@ -445,6 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  // Updates variables when there is a value change
   updateVariables() async {
     stationsRefreshRate = await userSettings.stationsRefreshRate();
     nearbyStationsRange = await userSettings.nearbyStationsRange();
