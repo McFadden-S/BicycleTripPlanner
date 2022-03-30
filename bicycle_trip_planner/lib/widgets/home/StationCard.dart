@@ -35,11 +35,6 @@ class _StationCardState extends State<StationCard> {
     super.initState();
   }
 
-  @visibleForTesting
-  getIsFavourite() {
-    return widget.isFavourite;
-  }
-
   @override
   Widget build(BuildContext context) {
 

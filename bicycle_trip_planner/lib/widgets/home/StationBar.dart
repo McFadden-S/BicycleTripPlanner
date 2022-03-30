@@ -13,14 +13,18 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
+  final auth;
+
   @visibleForTesting
-  const StationBar({Key? key}) : super(key: key);
+  const StationBar({Key? key, this.auth}) : super(key: key);
 
   @override
   _StationBarState createState() => _StationBarState();
 }
 
 class _StationBarState extends State<StationBar> {
+  late var auth;
+
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
