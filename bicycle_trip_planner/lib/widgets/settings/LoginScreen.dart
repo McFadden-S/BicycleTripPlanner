@@ -11,6 +11,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../settings/GoogleSignIn.dart';
 import 'components/ErrorSnackbar.dart';
 
+
+/// Login screen is used to allow the user to log into their accounts either
+/// using an email and password or through google sign in
 class LoginScreen extends StatefulWidget {
 
   var auth;
@@ -20,7 +23,7 @@ class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 
-  @visibleForTesting
+  // Default constructor
   LoginScreen({Key? key, this.auth, this.email, this.password}) : super(key:key);
 
 }
@@ -31,6 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   late String password;
 
 
+  // Assigns values to variables, if value not passed in default values are assigned
   @override
   void initState() {
     super.initState();
@@ -42,7 +46,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -67,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   flex: 1,
                 ),
+                // Field to pass in user email
                 Flexible(
                   child: RoundedInputField(
                     key: Key("emailField"),
@@ -77,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   flex: 2,
                 ),
+                // Field to pass in user password
                 RoundedPasswordField(
                     key: Key("passwordField"),
                     text: "Password",
@@ -84,6 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       password = value;
                     }
                 ),
+                // Button to log user in
                 RoundedTextButton(
                   key: Key("login"),
                   text: "Login",
@@ -110,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       key: Key("googleLogin"),
                       icon: FaIcon(FontAwesomeIcons.google),
                       label: Text("Login with Google"),
+                      // Logs user in via google
                       onPressed: () async {
                         await GoogleSignInProvider().googleLogin();
                         if(_auth.currentUser != null){
@@ -131,6 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Do not have an Account? ",
                     style: TextStyle(color: ThemeStyle.primaryTextColor),
                   ),
+                  // Directs user to sign up page
                   GestureDetector(
                     key: Key("signUp"),
                     onTap: (){
@@ -153,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
                 SizedBox(height: size.height * 0.01),
+                // Directs user to reset password page
                 GestureDetector(
                   key: Key("resetPassword"),
                   onTap: () {
