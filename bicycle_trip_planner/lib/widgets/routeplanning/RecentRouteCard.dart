@@ -15,8 +15,9 @@ class RecentRouteCard extends StatefulWidget {
   final UserSettings ?userSettings;
   final RouteManager ? routeManager;
   final MarkerManager ? markerManager;
+  final ApplicationBloc ? applicationBloc;
 
-  const RecentRouteCard({Key? key, required this.index, this.userSettings, this.routeManager, this.markerManager}) : super(key: key);
+  const RecentRouteCard({Key? key, required this.index, this.userSettings, this.routeManager, this.markerManager, this.applicationBloc}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -30,20 +31,21 @@ class _RouteCardState extends State<RecentRouteCard> {
   late UserSettings _userSettings;
   late RouteManager _routeManager;
   late MarkerManager _markerManager;
+  late ApplicationBloc _applicationBloc;
 
   @override
   void initState() {
     _userSettings = widget.userSettings ?? UserSettings();
     _markerManager = widget.markerManager ?? MarkerManager();
     _routeManager = widget.routeManager ?? RouteManager();
+    _applicationBloc = widget.applicationBloc ?? Provider.of<ApplicationBloc>(context, listen: false);
     super.initState();
     initVariables();
   }
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+    final applicationBloc = _applicationBloc;
     return InkWell(
       onTap: () async {
         Navigator.of(context).maybePop();
