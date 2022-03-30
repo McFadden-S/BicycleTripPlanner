@@ -20,14 +20,13 @@ void main() {
   });
 
   testWidgets("Login screen has an email field", (WidgetTester tester) async {
-
     await pumpWidget(tester, MaterialApp(home: LoginScreen()));
     var widget = find.byKey(ValueKey("emailField"));
     expect(widget, findsOneWidget);
 
     await tester.enterText(widget, "test");
     await tester.pump();
-    
+
     expect(find.text("test"), findsOneWidget);
   });
 
@@ -42,7 +41,8 @@ void main() {
     expect(find.text("test"), findsOneWidget);
   });
 
-  testWidgets("Login Screen has a login button and incorrect auth credentials", (WidgetTester tester) async {
+  testWidgets("Login Screen has a login button and incorrect auth credentials",
+      (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: LoginScreen(auth: auth)));
     final widget = find.byKey(ValueKey("login"));
     expect(widget, findsOneWidget);
@@ -52,19 +52,29 @@ void main() {
     verifyNever(auth.signInWithEmailAndPassword());
   });
 
-  testWidgets("Login Screen has correct auth credentials",(WidgetTester tester) async{
+  testWidgets("Login Screen has correct auth credentials",
+      (WidgetTester tester) async {
     const email = "hello";
     const password = "bye";
 
-    await pumpWidget(tester, MaterialApp(home: LoginScreen(auth: auth, email: email, password: password,)));
+    await pumpWidget(
+        tester,
+        MaterialApp(
+            home: LoginScreen(
+          auth: auth,
+          email: email,
+          password: password,
+        )));
     final widget = find.byKey(ValueKey("login"));
     expect(widget, findsOneWidget);
 
-    when(auth.signInWithEmailAndPassword(email: email, password: password)).thenAnswer((realInvocation) async=> userCred);
+    when(auth.signInWithEmailAndPassword(email: email, password: password))
+        .thenAnswer((realInvocation) async => userCred);
     await tester.tap(widget);
     await tester.pump();
 
-    await untilCalled(auth.signInWithEmailAndPassword(email: email, password: password));
+    await untilCalled(
+        auth.signInWithEmailAndPassword(email: email, password: password));
     verify(auth.signInWithEmailAndPassword(email: email, password: password));
   });
 
@@ -79,7 +89,8 @@ void main() {
     expect(widget, findsOneWidget);
   });
 
-  testWidgets("Login screen has a reset password button", (WidgetTester tester) async {
+  testWidgets("Login screen has a reset password button",
+      (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: LoginScreen()));
     final widget = find.byKey(ValueKey("resetPassword"));
     expect(widget, findsOneWidget);
@@ -90,5 +101,4 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: LoginScreen()));
     expect(find.byKey(ValueKey("back")), findsOneWidget);
   });
-
 }
