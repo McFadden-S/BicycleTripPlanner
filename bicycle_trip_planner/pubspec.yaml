@@ -61,6 +61,8 @@ dependencies:
   shared_preferences: ^2.0.13
   fake_cloud_firestore: ^1.2.2
   timer_count_down: ^2.2.1
+  clock: ^1.1.0
+  fake_async: ^1.2.0
 
 dev_dependencies:
   flutter_test:

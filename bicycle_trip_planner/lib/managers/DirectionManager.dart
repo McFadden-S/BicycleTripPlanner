@@ -133,7 +133,7 @@ class DirectionManager {
   void setDirections(List<Steps> directions) {
     _directions = directions;
     _currentDirection =
-        directions.isNotEmpty ? directions.removeAt(0) : Steps.stepsNotFound();
+        _directions.isNotEmpty ? _directions.removeAt(0) : Steps.stepsNotFound();
   }
 
   //********** Clearing **********

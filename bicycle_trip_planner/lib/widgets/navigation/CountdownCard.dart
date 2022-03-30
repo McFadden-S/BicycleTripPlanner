@@ -21,21 +21,15 @@ class _CountdownCardState extends State<CountdownCard> {
   static const Color _red = Color(0xFF8B0000);
   final DirectionManager directionManager = DirectionManager();
 
-  int whichColor = 0;
-
   @override
   Widget build(BuildContext context) {
+    Color curColor =
     directionManager.getDurationValue() > 15
-        ? whichColor = 0
+        ?  _green
         : directionManager.getDurationValue() > 5
-            ? whichColor = 1
-            : whichColor = 2;
-
-    Color curColor = whichColor == 0
-        ? _green
-        : whichColor == 1
             ? _orange
             : _red;
+
 
     RouteType routeType = RouteManager().getCurrentRoute().routeType;
 
@@ -56,15 +50,10 @@ class _CountdownCardState extends State<CountdownCard> {
                   seconds: 1800, // 1800 seconds == 30 minutes
                   build: (_, double time) {
                     (time / 60).ceil() > 15
-                        ? whichColor = 0
+                        ? curColor = _green
                         : (time / 60).ceil() > 5
-                            ? whichColor = 1
-                            : whichColor = 2;
-                    curColor = whichColor == 0
-                        ? _green
-                        : whichColor == 1
-                            ? _orange
-                            : _red;
+                            ? curColor = _orange
+                            : curColor = _red;
                     return Text(
                       (time / 60) > 5
                           ? ((time / 60).ceil().toString() + " min")
