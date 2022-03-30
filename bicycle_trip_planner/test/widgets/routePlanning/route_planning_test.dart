@@ -132,7 +132,5 @@ void main(){
     await tester.pump();
     final historyButton = find.widgetWithIcon(CircleButton, Icons.history);
     expect(historyButton, findsOneWidget);
-    await tester.tap(historyButton);
-    await tester.pumpAndSettle();
   });
 }

@@ -37,9 +37,4 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets('Find', (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanningCard(loadRoute: true, routeManager: mockRouteManager,))));
-
-
-  });
 }
