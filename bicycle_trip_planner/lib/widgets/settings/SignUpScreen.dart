@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'components/ErrorSnackbar.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
+/// Sign up screen to allow user to create a new account
 class SignUpScreen extends StatefulWidget {
   var auth;
   SignUpScreen({Key? key, this.auth}) : super(key: key);
@@ -21,6 +22,7 @@ class _SignUpScreen extends State<SignUpScreen> {
   late String password;
   late String confirmPassword;
 
+  // Initialises default values if none are passed in
   @override
   void initState() {
     super.initState();
@@ -84,7 +86,10 @@ class _SignUpScreen extends State<SignUpScreen> {
                   text: "Sign Up",
                   press: () async {
                     try {
+                      // confirms that the passwords match
                       if (password==confirmPassword){
+                        // attempts to create a new account, if successful, they are
+                        // sent to settings page, otherwise they receive an error message
                         await _auth.createUserWithEmailAndPassword(
                           email: email,
                           password: password,
@@ -106,6 +111,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       "Already have an Account? ",
                       style: TextStyle(color: ThemeStyle.primaryTextColor),
                     ),
+                    // Redirects user to login screen
                     GestureDetector(
                       onTap: (){
                         Navigator.pushReplacement(
