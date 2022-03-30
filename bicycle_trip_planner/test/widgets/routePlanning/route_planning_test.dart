@@ -127,11 +127,12 @@ void main(){
   /**
    * recentRouteCount not being set so history button not showing
    */
-  // testWidgets("Has history button when logged in and when there is recent routes", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager, userSettings: mockUserSettings,))));
-  //   final historyButton = find.widgetWithIcon(CircleButton, Icons.history);
-  //   expect(historyButton, findsOneWidget);
-  //   await tester.tap(historyButton);
-  //   await tester.pump();
-  // });
+  testWidgets("Has history button when logged in and when there is recent routes", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager, userSettings: mockUserSettings,))));
+    await tester.pump();
+    final historyButton = find.widgetWithIcon(CircleButton, Icons.history);
+    expect(historyButton, findsOneWidget);
+    await tester.tap(historyButton);
+    await tester.pumpAndSettle();
+  });
 }

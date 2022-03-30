@@ -20,14 +20,11 @@ import 'route_planning_card_test.mocks.dart';
 @GenerateMocks([RouteManager])
 void main() {
   final mockRouteManager = MockRouteManager();
-  const location = LatLng(1, -1);
-  final place = Place(latlng: location, name: "Bush House", placeId: "1", description: "");
-  final place2 = Place(latlng: location, name: "Strand", placeId: "2", description: "");
   when(mockRouteManager.ifStartSet()).thenAnswer((realInvocation) => true);
   when(mockRouteManager.ifDestinationSet()).thenAnswer((realInvocation) => true);
   when(mockRouteManager.ifChanged()).thenAnswer((realInvocation) => true);
-  when(mockRouteManager.getStart()).thenAnswer((realInvocation) => Stop(place));
-  when(mockRouteManager.getDestination()).thenAnswer((realInvocation) => Stop(place2));
+  when(mockRouteManager.getStart()).thenAnswer((realInvocation) => Stop());
+  when(mockRouteManager.getDestination()).thenAnswer((realInvocation) => Stop());
   when(mockRouteManager.getGroupSize()).thenAnswer((realInvocation) => 1);
   when(mockRouteManager.ifCostOptimised()).thenAnswer((realInvocation) => true);
   when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => []);
