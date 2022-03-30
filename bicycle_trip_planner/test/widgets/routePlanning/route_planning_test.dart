@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
@@ -25,8 +26,13 @@ import 'route_planning_test.mocks.dart';
 void main(){
   final mockDatabaseManager = MockDatabaseManager();
   final mockUserSettings = MockUserSettings();
-  final mockRouteManager = MockRouteManager;
+  final mockRouteManager = MockRouteManager();
   when(mockDatabaseManager.isUserLogged()).thenAnswer((realInvocation) => true);
+  when(mockUserSettings.getNumberOfRoutes()).thenAnswer((realInvocation) async => 3);
+  when(mockRouteManager.ifRouteSet()).thenAnswer((realInvocation) => true);
+  when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => [Stop(), Stop()]);
+  when(mockRouteManager.ifCostOptimised()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager.getStart()).thenAnswer((realInvocation) => Stop());
   setupFirebaseAuthMocks();
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -111,7 +117,7 @@ void main(){
   });
 
   testWidgets("Can start journey", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager,))));
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager, routeManager: mockRouteManager,))));
     final favouriteButton = find.widgetWithIcon(ElevatedButton, Icons.directions_bike);
     expect(favouriteButton, findsOneWidget);
     await tester.tap(favouriteButton);
@@ -119,13 +125,13 @@ void main(){
   });
 
   /**
-   * need user to be logged in
+   * recentRouteCount not being set so history button not showing
    */
-  // testWidgets("RoutePlanning has history button", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
-  //
-  //   final optimiseButton = find.widgetWithIcon(CircleButton, Icons.history);
-  //
-  //   expect(optimiseButton, findsOneWidget);
+  // testWidgets("Has history button when logged in and when there is recent routes", (WidgetTester tester) async {
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager, userSettings: mockUserSettings,))));
+  //   final historyButton = find.widgetWithIcon(CircleButton, Icons.history);
+  //   expect(historyButton, findsOneWidget);
+  //   await tester.tap(historyButton);
+  //   await tester.pump();
   // });
 }
