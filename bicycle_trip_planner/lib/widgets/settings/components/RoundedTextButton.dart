@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 
+/// Custom button class that builds a rounded button with a given
+/// text, colour and executes the given function on press.
 class RoundedTextButton extends StatefulWidget {
+  /// Text of the button to be displayed
   final String text;
+
+  /// Function on the button to be executed upon pressing the button
   final VoidCallback press;
+
+  /// Colour of the button, follows ThemeStyle colour pallete by default
   Color? color = ThemeStyle.buttonPrimaryColor;
 
+  /// Constructor of the widget requiring the specified variables
   RoundedTextButton({
     Key? key,
     required this.text,
@@ -18,14 +26,14 @@ class RoundedTextButton extends StatefulWidget {
 }
 
 class _RoundedTextButtonState extends State<RoundedTextButton> {
+  /// Default text colour, follows ThemeStyle colour pallete
   Color textColor = ThemeStyle.primaryTextColor;
+
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery
-        .of(context)
-        .size;
+    Size size = MediaQuery.of(context).size;
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10 ),
+      margin: const EdgeInsets.symmetric(vertical: 10),
       width: size.width * 0.6,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(30),
@@ -34,6 +42,7 @@ class _RoundedTextButtonState extends State<RoundedTextButton> {
     );
   }
 
+  /// Returns an ElevatedButton with the passed in text, colour and function
   Widget newElevatedButton() {
     return ElevatedButton(
       child: Text(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/settings/ForgotPasswordScreen.dart';
@@ -10,28 +11,41 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../settings/GoogleSignIn.dart';
 import 'components/ErrorSnackbar.dart';
 
+
+/// Login screen is used to allow the user to log into their accounts either
+/// using an email and password or through google sign in
 class LoginScreen extends StatefulWidget {
+
+  var auth;
+  var email;
+  var password;
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
+
+  // Default constructor
+  LoginScreen({Key? key, this.auth, this.email, this.password}) : super(key:key);
+
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _auth = FirebaseAuth.instance;
+  late var _auth;
   late String email;
   late String password;
 
 
+  // Assigns values to variables, if value not passed in default values are assigned
   @override
   void initState() {
     super.initState();
-    email = "!";
-    password = "!";
+    email = widget.email ?? "!";
+    password = widget.password ?? "!";
+    _auth = widget.auth ?? FirebaseAuth.instance;
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -56,6 +70,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   flex: 1,
                 ),
+                // Field to pass in user email
                 Flexible(
                   child: RoundedInputField(
                     key: Key("emailField"),
@@ -66,6 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   flex: 2,
                 ),
+                // Field to pass in user password
                 RoundedPasswordField(
                     key: Key("passwordField"),
                     text: "Password",
@@ -73,13 +89,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       password = value;
                     }
                 ),
+                // Button to log user in
                 RoundedTextButton(
                   key: Key("login"),
                   text: "Login",
                   press: () async {
                     try {
-                      await _auth.signInWithEmailAndPassword(
-                          email: email, password: password);
+                      await _auth.signInWithEmailAndPassword(email: email, password: password);
                       Navigator.pop(context, true);
                     } catch (e) {
                       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
@@ -100,6 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       key: Key("googleLogin"),
                       icon: FaIcon(FontAwesomeIcons.google),
                       label: Text("Login with Google"),
+                      // Logs user in via google
                       onPressed: () async {
                         await GoogleSignInProvider().googleLogin();
                         if(_auth.currentUser != null){
@@ -121,7 +138,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     "Do not have an Account? ",
                     style: TextStyle(color: ThemeStyle.primaryTextColor),
                   ),
+                  // Directs user to sign up page
                   GestureDetector(
+                    key: Key("signUp"),
                     onTap: (){
                       Navigator.pushReplacement(
                         context,
@@ -142,6 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
                 SizedBox(height: size.height * 0.01),
+                // Directs user to reset password page
                 GestureDetector(
                   key: Key("resetPassword"),
                   onTap: () {

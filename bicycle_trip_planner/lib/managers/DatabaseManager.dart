@@ -67,13 +67,11 @@ class DatabaseManager {
     List<int> output = [];
 
     final result = await favouriteStations.once();
-    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
-    //final map = result.snapshot.value as Map<String, int>;
-    map.forEach((key, value) => {output.add(value)});
 
-    /*await favouriteStations.once().then((v) => {
-          for (var id in v.snapshot.children.cast()) {output.add(id.value)}
-        });*/
+    if(result.snapshot.exists) {
+      final map = Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
+      map.forEach((key, value) => {output.add(value)});
+    }
 
     return output;
   }
@@ -139,8 +137,11 @@ class DatabaseManager {
     DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
     final result = await favouriteRoutes.once();
-    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
-    map.forEach((key, value) => { pathways[key] =  Helper.mapToPathway(value)});
+
+    if(result.snapshot.exists) {
+      final map = Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
+      map.forEach((key, value) => {pathways[key] = Helper.mapToPathway(value)});
+    }
     _routes = pathways;
     return pathways;
   }
