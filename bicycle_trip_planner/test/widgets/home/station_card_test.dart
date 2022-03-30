@@ -1,13 +1,19 @@
 import 'dart:io';
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationCard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
+import 'station_card_test.mocks.dart';
 
+@GenerateMocks([ApplicationBloc])
 void main() {
+  final mockAppBloc = MockApplicationBloc();
   setupFirebaseAuthMocks();
 
   setUpAll(() async {
@@ -72,8 +78,13 @@ void main() {
   });
 
   testWidgets("StationCard has contents inside", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true,))));
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true, toggleFavourite: (Station station) {},))));
+    final widget = find.byType(InkWell);
+    expect(widget, findsOneWidget);
 
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
     expect(find.byType(IconButton), findsWidgets);
   });
+
+
 }

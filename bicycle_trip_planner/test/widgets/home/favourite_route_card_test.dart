@@ -125,7 +125,7 @@ void main() {
     expect(widget, findsOneWidget);
   });
 
-  testWidgets("Tapping the widget returns another widget", (WidgetTester tester) async {
+  testWidgets("Tapping the delete forever icon returns another widget", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:FavouriteRouteCard(keyRoute: key, valueRoute: valueRoute, deleteRoute: deleteRoute,))));
     final widget = find.byIcon(Icons.delete_forever);
     expect(widget, findsOneWidget);

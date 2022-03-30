@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/LocationManager.dart';
@@ -27,6 +26,11 @@ class _StationCardState extends State<StationCard> {
 
   final LocationManager locationManager = LocationManager();
   final StationManager stationManager = StationManager();
+
+  @visibleForTesting
+  getIsFavourite() {
+    return widget.isFavourite;
+  }
 
   @override
   Widget build(BuildContext context) {
