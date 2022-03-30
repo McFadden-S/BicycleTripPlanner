@@ -10,12 +10,6 @@ void main() {
   ThemeStyle();
   String testPassword = "";
 
-  setupFirebaseAuthMocks();
-
-  setUpAll(() async {
-    await Firebase.initializeApp();
-  });
-
   setUp(() {
     testPassword = "";
   });
@@ -100,7 +94,7 @@ void main() {
         contains(ThemeStyle.kPrimaryColor.toString()));
   });
 
-  testWidgets("Text field on changed value", (WidgetTester tester) async {
+  testWidgets("Password Field Text field on changed value", (WidgetTester tester) async {
     await _createPasswordFieldWidget(tester, "text", testOnCalled);
     final textField = tester.widget<TextField>(find.byType(TextField));
     var x = textField.onChanged;
@@ -108,7 +102,7 @@ void main() {
     expect(x.toString(), "Closure: (String) => void");
   });
 
-  testWidgets("Password field text can be changed",
+  testWidgets("Password field text changes to correct text",
       (WidgetTester tester) async {
     await _createPasswordFieldWidget(tester, "text", testOnCalled);
     final textFinder = find.byType(RoundedPasswordField);
@@ -119,7 +113,7 @@ void main() {
     expect(find.text("Correct text"), findsOneWidget);
   });
 
-  testWidgets("Password field text can be changed",
+  testWidgets("Password field text does not have incorrect text",
       (WidgetTester tester) async {
     await _createPasswordFieldWidget(tester, "text", testOnCalled);
     final textFinder = find.byType(RoundedPasswordField);
