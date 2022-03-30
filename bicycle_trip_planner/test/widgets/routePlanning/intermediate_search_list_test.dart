@@ -24,6 +24,10 @@ void main() {
   when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => [Stop()]);
   when(mockRouteManager.ifCostOptimised()).thenAnswer((realInvocation) => true);
   when(mockRouteManager.addWaypoint(any)).thenAnswer((realInvocation) => Stop());
+  final mockRouteManager2 = MockRouteManager();
+  when(mockRouteManager2.getWaypoints()).thenAnswer((realInvocation) => [Stop()]);
+  when(mockRouteManager2.ifCostOptimised()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager2.addWaypoint(any)).thenAnswer((realInvocation) => Stop());
   setupFirebaseAuthMocks();
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -89,19 +93,14 @@ void main() {
   });
 
   /**
-   * detects two icons instead of one
+   * can't detect removeStopButton
    */
   // testWidgets("When remove button is clicked next to an intermediate stop, the stop is removed from the screen", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: IntermediateSearchList(routeManager: mockRouteManager2,))));
   //
   //   final addStopsButton = find.text('Add Stop(s)');
   //   final stopSearchBar = find.byKey(ValueKey('Stop 1'));
-  //   final removeStopButton = find.byIcon(Icons.remove_circle_outline);
-  //
-  //   expect(stopSearchBar, findsNothing);
-  //
-  //   await tester.tap(addStopsButton);
-  //   await tester.pumpAndSettle();
+  //   final removeStopButton = find.byKey(Key("Remove ${3}"));
   //
   //   expect(stopSearchBar, findsOneWidget);
   //

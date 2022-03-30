@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
@@ -7,14 +10,23 @@ import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart'
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
+import 'route_planning_test.mocks.dart';
 
+@GenerateMocks([DatabaseManager, UserSettings, RouteManager])
 void main(){
+  final mockDatabaseManager = MockDatabaseManager();
+  final mockUserSettings = MockUserSettings();
+  final mockRouteManager = MockRouteManager;
+  when(mockDatabaseManager.isUserLogged()).thenAnswer((realInvocation) => true);
   setupFirebaseAuthMocks();
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -90,6 +102,22 @@ void main(){
     expect(optimiseButton, findsOneWidget);
   });
 
+  testWidgets("RoutePlanning has favourite routes button when user is logged in", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager,))));
+    final favouriteButton = find.widgetWithIcon(CircleButton, Icons.star);
+    expect(favouriteButton, findsOneWidget);
+    await tester.tap(favouriteButton);
+    await tester.pump();
+  });
+
+  testWidgets("Can start journey", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning(databaseManager: mockDatabaseManager,))));
+    final favouriteButton = find.widgetWithIcon(ElevatedButton, Icons.directions_bike);
+    expect(favouriteButton, findsOneWidget);
+    await tester.tap(favouriteButton);
+    await tester.pump();
+  });
+
   /**
    * need user to be logged in
    */
@@ -100,15 +128,4 @@ void main(){
   //
   //   expect(optimiseButton, findsOneWidget);
   // });
-  //
-  // testWidgets("RoutePlanning has favourite routes button", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
-  //
-  //   final optimiseButton = find.widgetWithIcon(CircleButton, Icons.star);
-  //
-  //   expect(optimiseButton, findsOneWidget);
-  // });
-
-
-
 }
