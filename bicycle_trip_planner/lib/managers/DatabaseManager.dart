@@ -13,15 +13,13 @@ import 'Helper.dart';
 /// DatabaseManager is a manager class that manages data transfer
 /// to and from the Firebase Database
 
-
 class DatabaseManager {
-
   //************Fields************
 
   late FirebaseDatabase _dbInstance;
   var _auth;
 
-  Map<String,Pathway> _routes = {};
+  Map<String, Pathway> _routes = {};
 
   //********** Singleton **********
 
@@ -37,7 +35,7 @@ class DatabaseManager {
 
   DatabaseManager._internal();
 
-  DatabaseManager.forMock(FirebaseDatabase db, FirebaseAuth auth){
+  DatabaseManager.forMock(FirebaseDatabase db, FirebaseAuth auth) {
     _dbInstance = db;
     _auth = auth;
   }
@@ -66,13 +64,17 @@ class DatabaseManager {
   /// @return List<int> - list of all Favourite Stations Ids
   Future<List<int>> getFavouriteStations() async {
     var uid = _auth.currentUser?.uid;
-    var favouriteStations = await _dbInstance.ref('users/$uid/favouriteStations');
+    var favouriteStations =
+        await _dbInstance.ref('users/$uid/favouriteStations');
     List<int> output = [];
 
     final result = await favouriteStations.once();
-    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
-    //final map = result.snapshot.value as Map<String, int>;
-    map.forEach((key, value) => {output.add(value)});
+
+    if (result.snapshot.exists) {
+      final map = Map<String, dynamic>.from(
+          result.snapshot.value as Map<dynamic, dynamic>);
+      map.forEach((key, value) => {output.add(value)});
+    }
 
     return output;
   }
@@ -81,7 +83,8 @@ class DatabaseManager {
   /// @return true if stationId was successfully removed, false otherwise
   Future<bool> removeFavouriteStation(String stationId) async {
     var uid = _auth.currentUser?.uid;
-    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteStations');
+    DatabaseReference favouriteRoutes =
+        _dbInstance.ref('users/$uid/favouriteStations');
     favouriteRoutes.child(stationId).set(null).then((_) {
       // Data removed successfully!
       return true;
@@ -103,7 +106,7 @@ class DatabaseManager {
     if (start.description.isEmpty || end.description.isEmpty) {
       return false;
     }
-    if(start.description == SearchType.current.description){
+    if (start.description == SearchType.current.description) {
       start = Place(
           latlng: start.latlng,
           description: start.name,
@@ -139,11 +142,16 @@ class DatabaseManager {
   /// @return Map<String, Pathway> - map of all Favourite Routes
   Future<Map<String, Pathway>> getFavouriteRoutes() async {
     var uid = _auth.currentUser?.uid;
-    DatabaseReference favouriteRoutes = _dbInstance.ref('users/$uid/favouriteRoutes');
+    DatabaseReference favouriteRoutes =
+        _dbInstance.ref('users/$uid/favouriteRoutes');
     Map<String, Pathway> pathways = {};
     final result = await favouriteRoutes.once();
-    final map = new Map<String, dynamic>.from(result.snapshot.value as Map<dynamic, dynamic>);
-    map.forEach((key, value) => { pathways[key] =  Helper.mapToPathway(value)});
+
+    if (result.snapshot.exists) {
+      final map = Map<String, dynamic>.from(
+          result.snapshot.value as Map<dynamic, dynamic>);
+      map.forEach((key, value) => {pathways[key] = Helper.mapToPathway(value)});
+    }
     _routes = pathways;
     return pathways;
   }
@@ -170,7 +178,6 @@ class DatabaseManager {
     return _auth.currentUser != null;
   }
 
-
   //********** Manage favourite routes **********
 
   /// @return number of routes
@@ -180,20 +187,19 @@ class DatabaseManager {
 
   /// @return favourite route with @param index
   Pathway? getFavouriteRouteByIndex(int index) {
-    if(index < _routes.length && index >= 0) {
+    if (index < _routes.length && index >= 0) {
       return _routes[_routes.keys.toList()[index]]!;
     }
   }
 
   /// @return route key of route with @param index
   String getRouteKeyByIndex(int index) {
-    if(index < _routes.length && index >= 0) {
+    if (index < _routes.length && index >= 0) {
       return _routes.keys.toList()[index];
     } else {
       return "";
     }
   }
-
 
   //********** Private **********
 
@@ -213,8 +219,8 @@ class DatabaseManager {
     Pathway output = Pathway();
     output.changeStart(_mapToPlace(mapIn['start']));
     output.changeDestination(_mapToPlace(mapIn['end']));
-    if(mapIn['stops'] != null) {
-      for(var stop in mapIn['stops']){
+    if (mapIn['stops'] != null) {
+      for (var stop in mapIn['stops']) {
         output.addStop(Stop(_mapToPlace(stop)));
       }
     }
@@ -224,12 +230,9 @@ class DatabaseManager {
   /// @return Place from @param mapIn
   Place _mapToPlace(dynamic mapIn) {
     return Place(
-      name: mapIn['name'],
-      description: mapIn['description'],
-      placeId: mapIn['id'],
-      latlng: LatLng(mapIn['lat'], mapIn['lng'])
-    );
-
+        name: mapIn['name'],
+        description: mapIn['description'],
+        placeId: mapIn['id'],
+        latlng: LatLng(mapIn['lat'], mapIn['lng']));
   }
-
 }
