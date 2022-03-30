@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/WalkToFirstButton.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -31,5 +33,26 @@ void main() {
     final icon = find.byIcon(Icons.directions_walk);
 
     expect(icon, findsOneWidget);
+  });
+
+  testWidgets("WalkToFirstButton has an icon button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: WalkToFirstButton())));
+
+    final button = find.widgetWithIcon(WalkToFirstButton, Icons.directions_walk);
+
+    expect(button, findsOneWidget);
+  });
+
+  testWidgets("WalkToFirstButton shows a binary choice when pressed", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: WalkToFirstButton())));
+
+    final button = find.widgetWithIcon(WalkToFirstButton, Icons.directions_walk);
+
+    expect(button, findsOneWidget);
+
+    await tester.tap(button);
+    await tester.pump();
+
+    expect(DialogManager.instance.ifShowingBinaryChoice(), true);
   });
 }
