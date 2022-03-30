@@ -2,6 +2,7 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/constants.dart';
+import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/legs.dart';
 import 'package:bicycle_trip_planner/models/route.dart' as R;
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
@@ -111,19 +112,38 @@ void main() {
     RouteManager().setCurrentRoute(route, false);
 
     final controller = CountdownController();
-
+    final countdownWidget = CountdownCard(ctdwnController: controller,);
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+            body: Builder(
+                builder: (BuildContext context) {
+                  return countdownWidget;
+                }
+            ))));
 
     FakeAsync().run((async) async {
       controller.start();
-      var stopwatch = clock.stopwatch()..start();
-      async.elapse(Duration(seconds: 1815));
+      async.elapse(Duration(seconds: 1800));
 
     });
 
-    final countdownWidget = CountdownCard(ctdwnController: controller,);
-    await pumpWidget(tester, MaterialApp(home: Material(child: countdownWidget)));
-    final snackbar = find.byType(SnackBar);
-    //expect(snackbar, findsOneWidget);
+    await tester.pump();
+
+    controller.setOnPause(() {
+      final snackbar = find.text("Time's up");
+      expect(snackbar, findsOneWidget);
+    });
+
+  });
+
+  testWidgets("Countdown card contains a duration if no cost optimised", (WidgetTester tester) async {
+    RouteManager().setCostOptimised(false);
+
+    await pumpWidget(tester, MaterialApp(home: Material(child: CountdownCard(ctdwnController: CountdownController(),))));
+    final duration = find.byType(Text);
+    Text t = duration.evaluate().single.widget as Text;
+
+    expect(t.data, DirectionManager().getDuration());
   });
 
 
