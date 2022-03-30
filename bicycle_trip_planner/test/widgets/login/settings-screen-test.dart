@@ -82,12 +82,12 @@ void main(){
 
   testWidgets("Get sign up button", (WidgetTester tester) async{
     when(auth.currentUser).thenAnswer((realInvocation) => null);
-    await pumpWidget(tester, MaterialApp(home: SettingsScreen(settings: settings, auth: auth, bloc: bloc), navigatorObservers: [mockObserver]));
+    await pumpWidget(tester, MaterialApp(home: SettingsScreen(settings: settings, auth: auth, bloc: bloc)));
     final widget = find.byKey(ValueKey("signUp"));
     expect(widget, findsOneWidget);
 
     await tester.tap(widget);
-    await tester.pump(Duration(seconds: 5));
+    await tester.pumpAndSettle(Duration(seconds: 5));
 
     expect(find.byType(SignUpScreen), findsOneWidget);
   });
