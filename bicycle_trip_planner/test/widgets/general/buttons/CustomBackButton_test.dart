@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.dart';
+import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -20,23 +22,41 @@ void main() {
 
   testWidgets("CustomBackButton is a button", (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
-    final BuildContext context = tester.element(find.byType(Container));
+    final BuildContext context = tester.element(find.byType(RoutePlanning));
     
     await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
 
-    final backButton = find.byType(CustomBackButton);
+    final backButton = find.byType(CircleButton);
 
     expect(backButton, findsOneWidget);
   });
 
-  testWidgets("CircleButton has an icon", (WidgetTester tester) async {
+  testWidgets("CustomBackButton has an icon", (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
-    final BuildContext context = tester.element(find.byType(Container));
+    final BuildContext context = tester.element(find.byType(RoutePlanning));
 
     await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
 
     final icon = find.byIcon(Icons.arrow_back);
 
     expect(icon, findsOneWidget);
+  });
+
+  testWidgets("CustomBackButton shows a dialog when clicked", (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
+    final BuildContext context = tester.element(find.byType(RoutePlanning));
+
+    await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
+
+    final button = find.byIcon(Icons.arrow_back);
+
+    // expect(button, findsOneWidget);
+
+    tester.tap(button);
+    tester.pump();
+
+    final navigation = find.byType(Navigation);
+
+    expect(navigation, findsOneWidget);
   });
 }
