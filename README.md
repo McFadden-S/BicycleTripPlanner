@@ -18,6 +18,6 @@ A mobile application to plan rental bicycle trips throughout London
 Prefered Setting: Pixel 4, Android 12.0
 Android was decided because the current location for IOS emulator is hard coded in America however the application works fine on iPhone devices
 
-Deployment Demo URL: https://appetize.io/app/dm74fua5zw84d7a402cg13a70c?device=pixel4&osVersion=12.0&scale=100&deviceColor=black
+Deployment Demo URL: https://appetize.io/app/ad1kjwa1j59xrn21cwfhdea478?device=pixel6&osVersion=12.0&scale=75
 
 
