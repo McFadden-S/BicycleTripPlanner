@@ -69,11 +69,12 @@ class ApplicationBloc with ChangeNotifier {
 
   /// Constructor that sets up the application bloc
   ApplicationBloc() {
-    changeUnits();
-    fetchCurrentLocation();
-    updateStationsPeriodically();
-    _databaseManager = DatabaseManager();
     _userSettings = UserSettings();
+    _databaseManager = DatabaseManager();
+
+    changeUnits();
+    fetchCurrentLocation().then((value) => updateStations());
+    updateStationsPeriodically();
   }
 
   @visibleForTesting
@@ -294,7 +295,7 @@ class ApplicationBloc with ChangeNotifier {
   /// @param - void
   /// @return void
   /// @effects - gets the current location
-  fetchCurrentLocation() async {
+  Future<void> fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude, SearchType.current.description);
@@ -550,7 +551,7 @@ class ApplicationBloc with ChangeNotifier {
   /// @param - void
   /// @return - void
   /// @effects - updates bike stations based on TFL API
-  updateStations() async {
+  Future<void> updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
     filterStationMarkers();
     notifyListeners();
