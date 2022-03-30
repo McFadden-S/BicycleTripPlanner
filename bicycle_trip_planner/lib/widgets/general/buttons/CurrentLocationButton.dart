@@ -20,6 +20,10 @@ class _CurrentLocationButtonState extends State<CurrentLocationButton> {
 
     return CircleButton(
         iconIn: Icons.location_searching,
-        onButtonClicked: () => CameraManager.instance.viewUser());
+        onButtonClicked: () => [
+          CameraManager.instance.viewUser(),
+          CameraManager.instance.userLocated(),
+          ]
+    );
   }
 }
