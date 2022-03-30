@@ -94,7 +94,6 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
   // Attempts to send reset password email
   Future resetPassword() async {
     try {
-      print(email);
       await _auth.sendPasswordResetEmail(email: email);
       ErrorSnackBar.buildErrorSnackbar(context, "password-reset-sent");
     } catch (e) {

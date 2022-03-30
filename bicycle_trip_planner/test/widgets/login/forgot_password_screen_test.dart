@@ -68,7 +68,7 @@ void main() {
   });
 
   testWidgets(
-      "Pressing Reset Password with a valid email sends it to their email",
+      "Pressing Reset Password with a valid email displays correct message",
       (WidgetTester tester) async {
     email = "valid@example.org";
     await pumpWidget(tester,
@@ -77,23 +77,36 @@ void main() {
     final widget = find.byKey(ValueKey("reset"));
 
     await tester.tap(widget);
-    await tester.pump();
+    await tester.pumpAndSettle();
+
+    final text = find.text("Email sent to reset password");
+    expect(text, findsOneWidget);
 
     verify(auth.sendPasswordResetEmail(email: email));
   });
 
   testWidgets(
-      "Pressing Reset Password with a blank email does not send it to their email",
+      "Pressing Reset Password with a blank email displays correct error message",
       (WidgetTester tester) async {
     await pumpWidget(
         tester, MaterialApp(home: ForgotPasswordScreen(auth: auth)));
 
     final widget = find.byKey(ValueKey("reset"));
 
+    FirebaseException exception =
+        FirebaseException(plugin: "Firebase", code: "unknown");
+
+    when(auth.sendPasswordResetEmail(email: "")).thenThrow(exception);
+
     await tester.tap(widget);
     await tester.pump();
 
-    verifyNever(auth.sendPasswordResetEmail(email: email));
+    final textDoesNotExist = find.text("Email sent to reset password");
+    expect(textDoesNotExist, findsNothing);
+
+    final textExists =
+        find.text("One of the fields is empty. Please try again");
+    expect(textExists, findsOneWidget);
   });
 
   testWidgets(
@@ -106,10 +119,19 @@ void main() {
 
     final widget = find.byKey(ValueKey("reset"));
 
+    FirebaseException exception =
+        FirebaseException(plugin: "Firebase", code: "invalid-email");
+
+    when(auth.sendPasswordResetEmail(email: email)).thenThrow(exception);
+
     await tester.tap(widget);
     await tester.pump();
 
-    verifyNever(auth.sendPasswordResetEmail(email: email));
+    final textDoesNotExist = find.text("Email sent to reset password");
+    expect(textDoesNotExist, findsNothing);
+
+    final textExists = find.text("Email address entered is invalid");
+    expect(textExists, findsOneWidget);
   });
 
   testWidgets("Reset Password screen has a back button",
