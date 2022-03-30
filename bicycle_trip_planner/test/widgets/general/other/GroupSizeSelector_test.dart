@@ -122,10 +122,10 @@ void main() {
     expect(dropDownItem.iconSize,30);
   });
 
-  testWidgets("GroupSizeSelector Dropdown has an elevation of 17", (WidgetTester tester) async {
+  testWidgets("GroupSizeSelector Dropdown has an elevation of 16", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: GroupSizeSelector())));
     final dropDownItem = tester.widget<DropdownButton<int>>(find.byKey(ValueKey("groupSizeSelector")));
-    expect(dropDownItem.elevation,17);
+    expect(dropDownItem.elevation,16);
   });
 
   testWidgets("GroupSizeSelector Dropdown has a correct style color", (WidgetTester tester) async {
@@ -145,5 +145,4 @@ void main() {
     final dropDownItem = tester.widget<DropdownButton<int>>(find.byKey(ValueKey("groupSizeSelector")));
     expect(dropDownItem.menuMaxHeight, 200);
   });
-
 }
