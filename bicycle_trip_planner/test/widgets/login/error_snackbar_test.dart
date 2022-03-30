@@ -57,6 +57,11 @@ void main() {
     expect(errorOutput, "Email sent to reset password");
   });
 
+  test('unexpected errorMessage returns the same string', () {
+    String errorOutput = ErrorSnackBar.errorMessage("unexpected string");
+    expect(errorOutput, "unexpected string");
+  });
+
   testWidgets("buildErrorSnackbar shows snackbar with given message",
       (WidgetTester tester) async {
     await _createErrorSnackBar(tester);
