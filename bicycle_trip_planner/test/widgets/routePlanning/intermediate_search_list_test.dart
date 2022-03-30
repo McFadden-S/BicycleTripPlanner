@@ -1,17 +1,29 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/models/place.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
+import 'intermediate_search_list_test.mocks.dart';
 
 
+@GenerateMocks([RouteManager])
 void main() {
+  final mockRouteManager = MockRouteManager();
+  when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => [Stop()]);
+  when(mockRouteManager.ifCostOptimised()).thenAnswer((realInvocation) => true);
+  when(mockRouteManager.addWaypoint(any)).thenAnswer((realInvocation) => Stop());
   setupFirebaseAuthMocks();
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -20,7 +32,6 @@ void main() {
   });
 
   testWidgets("ensure has 'Add Stop(s)' button in RouteCard", (WidgetTester tester) async {
-    Firebase.initializeApp();
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final addStopsButton = find.text('Add Stop(s)');
@@ -33,7 +44,6 @@ void main() {
 
     final addStopsButton = find.text('Add Stop(s)');
     final stopSearchBar = find.text('Stop');
-    final removeStopButton = find.byIcon(Icons.remove_circle_outline);
 
     expect(stopSearchBar, findsNothing);
 
@@ -63,6 +73,12 @@ void main() {
 
     expect(stopSearchBar1, findsOneWidget);
     expect(stopSearchBar2, findsOneWidget);
+  });
+
+  testWidgets("Show correct displays when cost optimized", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: IntermediateSearchList(routeManager: mockRouteManager,))));
+    final button = find.widgetWithIcon(IconButton, Icons.airline_stops);
+    expect(button, findsOneWidget);
   });
 
   /**
