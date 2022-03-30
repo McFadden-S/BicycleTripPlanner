@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CustomBackButton.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
@@ -58,5 +59,21 @@ void main() {
     final navigation = find.byType(Navigation);
 
     expect(navigation, findsOneWidget);
+  });
+
+  testWidgets("CustomBackButton shows dialog when clicked", (WidgetTester tester) async {
+    await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
+    final BuildContext context = tester.element(find.byType(RoutePlanning));
+
+    await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
+
+    final button = find.byIcon(Icons.arrow_back);
+
+    // expect(button, findsOneWidget);
+
+    tester.tap(button);
+    tester.pump();
+
+    expect(DialogManager.instance.ifShowingBinaryChoice(), true);
   });
 }
