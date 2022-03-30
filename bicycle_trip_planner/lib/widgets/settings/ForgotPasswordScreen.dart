@@ -5,9 +5,13 @@ import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart
 import 'package:bicycle_trip_planner/constants.dart';
 import 'components/ErrorSnackbar.dart';
 
+
+/// Forgot Password Screen to allow user to reset their password
 class ForgotPasswordScreen extends StatefulWidget {
   var auth;
   var email;
+
+  // Default constructor
   ForgotPasswordScreen({Key? key, this.auth, this.email}) : super(key: key);
 
   @override
@@ -19,6 +23,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
   late String email;
   var _auth;
 
+  // Initialises values to default if no passed in parameters
   @override
   void initState() {
     super.initState();
@@ -28,6 +33,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Gets the size of the user's screen
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -86,6 +92,7 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
     );
   }
 
+  // Attempts to send reset password email
   Future resetPassword() async{
     try{
       await _auth.sendPasswordResetEmail(email: email);
