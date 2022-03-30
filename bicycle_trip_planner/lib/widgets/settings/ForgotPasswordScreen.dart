@@ -5,18 +5,17 @@ import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart
 import 'package:bicycle_trip_planner/constants.dart';
 import 'components/ErrorSnackbar.dart';
 
-
 /// Forgot Password Screen to allow user to reset their password
 class ForgotPasswordScreen extends StatefulWidget {
   var auth;
   var email;
 
   // Default constructor
-  ForgotPasswordScreen({Key? key, this.auth, this.email}) : super(key: key);
+  ForgotPasswordScreen({Key? key, this.auth, this.email = ""})
+      : super(key: key);
 
   @override
   _ForgotPasswordScreen createState() => _ForgotPasswordScreen();
-
 }
 
 class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
@@ -37,71 +36,69 @@ class _ForgotPasswordScreen extends State<ForgotPasswordScreen> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-        body: SafeArea(
-          child: Container(
-            color: ThemeStyle.cardColor,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Reset Password",
+      body: SafeArea(
+        child: Container(
+          color: ThemeStyle.cardColor,
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Reset Password",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 30,
+                    color: ThemeStyle.primaryTextColor,
+                  ),
+                ),
+                Flexible(
+                  child: Image.asset(
+                    "assets/reset_password_image.png",
+                    height: size.height * 0.4,
+                  ),
+                  flex: 1,
+                ),
+                Flexible(
+                  child: Text(
+                    "Please enter your email to reset password",
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
                       color: ThemeStyle.primaryTextColor,
                     ),
                   ),
-                  Flexible(
-                    child: Image.asset(
-                      "assets/reset_password_image.png",
-                      height: size.height * 0.4,
-                    ),
-                    flex: 1,
-                  ),
-                  Flexible(
-                    child: Text(
-                      "Please enter your email to reset password",
-                      style: TextStyle(
-                        color: ThemeStyle.primaryTextColor,
-                      ),
-                    ),
-                    flex: 2,
-                  ),
-                  RoundedInputField(
-                    key: Key("emailField"),
-                    hintText: "Email",
-                    onChanged: (value) {
-                      email = value;
-                    },
-                  ),
-                  RoundedTextButton(
-                    key: Key("reset"),
-                    text: "Reset password",
-                    press: resetPassword, // to be modified...
-                  ),
-                  BackButton(
-                    color: ThemeStyle.secondaryIconColor,
-                    key: Key("back"),
-                  ),
-                ],
-              ),
+                  flex: 2,
+                ),
+                RoundedInputField(
+                  key: Key("emailField"),
+                  hintText: "Email",
+                  onChanged: (value) {
+                    email = value;
+                  },
+                ),
+                RoundedTextButton(
+                  key: Key("reset"),
+                  text: "Reset password",
+                  press: resetPassword, // to be modified...
+                ),
+                BackButton(
+                  color: ThemeStyle.secondaryIconColor,
+                  key: Key("back"),
+                ),
+              ],
             ),
           ),
         ),
+      ),
     );
   }
 
   // Attempts to send reset password email
-  Future resetPassword() async{
-    try{
+  Future resetPassword() async {
+    try {
+      print(email);
       await _auth.sendPasswordResetEmail(email: email);
       ErrorSnackBar.buildErrorSnackbar(context, "password-reset-sent");
-    } catch(e) {
+    } catch (e) {
       ErrorSnackBar.buildErrorSnackbar(context, e.toString());
     }
   }
-
 }
-
-
