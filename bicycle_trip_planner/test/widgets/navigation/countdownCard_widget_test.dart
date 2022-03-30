@@ -136,6 +136,45 @@ void main() {
 
   });
 
+  testWidgets("Countdown card contains a countdown that changes color 15 minutes before end", (WidgetTester tester) async {
+    RouteManager().setCostOptimised(true);
+    RouteManager().setCurrentRoute(route, false);
+
+    final controller = CountdownController();
+    final countdownWidget = CountdownCard(ctdwnController: controller,);
+    await pumpWidget(tester, MaterialApp(home: Material(child: countdownWidget)));
+
+    FakeAsync().run((async) async {
+      controller.start();
+      async.elapse(Duration(seconds: 1200));
+      final card = find.byType(Card);
+      expect(card, findsOneWidget);
+      expect(((tester.firstWidget(card) as Card).shape as RoundedRectangleBorder).side.color, Colors.deepOrangeAccent);
+    });
+
+  });
+
+  testWidgets("Countdown card contains a countdown that changes color 5 minutes before end", (WidgetTester tester) async {
+    RouteManager().setCostOptimised(true);
+    RouteManager().setCurrentRoute(route, false);
+
+    final controller = CountdownController();
+    await pumpWidget(tester, MaterialApp(home: Material(child: CountdownCard(ctdwnController: controller,))));
+
+    FakeAsync().run((async) async {
+      controller.start();
+      async.elapse(Duration(seconds: 1700));
+
+    });
+
+    await tester.pump();
+
+    final card = find.byType(Card);
+
+    expect(card, findsOneWidget);
+    expect(((tester.firstWidget(card) as Card).shape as RoundedRectangleBorder).side.color, Color(0xFF8B0000));
+  });
+
   testWidgets("Countdown card contains a duration if no cost optimised", (WidgetTester tester) async {
     RouteManager().setCostOptimised(false);
 
