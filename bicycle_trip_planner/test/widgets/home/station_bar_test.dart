@@ -1,22 +1,24 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'station_bar_test.mocks.dart';
 
-@GenerateMocks([DatabaseManager, FirebaseAuth])
+@GenerateMocks([DatabaseManager, FirebaseAuth, User])
 void main() {
+  setupFirebaseMocks();
+
   final mockDatabaseManager = MockDatabaseManager();
   final mockFirebaseAuth = MockFirebaseAuth();
-
-  setupFirebaseAuthMocks();
+  final mockUser = MockUser();
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -74,12 +76,15 @@ void main() {
   });
 
   testWidgets("StationBar shows other options in dropdown when logged in", (WidgetTester tester) async {
-    // when(mockFirebaseAuth.authStateChanges().listen((event) {event?.isAnonymous;}).onData((event) => true));
-    var mockUser;
-    when(mockFirebaseAuth.authStateChanges()).thenAnswer((_) => mockUser);
-    when(mockUser.isNull).thenAnswer((_) => false);
+    StreamController<User> controller = StreamController<User>();
+    Stream<User> stream = controller.stream;
+    controller.add(mockUser);
+
+    when(mockFirebaseAuth.authStateChanges()).thenAnswer((_) => stream);
+
     when(mockUser.isAnonymous).thenAnswer((_) => false);
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: MockFirebaseAuth))));
+
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: mockFirebaseAuth))));
     expect(find.byType(DropdownButton), findsWidgets);
   });
 }

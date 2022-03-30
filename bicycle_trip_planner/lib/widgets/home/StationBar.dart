@@ -13,7 +13,7 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
-  final auth;
+  final FirebaseAuth ?auth;
 
   @visibleForTesting
   const StationBar({Key? key, this.auth}) : super(key: key);
@@ -23,7 +23,7 @@ class StationBar extends StatefulWidget {
 }
 
 class _StationBarState extends State<StationBar> {
-  late var auth;
+  late FirebaseAuth auth;
 
   PageController stationsPageViewController = PageController();
 
@@ -71,14 +71,16 @@ class _StationBarState extends State<StationBar> {
 
   @override
   void initState() {
+    auth = widget.auth ?? FirebaseAuth.instance;
     firebaseSubscription =
-        FirebaseAuth.instance.authStateChanges().listen((event) {
+        auth.authStateChanges().listen((event) {
       _isUserLogged = event != null && !event.isAnonymous;
       setState(() {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
           _isFavouriteRoutes = false;
         } else {
+          print("hi");
           getFavouriteStations();
           getFavouriteRoutes();
         }
