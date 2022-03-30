@@ -17,8 +17,11 @@ import '../models/place.dart';
 
 /// Class comment: Route manager is a manager class that updates
 /// the route taken during navigation and route planning
+
 class RouteManager {
+
   //********** Fields **********
+
   /// Managers needed in route manager
   final PolylineManager _polylineManager = PolylineManager();
   MarkerManager _markerManager = MarkerManager();
@@ -120,7 +123,6 @@ class RouteManager {
     double color = route.routeType == RouteType.bike
         ? BitmapDescriptor.hueGreen
         : BitmapDescriptor.hueRed;
-    setRouteMarker(route.legs.first.startLocation, color);
     setRouteMarker(route.legs.last.endLocation, color);
     // Add waypoints
     if (route.legs.length > 1) {
@@ -144,6 +146,7 @@ class RouteManager {
 
   //********** Public **********
 
+  /// Clears all route markers from map
   clearRouteMarkers() {
     for (String markerId in _routeMarkers) {
       _markerManager.removeMarker(markerId);
@@ -263,10 +266,12 @@ class RouteManager {
     }
   }
 
+  /// Set loading to isLoading value
   void setLoading(bool isLoading) {
     _loading = isLoading;
   }
 
+  /// Returns true if loading, false otherwise
   bool ifLoading() {
     return _loading;
   }
@@ -288,6 +293,7 @@ class RouteManager {
     }
   }
 
+  /// Returns Current Route
   R.Route getCurrentRoute() {
     return _currentRoute;
   }
@@ -384,16 +390,19 @@ class RouteManager {
     return _optimised;
   }
 
+  /// Set costOptimised to @param optimised
   void setCostOptimised(bool optimised) {
     _costOptimised = optimised;
     _changed = true;
   }
 
+  /// Toggle costOptimised
   void toggleCostOptimised() {
     _costOptimised = !_costOptimised;
     _changed = true;
   }
 
+  /// @return true if costOptimised, false otherwise
   bool ifCostOptimised() {
     return _costOptimised;
   }
@@ -497,6 +506,9 @@ class RouteManager {
     return waypointStop;
   }
 
+  /// @param - Place waypoint
+  /// @return stop - returns waypoint as stop
+  /// @effects - Adds a new cost optimised waypoint at the end (before destination)
   Stop addCostWaypoint(Place waypoint) {
     Stop destination = getDestination();
     Stop waypointStop = Stop(waypoint);
@@ -634,6 +646,7 @@ class RouteManager {
     return _endWalkingRoute;
   }
 
+  /// @return true if costOptimised, false otherwise
   @visibleForTesting
   bool getCostOptimised() {
     return _costOptimised;

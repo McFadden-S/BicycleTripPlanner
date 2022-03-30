@@ -36,7 +36,6 @@ class Route {
   /// factory constructor when data is passed from Json
   /// @param Map<String, dynamic> parsed Json
   factory Route.fromJson(Map<String, dynamic> parsedJson, RouteType routeType) {
-    //TODO Find more suitable name than substitute 'xLegs'
     List<Legs> xLegs = [];
     for (var x = 0; x < parsedJson['legs'].length; x++) {
       xLegs.add(Legs.fromJson(parsedJson['legs'][x]));
@@ -69,6 +68,5 @@ class Route {
   /// method override the get hashCode method
   /// @return int of the hashCode
   @override
-  // TODO: implement hashCode
   int get hashCode => Object.hash(bounds, polyline, legs);
 }

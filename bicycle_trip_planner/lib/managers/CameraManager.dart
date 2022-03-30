@@ -8,7 +8,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../constants.dart';
 import 'TimeManager.dart';
 
+/// Class Comment:
+/// CameraManager is a manager class that holds the data and functions for
+/// the Camera position and display on the Map
+
 class CameraManager {
+
+  //********** Fields **********
+
   static const initialCameraPosition = CameraPosition(
     target: LatLng(51.509865, -0.118092),
     zoom: 12.5,
@@ -82,8 +89,8 @@ class CameraManager {
     );
   }
 
-  ///Sets the necessary fields to allow the camera to view the route
-  ///Does Not Change Camera Position
+  /// Sets the necessary fields to allow the camera to view the route
+  /// Does Not Change Camera Position
   void setRouteCamera(LatLng origin, Map<String, dynamic> boundsSw,
       Map<String, dynamic> boundsNe) {
     _routeBoundsNE = LatLng(boundsNe['lat'], boundsNe['lng']);
@@ -91,6 +98,7 @@ class CameraManager {
     _routeOriginCamera = origin;
   }
 
+  /// @return routeOriginCamera
   @visibleForTesting
   getRouteOriginCamera(){
     return _routeOriginCamera;

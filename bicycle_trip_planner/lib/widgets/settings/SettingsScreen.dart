@@ -320,7 +320,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     fontSize: 16),
                                 underline: Container(
                                   height: 2,
-                                  // color: Colors.deepPurpleAccent,
                                 ),
                                 onChanged: (double? newValue) async {
                                   userSettings.setNearbyStationsRange(newValue);
@@ -378,7 +377,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     fontSize: 16),
                                 underline: Container(
                                   height: 2,
-                                  // color: Colors.deepPurpleAccent,
                                 ),
                                 onChanged: (String? newValue) async {
                                   userSettings.setDistanceUnit(newValue);

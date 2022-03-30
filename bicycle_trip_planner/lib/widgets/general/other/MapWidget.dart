@@ -6,6 +6,7 @@ import 'package:bicycle_trip_planner/managers/LocationManager.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
 import 'package:bicycle_trip_planner/managers/PolylineManager.dart';
 import 'package:bicycle_trip_planner/managers/StationManager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -35,8 +36,6 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
 
   //********** Camera **********
 
-  // TODO: CHANGE THIS BACK WHEN POSSIBLE
-  // WAS TEMPORARILY REVERTED TO ALLOW TESTS TO PASS
   CameraManager? cameraManager;
 
   //********** User Position **********
@@ -104,6 +103,9 @@ class _MapWidgetState extends State<MapWidget> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidGoogleMapsFlutter.useAndroidViewSurface = true;
+    }
     final googleMap = StreamBuilder<Set<Marker>>(
         stream: markerManager.mapMarkerStream,
         builder: (context, snapshot) {

@@ -469,14 +469,6 @@ class MockCameraManager extends _i1.Mock implements _i22.CameraManager {
       super.noSuchMethod(Invocation.setter(#markerManager, _markerManager),
           returnValueForMissingStub: null);
   @override
-  bool get locationViewed => (super
-          .noSuchMethod(Invocation.getter(#locationViewed), returnValue: false)
-      as bool);
-  @override
-  set locationViewed(bool? _locationViewed) =>
-      super.noSuchMethod(Invocation.setter(#locationViewed, _locationViewed),
-          returnValueForMissingStub: null);
-  @override
   void init() => super.noSuchMethod(Invocation.method(#init, []),
       returnValueForMissingStub: null);
   @override
@@ -519,13 +511,6 @@ class MockCameraManager extends _i1.Mock implements _i22.CameraManager {
   void viewUser({double? zoomIn = 16.0}) =>
       super.noSuchMethod(Invocation.method(#viewUser, [], {#zoomIn: zoomIn}),
           returnValueForMissingStub: null);
-  @override
-  void userLocated() => super.noSuchMethod(Invocation.method(#userLocated, []),
-      returnValueForMissingStub: null);
-  @override
-  bool isLocated() =>
-      (super.noSuchMethod(Invocation.method(#isLocated, []), returnValue: false)
-          as bool);
 }
 
 /// A class which mocks [MarkerManager].

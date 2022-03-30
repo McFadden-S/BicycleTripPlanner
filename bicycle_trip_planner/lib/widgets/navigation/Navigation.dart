@@ -24,20 +24,24 @@ import '../general/buttons/CircleButton.dart';
 import '../general/dialogs/EndOfRouteDialog.dart';
 
 class Navigation extends StatefulWidget {
-  const Navigation({Key? key}) : super(key: key);
-
   @override
   _NavigationState createState() => _NavigationState();
+
+  var locationManager;
+  var cameraManager;
+  @visibleForTesting
+  Navigation({Key? key,  this.locationManager, this.cameraManager}) : super(key: key);
+
 }
 
 class _NavigationState extends State<Navigation> {
-  final LocationManager locationManager = LocationManager();
+  late LocationManager locationManager;
   final DirectionManager directionManager = DirectionManager();
   final NavigationManager navigationManager = NavigationManager();
   final RouteManager routeManager = RouteManager();
   final MarkerManager markerManager = MarkerManager();
   final CountdownController controller = CountdownController();
-  final CameraManager cameraManager = CameraManager.instance;
+  late CameraManager cameraManager;
 
   late final ApplicationBloc applicationBloc;
   late StreamSubscription<LocationData> navigationSubscription;
@@ -46,6 +50,8 @@ class _NavigationState extends State<Navigation> {
   void initState() {
     super.initState();
     applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    locationManager = widget.locationManager ?? LocationManager();
+    cameraManager = widget.cameraManager ?? CameraManager.instance;
     zoomOnUser();
     markerManager.clearStationMarkers(StationManager().getStations());
   }
@@ -100,9 +106,8 @@ class _NavigationState extends State<Navigation> {
                                       ctdwnController: controller),
                                   SizedBox(height: 10),
                                   CountdownCard(
+                                    key: Key('countdownCard'),
                                       ctdwnController: controller),
-
-
                                 ],
                               )
                             : SizedBox.shrink()

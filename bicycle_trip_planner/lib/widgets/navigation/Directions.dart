@@ -2,7 +2,6 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
-import 'package:bicycle_trip_planner/models/route.dart' as Rou;
 import 'package:bicycle_trip_planner/widgets/navigation/CurrentDirection.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/DirectionTile.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +30,8 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ApplicationBloc>(context);
+    final applicationBloc =
+    Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
       onTap: () => _toggleExtendNavigationView(),

@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 /// the applications dialog boxes
 
 class DialogManager {
+
   //********** Fields **********
 
   //The question/statement shown to the user

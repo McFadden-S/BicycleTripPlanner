@@ -48,6 +48,7 @@ class UserSettings {
 
 //********** Public **********
 
+  /// @return shared preference
   @visibleForTesting
   getSharedPref() {
     return _prefs;

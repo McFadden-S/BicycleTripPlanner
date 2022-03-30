@@ -33,12 +33,14 @@ import '../managers/NavigationManager.dart';
 /// functionality of the application
 
 class ApplicationBloc with ChangeNotifier {
+
   /// Service APIs being used
   var _placesService = PlacesService();
   var _directionsService = DirectionsService();
   var _stationsService = StationsService();
 
   Widget selectedScreen = HomeWidgets();
+
   /// Screens available
   final screens = <String, Widget>{
     'home': HomeWidgets(),
@@ -60,21 +62,36 @@ class ApplicationBloc with ChangeNotifier {
   DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
   late DatabaseManager _databaseManager;
-  UserSettings _userSettings = UserSettings();
+  late UserSettings _userSettings;
 
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
 
   /// Constructor that sets up the application bloc
   ApplicationBloc() {
-    changeUnits();
-    fetchCurrentLocation();
-    updateStationsPeriodically();
+    _userSettings = UserSettings();
     _databaseManager = DatabaseManager();
+
+    changeUnits();
+    fetchCurrentLocation().then((value) => updateStations());
+    updateStationsPeriodically();
   }
 
   @visibleForTesting
-  ApplicationBloc.forMock(DialogManager dialogManager, PlacesService placesService, LocationManager locationManager, UserSettings userSettings, CameraManager cameraManager, MarkerManager markerManager, RouteManager routeManager,NavigationManager navigationManager, DirectionsService directionsService, StationManager stationManager, StationsService stationsService, DirectionManager directionManager, DatabaseManager databaseManager){
+  ApplicationBloc.forMock(
+      DialogManager dialogManager,
+      PlacesService placesService,
+      LocationManager locationManager,
+      UserSettings userSettings,
+      CameraManager cameraManager,
+      MarkerManager markerManager,
+      RouteManager routeManager,
+      NavigationManager navigationManager,
+      DirectionsService directionsService,
+      StationManager stationManager,
+      StationsService stationsService,
+      DirectionManager directionManager,
+      DatabaseManager databaseManager) {
     _dialogManager = dialogManager;
     _placesService = placesService;
     _locationManager = locationManager;
@@ -98,7 +115,9 @@ class ApplicationBloc with ChangeNotifier {
       NavigationManager navigationManager,
       DirectionsService directionsService,
       StationManager stationManager,
-      CameraManager cameraManager) {
+      CameraManager cameraManager,
+      UserSettings userSettings
+      ) {
     _locationManager = locationManager;
     _placesService = placesService;
     _routeManager = routeManager;
@@ -106,6 +125,7 @@ class ApplicationBloc with ChangeNotifier {
     _directionsService = directionsService;
     _stationManager = stationManager;
     _cameraManager = cameraManager;
+    _userSettings = userSettings;
 
     changeUnits();
     fetchCurrentLocation();
@@ -160,8 +180,10 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Search **********
 
+  /// @param void
+  /// @return List<PlaceSearch> - all search results
   @visibleForTesting
-  List<PlaceSearch> getSearchResult(){
+  List<PlaceSearch> getSearchResult() {
     return searchResults;
   }
 
@@ -268,13 +290,14 @@ class ApplicationBloc with ChangeNotifier {
         .onUserLocationChange(5)
         .listen((LocationData currentLocation) async {
       await _updateDirections();
+      notifyListeners();
     });
   }
 
   /// @param - void
   /// @return void
   /// @effects - gets the current location
-  fetchCurrentLocation() async {
+  Future<void> fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude, SearchType.current.description);
@@ -343,23 +366,34 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Routes **********
 
+  /// @param origin - Place; Place to which PickUp station is set
+  /// @return - Station - PickUp Station
   @visibleForTesting
   Future<Station> getStartStation(Place origin, [int groupSize = 1]) async {
     return await _stationManager.getPickupStationNear(origin.latlng, groupSize);
   }
 
+  /// @param destination - Place; Place to which DropOff station is set
+  /// @return - Station - DropOff Station
   @visibleForTesting
   Future<Station> getEndStation(Place destination, [int groupSize = 1]) async {
-    return await _stationManager.getPickupStationNear(
-        destination.latlng, groupSize);
+    return await _stationManager.getPickupStationNear(destination.latlng, groupSize);
   }
 
+  /// @param -
+  ///   origin - Place; start point for route
+  ///   destination - Place; end point for route
+  ///   startStation - Station; PickUp station
+  ///   endStation - Station; DropOff station
+  /// @return - void
+  /// @effects - sets a route based on start and end places,
+  ///           start and end stations, and any intermediate stops
   @visibleForTesting
   setRoutes(
       Place origin, Place destination, Station startStation, Station endStation,
       [List<Place> intermediates = const <Place>[], int groupSize = 1]) async {
     List<String> intermediatePlaceId =
-    intermediates.map((place) => place.placeId).toList();
+        intermediates.map((place) => place.placeId).toList();
 
     Rou.Route startWalkRoute = await _directionsService.getRoutes(
         origin.placeId, startStation.place.placeId, RouteType.walk);
@@ -394,6 +428,10 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   startStation - Station; PickUp Station
+  ///   endStation - Station; DropOff Station
+  /// @return - int; duration in minutes from start to end station
   @visibleForTesting
   Future<int> getDurationFromToStation(
       Station startStation, Station endStation) async {
@@ -404,6 +442,11 @@ class ApplicationBloc with ChangeNotifier {
     return durationMinutes;
   }
 
+  /// @param -
+  ///   curStation - Station;
+  ///   intermediaryStation - Station;
+  ///   endStation - Station; DropOff Station
+  /// @return - double; (end distance)/(start distance)
   @visibleForTesting
   double costEfficiencyHeuristic(
       Station curStation, Station intermediaryStation, Station endStation) {
@@ -440,14 +483,12 @@ class ApplicationBloc with ChangeNotifier {
       } else {
         List<Station> nearbyStations = _stationManager
             .getStationsInRadius(LatLng(curStation.lat, curStation.lng));
-        nearbyStations.sort((stationA, stationB) => costEfficiencyHeuristic(
-                curStation, stationA, endStation)
-            .compareTo(
+        nearbyStations.sort((stationA, stationB) =>
+            costEfficiencyHeuristic(curStation, stationA, endStation).compareTo(
                 costEfficiencyHeuristic(curStation, stationB, endStation)));
         for (int i = 0; i < nearbyStations.length; i++) {
           await _stationManager.cachePlaceId(nearbyStations[i]);
-          if ((await getDurationFromToStation(
-                  curStation, nearbyStations[i])) <=
+          if ((await getDurationFromToStation(curStation, nearbyStations[i])) <=
               25) {
             intermediateStations.add(nearbyStations[i]);
             curStation = nearbyStations[i];
@@ -488,19 +529,23 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @affects start live navigation
   @visibleForTesting
-  void setNavigationSubscription(){
+  void setNavigationSubscription() {
     updateLocationLive();
   }
+
   // ********** Stations **********
 
+  /// @affects set station timer for station update
   @visibleForTesting
-  setStationTimer(){
-    _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) { });
+  setStationTimer() {
+    _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) {});
   }
 
+  /// @return station timer
   @visibleForTesting
-  getStationTimer(){
+  getStationTimer() {
     return _stationTimer;
   }
 
@@ -532,7 +577,7 @@ class ApplicationBloc with ChangeNotifier {
   /// @param - void
   /// @return - void
   /// @effects - updates bike stations based on TFL API
-  updateStations() async {
+  Future<void> updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
     filterStationMarkers();
     notifyListeners();
@@ -613,14 +658,15 @@ class ApplicationBloc with ChangeNotifier {
         _routeManager.getWaypoints().map((e) => e.getStop()).toList());
     await _navigationManager.start();
     await updateLocationLive();
-    _routeManager.showCurrentRoute();
     Wakelock.enable();
     _routeManager.setLoading(false);
     _navigationManager.setLoading(false);
-
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - updates directions and route when navigating
   Future<void> _updateDirections() async {
     if (!_navigationManager.ifNavigating()) return;
 
