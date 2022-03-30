@@ -2,6 +2,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
+import 'package:bicycle_trip_planner/widgets/settings/SignUpScreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database_mocks/firebase_database_mocks.dart';
@@ -13,11 +14,14 @@ import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
 import 'settings-screen-test.mocks.dart';
 
+class MockNavigatorObserver extends Mock implements NavigatorObserver {}
+
 @GenerateMocks([UserSettings, FirebaseAuth, User, ApplicationBloc])
 void main(){
   setupFirebaseMocks();
-
+  late NavigatorObserver mockObserver;
   setUpAll(() async{
+    mockObserver = MockNavigatorObserver();
     await Firebase.initializeApp();
   });
 
@@ -78,15 +82,14 @@ void main(){
 
   testWidgets("Get sign up button", (WidgetTester tester) async{
     when(auth.currentUser).thenAnswer((realInvocation) => null);
-    await pumpWidget(tester, MaterialApp(home: SettingsScreen(settings: settings, auth: auth, bloc: bloc)));
+    await pumpWidget(tester, MaterialApp(home: SettingsScreen(settings: settings, auth: auth, bloc: bloc), navigatorObservers: [mockObserver]));
     final widget = find.byKey(ValueKey("signUp"));
     expect(widget, findsOneWidget);
 
     await tester.tap(widget);
     await tester.pump(Duration(seconds: 5));
 
-    final newWidget = find.byKey(ValueKey("emailField"));
-    expect(newWidget, findsOneWidget);
+    expect(find.byType(SignUpScreen), findsOneWidget);
   });
 
   testWidgets("Get stations update rate dropdown ", (WidgetTester tester) async{
