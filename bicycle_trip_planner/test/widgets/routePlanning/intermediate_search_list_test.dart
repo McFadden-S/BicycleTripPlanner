@@ -81,6 +81,13 @@ void main() {
     expect(button, findsOneWidget);
   });
 
+  testWidgets('Can toggle show intermediate', (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: IntermediateSearchList(routeManager: mockRouteManager,))));
+    final card = find.byKey(Key("intermediate InkWell"));
+    await tester.tap(card);
+    await tester.pump();
+  });
+
   /**
    * detects two icons instead of one
    */

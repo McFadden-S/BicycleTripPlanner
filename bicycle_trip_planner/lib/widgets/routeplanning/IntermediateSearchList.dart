@@ -152,6 +152,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     });
 
     return InkWell(
+        key: Key("intermediate InkWell"),
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
         child: Column(children: [
