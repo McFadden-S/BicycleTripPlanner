@@ -69,11 +69,12 @@ class ApplicationBloc with ChangeNotifier {
 
   /// Constructor that sets up the application bloc
   ApplicationBloc() {
+    _databaseManager = DatabaseManager();
+    _userSettings = UserSettings();
+
     changeUnits();
     fetchCurrentLocation();
     updateStationsPeriodically();
-    _databaseManager = DatabaseManager();
-    _userSettings = UserSettings();
   }
 
   @visibleForTesting

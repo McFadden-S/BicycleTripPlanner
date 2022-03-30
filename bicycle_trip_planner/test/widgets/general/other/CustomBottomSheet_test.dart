@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/EndRouteButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
@@ -20,6 +21,44 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
   });
+
+  Future<void> _createCustomBottomSheet(WidgetTester tester) async{
+
+
+    await pumpWidget(tester, MaterialApp(home:
+    Material(child:
+    CustomBottomSheet(child:
+    Container(
+    margin: EdgeInsets.only(bottom: 10, right: 5, left: 5),
+      child: Row(
+        children: [
+          Expanded(child: DistanceETACard()),
+          Expanded(
+            child: Column(
+              children: [
+                Expanded(
+                  child: EndRouteButton(onPressed: (){},),
+                ),
+                Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: WalkOrCycleToggle(),
+                    )),
+              ],
+            ),
+          ),
+        ],
+      ),
+    )))));
+  }
+
+  testWidgets("CustomBottomSheet has a container",(WidgetTester tester) async{
+
+    await _createCustomBottomSheet(tester);
+    final detector = find.byType(Container);
+    expect(detector, findsWidgets);
+  });
+
 
   testWidgets("CustomBottomSheet is an AnimatedContainer", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home:
@@ -48,9 +87,9 @@ void main() {
       ),
     )))));
 
-    final widgetCard = find.byType(AnimatedContainer);
+    final widgetCard = find.byType(Container);
 
-    expect(widgetCard, findsOneWidget);
+    expect(widgetCard, findsWidgets);
   });
 
   testWidgets("CustomBottomSheet shows an arrow icon", (WidgetTester tester) async {
@@ -82,6 +121,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final Size shrunkSize = tester.getSize(animatedContainer);
+
 
     expect(shrunkSize.height, equals(origSize.height / 3));
   });
@@ -143,4 +183,6 @@ void main() {
     expect(nextSize.height, equals(origSize.height));
     expect(nextSize.height, equals(shrunkSize.height * 3));
   });
+
+
 }
