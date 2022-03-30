@@ -1,22 +1,13 @@
 import 'package:bicycle_trip_planner/constants.dart';
-import 'package:bicycle_trip_planner/widgets/settings/ForgotPasswordScreen.dart';
 import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../setUp.dart';
-import 'mock.dart';
 
 void main() {
   ThemeStyle();
   Color buttonColor = ThemeStyle.buttonPrimaryColor;
   bool testCalled = false;
-
-  setupFirebaseAuthMocks();
-
-  setUpAll(() async {
-    await Firebase.initializeApp();
-  });
 
   setUp(() {
     testCalled = false;
@@ -33,7 +24,7 @@ void main() {
   }
 
   void testFunction() {
-    testCalled = true;
+    testCalled = !testCalled;
   }
 
   testWidgets("Rounded Text Button exists", (WidgetTester tester) async {
@@ -231,5 +222,25 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(testCalled, true);
+  });
+
+  testWidgets("Pressing Rounded Text Button twice calls method correctly twice",
+      (WidgetTester tester) async {
+    await _createRoundedTextButtonWidget(
+        tester, "Input", testFunction, buttonColor);
+
+    final button = find.byType(ElevatedButton);
+
+    expect(testCalled, false);
+
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(testCalled, true);
+
+    await tester.tap(button);
+    await tester.pumpAndSettle();
+
+    expect(testCalled, false);
   });
 }
