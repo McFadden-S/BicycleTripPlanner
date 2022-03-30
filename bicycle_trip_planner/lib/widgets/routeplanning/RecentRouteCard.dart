@@ -12,8 +12,11 @@ import '../../models/pathway.dart';
 
 class RecentRouteCard extends StatefulWidget {
   final int index;
+  final UserSettings ?userSettings;
+  final RouteManager ? routeManager;
+  final MarkerManager ? markerManager;
 
-  const RecentRouteCard({Key? key, required this.index}) : super(key: key);
+  const RecentRouteCard({Key? key, required this.index, this.userSettings, this.routeManager, this.markerManager}) : super(key: key);
 
   @override
   _RouteCardState createState() => _RouteCardState();
@@ -24,10 +27,15 @@ class _RouteCardState extends State<RecentRouteCard> {
   late String startName = 'No DATA';
   late String endName = 'No DATA';
   late List<String> stopNames = [];
-  final UserSettings _userSettings = UserSettings();
+  late UserSettings _userSettings;
+  late RouteManager _routeManager;
+  late MarkerManager _markerManager;
 
   @override
   void initState() {
+    _userSettings = widget.userSettings ?? UserSettings();
+    _markerManager = widget.markerManager ?? MarkerManager();
+    _routeManager = widget.routeManager ?? RouteManager();
     super.initState();
     initVariables();
   }
@@ -39,7 +47,7 @@ class _RouteCardState extends State<RecentRouteCard> {
     return InkWell(
       onTap: () async {
         Navigator.of(context).maybePop();
-        routeClicked(applicationBloc, pathway, context);
+        routeClicked(applicationBloc, pathway, _routeManager, _markerManager, context);
       },
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.85,
@@ -162,9 +170,9 @@ class _RouteCardState extends State<RecentRouteCard> {
 }
 
 Future<void> routeClicked(
-    ApplicationBloc appBloc, Pathway pathway, context) async {
-  RouteManager routeManager = RouteManager();
-  MarkerManager markerManager = MarkerManager();
+    ApplicationBloc appBloc, Pathway pathway, RouteManager route, MarkerManager marker, context) async {
+  RouteManager routeManager = route;
+  MarkerManager markerManager = marker;
   routeManager.clearPathwayMarkers();
   routeManager.clearRouteMarkers();
   routeManager.getStart().setStop(pathway.getStart().getStop());

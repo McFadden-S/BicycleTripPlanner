@@ -1,16 +1,36 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
+import 'package:bicycle_trip_planner/managers/UserSettings.dart';
+import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+
 
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
+import 'recent_route_card_test.mocks.dart';
 
-
+@GenerateMocks([UserSettings, RouteManager, MarkerManager])
 void main() {
+  final mockUserSettings = MockUserSettings();
+  final mockRouteManager = MockRouteManager();
+  final mockMarkerManager = MockMarkerManager();
+  when(mockUserSettings.getRecentRoute((any))).thenAnswer((realInvocation) async => Pathway());
+  when(mockRouteManager.clearRouteMarkers()).thenAnswer((realInvocation) async => null);
+  setupFirebaseAuthMocks();
+  when(mockRouteManager.getStart()).thenAnswer((realInvocation) => Stop());
+  when(mockRouteManager.getDestination()).thenAnswer((realInvocation) => Stop());
+  setupFirebaseAuthMocks();
+  when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => []);
+  when(mockRouteManager.getGroupSize()).thenAnswer((realInvocation) => 1);
   setupFirebaseAuthMocks();
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -31,5 +51,12 @@ void main() {
   testWidgets('Recent Route Card has Circle icons', (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RecentRouteCard(index: 1))));
     expect(find.byType(Icon), findsWidgets);
+  });
+
+  testWidgets('Can tap recent route card', (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RecentRouteCard(index: 1, userSettings: mockUserSettings, routeManager: mockRouteManager, markerManager: mockMarkerManager,))));
+    final card = find.byType(InkWell);
+    await tester.tap(card);
+    await tester.pump();
   });
 }
