@@ -12,9 +12,10 @@ class StationCard extends StatefulWidget {
   final Station station;
   final bool? isFavourite;
   final Function(Station)? toggleFavourite;
+  final ApplicationBloc? bloc;
 
   const StationCard(
-      {Key? key, required this.station, this.isFavourite, this.toggleFavourite})
+      {Key? key, required this.station, this.isFavourite, this.toggleFavourite, this.bloc})
       : super(key: key);
 
   @override
@@ -26,6 +27,13 @@ class _StationCardState extends State<StationCard> {
 
   final LocationManager locationManager = LocationManager();
   final StationManager stationManager = StationManager();
+  late ApplicationBloc applicationBloc;
+
+  @override
+  void initState() {
+    applicationBloc = widget.bloc ?? Provider.of<ApplicationBloc>(context, listen: false);
+    super.initState();
+  }
 
   @visibleForTesting
   getIsFavourite() {
@@ -34,8 +42,7 @@ class _StationCardState extends State<StationCard> {
 
   @override
   Widget build(BuildContext context) {
-    final applicationBloc =
-        Provider.of<ApplicationBloc>(context, listen: false);
+
     return InkWell(
       onTap: () {
         Navigator.of(context).maybePop();

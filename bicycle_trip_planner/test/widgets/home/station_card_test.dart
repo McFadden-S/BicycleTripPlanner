@@ -77,12 +77,13 @@ void main() {
     expect(widget, findsOneWidget);
   });
 
-  testWidgets("StationCard has contents inside", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true, toggleFavourite: (Station station) {},))));
+  testWidgets("StationCard has contents inside something", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true, toggleFavourite: (Station station) {}, bloc: mockAppBloc))));
     final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
-    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
     expect(find.byType(IconButton), findsWidgets);
   });
 
