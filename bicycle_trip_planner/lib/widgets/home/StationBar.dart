@@ -51,7 +51,7 @@ class _StationBarState extends State<StationBar> {
   }
 
   deleteFavouriteRoute(String key) {
-    if (DatabaseManager().isUserLogged()) {
+    if (_isUserLogged) {
       DatabaseManager().removeFavouriteRoute(key);
     }
     getFavouriteRoutes();

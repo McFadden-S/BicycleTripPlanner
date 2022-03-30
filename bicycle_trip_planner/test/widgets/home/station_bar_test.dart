@@ -27,42 +27,42 @@ void main() {
     await tester.runAsync(
             () async {
               await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-              expect(find.text('Nearby Stations'), findsOneWidget);
+              expect(find.text('Nearby Stations'), findsWidgets);
         });
   });
 
   testWidgets("StationBar has an icon button 'firstPage'", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.widgetWithIcon(IconButton, Icons.first_page), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.first_page), findsWidgets);
   });
 
   testWidgets("StationBar has an icon button 'expanded station list'", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.widgetWithIcon(IconButton, Icons.menu), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.menu), findsWidgets);
   });
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Container), findsWidgets);
   });
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     final widget = find.byKey(ValueKey("first_page"));
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
   });
 
   testWidgets("Tapping menu icon returns another widget", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     final widget = find.byKey(ValueKey("menu"));
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
 
     await tester.tap(widget);
     await tester.pump();
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
 
     final widget2 = find.byType(StatefulBuilder);
-    expect(widget2, findsOneWidget);
+    expect(widget2, findsWidgets);
 
     expect(find.byType(Expanded), findsWidgets);
     expect(find.byType(Container), findsWidgets);
@@ -70,14 +70,16 @@ void main() {
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Container), findsWidgets);
   });
 
   testWidgets("StationBar shows other options in dropdown when logged in", (WidgetTester tester) async {
-    // when(mockDatabaseManager.()).thenAnswer((_) => true);
-    when(mockFirebaseAuth.authStateChanges().listen((event) {}).onData((event) => true));
-
+    // when(mockFirebaseAuth.authStateChanges().listen((event) {event?.isAnonymous;}).onData((event) => true));
+    var mockUser;
+    when(mockFirebaseAuth.authStateChanges()).thenAnswer((_) => mockUser);
+    when(mockUser.isNull).thenAnswer((_) => false);
+    when(mockUser.isAnonymous).thenAnswer((_) => false);
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: MockFirebaseAuth))));
-    expect(find.byType(DropdownButton), findsOneWidget);
+    expect(find.byType(DropdownButton), findsWidgets);
   });
 }
