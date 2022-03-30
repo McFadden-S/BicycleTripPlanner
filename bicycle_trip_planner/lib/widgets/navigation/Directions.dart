@@ -31,7 +31,8 @@ class _DirectionsState extends State<Directions> {
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<ApplicationBloc>(context);
+    final applicationBloc =
+    Provider.of<ApplicationBloc>(context, listen: false);
     return InkWell(
       splashColor: Colors.blue.withAlpha(30),
       onTap: () => _toggleExtendNavigationView(),

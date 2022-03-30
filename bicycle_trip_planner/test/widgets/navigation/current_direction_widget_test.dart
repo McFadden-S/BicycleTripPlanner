@@ -17,7 +17,7 @@ void main() {
     HttpOverrides.global = null;
   });
 
-  testWidgets("Currend diraction contains a SingleChildScrollView", (WidgetTester tester) async {
+  testWidgets("Current direction contains a SingleChildScrollView", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: CurrentDirection(
       currentDirection: Steps(
           distance: distance,
@@ -30,7 +30,7 @@ void main() {
     expect(scrollview, findsOneWidget);
   });
 
-  testWidgets("Currend diraction contains distance", (WidgetTester tester) async {
+  testWidgets("Current direction contains distance", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: CurrentDirection(
         currentDirection: Steps(
             distance: distance,
@@ -41,7 +41,7 @@ void main() {
     expect(find.text("${distance} m"), findsOneWidget);
   });
 
-  testWidgets("Currend diraction contains instruction", (WidgetTester tester) async {
+  testWidgets("Current direction contains instruction", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: CurrentDirection(
         currentDirection: Steps(
             distance: distance,
