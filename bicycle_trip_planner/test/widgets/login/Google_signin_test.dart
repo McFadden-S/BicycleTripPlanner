@@ -7,7 +7,6 @@ import 'package:mockito/mockito.dart';
 
 import 'Google_signin_test.mocks.dart';
 
-
 @GenerateMocks([GoogleSignIn, FirebaseAuth, GoogleSignInAccount, GoogleSignInAuthentication, UserCredential])
 void main(){
   final signIn = MockGoogleSignIn();
