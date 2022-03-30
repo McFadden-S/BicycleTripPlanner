@@ -85,6 +85,6 @@ void main() {
     when(mockUser.isAnonymous).thenAnswer((_) => false);
 
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: mockFirebaseAuth))));
-    expect(find.byType(DropdownButton), findsWidgets);
+    expect(find.text("Favourite Stations"), findsWidgets);
   });
 }

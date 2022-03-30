@@ -75,12 +75,12 @@ class _StationBarState extends State<StationBar> {
     firebaseSubscription =
         auth.authStateChanges().listen((event) {
       _isUserLogged = event != null && !event.isAnonymous;
+      print(_isUserLogged);
       setState(() {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
           _isFavouriteRoutes = false;
         } else {
-          print("hi");
           getFavouriteStations();
           getFavouriteRoutes();
         }
@@ -226,13 +226,14 @@ class _StationBarState extends State<StationBar> {
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
                       child: Container(
+                          key: Key("container"),
                           padding: const EdgeInsets.all(5),
                           decoration: const BoxDecoration(),
                           child: Column(
                             children: [
                               Row(
                                 children: [
-                                  _isUserLogged
+                                  _isUserLogged // changed this to true
                                       ? dropdownButtons(setModalState)
                                       : Text(
                                           "Nearby Stations",
@@ -328,7 +329,7 @@ class _StationBarState extends State<StationBar> {
           child: Column(
             children: [
               Expanded(
-                  child: Padding(
+                child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
