@@ -1,22 +1,12 @@
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/widgets/settings/components/InputField.dart';
-import 'package:bicycle_trip_planner/widgets/settings/components/RoundedTextButton.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import '../../setUp.dart';
-import 'mock.dart';
 
 void main() {
   ThemeStyle();
   String testEmail = "";
-
-  setupFirebaseAuthMocks();
-
-  setUpAll(() async {
-    await Firebase.initializeApp();
-  });
 
   setUp(() {
     testEmail = "";
