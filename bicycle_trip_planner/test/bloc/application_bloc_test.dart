@@ -21,6 +21,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:location/location.dart';
@@ -61,6 +62,10 @@ void main() {
   var stationsService = MockStationsService();
   var directionManager = MockDirectionManager();
   var databaseManager = MockDatabaseManager();
+
+
+  WidgetsFlutterBinding.ensureInitialized();
+
 
   final routeManager = RouteManager();
   final navigationManager =
@@ -128,219 +133,11 @@ void main() {
           LatLng(51.513206, -0.117373), LatLng(0, 0)))
       .thenAnswer((_) => 10000);
 
-//   when(directionsService.getWalkingRoutes(
-//           routeManager.getStart().getStop().placeId,
-//           routeManager.getDestination().getStop().placeId))
-//       .thenAnswer(
-//           (realInvocation) async => r.Route.fromJson(convert.jsonDecode(r"""
-//   {
-//    "geocoded_waypoints" : [
-//       {
-//          "geocoder_status" : "OK",
-//          "place_id" : "ChIJUfP9ZLUEdkgRCMRrCxwl304",
-//          "types" : [ "street_address" ]
-//       },
-//       {
-//          "geocoder_status" : "OK",
-//          "place_id" : "ChIJL35SicoEdkgR-h_NBk0cMQA",
-//          "types" : [ "establishment", "point_of_interest", "transit_station" ]
-//       }
-//    ],
-//    "routes" : [
-//       {
-//          "bounds" : {
-//             "northeast" : {
-//                "lat" : 51.5131179,
-//                "lng" : -0.1172801
-//             },
-//             "southwest" : {
-//                "lat" : 51.5115989,
-//                "lng" : -0.1191371
-//             }
-//          },
-//          "copyrights" : "Map data ©2022 Google",
-//          "legs" : [
-//             {
-//                "distance" : {
-//                   "text" : "0.4 km",
-//                   "value" : 419
-//                },
-//                "duration" : {
-//                   "text" : "5 mins",
-//                   "value" : 325
-//                },
-//                "end_address" : "Aldwych / Drury Lane, London WC2B 4NA, UK",
-//                "end_location" : {
-//                   "lat" : 51.5128715,
-//                   "lng" : -0.1184306
-//                },
-//                "start_address" : "40 Aldwych, London WC2B 4BG, UK",
-//                "start_location" : {
-//                   "lat" : 51.5131179,
-//                   "lng" : -0.1172801
-//                },
-//                "steps" : [
-//                   {
-//                      "distance" : {
-//                         "text" : "0.2 km",
-//                         "value" : 206
-//                      },
-//                      "duration" : {
-//                         "text" : "2 mins",
-//                         "value" : 142
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.5117335,
-//                         "lng" : -0.1189128
-//                      },
-//                      "html_instructions" : "Head \u003cb\u003esouthwest\u003c/b\u003e on \u003cb\u003eAldwych\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA4\u003c/b\u003e toward \u003cb\u003eKingsway\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA4200\u003c/b\u003e",
-//                      "polyline" : {
-//                         "points" : "_dlyH~{UNt@F\\Nh@BFJf@LRV`@LNDD^VHFHDNHNDHBB@J@LBJ?B?VH"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.5131179,
-//                         "lng" : -0.1172801
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   },
-//                   {
-//                      "distance" : {
-//                         "text" : "22 m",
-//                         "value" : 22
-//                      },
-//                      "duration" : {
-//                         "text" : "1 min",
-//                         "value" : 15
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.511612,
-//                         "lng" : -0.1189349
-//                      },
-//                      "html_instructions" : "Slight \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eAldwych\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eStrand\u003c/b\u003e",
-//                      "maneuver" : "turn-slight-left",
-//                      "polyline" : {
-//                         "points" : "i{kyHdfVHCLF"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.5117335,
-//                         "lng" : -0.1189128
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   },
-//                   {
-//                      "distance" : {
-//                         "text" : "67 m",
-//                         "value" : 67
-//                      },
-//                      "duration" : {
-//                         "text" : "1 min",
-//                         "value" : 72
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.512083,
-//                         "lng" : -0.1190444
-//                      },
-//                      "html_instructions" : "Take the crosswalk",
-//                      "polyline" : {
-//                         "points" : "qzkyHhfV@H?\\IAKAICEAG?I?K?MCMC"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.511612,
-//                         "lng" : -0.1189349
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   },
-//                   {
-//                      "distance" : {
-//                         "text" : "16 m",
-//                         "value" : 16
-//                      },
-//                      "duration" : {
-//                         "text" : "1 min",
-//                         "value" : 12
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.512194,
-//                         "lng" : -0.1190991
-//                      },
-//                      "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eCatherine St\u003c/b\u003e",
-//                      "maneuver" : "turn-left",
-//                      "polyline" : {
-//                         "points" : "o}kyH~fVCRQG"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.512083,
-//                         "lng" : -0.1190444
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   },
-//                   {
-//                      "distance" : {
-//                         "text" : "16 m",
-//                         "value" : 16
-//                      },
-//                      "duration" : {
-//                         "text" : "1 min",
-//                         "value" : 13
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.5121856,
-//                         "lng" : -0.1190441
-//                      },
-//                      "html_instructions" : "Cross the road",
-//                      "polyline" : {
-//                         "points" : "e~kyHjgV?K"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.512194,
-//                         "lng" : -0.1190991
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   },
-//                   {
-//                      "distance" : {
-//                         "text" : "92 m",
-//                         "value" : 92
-//                      },
-//                      "duration" : {
-//                         "text" : "1 min",
-//                         "value" : 71
-//                      },
-//                      "end_location" : {
-//                         "lat" : 51.5128715,
-//                         "lng" : -0.1184306
-//                      },
-//                      "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e onto \u003cb\u003eAldwych\u003c/b\u003e/\u003cwbr/\u003e\u003cb\u003eA4\u003c/b\u003e\u003cdiv style=\"font-size:0.9em\"\u003eDestination will be on the left\u003c/div\u003e",
-//                      "maneuver" : "turn-left",
-//                      "polyline" : {
-//                         "points" : "e~kyH~fVMEQIIGKGSMSUOQYc@"
-//                      },
-//                      "start_location" : {
-//                         "lat" : 51.5121856,
-//                         "lng" : -0.1190441
-//                      },
-//                      "travel_mode" : "WALKING"
-//                   }
-//                ],
-//                "traffic_speed_entry" : [],
-//                "via_waypoint" : []
-//             }
-//          ],
-//          "overview_polyline" : {
-//             "points" : "_dlyH~{UVrARp@Jf@LRd@p@x@j@l@Th@DVHHCLF@H?\\IAUEc@A[GCRQG?KME[Q_@Uc@g@Yc@"
-//          },
-//          "summary" : "Aldwych and Aldwych/A4",
-//          "warnings" : [
-//             "Walking directions are in beta. Use caution – This route may be missing sidewalks or pedestrian paths."
-//          ],
-//          "waypoint_order" : []
-//       }
-//    ],
-//    "status" : "OK"
-// }
-//
-//
-//   """)['routes'][0] as Map<String, dynamic>, RouteType.walk));
+  when(userSettings.distanceUnit()).thenAnswer((realInvocation) async=> DistanceType.km);
+
+  when(userSettings.stationsRefreshRate()).thenAnswer((realInvocation) => 5);
+
+  when(userSettings.saveRoute(any, any, [])).thenAnswer((realInvocation) => null);
 
   when(locationManager.distanceFromToInMeters(
           LatLng(51.513206, -0.117373), LatLng(51.514148, -0.119647)))
@@ -2006,7 +1803,9 @@ void main() {
       navigationManager,
       directionsService,
       stationManager,
-      cameraManager);
+      cameraManager,
+      userSettings
+  );
 
   var appBloc = ApplicationBloc.forMock(
       dialogManager,
