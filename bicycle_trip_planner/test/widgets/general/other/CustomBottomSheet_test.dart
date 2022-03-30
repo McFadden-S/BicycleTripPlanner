@@ -34,7 +34,7 @@ void main() {
             child: Column(
               children: [
                 Expanded(
-                  child: EndRouteButton(),
+                  child: EndRouteButton(onPressed: (){},),
                 ),
                 Expanded(
                     child: Padding(

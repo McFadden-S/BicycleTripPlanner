@@ -214,6 +214,9 @@ void main() {
 
     navigationManager.setPickupStation(station_1);
     navigationManager.setDropoffStation(station_2);
+    navigationManager.setIfEndWalking(false);
+    navigationManager.setIfCycling(false);
+    navigationManager.setIfBeginning(true);
 
     expectWalkingBikingEnd(true, false, false);
 

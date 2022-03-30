@@ -2,13 +2,13 @@
 // in bicycle_trip_planner/test/managers/marker_manager_test.dart.
 // Do not manually edit this file.
 
-import 'dart:async' as _i5;
+import 'dart:async' as _i6;
 import 'dart:ui' as _i8;
 
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart' as _i3;
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart' as _i4;
 import 'package:bicycle_trip_planner/models/place.dart' as _i7;
-import 'package:bicycle_trip_planner/models/place_search.dart' as _i4;
-import 'package:bicycle_trip_planner/models/station.dart' as _i6;
+import 'package:bicycle_trip_planner/models/place_search.dart' as _i5;
+import 'package:bicycle_trip_planner/models/station.dart' as _i3;
 import 'package:flutter/material.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -28,10 +28,12 @@ class _FakeWidget_0 extends _i1.Fake implements _i2.Widget {
       super.toString();
 }
 
+class _FakeStation_1 extends _i1.Fake implements _i3.Station {}
+
 /// A class which mocks [ApplicationBloc].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
+class MockApplicationBloc extends _i1.Mock implements _i4.ApplicationBloc {
   MockApplicationBloc() {
     _i1.throwOnMissingStub(this);
   }
@@ -49,11 +51,11 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       (super.noSuchMethod(Invocation.getter(#screens),
           returnValue: <String, _i2.Widget>{}) as Map<String, _i2.Widget>);
   @override
-  List<_i4.PlaceSearch> get searchResults =>
+  List<_i5.PlaceSearch> get searchResults =>
       (super.noSuchMethod(Invocation.getter(#searchResults),
-          returnValue: <_i4.PlaceSearch>[]) as List<_i4.PlaceSearch>);
+          returnValue: <_i5.PlaceSearch>[]) as List<_i5.PlaceSearch>);
   @override
-  set searchResults(List<_i4.PlaceSearch>? _searchResults) =>
+  set searchResults(List<_i5.PlaceSearch>? _searchResults) =>
       super.noSuchMethod(Invocation.setter(#searchResults, _searchResults),
           returnValueForMissingStub: null);
   @override
@@ -61,16 +63,16 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  _i5.Future<void> updateGroupSize(int? groupSize) =>
+  _i6.Future<void> updateGroupSize(int? groupSize) =>
       (super.noSuchMethod(Invocation.method(#updateGroupSize, [groupSize]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
   void showBinaryDialog() =>
       super.noSuchMethod(Invocation.method(#showBinaryDialog, []),
           returnValueForMissingStub: null);
   @override
-  void showSelectedStationDialog(_i6.Station? station) => super.noSuchMethod(
+  void showSelectedStationDialog(_i3.Station? station) => super.noSuchMethod(
       Invocation.method(#showSelectedStationDialog, [station]),
       returnValueForMissingStub: null);
   @override
@@ -82,6 +84,10 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       super.noSuchMethod(Invocation.method(#clearSelectedStationDialog, []),
           returnValueForMissingStub: null);
   @override
+  List<_i5.PlaceSearch> getSearchResult() =>
+      (super.noSuchMethod(Invocation.method(#getSearchResult, []),
+          returnValue: <_i5.PlaceSearch>[]) as List<_i5.PlaceSearch>);
+  @override
   bool ifSearchResult() =>
       (super.noSuchMethod(Invocation.method(#ifSearchResult, []),
           returnValue: false) as bool);
@@ -89,16 +95,16 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
   dynamic searchPlaces(String? searchTerm) =>
       super.noSuchMethod(Invocation.method(#searchPlaces, [searchTerm]));
   @override
-  dynamic searchSelectedStation(_i6.Station? station, int? uid) => super
+  dynamic searchSelectedStation(_i3.Station? station, int? uid) => super
       .noSuchMethod(Invocation.method(#searchSelectedStation, [station, uid]));
-  @override
-  _i5.Future<void> updateLocationLive() =>
-      (super.noSuchMethod(Invocation.method(#updateLocationLive, []),
-          returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
   @override
   dynamic setSelectedSearch(int? searchIndex, int? uid) => super
       .noSuchMethod(Invocation.method(#setSelectedSearch, [searchIndex, uid]));
+  @override
+  _i6.Future<void> updateLocationLive() =>
+      (super.noSuchMethod(Invocation.method(#updateLocationLive, []),
+          returnValue: Future<void>.value(),
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
   dynamic setLocationMarker(_i7.Place? place, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#setLocationMarker, [place, uid]));
@@ -115,28 +121,72 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
   dynamic removeSelectedLocation(int? uid) =>
       super.noSuchMethod(Invocation.method(#removeSelectedLocation, [uid]));
   @override
+  _i6.Future<_i3.Station> getStartStation(_i7.Place? origin,
+          [int? groupSize = 1]) =>
+      (super.noSuchMethod(
+              Invocation.method(#getStartStation, [origin, groupSize]),
+              returnValue: Future<_i3.Station>.value(_FakeStation_1()))
+          as _i6.Future<_i3.Station>);
+  @override
+  _i6.Future<_i3.Station> getEndStation(_i7.Place? destination,
+          [int? groupSize = 1]) =>
+      (super.noSuchMethod(
+              Invocation.method(#getEndStation, [destination, groupSize]),
+              returnValue: Future<_i3.Station>.value(_FakeStation_1()))
+          as _i6.Future<_i3.Station>);
+  @override
+  dynamic setRoutes(_i7.Place? origin, _i7.Place? destination,
+          _i3.Station? startStation, _i3.Station? endStation,
+          [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
+      super.noSuchMethod(Invocation.method(#setRoutes, [
+        origin,
+        destination,
+        startStation,
+        endStation,
+        intermediates,
+        groupSize
+      ]));
+  @override
   dynamic findRoute(_i7.Place? origin, _i7.Place? destination,
           [List<_i7.Place>? intermediates = const [], int? groupSize = 1]) =>
       super.noSuchMethod(Invocation.method(
           #findRoute, [origin, destination, intermediates, groupSize]));
   @override
-  _i5.Future<void> findCostEfficientRoute(
+  _i6.Future<int> getDurationFromToStation(
+          _i3.Station? startStation, _i3.Station? endStation) =>
+      (super.noSuchMethod(
+          Invocation.method(
+              #getDurationFromToStation, [startStation, endStation]),
+          returnValue: Future<int>.value(0)) as _i6.Future<int>);
+  @override
+  double costEfficiencyHeuristic(_i3.Station? curStation,
+          _i3.Station? intermediaryStation, _i3.Station? endStation) =>
+      (super.noSuchMethod(
+          Invocation.method(#costEfficiencyHeuristic,
+              [curStation, intermediaryStation, endStation]),
+          returnValue: 0.0) as double);
+  @override
+  _i6.Future<void> findCostEfficientRoute(
           _i7.Place? origin, _i7.Place? destination, [int? groupSize = 1]) =>
       (super.noSuchMethod(
           Invocation.method(
               #findCostEfficientRoute, [origin, destination, groupSize]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
   void endRoute() => super.noSuchMethod(Invocation.method(#endRoute, []),
       returnValueForMissingStub: null);
   @override
-  _i5.Future<void> filterStationMarkers() =>
+  void setNavigationSubscription() =>
+      super.noSuchMethod(Invocation.method(#setNavigationSubscription, []),
+          returnValueForMissingStub: null);
+  @override
+  _i6.Future<void> filterStationMarkers() =>
       (super.noSuchMethod(Invocation.method(#filterStationMarkers, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  dynamic viewStationMarker(_i6.Station? station, [int? uid = -1]) =>
+  dynamic viewStationMarker(_i3.Station? station, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#viewStationMarker, [station, uid]));
   @override
   _i2.Widget getSelectedScreen() =>
@@ -151,18 +201,18 @@ class MockApplicationBloc extends _i1.Mock implements _i3.ApplicationBloc {
       super.noSuchMethod(Invocation.method(#goBack, [backTo]),
           returnValueForMissingStub: null);
   @override
-  _i5.Future<void> startNavigation() =>
+  _i6.Future<void> startNavigation() =>
       (super.noSuchMethod(Invocation.method(#startNavigation, []),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
-  _i5.Future<void> setPartialRoutes(
+  _i6.Future<void> setPartialRoutes(
           [List<String>? first = const [],
           List<String>? intermediates = const []]) =>
       (super.noSuchMethod(
           Invocation.method(#setPartialRoutes, [first, intermediates]),
           returnValue: Future<void>.value(),
-          returnValueForMissingStub: Future<void>.value()) as _i5.Future<void>);
+          returnValueForMissingStub: Future<void>.value()) as _i6.Future<void>);
   @override
   bool isUserLogged() =>
       (super.noSuchMethod(Invocation.method(#isUserLogged, []),

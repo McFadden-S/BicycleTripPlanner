@@ -120,7 +120,6 @@ class RouteManager {
     double color = route.routeType == RouteType.bike
         ? BitmapDescriptor.hueGreen
         : BitmapDescriptor.hueRed;
-    setRouteMarker(route.legs.first.startLocation, color);
     setRouteMarker(route.legs.last.endLocation, color);
     // Add waypoints
     if (route.legs.length > 1) {
