@@ -13,6 +13,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// markers to be displayed on the map
 
 class MarkerManager {
+
   //********** Fields **********
 
   // set of all markers on display
@@ -132,6 +133,8 @@ class MarkerManager {
     return _markers;
   }
 
+  /// @param void
+  /// @return Marker - returns marker of the user
   Marker getUserMarker(){
     return _markers.firstWhere((marker) => marker.markerId.value == _userID);
   }

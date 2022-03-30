@@ -70,7 +70,6 @@ class _RouteCardState extends State<RecentRouteCard> {
                         width:
                             (MediaQuery.of(context).size.width * 0.85) - 70.0,
                         child: Text(
-                          //"\t\t${favouriteRoutesManager.getFavouriteRouteByIndex(widget.index)!.getStart().getStop().name}",
                           startName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(

@@ -11,23 +11,23 @@ class ThemeStyle {
 
   factory ThemeStyle() {
     if (_time.isDark()) {
-      kPrimaryColor = Color(0xFF00008B);
-      buttonPrimaryColor = Color(0xFF00008B);
-      buttonSecondaryColor = Color(0xFFDCDCDC);
-      kPrimaryLightColor = Color(0xFFBBDEFB);
-      mainFontColor = Color(0xFF1C1C1C);
-      secondaryFontColor = Color(0xFF605D5D);
-      stationShadow = Color(0xFF395B64);
-      directionTileColor = Color(0xFF2F3737);
+      kPrimaryColor = const Color(0xFF00008B);
+      buttonPrimaryColor = const Color(0xFF00008B);
+      buttonSecondaryColor = const Color(0xFFDCDCDC);
+      kPrimaryLightColor = const Color(0xFFBBDEFB);
+      mainFontColor = const Color(0xFF1C1C1C);
+      secondaryFontColor = const Color(0xFF605D5D);
+      stationShadow = const Color(0xFF395B64);
+      directionTileColor = const Color(0xFF2F3737);
 
       primaryTextColor = Colors.white;
-      secondaryTextColor = Color(0xFFF5F2E7);//Colors.white;//Colors.black45;
+      secondaryTextColor = const Color(0xFFF5F2E7);
       boxShadow = Colors.black54;
-      cardColor = Color(0xFF2C3333);//Color(0xFFDCDCDC);
-      goButtonColor = Color(0xFF228B22);
+      cardColor = const Color(0xFF2C3333);
+      goButtonColor = const Color(0xFF228B22);
       primaryIconColor = Colors.white;
-      secondaryIconColor = Colors.white;//Color(0xFF484848);
-      cardOutlineColor = Color(0xFF969393);
+      secondaryIconColor = Colors.white;
+      cardOutlineColor = const Color(0xFF969393);
 
       stationMarkerColor = 120;
 
@@ -44,12 +44,12 @@ class ThemeStyle {
 
   ThemeStyle._internal();
 
-  static Color kPrimaryColor = Color(0xFF0C9CEE);
-  static Color buttonPrimaryColor = Color(0xFF0C9CEE);
+  static Color kPrimaryColor = const Color(0xFF0C9CEE);
+  static Color buttonPrimaryColor = const Color(0xFF0C9CEE);
   static Color buttonSecondaryColor = Colors.white;
-  static Color kPrimaryLightColor = Color(0xFFBBDEFB);
-  static Color mainFontColor = Color(0xFF1C1C1C);
-  static Color secondaryFontColor = Color(0xFF605D5D);
+  static Color kPrimaryLightColor = const Color(0xFFBBDEFB);
+  static Color mainFontColor = const Color(0xFF1C1C1C);
+  static Color secondaryFontColor = const Color(0xFF605D5D);
   static Color stationShadow = Colors.grey;
   static Color? directionTileColor = Colors.grey[100];
 
@@ -60,7 +60,7 @@ class ThemeStyle {
   static Color goButtonColor = Colors.green;
   static Color primaryIconColor = Colors.white;
   static Color secondaryIconColor = Colors.black54;
-  static Color cardOutlineColor = Color(0xff969393);
+  static Color cardOutlineColor = const Color(0xff969393);
 
   static double stationMarkerColor = BitmapDescriptor.hueGreen;
 

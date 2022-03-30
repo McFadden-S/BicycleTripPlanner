@@ -50,7 +50,6 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                           (_dialogManager.getOptionOneFunction())();
                           applicationBloc.clearBinaryDialog();
                         },
-                        // onPressed: YesOption();
                         child: Text(_dialogManager.getOptionOneText(),
                             style: TextStyle(color: ThemeStyle.primaryTextColor)),
                       ),
@@ -67,7 +66,6 @@ class _BinaryChoiceDialogState extends State<BinaryChoiceDialog> {
                           (_dialogManager.getOptionTwoFunction())();
                           applicationBloc.clearBinaryDialog();
                         },
-                        // onPressed: NoOption();
                         child: Text(_dialogManager.getOptionTwoText(),
                             style: TextStyle(color: ThemeStyle.primaryTextColor)),
                       ),

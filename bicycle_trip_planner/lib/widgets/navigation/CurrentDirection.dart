@@ -1,10 +1,8 @@
-import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/DirectionManager.dart';
 import 'package:bicycle_trip_planner/models/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:provider/provider.dart';
 
 class CurrentDirection extends StatefulWidget {
   final Steps currentDirection;
@@ -16,13 +14,11 @@ class CurrentDirection extends StatefulWidget {
 }
 
 class _CurrentDirectionState extends State<CurrentDirection> {
-  //late final applicationBloc;
 
   final DirectionManager directionManager = DirectionManager();
 
   @override
   void initState() {
-    //applicationBloc = Provider.of<ApplicationBloc>(context);
     super.initState();
   }
 
@@ -61,7 +57,6 @@ class _CurrentDirectionState extends State<CurrentDirection> {
                         fontWeight: FontWeight.bold,
                         color: ThemeStyle.secondaryTextColor),
                   )),
-              // : const Spacer(),
               const Spacer(flex: 1),
             ],
           ),
