@@ -1,12 +1,21 @@
 import 'dart:io';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
+import 'station_bar_test.mocks.dart';
 
+@GenerateMocks([DatabaseManager, FirebaseAuth])
 void main() {
+  final mockDatabaseManager = MockDatabaseManager();
+  final mockFirebaseAuth = MockFirebaseAuth();
+
   setupFirebaseAuthMocks();
 
   setUpAll(() async {
@@ -62,5 +71,13 @@ void main() {
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     expect(find.byType(Container), findsOneWidget);
+  });
+
+  testWidgets("StationBar shows other options in dropdown when logged in", (WidgetTester tester) async {
+    // when(mockDatabaseManager.()).thenAnswer((_) => true);
+    when(mockFirebaseAuth.authStateChanges().listen((event) {}).onData((event) => true));
+
+    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: MockFirebaseAuth))));
+    expect(find.byType(DropdownButton), findsOneWidget);
   });
 }
