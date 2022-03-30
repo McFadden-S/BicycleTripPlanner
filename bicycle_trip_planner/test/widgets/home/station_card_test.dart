@@ -63,7 +63,6 @@ void main() {
 
   testWidgets("StationCard has contents inside", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station))));
-
     expect(find.byType(InkWell), findsWidgets);
   });
 
@@ -77,15 +76,84 @@ void main() {
     expect(widget, findsOneWidget);
   });
 
-  testWidgets("StationCard has contents inside something", (WidgetTester tester) async {
+  testWidgets("StationCard favourite button has icon star, when favourite is true", (WidgetTester tester) async {
     when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
 
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true, toggleFavourite: (Station station) {}, bloc: mockAppBloc))));
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: true,
+                toggleFavourite: (Station station) {},
+                bloc: mockAppBloc
+            )
+        )
+    ));
     final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
     expect(find.byType(IconButton), findsWidgets);
+    expect(find.byIcon(Icons.star), findsWidgets);
   });
 
+  testWidgets("StationCard favourite button has icon star, when favourite is false", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
 
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: false,
+                toggleFavourite: (Station station) {},
+                bloc: mockAppBloc
+            )
+        )
+    ));    final widget = find.byType(InkWell);
+    expect(widget, findsOneWidget);
+
+    expect(find.byType(IconButton), findsWidgets);
+    expect(find.byIcon(Icons.star), findsWidgets);
+  });
+
+  testWidgets("StationCard favorite button opens another widget when pressed and favourite is true", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: true,
+                toggleFavourite: (Station station) {},
+                bloc: mockAppBloc
+            )
+        )
+    ));
+    final widget = find.byType(IconButton);
+    expect(widget, findsOneWidget);
+
+    await tester.press(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
+
+  testWidgets("StationCard favorite button opens another widget when pressed and favourite is false", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: false,
+                toggleFavourite: (Station station) {},
+                bloc: mockAppBloc
+            )
+        )
+    ));
+    final widget = find.byType(IconButton);
+    expect(widget, findsOneWidget);
+
+    await tester.press(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
 }
