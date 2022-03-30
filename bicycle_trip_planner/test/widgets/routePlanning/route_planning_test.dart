@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/IntermediateSearchList.dart';
@@ -81,6 +82,32 @@ void main(){
     expect(dropdownItem, findsOneWidget);
   });
 
+  testWidgets("RoutePlanning has optimise button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final optimiseButton = find.widgetWithIcon(CircleButton, Icons.money_off);
+
+    expect(optimiseButton, findsOneWidget);
+  });
+
+  /**
+   * need user to be logged in
+   */
+  // testWidgets("RoutePlanning has history button", (WidgetTester tester) async {
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+  //
+  //   final optimiseButton = find.widgetWithIcon(CircleButton, Icons.history);
+  //
+  //   expect(optimiseButton, findsOneWidget);
+  // });
+  //
+  // testWidgets("RoutePlanning has favourite routes button", (WidgetTester tester) async {
+  //   await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+  //
+  //   final optimiseButton = find.widgetWithIcon(CircleButton, Icons.star);
+  //
+  //   expect(optimiseButton, findsOneWidget);
+  // });
 
 
 
