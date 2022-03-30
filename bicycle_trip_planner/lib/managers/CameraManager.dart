@@ -17,6 +17,7 @@ class CameraManager {
   late GoogleMapController googleMapController;
   final LocationManager locationManager = LocationManager();
   MarkerManager markerManager = MarkerManager();
+  bool locationViewed = false;
 
   //The fields hold the info required to view the route
   late LatLng _routeOriginCamera;
@@ -117,5 +118,15 @@ class CameraManager {
   /// Sets the camera to the user's location
   void viewUser({double zoomIn = 16}) {
     setCameraPosition(markerManager.getUserMarker().position, zoomIn: zoomIn);
+  }
+
+  /// sets the boolean flag to true when the user clicks the location button
+  void userLocated() {
+    locationViewed = true;
+  }
+
+  /// returns whether or not locationViewed is true
+  bool isLocated() {
+    return locationViewed;
   }
 }

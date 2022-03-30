@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,4 +35,19 @@ void main() {
 
     expect(icon, findsOneWidget);
   });
+
+  testWidgets("CurrentLocationButton locates user when clicked", (WidgetTester tester) async {
+    // CameraManager cameraManager = CameraManager();
+    await pumpWidget(tester, MaterialApp(home: Material(child: Home())));
+
+    final button = find.widgetWithIcon(CurrentLocationButton, Icons.location_searching);
+
+    // expect(button, findsOneWidget);
+
+    await tester.press(button);
+    await tester.pumpAndSettle();
+
+    expect(CameraManager.instance.isLocated(), true);
+  });
+
 }
