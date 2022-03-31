@@ -132,5 +132,8 @@ void main(){
     await tester.pump();
     final historyButton = find.widgetWithIcon(CircleButton, Icons.history);
     expect(historyButton, findsOneWidget);
+    //problem starts here
+    await tester.tap(historyButton);
+    await tester.pump();
   });
 }

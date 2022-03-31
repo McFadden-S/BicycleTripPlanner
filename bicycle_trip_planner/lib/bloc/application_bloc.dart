@@ -809,4 +809,9 @@ class ApplicationBloc with ChangeNotifier {
     return _databaseManager;
   }
 
+  @visibleForTesting
+  getDirectionService() {
+    return _directionsService;
+  }
+
 }
