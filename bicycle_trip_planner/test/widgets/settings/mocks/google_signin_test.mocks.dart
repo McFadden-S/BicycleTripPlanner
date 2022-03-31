@@ -316,6 +316,7 @@ class MockFirebaseAuth extends _i1.Mock implements _i4.FirebaseAuth {
 /// A class which mocks [GoogleSignInAccount].
 ///
 /// See the documentation for Mockito's code generation for more information.
+/// NOTE: Shows Error in IDE however works for tests
 // ignore: must_be_immutable
 class MockGoogleSignInAccount extends _i1.Mock
     implements _i5.GoogleSignInAccount {
