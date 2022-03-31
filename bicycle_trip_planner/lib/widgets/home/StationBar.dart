@@ -80,9 +80,7 @@ class _StationBarState extends State<StationBar> {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
           _isFavouriteRoutes = false;
-          print("hi");
         } else {
-          print("------------right--------------");
           getFavouriteStations();
           getFavouriteRoutes();
         }

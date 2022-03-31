@@ -39,13 +39,6 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets("HomeWidgets has a stack", (WidgetTester tester) async {
-    await tester.runAsync( () async {
-      await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
-      expect(find.byType(Stack), findsWidgets);
-    });
-  });
-
   testWidgets("HomeWidgets has a safeArea", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
     expect(find.byType(SafeArea), findsOneWidget);
