@@ -73,7 +73,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                           startName,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                              fontSize: 15.0,
+                              fontSize: 14.0,
                               color: ThemeStyle.secondaryTextColor),
                         ),
                       ),
@@ -109,7 +109,7 @@ class _RouteCardState extends State<RecentRouteCard> {
                         child: Text("\t\t${stopNames.join(", ")}",
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 15.0,
+                              fontSize: 14.0,
                               color: ThemeStyle.secondaryFontColor,
                             ))),
                     SizedBox(width: 20),
