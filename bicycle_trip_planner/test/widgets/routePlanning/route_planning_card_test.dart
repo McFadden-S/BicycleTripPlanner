@@ -40,6 +40,16 @@ void main() {
   when(mockRouteManager.ifCostOptimised()).thenAnswer((realInvocation) => false);
   when(mockRouteManager.getWaypoints()).thenAnswer((realInvocation) => []);
   when(mockRouteManager.clearRouteMarkers()).thenAnswer((realInvocation) => null);
+  final mockRouteManager2 = MockRouteManager();
+  when(mockRouteManager2.ifStartSet()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager2.ifDestinationSet()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager2.ifChanged()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager2.getStart()).thenAnswer((realInvocation) => Stop());
+  when(mockRouteManager2.getDestination()).thenAnswer((realInvocation) => Stop());
+  when(mockRouteManager2.getGroupSize()).thenAnswer((realInvocation) => 1);
+  when(mockRouteManager2.ifCostOptimised()).thenAnswer((realInvocation) => false);
+  when(mockRouteManager2.getWaypoints()).thenAnswer((realInvocation) => []);
+  when(mockRouteManager2.clearRouteMarkers()).thenAnswer((realInvocation) => null);
 
   when(appBlocRouteManager.clearRouteMarkers()).thenAnswer((realInvocation) => null);
   final station = Station(id: 5, name: "name", lat: 153.01, lng: 128.01, bikes: 10, emptyDocks: 0, totalDocks: 10);
@@ -57,10 +67,8 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets('Find', (WidgetTester tester) async {
+  testWidgets('Create route planning card with ifRouteSetChange as true', (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanningCard(loadRoute: true,routeManager: mockRouteManager,))));
-
-
   });
 
 }
