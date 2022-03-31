@@ -108,8 +108,6 @@ class _NavigationState extends State<Navigation> {
                                   CountdownCard(
                                     key: Key('countdownCard'),
                                       ctdwnController: controller),
-
-
                                 ],
                               )
                             : SizedBox.shrink()

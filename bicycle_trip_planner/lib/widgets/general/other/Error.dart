@@ -4,10 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 // text passed through depending on error
 class Error extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _ErrorState createState() => _ErrorState();
 }
 
-class _State extends State<Error> {
+class _ErrorState extends State<Error> {
   @override
   Widget build(BuildContext context) => WillPopScope(
     onWillPop: () async {

@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 /// polylines to be displayed on the map as routes
 
 class PolylineManager {
+
   //********** Fields **********
 
   // stores set of all polylines on display

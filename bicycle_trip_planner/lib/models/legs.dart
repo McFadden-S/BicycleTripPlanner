@@ -61,7 +61,6 @@ class Legs {
   /// method override the get hashCode method
   /// @return int of the hashCode
   @override
-  // TODO: implement hashCode
   int get hashCode =>
       Object.hash(steps, startLocation, endLocation, duration, distance);
 }

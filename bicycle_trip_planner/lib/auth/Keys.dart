@@ -12,6 +12,8 @@ class Keys {
 
   Keys._internal();
 
+  //************Fields************
+
   static String API_KEY = 'AIzaSyDxZUAHlrTTckkPJVXS4G15zL8zDWghb6c';
 
 }
