@@ -27,17 +27,19 @@ class _WalkToFirstButtonState extends State<WalkToFirstButton> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           CircleButton(
+            key: Key("walkTo"),
             iconIn: Icons.directions_walk,
             onButtonClicked: () {
-              dialogManager.setBinaryChoice(
+              print("I've been clicked");
+              DialogManager().setBinaryChoice(
                 "Do you want to walk to start or be routed to it?",
                 "Walk",
                 () {
-                  routeManager.setWalkToFirstWaypoint(true);
+                  RouteManager().setWalkToFirstWaypoint(true);
                 },
                 "Route",
                 () {
-                  routeManager.setWalkToFirstWaypoint(false);
+                  RouteManager().setWalkToFirstWaypoint(false);
                 },
               );
 

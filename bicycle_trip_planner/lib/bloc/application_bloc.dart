@@ -779,39 +779,66 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - returns station manager
   @visibleForTesting
   getStationManager(){
     return _stationManager;
   }
 
+  /// @param - void
+  /// @return - returns stations service
   @visibleForTesting
   getStationService(){
     return _stationsService;
   }
 
+  /// @param - void
+  /// @return - returns navigation manager
   @visibleForTesting
   getNavigationManager(){
     return _navigationManager;
   }
 
+  /// @param - void
+  /// @return - returns user settings
   @visibleForTesting
   getUserSettings(){
     return _userSettings;
   }
 
+  /// @param - void
+  /// @return - returns route manager
   @visibleForTesting
   getRouteManager(){
     return _routeManager;
   }
 
+  /// @param - void
+  /// @return - returns camera manager
+  @visibleForTesting
+  getCameraManager(){
+    return _cameraManager;
+  }
+
+  /// @param - void
+  /// @return - returns database manager
   @visibleForTesting
   getDatabaseManager() {
     return _databaseManager;
   }
 
+  /// @param - void
+  /// @return - returns directions service
   @visibleForTesting
   getDirectionService() {
     return _directionsService;
   }
 
+  /// @param - void
+  /// @return - returns dialog manager
+  @visibleForTesting
+  getDialogManager() {
+    return _dialogManager;
+  }
 }
