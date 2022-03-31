@@ -70,7 +70,7 @@ class DatabaseManager {
 
     final result = await favouriteStations.once();
 
-    if (result.snapshot.exists) {
+    if (result.snapshot.value != null) {
       final map = Map<String, dynamic>.from(
           result.snapshot.value as Map<dynamic, dynamic>);
       map.forEach((key, value) => {output.add(value)});
@@ -147,7 +147,7 @@ class DatabaseManager {
     Map<String, Pathway> pathways = {};
     final result = await favouriteRoutes.once();
 
-    if (result.snapshot.exists) {
+    if (result.snapshot.value != null) {
       final map = Map<String, dynamic>.from(
           result.snapshot.value as Map<dynamic, dynamic>);
       map.forEach((key, value) => {pathways[key] = Helper.mapToPathway(value)});

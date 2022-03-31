@@ -18,7 +18,6 @@ import 'package:mockito/annotations.dart';
 import 'firebase_mocks/firebase_auth_mocks.dart';
 
 
-@GenerateMocks([FirebaseDatabase, FirebaseAuth])
 main()  async {
     late Timer timeout;
     setupFirebaseMocks();
@@ -74,7 +73,6 @@ main()  async {
         }
       }
     };
-    MockFirebaseDatabase().ref().set(fakeData);
 
     var database = MockFirebaseDatabase();
     var auth = MockFirebaseAuth();
