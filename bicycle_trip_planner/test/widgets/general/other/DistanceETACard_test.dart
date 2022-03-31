@@ -6,8 +6,9 @@ import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import '../../../setUp.dart';
-import '../../login/mock.dart';
+import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
   setupFirebaseAuthMocks();
@@ -17,6 +18,10 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
+  });
+
+  setUp((){
+    resetMockitoState();
   });
 
   testWidgets("DistanceETACard is a card", (WidgetTester tester) async {
@@ -56,14 +61,14 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
     final icon = tester.widget<Icon>(find.byKey(ValueKey("accessTime")));
 
-    expect(icon, Icons.access_time_outlined);
+    expect(icon.icon, Icons.access_time_outlined);
   });
 
   testWidgets("DistanceETACard contains a pin_drop icon", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
     final icon = tester.widget<Icon>(find.byKey(ValueKey("pinDrop")));
 
-    expect(icon, Icons.pin_drop);
+    expect(icon.icon, Icons.pin_drop);
   });
 
   testWidgets("DistanceETACard icons have correct colours", (WidgetTester tester) async {

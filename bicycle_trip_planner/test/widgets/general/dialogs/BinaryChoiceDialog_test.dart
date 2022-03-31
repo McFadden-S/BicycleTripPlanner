@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../setUp.dart';
-import '../../login/mock.dart';
+import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
 

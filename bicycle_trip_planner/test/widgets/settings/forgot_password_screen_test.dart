@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
-import 'mock.dart';
-import 'reset_password_test.mocks.dart';
+import 'mocks/mock.dart';
+import 'mocks/reset_password_test.mocks.dart';
 
 @GenerateMocks([FirebaseAuth])
 void main() {

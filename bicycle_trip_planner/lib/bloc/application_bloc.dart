@@ -778,4 +778,30 @@ class ApplicationBloc with ChangeNotifier {
   void notifyListeningWidgets() {
     notifyListeners();
   }
+
+  @visibleForTesting
+  getStationManager(){
+    return _stationManager;
+  }
+
+  @visibleForTesting
+  getStationService(){
+    return _stationsService;
+  }
+
+  @visibleForTesting
+  getNavigationManager(){
+    return _navigationManager;
+  }
+
+  @visibleForTesting
+  getUserSettings(){
+    return _userSettings;
+  }
+
+  @visibleForTesting
+  getRouteManager(){
+    return _routeManager;
+  }
+
 }

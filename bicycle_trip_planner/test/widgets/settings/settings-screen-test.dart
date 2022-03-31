@@ -12,7 +12,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../../setUp.dart';
-import 'settings-screen-test.mocks.dart';
+import 'mocks/settings-screen-test.mocks.dart';
 
 class MockNavigatorObserver extends Mock implements NavigatorObserver {}
 
