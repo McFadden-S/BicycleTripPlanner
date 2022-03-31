@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/models/station.dart';
 /// the applications dialog boxes
 
 class DialogManager {
+
   //********** Fields **********
 
   //The question/statement shown to the user
@@ -38,6 +39,7 @@ class DialogManager {
 
   /// Holds Singleton Instance
   static final DialogManager _dialogManager = DialogManager._internal();
+  static DialogManager get instance => _dialogManager;
 
   /// Singleton Constructor Override
   factory DialogManager() {

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-// text passed through depending on error
+/// Displays a error when there is no connection to the internet
 class Error extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _ErrorState createState() => _ErrorState();
 }
 
-class _State extends State<Error> {
+  //WillPop stops the user from leaving the error page
+class _ErrorState extends State<Error> {
   @override
   Widget build(BuildContext context) => WillPopScope(
     onWillPop: () async {
@@ -24,7 +25,7 @@ class _State extends State<Error> {
               color: Colors.white,
               size: 50.0,
             ),
-            SizedBox(height: 25),
+            SizedBox(height: 25, key: Key("SizedBox")),
             Text('No connection...', style: TextStyle(color: Colors.white)),
           ],
         ),

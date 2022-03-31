@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
+import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../setUp.dart';
-import '../../login/mock.dart';
+import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
 
@@ -71,29 +72,35 @@ void main() {
 
   testWidgets("Binary choice dialog button1 on tap hides dialog",(WidgetTester tester) async {
     DialogManager().setBinaryChoice("TEST DESCRIPTION", "option1", (){}, "option2", (){});
-    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    setMocks();
+    await pumpWidget(tester, MaterialApp(home: Material(child: Stack(children: [Home()]))));
     final button1 = find.byKey(Key('Binary Button 1'));
     var dialog = find.byType(Dialog);
-    expect(dialog, findsOneWidget);
+    expect(dialog, findsWidgets);
 
     await tester.tap(button1);
+    await tester.pumpAndSettle();
 
-    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    //Removes one of the binary dialogs
     dialog = find.byType(Dialog);
-    expect(dialog, findsNothing);
+    expect(dialog, findsOneWidget);
   });
+
 
   testWidgets("Binary choice dialog button2 on tap hides dialog",(WidgetTester tester) async {
     DialogManager().setBinaryChoice("TEST DESCRIPTION", "option1", (){}, "option2", (){});
-    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    setMocks();
+    await pumpWidget(tester, MaterialApp(home: Material(child: Stack(children: [Home()]))));
     final button2 = find.byKey(Key('Binary Button 2'));
     var dialog = find.byType(Dialog);
-    expect(dialog, findsOneWidget);
+    expect(dialog, findsWidgets);
 
     await tester.tap(button2);
+    await tester.pumpAndSettle();
 
-    await pumpWidget(tester, MaterialApp(home: Material(child: BinaryChoiceDialog())));
+    //Removes one of the binary dialogs
     dialog = find.byType(Dialog);
-    expect(dialog, findsNothing);
+    expect(dialog, findsOneWidget);
   });
+
 }

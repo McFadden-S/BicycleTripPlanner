@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import '../models/place.dart';
 import '../services/places_service.dart';
 
+/// Class Comment:
+/// StationManager is a manager class that holds all bike stations
+
 class StationManager {
 
   //********** Fields **********
@@ -32,6 +35,8 @@ class StationManager {
 
   //********** Private **********
 
+  /// @param pos - LatLng position to which stations are compared to
+  /// @return - Stations list ordered by distance to pos
   List<Station> _getOrderedToFromStationList(LatLng pos) {
     List<Station> nearPos = List.from(_stations);
 
@@ -45,14 +50,19 @@ class StationManager {
 
   //********** Stations **********
 
+  /// Returns number of stations
   int getNumberOfStations() {
     return _stations.length;
   }
 
+  /// Returns all stations
   List<Station> getStations() {
     return _stations;
   }
 
+  /// @param pos - LatLng position of the middle
+  /// @param distance - double, optional radius size
+  /// @return list of all stations in radius to pos
   List<Station> getStationsInRadius(LatLng pos, [double distance = 4.0]) {
     List<Station> allStations = List.castFrom(_stations);
 
@@ -65,6 +75,7 @@ class StationManager {
     return nearbyStations;
   }
 
+  /// Set station Place if not already set
   Future<void> cachePlaceId(Station station) async {
     if (station == Station.stationNotFound()) return;
     if (station.place == const Place.placeNotFound()) {
@@ -74,11 +85,13 @@ class StationManager {
     }
   }
 
+  /// Returns Station with index of stationIndex
   Station getStationByIndex(int stationIndex) {
     cachePlaceId(_stations[stationIndex]);
     return _stations[stationIndex];
   }
 
+  /// Returns Station with id of stationID
   Station getStationById(int stationId) {
     Station station = _stations.firstWhere((station) => station.id == stationId,
         orElse: Station.stationNotFound);
@@ -86,6 +99,7 @@ class StationManager {
     return station;
   }
 
+  /// Returns Station with name of stationName
   Station getStationByName(String stationName) {
     Station station = _stations.singleWhere(
         (station) => station.name == stationName,
@@ -94,6 +108,7 @@ class StationManager {
     return station;
   }
 
+  /// Returns pick up Station closes to pos
   Future<Station> getPickupStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
     Station station = nearPos.firstWhere(
@@ -103,6 +118,7 @@ class StationManager {
     return station;
   }
 
+  /// Returns drop off Station closes to pos
   Future<Station> getDropoffStationNear(LatLng pos, [int groupSize = 1]) async {
     List<Station> nearPos = _getOrderedToFromStationList(pos);
     Station station = nearPos.firstWhere(
@@ -137,7 +153,7 @@ class StationManager {
     return nearbyStations;
   }
 
-  // Returns a list of stations that the user has favourited
+  /// Returns a list of stations that the user has favourited
   Future<List<Station>> getFavouriteStations() async {
     if (!DatabaseManager().isUserLogged()) return [];
     List<int> compare = await DatabaseManager().getFavouriteStations();
@@ -146,6 +162,7 @@ class StationManager {
     return favouriteStations;
   }
 
+  /// Set new stations and update old stations
   Future<void> setStations(List<Station> newStations) async {
     LatLng currentPos = _locationManager.getCurrentLocation().latlng;
 

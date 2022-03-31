@@ -5,15 +5,16 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
+/// Displays the estimated distance and time it'll take on journey
 class DistanceETACard extends StatefulWidget {
   const DistanceETACard({Key? key}) : super(key: key);
 
-  // This is not station card needs renaming
   @override
-  _StationCardState createState() => _StationCardState();
+  _DistanceETACardState createState() => _DistanceETACardState();
 }
 
-class _StationCardState extends State<DistanceETACard> {
+class _DistanceETACardState extends State<DistanceETACard> {
   final DirectionManager _directionManager = DirectionManager();
 
   @override
@@ -37,10 +38,15 @@ class _StationCardState extends State<DistanceETACard> {
                   child:
                   Row(
                     children: [
-                      Icon(Icons.access_time_outlined,
-                          color: ThemeStyle.secondaryIconColor),
+                      Icon(
+                          Icons.access_time_outlined,
+                          color: ThemeStyle.secondaryIconColor,
+                          key: Key("accessTime"),
+                      ),
+                      //Displays duration
                       Text(' ${_directionManager.getDuration()}',
                         style: TextStyle(color: ThemeStyle.secondaryTextColor),
+                        key: Key("duration"),
                       )
                     ],
                   ),
@@ -50,9 +56,14 @@ class _StationCardState extends State<DistanceETACard> {
                     Row(
                     children: [
                       Icon(Icons.pin_drop,
-                          color: ThemeStyle.secondaryIconColor),
+                          color: ThemeStyle.secondaryIconColor,
+                          key: Key("pinDrop"),
+                      ),
+                      //Displays distance
                       Text(' ${_directionManager.getDistance()}',
-                        style: TextStyle(color: ThemeStyle.secondaryTextColor)),
+                        style: TextStyle(color: ThemeStyle.secondaryTextColor),
+                        key: Key("distance")
+                      ),
                     ],
                   ),
                 )

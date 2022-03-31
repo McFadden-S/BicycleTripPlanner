@@ -10,8 +10,9 @@ import '../../constants.dart';
 import '../../models/place.dart';
 
 class IntermediateSearchList extends StatefulWidget {
+  final RouteManager ? routeManager;
   const IntermediateSearchList({
-    Key? key,
+    Key? key, this.routeManager
   }) : super(key: key);
 
   @override
@@ -22,11 +23,17 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
   List<TextEditingController> intermediateSearchControllers =
       <TextEditingController>[];
 
-  RouteManager routeManager = RouteManager();
+  late RouteManager routeManager;
 
   List<Widget> stopsList = [];
 
   bool isShowingIntermediate = false;
+
+  @override
+  void initState() {
+    routeManager = widget.routeManager ?? RouteManager();
+    super.initState();
+  }
 
   void _addStopWidget(ApplicationBloc applicationBloc, Stop stopIn,
       [bool showIntermediate = true]) {
@@ -41,7 +48,6 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
       searchController.text = stopIn.getStop().description;
       stopsList.add(ListTile(
           key: Key("Stop ${stopsList.length + 1}"),
-          // title: Text(stopIn.getStop().description)
           title: TextField(
             style: TextStyle(
               color: ThemeStyle.secondaryTextColor,
@@ -145,6 +151,7 @@ class _IntermediateSearchListState extends State<IntermediateSearchList> {
     });
 
     return InkWell(
+        key: Key("intermediate InkWell"),
         splashColor: Colors.deepPurple.withAlpha(30),
         onTap: toggleShowingIntermediate,
         child: Column(children: [

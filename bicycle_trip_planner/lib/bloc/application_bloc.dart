@@ -23,7 +23,6 @@ import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:wakelock/wakelock.dart';
@@ -34,6 +33,7 @@ import '../managers/NavigationManager.dart';
 /// functionality of the application
 
 class ApplicationBloc with ChangeNotifier {
+
   /// Service APIs being used
   var _placesService = PlacesService();
   var _directionsService = DirectionsService();
@@ -180,6 +180,8 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Search **********
 
+  /// @param void
+  /// @return List<PlaceSearch> - all search results
   @visibleForTesting
   List<PlaceSearch> getSearchResult() {
     return searchResults;
@@ -364,17 +366,28 @@ class ApplicationBloc with ChangeNotifier {
 
   // ********** Routes **********
 
+  /// @param origin - Place; Place to which PickUp station is set
+  /// @return - Station - PickUp Station
   @visibleForTesting
   Future<Station> getStartStation(Place origin, [int groupSize = 1]) async {
     return await _stationManager.getPickupStationNear(origin.latlng, groupSize);
   }
 
+  /// @param destination - Place; Place to which DropOff station is set
+  /// @return - Station - DropOff Station
   @visibleForTesting
   Future<Station> getEndStation(Place destination, [int groupSize = 1]) async {
-    return await _stationManager.getPickupStationNear(
-        destination.latlng, groupSize);
+    return await _stationManager.getPickupStationNear(destination.latlng, groupSize);
   }
 
+  /// @param -
+  ///   origin - Place; start point for route
+  ///   destination - Place; end point for route
+  ///   startStation - Station; PickUp station
+  ///   endStation - Station; DropOff station
+  /// @return - void
+  /// @effects - sets a route based on start and end places,
+  ///           start and end stations, and any intermediate stops
   @visibleForTesting
   setRoutes(
       Place origin, Place destination, Station startStation, Station endStation,
@@ -415,6 +428,10 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param -
+  ///   startStation - Station; PickUp Station
+  ///   endStation - Station; DropOff Station
+  /// @return - int; duration in minutes from start to end station
   @visibleForTesting
   Future<int> getDurationFromToStation(
       Station startStation, Station endStation) async {
@@ -425,6 +442,11 @@ class ApplicationBloc with ChangeNotifier {
     return durationMinutes;
   }
 
+  /// @param -
+  ///   curStation - Station;
+  ///   intermediaryStation - Station;
+  ///   endStation - Station; DropOff Station
+  /// @return - double; (end distance)/(start distance)
   @visibleForTesting
   double costEfficiencyHeuristic(
       Station curStation, Station intermediaryStation, Station endStation) {
@@ -507,17 +529,21 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @affects start live navigation
   @visibleForTesting
   void setNavigationSubscription() {
     updateLocationLive();
   }
+
   // ********** Stations **********
 
+  /// @affects set station timer for station update
   @visibleForTesting
   setStationTimer() {
     _stationTimer = Timer.periodic(Duration(seconds: 10), (timer) {});
   }
 
+  /// @return station timer
   @visibleForTesting
   getStationTimer() {
     return _stationTimer;
@@ -638,6 +664,9 @@ class ApplicationBloc with ChangeNotifier {
     notifyListeners();
   }
 
+  /// @param - void
+  /// @return - void
+  /// @effects - updates directions and route when navigating
   Future<void> _updateDirections() async {
     if (!_navigationManager.ifNavigating()) return;
 
@@ -748,5 +777,68 @@ class ApplicationBloc with ChangeNotifier {
   /// @affects - informs widgets about any variable changes
   void notifyListeningWidgets() {
     notifyListeners();
+  }
+
+  /// @param - void
+  /// @return - returns station manager
+  @visibleForTesting
+  getStationManager(){
+    return _stationManager;
+  }
+
+  /// @param - void
+  /// @return - returns stations service
+  @visibleForTesting
+  getStationService(){
+    return _stationsService;
+  }
+
+  /// @param - void
+  /// @return - returns navigation manager
+  @visibleForTesting
+  getNavigationManager(){
+    return _navigationManager;
+  }
+
+  /// @param - void
+  /// @return - returns user settings
+  @visibleForTesting
+  getUserSettings(){
+    return _userSettings;
+  }
+
+  /// @param - void
+  /// @return - returns route manager
+  @visibleForTesting
+  getRouteManager(){
+    return _routeManager;
+  }
+
+  /// @param - void
+  /// @return - returns camera manager
+  @visibleForTesting
+  getCameraManager(){
+    return _cameraManager;
+  }
+
+  /// @param - void
+  /// @return - returns database manager
+  @visibleForTesting
+  getDatabaseManager() {
+    return _databaseManager;
+  }
+
+  /// @param - void
+  /// @return - returns directions service
+  @visibleForTesting
+  getDirectionService() {
+    return _directionsService;
+  }
+
+  /// @param - void
+  /// @return - returns dialog manager
+  @visibleForTesting
+  getDialogManager() {
+    return _dialogManager;
   }
 }

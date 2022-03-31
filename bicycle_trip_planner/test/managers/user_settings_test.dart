@@ -1,13 +1,19 @@
 import 'dart:convert';
 import 'package:bicycle_trip_planner/models/distance_types.dart';
 import 'package:bicycle_trip_planner/models/pathway.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:test/test.dart';
 import 'package:bicycle_trip_planner/managers/UserSettings.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:bicycle_trip_planner/models/place.dart';
 
+
+/// NOTE: Tests only run on an Non MacOS device as a result of a macOS shared
+/// preferences issue
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   final userSettings = UserSettings();
 
   const String _key = 'dummy';

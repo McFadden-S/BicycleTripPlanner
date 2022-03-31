@@ -2,6 +2,7 @@ class WeatherInfo {
   final String description;
   final String icon;
 
+  /// WeatherInfo constructors
   WeatherInfo({required this.description, required this.icon});
 
   const WeatherInfo.weatherInfoNotFound(
@@ -17,6 +18,7 @@ class WeatherInfo {
 class TemperatureInfo {
   final double temperature;
 
+  /// TemperatureInfo constructors
   TemperatureInfo({required this.temperature});
 
   const TemperatureInfo.temperatureInfoNotFound({this.temperature = 0});
@@ -40,6 +42,7 @@ class WeatherResponse {
     }
   }
 
+  /// WeatherResponse constructors
   WeatherResponse(
       {required this.cityName,
       required this.tempInfo,

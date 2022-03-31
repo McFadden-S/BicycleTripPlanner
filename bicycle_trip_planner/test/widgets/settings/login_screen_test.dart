@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
-import 'login_test.mocks.dart';
-import 'mock.dart';
+import 'mocks/login_screen_test.mocks.dart';
+import 'mocks/mock.dart';
 
 @GenerateMocks([FirebaseAuth, UserCredential])
 void main() {
@@ -41,7 +41,7 @@ void main() {
     expect(find.text("test"), findsOneWidget);
   });
 
-  testWidgets("Login Screen has a login button and incorrect auth credentials",
+  testWidgets("Login Screen has a settings button and incorrect auth credentials",
       (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: LoginScreen(auth: auth)));
     final widget = find.byKey(ValueKey("login"));
@@ -49,6 +49,7 @@ void main() {
 
     await tester.tap(widget);
     await tester.pump();
+
     verifyNever(auth.signInWithEmailAndPassword());
   });
 

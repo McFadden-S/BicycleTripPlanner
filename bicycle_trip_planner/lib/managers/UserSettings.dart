@@ -48,6 +48,7 @@ class UserSettings {
 
 //********** Public **********
 
+  /// @return shared preference
   @visibleForTesting
   getSharedPref() {
     return _prefs;
@@ -158,6 +159,9 @@ class UserSettings {
     final SharedPreferences prefs = await _prefs;
     String encodedMap = prefs.getString('recentRoutes') ?? "{}";
     Map<String, dynamic> decodedMap = json.decode(encodedMap);
+    if(decodedMap.toString() == "{}"){
+     return Pathway();
+    }
     return Helper.mapToPathway(decodedMap[index.toString()]);
   }
 

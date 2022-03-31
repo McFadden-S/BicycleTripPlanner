@@ -71,9 +71,6 @@ class _SearchState extends State<Search> {
                     onTap: () {
                       applicationBloc.setSelectedSearch(index, widget.uid);
 
-                      //TODO Potential Side effect
-                      //TODO Used in home -> routeplanning
-                      //TODO should be changed to appropriate scope
                       applicationBloc.setSelectedScreen('routePlanning');
 
                       hideSearch();

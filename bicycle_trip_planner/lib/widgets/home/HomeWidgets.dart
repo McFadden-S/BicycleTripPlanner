@@ -3,7 +3,7 @@ import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/other/weather.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Weather.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
@@ -102,7 +102,8 @@ class _HomeWidgetsState extends State<HomeWidgets> {
                                       CurrentLocationButton(),
                                       SizedBox(height: 10),
                                       CircleButton(
-                                        key: Key("navigateToRoutePlanningScreenButton"),
+                                        key: Key(
+                                            "navigateToRoutePlanningScreenButton"),
                                         iconIn: Icons.assistant_direction,
                                         onButtonClicked: () => applicationBloc
                                             .setSelectedScreen('routePlanning'),

@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../../setUp.dart';
-import '../../login/mock.dart';
+import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
 
@@ -31,5 +31,13 @@ void main() {
     final icon = find.byIcon(Icons.abc);
 
     expect(icon, findsOneWidget);
+  });
+
+  testWidgets("RoundedRectangleButton has an icon button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoundedRectangleButton(buttonColor: Colors.black, iconIn: Icons.abc, onButtonClicked: (){}))));
+
+    final iconButton = find.widgetWithIcon(RoundedRectangleButton, Icons.abc);
+
+    expect(iconButton, findsOneWidget);
   });
 }

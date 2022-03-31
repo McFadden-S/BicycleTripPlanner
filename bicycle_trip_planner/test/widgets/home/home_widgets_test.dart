@@ -1,36 +1,43 @@
 import 'dart:io';
-
+import 'package:bicycle_trip_planner/models/station.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
+import 'package:bicycle_trip_planner/widgets/general/other/Weather.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
 import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RecentRouteCard.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
-import 'package:bicycle_trip_planner/widgets/general/other/Weather.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import '../../bloc/application_bloc_test.mocks.dart';
+import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
-import '../login/mock.dart';
-
 
 void main() {
-  setupFirebaseAuthMocks();
+  setupFirebaseMocks();
+  MockStationsService mockStationsService = getAppBloc().getStationService();
+  setMocks();
+  Station station = Station(
+      id: 1,
+      name: 'Holborn Station',
+      lat: 1.0,
+      lng: 2.0,
+      bikes: 10,
+      emptyDocks: 2,
+      totalDocks: 8,
+      distanceTo: 1
+  );
+  List<Station> stationList = [station];
+  when(mockStationsService.getStations()).thenAnswer((_) async => stationList);
 
   setUpAll(() async {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-
-  });
-
-  testWidgets("HomeWidgets has a stack", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
-    expect(find.byType(Stack), findsWidgets);
   });
 
   testWidgets("HomeWidgets has a safeArea", (WidgetTester tester) async {
@@ -73,12 +80,6 @@ void main() {
     expect(find.byType(StationBar), findsOneWidget);
   });
 
-  testWidgets("HomeWidgets has a weather widget", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
-    expect(find.byType(Weather), findsOneWidget);
-  });
-
-
   testWidgets('settings button navigate user to settings screen',
           (WidgetTester tester) async {
         await pumpWidget(tester, MaterialApp(
@@ -99,9 +100,7 @@ void main() {
         expect(find.byType(CurrentLocationButton), findsNothing);
         expect(find.byType(GroupSizeSelector), findsNothing);
         expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
-
       });
-
 
   testWidgets('Go to routePlanning button loads routePlanning widgets',
           (WidgetTester tester) async {
@@ -114,22 +113,20 @@ void main() {
           ),
         ));
 
-        expect(find.byKey(Key('navigateToRoutePlanningScreenButton')), findsOneWidget);
+        expect(find.byKey(Key('navigateToRoutePlanningScreenButton')), findsWidgets);
         await tester.tap(find.byKey(Key('navigateToRoutePlanningScreenButton')));
         await tester.pumpAndSettle();
 
-        // // check that we have routePlanning widgets on screen
-         expect(find.byType(RoutePlanning), findsOneWidget);
-        //
-        // //check that we no longer have homeWidgets
+        // check that we have routePlanning widgets on screen
+         expect(find.byType(RoutePlanning), findsWidgets);
+
+        //check that we no longer have homeWidgets
         expect(find.byType(HomeWidgets), findsNothing);
 
         //check that there are no homeWidgets on the screen
         expect(find.byKey(Key('settingsButton')), findsNothing);
         expect(find.byKey(Key("navigateToRoutePlanningScreenButton")), findsNothing);
-
       });
-
 
   testWidgets('GroupSizeSelector has correct initial value and behaves correctly',
           (WidgetTester tester) async {
@@ -149,6 +146,4 @@ void main() {
           expect(find.byKey(Key(i.toString()), skipOffstage: false), findsOneWidget);
         }
       });
-
 }
-
