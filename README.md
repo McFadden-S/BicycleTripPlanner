@@ -23,3 +23,6 @@ Deployment Demo URL: https://appetize.io/app/ad1kjwa1j59xrn21cwfhdea478?device=p
 ###### References
 - https://github.com/firebase/flutterfire/blob/master/packages/firebase_auth/firebase_auth/test/mock.dart
 - https://github.com/firebase/flutterfire/blob/master/packages/firebase_database/firebase_database/test/mock.dart
+- https://pub.dev/packages/firebase_auth_mocks
+- https://pub.dev/packages/google_sign_in_mocks
+- https://pub.dev/packages/firebase_database_mocks
