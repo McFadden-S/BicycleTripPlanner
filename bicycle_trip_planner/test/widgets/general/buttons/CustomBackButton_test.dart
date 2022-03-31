@@ -21,26 +21,29 @@ void main() {
     await Firebase.initializeApp();
   });
 
+  testWidgets("CustomBackButton has an icon", (WidgetTester tester) async {
+    await tester.runAsync(
+            () async {
+              await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
+              final BuildContext context = tester.element(find.byType(RoutePlanning));
+
+              await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
+
+              final icon = find.byIcon(Icons.arrow_back);
+
+              expect(icon, findsOneWidget);
+        });
+  });
+
   testWidgets("CustomBackButton is a button", (WidgetTester tester) async {
     await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
     final BuildContext context = tester.element(find.byType(RoutePlanning));
-    
+
     await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
 
     final backButton = find.byType(CircleButton);
 
     expect(backButton, findsOneWidget);
-  });
-
-  testWidgets("CustomBackButton has an icon", (WidgetTester tester) async {
-    await tester.pumpWidget(MaterialApp(home: RoutePlanning()));
-    final BuildContext context = tester.element(find.byType(RoutePlanning));
-
-    await pumpWidget(tester, MaterialApp(home: Material(child: CustomBackButton(backTo: 'Navigation', context: context))));
-
-    final icon = find.byIcon(Icons.arrow_back);
-
-    expect(icon, findsOneWidget);
   });
 
   testWidgets("CustomBackButton shows a dialog when clicked", (WidgetTester tester) async {

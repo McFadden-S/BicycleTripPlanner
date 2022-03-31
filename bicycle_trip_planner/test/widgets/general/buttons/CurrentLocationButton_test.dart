@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
-import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +9,6 @@ import '../../../setUp.dart';
 import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
-
   setupFirebaseAuthMocks();
 
   setUpAll(() async {

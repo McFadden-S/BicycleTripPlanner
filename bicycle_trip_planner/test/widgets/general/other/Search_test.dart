@@ -26,16 +26,6 @@ void main() {
     expect(widgetStack, findsOneWidget);
   });
 
-  // testWidgets("Search shows a location icon", (WidgetTester tester) async {
-  //   TextEditingController searchController = TextEditingController();
-  //
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: Search(labelTextIn: 'Test', searchController: searchController,))));
-  //
-  //   final icon = find.byIcon(Icons.my_location, skipOffstage: false);
-  //
-  //   expect(icon, findsOneWidget);
-  // });
-
   testWidgets("Search shows a search icon", (WidgetTester tester) async {
     TextEditingController searchController = TextEditingController();
 
