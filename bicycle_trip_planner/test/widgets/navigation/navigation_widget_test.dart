@@ -18,9 +18,10 @@ import 'package:location/location.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import 'navigation_widget_test.mocks.dart';
 import '../../setUp.dart';
-import '../login/mock.dart';
+
 
 @GenerateMocks([LocationManager, CameraManager])
 void main() {

@@ -35,8 +35,19 @@ class _StationCardState extends State<StationCard> {
     super.initState();
   }
 
+  @visibleForTesting
+  getIsFavourite() {
+    return widget.isFavourite;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    var applicationBloc = Provider.of<ApplicationBloc>(context, listen: false);
 
     return InkWell(
       onTap: () {

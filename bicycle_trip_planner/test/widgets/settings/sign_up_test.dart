@@ -6,8 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
-import 'mock.dart';
-import 'sign_up_test.mocks.dart';
+import 'mocks/mock.dart';
+import 'mocks/sign_up_test.mocks.dart';
 
 @GenerateMocks([FirebaseAuth, UserCredential])
 void main() {

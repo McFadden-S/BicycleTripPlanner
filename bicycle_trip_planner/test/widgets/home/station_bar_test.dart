@@ -74,19 +74,4 @@ void main() {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     expect(find.byType(Container), findsWidgets);
   });
-
-  testWidgets("StationBar shows other options in dropdown when logged in", (WidgetTester tester) async {
-    StreamController<User?> controller = StreamController<User?>();
-    Stream<User?> stream = controller.stream;
-
-
-    when(mockFirebaseAuth.authStateChanges()).thenAnswer((_) => stream);
-    when(mockUser.isAnonymous).thenAnswer((_) => false);
-
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: mockFirebaseAuth))));
-    controller.add(mockUser);
-
-    await untilCalled(mockFirebaseAuth.authStateChanges());
-    expect(find.text("Favourite Stations"), findsWidgets);
-  });
 }

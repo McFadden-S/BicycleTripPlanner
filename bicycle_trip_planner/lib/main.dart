@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/loading',
       routes: <String, WidgetBuilder>{
         // '/': (context) => const NavigateWindow(),
-        '/settings': (context) => const SettingsScreen(),
+        '/settings': (context) => SettingsScreen(),
         '/loading': (context) => const Loading(),
         '/home': (context) => const Home(),
         '/navigation': (context) => Navigation(),

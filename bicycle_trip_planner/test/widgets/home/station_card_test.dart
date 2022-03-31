@@ -7,14 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import '../../bloc/application_bloc_test.mocks.dart';
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'station_card_test.mocks.dart';
 
 @GenerateMocks([ApplicationBloc])
 void main() {
+
   final mockAppBloc = MockApplicationBloc();
   setupFirebaseAuthMocks();
+  setMocks();
+  MockDatabaseManager mockDatabaseManager = getAppBloc().getDatabaseManager();
+
+  when(mockDatabaseManager.isUserLogged()).thenAnswer((_) => true);
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -85,10 +91,10 @@ void main() {
                 station: station,
                 isFavourite: true,
                 toggleFavourite: (Station station) {},
-                bloc: mockAppBloc
             )
         )
     ));
+
     final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
@@ -105,10 +111,10 @@ void main() {
                 station: station,
                 isFavourite: false,
                 toggleFavourite: (Station station) {},
-                bloc: mockAppBloc
             )
         )
-    ));    final widget = find.byType(InkWell);
+    ));    
+    final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
     expect(find.byType(IconButton), findsWidgets);
@@ -124,7 +130,6 @@ void main() {
                 station: station,
                 isFavourite: true,
                 toggleFavourite: (Station station) {},
-                bloc: mockAppBloc
             )
         )
     ));
@@ -145,10 +150,10 @@ void main() {
                 station: station,
                 isFavourite: false,
                 toggleFavourite: (Station station) {},
-                bloc: mockAppBloc
             )
         )
     ));
+    
     final widget = find.byType(IconButton);
     expect(widget, findsOneWidget);
 
@@ -156,4 +161,5 @@ void main() {
     await tester.pump();
     expect(widget, findsOneWidget);
   });
+
 }

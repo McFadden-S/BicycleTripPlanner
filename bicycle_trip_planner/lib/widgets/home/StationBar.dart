@@ -13,6 +13,7 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
+
   final FirebaseAuth ?auth;
 
   @visibleForTesting
@@ -234,7 +235,7 @@ class _StationBarState extends State<StationBar> {
                             children: [
                               Row(
                                 children: [
-                                  _isUserLogged // changed this to true
+                                  _isUserLogged
                                       ? dropdownButtons(setModalState)
                                       : Text(
                                           "Nearby Stations",
@@ -334,7 +335,7 @@ class _StationBarState extends State<StationBar> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    _isUserLogged
+                    _isUserLogged // set this to true
                         ? dropdownButtons(setState)
                         : Text(
                             "Nearby Stations",
