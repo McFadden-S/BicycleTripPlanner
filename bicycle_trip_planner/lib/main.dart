@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         '/settings': (context) => SettingsScreen(),
         '/loading': (context) => const Loading(),
         '/home': (context) => const Home(),
-        '/navigation': (context) => const Navigation(),
+        '/navigation': (context) => Navigation(),
         '/routePlanning': (context) => RoutePlanning(),
         '/weather': (context) => Weather(),
         '/error': (context) => Error(),

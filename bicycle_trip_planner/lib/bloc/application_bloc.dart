@@ -23,6 +23,7 @@ import 'package:bicycle_trip_planner/models/place_search.dart';
 import 'package:bicycle_trip_planner/services/directions_service.dart';
 import 'package:bicycle_trip_planner/services/places_service.dart';
 import 'package:bicycle_trip_planner/services/stations_service.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:wakelock/wakelock.dart';
@@ -61,17 +62,19 @@ class ApplicationBloc with ChangeNotifier {
   DialogManager _dialogManager = DialogManager();
   NavigationManager _navigationManager = NavigationManager();
   late DatabaseManager _databaseManager;
-  UserSettings _userSettings = UserSettings();
+  late UserSettings _userSettings;
 
   late Timer _stationTimer;
   late StreamSubscription<LocationData> _navigationSubscription;
 
   /// Constructor that sets up the application bloc
   ApplicationBloc() {
-    changeUnits();
-    fetchCurrentLocation();
-    updateStationsPeriodically();
+    _userSettings = UserSettings();
     _databaseManager = DatabaseManager();
+
+    changeUnits();
+    fetchCurrentLocation().then((value) => updateStations());
+    updateStationsPeriodically();
   }
 
   @visibleForTesting
@@ -112,7 +115,9 @@ class ApplicationBloc with ChangeNotifier {
       NavigationManager navigationManager,
       DirectionsService directionsService,
       StationManager stationManager,
-      CameraManager cameraManager) {
+      CameraManager cameraManager,
+      UserSettings userSettings
+      ) {
     _locationManager = locationManager;
     _placesService = placesService;
     _routeManager = routeManager;
@@ -120,6 +125,7 @@ class ApplicationBloc with ChangeNotifier {
     _directionsService = directionsService;
     _stationManager = stationManager;
     _cameraManager = cameraManager;
+    _userSettings = userSettings;
 
     changeUnits();
     fetchCurrentLocation();
@@ -289,7 +295,7 @@ class ApplicationBloc with ChangeNotifier {
   /// @param - void
   /// @return void
   /// @effects - gets the current location
-  fetchCurrentLocation() async {
+  Future<void> fetchCurrentLocation() async {
     LatLng latLng = await _locationManager.locate();
     Place currentPlace = await _placesService.getPlaceFromCoordinates(
         latLng.latitude, latLng.longitude, SearchType.current.description);
@@ -545,7 +551,7 @@ class ApplicationBloc with ChangeNotifier {
   /// @param - void
   /// @return - void
   /// @effects - updates bike stations based on TFL API
-  updateStations() async {
+  Future<void> updateStations() async {
     await _stationManager.setStations(await _stationsService.getStations());
     filterStationMarkers();
     notifyListeners();
