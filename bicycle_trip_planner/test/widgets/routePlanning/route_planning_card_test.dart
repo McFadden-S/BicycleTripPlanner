@@ -37,4 +37,10 @@ void main() {
     await Firebase.initializeApp();
   });
 
+  testWidgets('Can tap recent route card', (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanningCard(loadRoute: true,routeManager: mockRouteManager,))));
+
+
+  });
+
 }
