@@ -27,6 +27,8 @@ void main() {
   final mockRouteManager = MockRouteManager();
   final mockMarkerManager = MockMarkerManager();
   final mockApplicationBlock = MockApplicationBloc();
+
+  setMocks();
   final routeManager = RouteManager();
   when(mockUserSettings.getRecentRoute((any))).thenAnswer((realInvocation) async => Pathway());
   when(mockRouteManager.clearRouteMarkers()).thenAnswer((realInvocation) async => null);
