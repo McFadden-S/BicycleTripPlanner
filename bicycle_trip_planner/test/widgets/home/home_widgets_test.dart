@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import '../../bloc/application_bloc_test.mocks.dart';
+import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
-import '../login/mock.dart';
 
 void main() {
   setupFirebaseAuthMocks();
@@ -37,13 +37,6 @@ void main() {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-  });
-
-  testWidgets("HomeWidgets has a stack", (WidgetTester tester) async {
-    await tester.runAsync( () async {
-      await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
-      expect(find.byType(Stack), findsWidgets);
-    });
   });
 
   testWidgets("HomeWidgets has a safeArea", (WidgetTester tester) async {
