@@ -815,6 +815,13 @@ class ApplicationBloc with ChangeNotifier {
   }
 
   /// @param - void
+  /// @return - returns camera manager
+  @visibleForTesting
+  getCameraManager(){
+    return _cameraManager;
+  }
+
+  /// @param - void
   /// @return - returns database manager
   @visibleForTesting
   getDatabaseManager() {
