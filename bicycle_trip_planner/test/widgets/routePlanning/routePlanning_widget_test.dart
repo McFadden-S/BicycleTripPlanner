@@ -1,5 +1,8 @@
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+
+
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
@@ -9,10 +12,16 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../login/mock.dart';
+
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
+import '../../bloc/application_bloc_test.mocks.dart';
+
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 
 void main() {
   setupFirebaseAuthMocks();
@@ -23,6 +32,7 @@ void main() {
     await Firebase.initializeApp();
   });
 
+
   setUp(() {
     RouteManager().clear();
   });
@@ -32,16 +42,13 @@ void main() {
     // await pumpWidget(tester, RoutePlanning());
     await pumpWidget(
         tester, MaterialApp(home: Material(child: RoutePlanning())));
-
     // final currentLocationButton = find.byKey(ValueKey("currentLocationButton"));
-
     expect(find.byKey(ValueKey("currentLocationButton")), findsOneWidget);
   });
 
   testWidgets("RoutePlanning has group button", (WidgetTester tester) async {
     await pumpWidget(
         tester, MaterialApp(home: Material(child: RoutePlanning())));
-
     final groupButton = find.byKey(ValueKey("groupSizeSelector"));
 
     expect(groupButton, findsOneWidget);
@@ -73,7 +80,6 @@ void main() {
     final bikeButton = find.descendant(
         of: bottomCard,
         matching: find.widgetWithIcon(ElevatedButton, Icons.directions_bike));
-
     expect(bikeButton, findsOneWidget);
   });
 

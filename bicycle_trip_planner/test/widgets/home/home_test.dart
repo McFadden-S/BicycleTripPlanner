@@ -27,6 +27,7 @@ void main() {
     await Firebase.initializeApp();
   });
 
+
   testWidgets("Home has a safeArea", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Home()));
     expect(find.byType(SafeArea), findsOneWidget);

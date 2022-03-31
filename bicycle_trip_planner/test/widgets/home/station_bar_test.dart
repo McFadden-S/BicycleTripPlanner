@@ -1,13 +1,24 @@
+import 'dart:async';
 import 'dart:io';
+import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
+import 'station_bar_test.mocks.dart';
 
+@GenerateMocks([DatabaseManager, FirebaseAuth, User])
 void main() {
-  setupFirebaseAuthMocks();
+  setupFirebaseMocks();
+
+  final mockDatabaseManager = MockDatabaseManager();
+  final mockFirebaseAuth = MockFirebaseAuth();
+  final mockUser = MockUser();
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -18,42 +29,42 @@ void main() {
     await tester.runAsync(
             () async {
               await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-              expect(find.text('Nearby Stations'), findsOneWidget);
+              expect(find.text('Nearby Stations'), findsWidgets);
         });
   });
 
   testWidgets("StationBar has an icon button 'firstPage'", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.widgetWithIcon(IconButton, Icons.first_page), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.first_page), findsWidgets);
   });
 
   testWidgets("StationBar has an icon button 'expanded station list'", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.widgetWithIcon(IconButton, Icons.menu), findsOneWidget);
+    expect(find.widgetWithIcon(IconButton, Icons.menu), findsWidgets);
   });
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Container), findsWidgets);
   });
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     final widget = find.byKey(ValueKey("first_page"));
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
   });
 
   testWidgets("Tapping menu icon returns another widget", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
     final widget = find.byKey(ValueKey("menu"));
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
 
     await tester.tap(widget);
     await tester.pump();
-    expect(widget, findsOneWidget);
+    expect(widget, findsWidgets);
 
     final widget2 = find.byType(StatefulBuilder);
-    expect(widget2, findsOneWidget);
+    expect(widget2, findsWidgets);
 
     expect(find.byType(Expanded), findsWidgets);
     expect(find.byType(Container), findsWidgets);
@@ -61,6 +72,6 @@ void main() {
 
   testWidgets("StationBar returns type container", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar())));
-    expect(find.byType(Container), findsOneWidget);
+    expect(find.byType(Container), findsWidgets);
   });
 }

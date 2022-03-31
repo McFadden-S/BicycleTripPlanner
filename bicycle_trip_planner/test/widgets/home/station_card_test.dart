@@ -7,14 +7,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import '../../bloc/application_bloc_test.mocks.dart';
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'station_card_test.mocks.dart';
 
 @GenerateMocks([ApplicationBloc])
 void main() {
+
   final mockAppBloc = MockApplicationBloc();
   setupFirebaseAuthMocks();
+  setMocks();
+  MockDatabaseManager mockDatabaseManager = getAppBloc().getDatabaseManager();
+
+  when(mockDatabaseManager.isUserLogged()).thenAnswer((_) => true);
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -63,7 +69,6 @@ void main() {
 
   testWidgets("StationCard has contents inside", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station))));
-
     expect(find.byType(InkWell), findsWidgets);
   });
 
@@ -77,15 +82,84 @@ void main() {
     expect(widget, findsOneWidget);
   });
 
-  testWidgets("StationCard has contents inside something", (WidgetTester tester) async {
+  testWidgets("StationCard favourite button has icon star, when favourite is true", (WidgetTester tester) async {
     when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
 
-    await pumpWidget(tester, MaterialApp(home: Material(child:StationCard(station: station, isFavourite: true, toggleFavourite: (Station station) {}, bloc: mockAppBloc))));
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: true,
+                toggleFavourite: (Station station) {},
+            )
+        )
+    ));
+
     final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
     expect(find.byType(IconButton), findsWidgets);
+    expect(find.byIcon(Icons.star), findsWidgets);
   });
 
+  testWidgets("StationCard favourite button has icon star, when favourite is false", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: false,
+                toggleFavourite: (Station station) {},
+            )
+        )
+    ));    
+    final widget = find.byType(InkWell);
+    expect(widget, findsOneWidget);
+
+    expect(find.byType(IconButton), findsWidgets);
+    expect(find.byIcon(Icons.star), findsWidgets);
+  });
+
+  testWidgets("StationCard favorite button opens another widget when pressed and favourite is true", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: true,
+                toggleFavourite: (Station station) {},
+            )
+        )
+    ));
+    final widget = find.byType(IconButton);
+    expect(widget, findsOneWidget);
+
+    await tester.press(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
+
+  testWidgets("StationCard favorite button opens another widget when pressed and favourite is false", (WidgetTester tester) async {
+    when(mockAppBloc.isUserLogged()).thenAnswer((_) => true);
+
+    await pumpWidget(tester, MaterialApp(
+        home: Material(
+            child:StationCard(
+                station: station,
+                isFavourite: false,
+                toggleFavourite: (Station station) {},
+            )
+        )
+    ));
+    
+    final widget = find.byType(IconButton);
+    expect(widget, findsOneWidget);
+
+    await tester.press(widget);
+    await tester.pump();
+    expect(widget, findsOneWidget);
+  });
 
 }

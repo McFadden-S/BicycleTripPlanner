@@ -13,14 +13,19 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
+
+  final FirebaseAuth ?auth;
+
   @visibleForTesting
-  const StationBar({Key? key}) : super(key: key);
+  const StationBar({Key? key, this.auth}) : super(key: key);
 
   @override
   _StationBarState createState() => _StationBarState();
 }
 
 class _StationBarState extends State<StationBar> {
+  late FirebaseAuth auth;
+
   PageController stationsPageViewController = PageController();
 
   StationManager stationManager = StationManager();
@@ -47,7 +52,7 @@ class _StationBarState extends State<StationBar> {
   }
 
   deleteFavouriteRoute(String key) {
-    if (DatabaseManager().isUserLogged()) {
+    if (_isUserLogged) {
       DatabaseManager().removeFavouriteRoute(key);
     }
     getFavouriteRoutes();
@@ -67,14 +72,17 @@ class _StationBarState extends State<StationBar> {
 
   @override
   void initState() {
+    auth = widget.auth ?? FirebaseAuth.instance;
     firebaseSubscription =
-        FirebaseAuth.instance.authStateChanges().listen((event) {
+        auth.authStateChanges().listen((event) {
       _isUserLogged = event != null && !event.isAnonymous;
       setState(() {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
           _isFavouriteRoutes = false;
+          print("hi");
         } else {
+          print("------------right--------------");
           getFavouriteStations();
           getFavouriteRoutes();
         }
@@ -220,6 +228,7 @@ class _StationBarState extends State<StationBar> {
                   SizedBox(
                       height: MediaQuery.of(context).size.height * 0.5,
                       child: Container(
+                          key: Key("container"),
                           padding: const EdgeInsets.all(5),
                           decoration: const BoxDecoration(),
                           child: Column(
@@ -322,11 +331,11 @@ class _StationBarState extends State<StationBar> {
           child: Column(
             children: [
               Expanded(
-                  child: Padding(
+                child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    _isUserLogged
+                    _isUserLogged // set this to true
                         ? dropdownButtons(setState)
                         : Text(
                             "Nearby Stations",

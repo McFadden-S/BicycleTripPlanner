@@ -803,4 +803,10 @@ class ApplicationBloc with ChangeNotifier {
   getRouteManager(){
     return _routeManager;
   }
+
+  @visibleForTesting
+  getDatabaseManager() {
+    return _databaseManager;
+  }
+
 }
