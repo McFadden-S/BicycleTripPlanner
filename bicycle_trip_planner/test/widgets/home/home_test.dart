@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/MapWidget.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
 import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
@@ -11,9 +13,9 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:provider/provider.dart';
 import '../../setUp.dart';
 import '../login/mock.dart';
-
 
 void main() {
   setupFirebaseAuthMocks();
@@ -25,9 +27,12 @@ void main() {
   });
 
   testWidgets("Home root is a stack", (WidgetTester tester) async {
-    await tester.runAsync( () async {
-      await pumpWidget(tester, MaterialApp(home: Home()));
-      expect(find.byType(Stack), findsWidgets);});
+    await pumpWidget(tester, MaterialApp(home: Home()));
+    expect(find.byType(Stack), findsWidgets);
+    final BuildContext context = tester.element(find.byType(Home));
+    final appBloc = Provider.of<ApplicationBloc>(context, listen: false);
+    Timer _stationTimer = appBloc.getStationTimer();
+    _stationTimer.cancel();
   });
 
   testWidgets("Home has a safeArea", (WidgetTester tester) async {
@@ -65,18 +70,20 @@ void main() {
     expect(find.byType(BinaryChoiceDialog), findsOneWidget);
   });
 
-
-  testWidgets("Home displays homeWidgets initially", (WidgetTester tester) async {
+  testWidgets("Home displays homeWidgets initially",
+      (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Home()));
     expect(find.byType(HomeWidgets), findsOneWidget);
   });
 
-  testWidgets("Home does not displays routePlanning widgets initially", (WidgetTester tester) async {
+  testWidgets("Home does not displays routePlanning widgets initially",
+      (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Home()));
     expect(find.byType(RoutePlanning), findsNothing);
   });
 
-  testWidgets("Home does not displays navigation widgets widgets initially", (WidgetTester tester) async {
+  testWidgets("Home does not displays navigation widgets widgets initially",
+      (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Home()));
     expect(find.byType(RoutePlanning), findsNothing);
   });
