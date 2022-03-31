@@ -48,20 +48,6 @@ void main() {
     expect(button, findsOneWidget);
   });
 
-
-  // testWidgets("OptimiseCostButton shows a binary choice when pressed", (WidgetTester tester) async {
-  //   await pumpWidget(tester, MaterialApp(home: Material(child: OptimiseCostButton())));
-  //
-  //   final button = find.widgetWithIcon(CircleButton, Icons.money_off);
-  //
-  //   expect(button, findsOneWidget);
-  //
-  //   await tester.tap(button);
-  //   await tester.pump();
-  //
-  //   expect(DialogManager.instance.ifShowingBinaryChoice(), true);
-  // });
-
   testWidgets("OptimiseCostButton shows a binary choice when pressed", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Stack(children: [OptimiseCostButton(), BinaryChoiceDialog()],))));
 
