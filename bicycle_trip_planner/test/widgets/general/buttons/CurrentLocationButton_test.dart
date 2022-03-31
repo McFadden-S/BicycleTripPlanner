@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/managers/CameraManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CurrentLocationButton.dart';
 import 'package:bicycle_trip_planner/widgets/home/Home.dart';
+import 'package:bicycle_trip_planner/widgets/home/HomeWidgets.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 void main() {
 
   setupFirebaseAuthMocks();
+  setMocks();
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -38,7 +40,7 @@ void main() {
 
   testWidgets("CurrentLocationButton locates user when clicked", (WidgetTester tester) async {
     // CameraManager cameraManager = CameraManager();
-    await pumpWidget(tester, MaterialApp(home: Material(child: Home())));
+    await pumpWidget(tester, MaterialApp(home: Material(child: HomeWidgets())));
 
     final button = find.widgetWithIcon(CurrentLocationButton, Icons.location_searching);
 

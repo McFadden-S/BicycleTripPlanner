@@ -50,6 +50,7 @@ class _WeatherState extends State<Weather> {
                   )
                 : Center(
                     child: CircularProgressIndicator(
+                        key: Key("hi"),
                         color: ThemeStyle.primaryTextColor),
                   );
           }),
