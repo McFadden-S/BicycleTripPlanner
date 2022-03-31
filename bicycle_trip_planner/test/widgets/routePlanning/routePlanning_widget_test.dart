@@ -1,26 +1,24 @@
-import 'dart:async';
 import 'dart:io';
+
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
+
+
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
-import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
-import 'package:bicycle_trip_planner/widgets/home/Home.dart';
-import 'package:bicycle_trip_planner/widgets/navigation/Navigation.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../login/mock.dart';
 
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/application_bloc_test.mocks.dart';
+
 import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -37,16 +35,6 @@ void main() {
 
   setUp(() {
     RouteManager().clear();
-  });
-
-  testWidgets("RoutePlanning has a SafeArea", (WidgetTester tester) async {
-    await pumpWidget(
-        tester, MaterialApp(home: Material(child: RoutePlanning())));
-    expect(find.byType(SafeArea), findsOneWidget);
-    final BuildContext context = tester.element(find.byType(RoutePlanning));
-    final appBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    Timer _stationTimer = appBloc.getStationTimer();
-    _stationTimer.cancel();
   });
 
   testWidgets("RoutePlanning has current location button",
@@ -72,7 +60,6 @@ void main() {
         tester, MaterialApp(home: Material(child: RoutePlanning())));
 
     final groupButton = find.byKey(ValueKey("groupSizeSelector"));
-    //final dropdown = find.byType(DropdownButtonHideUnderline())
 
     expect(groupButton, findsOneWidget);
 
@@ -241,47 +228,4 @@ void main() {
     expect(stopSearchBar, findsOneWidget);
   });
 
-  testWidgets(
-      "When the optimise button is clicked the user should be shown a dialog box with choices",
-      (WidgetTester tester) async {
-
-        //Play around with the when statements to perhaps get different results
-    MockStationsService stationsService = getAppBloc().getStationService();
-    MockNavigationManager navigationManager = getAppBloc().getNavigationManager();
-    MockUserSettings userSettings = getAppBloc().getUserSettings();
-    MockRouteManager routeManager = getAppBloc().getRouteManager();
-    MockStationManager stationManager = getAppBloc().getStationManager();
-
-    when(stationsService.getStations()).thenAnswer((realInvocation) async=> []);
-    when(navigationManager.ifNavigating()).thenAnswer((realInvocation) => false);
-    when(userSettings.nearbyStationsRange()).thenAnswer((realInvocation) async=> 5);
-    when(routeManager.getGroupSize()).thenAnswer((realInvocation) => 1);
-    when(stationManager.getNearStations(5.0)).thenAnswer((realInvocation) => []);
-    when(stationManager.getStationsWithBikes(1, [])).thenAnswer((realInvocation) => []);
-    when(stationManager.getStationsCompliment([])).thenAnswer((realInvocation) => []);
-
-    await pumpWidget(
-        tester,
-        MaterialApp(
-            home: Material(child: Stack(children: [Home(), RoutePlanning()]))));
-
-    final optimiseButton =
-        find.widgetWithIcon(OptimiseCostButton, Icons.money_off);
-    final button1 = find.descendant(
-        of: find.byType(BinaryChoiceDialog),
-        matching: find.byKey(Key('Binary Button 1')));
-    final button2 = find.descendant(
-        of: find.byType(BinaryChoiceDialog),
-        matching: find.byKey(Key('Binary Button 2')));
-
-    expect(optimiseButton, findsOneWidget);
-    expect(button1, findsNothing);
-    expect(button2, findsNothing);
-
-    await tester.tap(optimiseButton);
-    await tester.pumpAndSettle();
-
-    expect(button1, findsOneWidget);
-    expect(button2, findsOneWidget);
-  });
 }

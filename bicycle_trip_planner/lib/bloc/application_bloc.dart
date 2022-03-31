@@ -808,4 +808,5 @@ class ApplicationBloc with ChangeNotifier {
   getDatabaseManager() {
     return _databaseManager;
   }
+
 }

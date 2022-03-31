@@ -26,6 +26,8 @@ void main() {
   boundsNe["lat"] = 20.0;
   boundsNe["lng"] = 20.0;
 
+
+
   final place = Place(
       latlng: LatLng(10.0,10.0),
       name: "name",

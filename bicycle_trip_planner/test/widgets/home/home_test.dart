@@ -19,6 +19,7 @@ import '../../setUp.dart';
 
 void main() {
   setupFirebaseAuthMocks();
+  setMocks();
 
   setUpAll(() async {
     HttpOverrides.global = null;
@@ -26,12 +27,6 @@ void main() {
     await Firebase.initializeApp();
   });
 
-  testWidgets("Home root is a stack", (WidgetTester tester) async {
-    await tester.runAsync( () async {
-      await pumpWidget(tester, MaterialApp(home: Home()));
-      expect(find.byType(Stack), findsWidgets);
-    });
-  });
 
   testWidgets("Home has a safeArea", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Home()));

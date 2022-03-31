@@ -31,6 +31,7 @@ void main() {
      StreamController<LocationData>.broadcast();
     Stream<LocationData> stream = controller.stream;
   when(locationManager.onUserLocationChange(5)).thenAnswer((realInvocation) => stream);
+  setMocks();
 
   setupFirebaseAuthMocks();
 

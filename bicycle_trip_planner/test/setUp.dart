@@ -43,7 +43,6 @@ void setMocks(){
   when(stationManager.getStationsWithBikes(1, [])).thenAnswer((realInvocation) => []);
   when(stationManager.getStationsCompliment([])).thenAnswer((realInvocation) => []);
 }
-
 pumpWidget(WidgetTester tester, Widget? home) async {
   await tester.pumpWidget(
     MultiProvider(
