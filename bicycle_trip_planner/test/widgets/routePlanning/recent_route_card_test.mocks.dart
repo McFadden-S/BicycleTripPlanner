@@ -477,6 +477,11 @@ class MockApplicationBloc extends _i1.Mock implements _i15.ApplicationBloc {
       returnValue: Future<void>.value(),
       returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
+  _i10.Future<void> fetchCurrentLocation() => (super.noSuchMethod(
+      Invocation.method(#fetchCurrentLocation, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
+  @override
   dynamic setLocationMarker(_i9.Place? place, [int? uid = -1]) =>
       super.noSuchMethod(Invocation.method(#setLocationMarker, [place, uid]));
   @override
@@ -552,6 +557,11 @@ class MockApplicationBloc extends _i1.Mock implements _i15.ApplicationBloc {
   void setNavigationSubscription() =>
       super.noSuchMethod(Invocation.method(#setNavigationSubscription, []),
           returnValueForMissingStub: null);
+  @override
+  _i10.Future<void> updateStations() => (super.noSuchMethod(
+      Invocation.method(#updateStations, []),
+      returnValue: Future<void>.value(),
+      returnValueForMissingStub: Future<void>.value()) as _i10.Future<void>);
   @override
   _i10.Future<void> filterStationMarkers() => (super.noSuchMethod(
       Invocation.method(#filterStationMarkers, []),
