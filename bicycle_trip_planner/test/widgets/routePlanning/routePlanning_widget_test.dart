@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../login/mock.dart';
-
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 import '../../bloc/application_bloc_test.mocks.dart';
