@@ -44,11 +44,12 @@ void main() {
   testWidgets("Login Screen has a settings button and incorrect auth credentials",
       (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: LoginScreen(auth: auth)));
-    final widget = find.byKey(ValueKey("settings"));
+    final widget = find.byKey(ValueKey("login"));
     expect(widget, findsOneWidget);
 
     await tester.tap(widget);
     await tester.pump();
+
     verifyNever(auth.signInWithEmailAndPassword());
   });
 
@@ -65,7 +66,7 @@ void main() {
           email: email,
           password: password,
         )));
-    final widget = find.byKey(ValueKey("settings"));
+    final widget = find.byKey(ValueKey("login"));
     expect(widget, findsOneWidget);
 
     when(auth.signInWithEmailAndPassword(email: email, password: password))

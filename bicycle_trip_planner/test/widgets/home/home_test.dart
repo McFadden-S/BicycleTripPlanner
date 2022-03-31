@@ -19,20 +19,12 @@ import '../../setUp.dart';
 
 void main() {
   setupFirebaseAuthMocks();
+  setMocks();
 
   setUpAll(() async {
     HttpOverrides.global = null;
     TestWidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
-  });
-
-  testWidgets("Home root is a stack", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Home()));
-    expect(find.byType(Stack), findsWidgets);
-    final BuildContext context = tester.element(find.byType(Home));
-    final appBloc = Provider.of<ApplicationBloc>(context, listen: false);
-    Timer _stationTimer = appBloc.getStationTimer();
-    _stationTimer.cancel();
   });
 
   testWidgets("Home has a safeArea", (WidgetTester tester) async {

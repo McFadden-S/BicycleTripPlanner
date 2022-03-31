@@ -24,39 +24,6 @@ void main() {
     resetMockitoState();
   });
 
-  testWidgets("DistanceETACard is a card", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
-
-    final widgetCard = find.byType(Container);
-
-    expect(widgetCard, findsOneWidget);
-  });
-
-  testWidgets("DistanceETACard shows a clock icon", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
-
-    final clockIcon = find.byIcon(Icons.access_time_outlined);
-
-    expect(clockIcon, findsOneWidget);
-  });
-
-  testWidgets("DistanceETACard contains multiple Text widgets", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
-
-    final textWidget = find.byType(Text);
-
-    expect(textWidget, findsWidgets);
-  });
-
-  testWidgets("DistanceETACard contains a Circular Progress Indicator", (WidgetTester tester) async {
-    RouteManager().setLoading(true);
-    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
-
-    final textWidget = find.byType(CircularProgressIndicator);
-
-    expect(textWidget, findsOneWidget);
-  });
-
   testWidgets("DistanceETACard contains a access_time icon", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
     final icon = tester.widget<Icon>(find.byKey(ValueKey("accessTime")));
@@ -101,6 +68,39 @@ void main() {
     final container = tester.widget<Container>(find.byType(Container));
 
     expect(container.padding, const EdgeInsets.all(5.0));
+  });
+
+  testWidgets("DistanceETACard is a card", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
+
+    final widgetCard = find.byType(Container);
+
+    expect(widgetCard, findsOneWidget);
+  });
+
+  testWidgets("DistanceETACard shows a clock icon", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
+
+    final clockIcon = find.byIcon(Icons.access_time_outlined);
+
+    expect(clockIcon, findsOneWidget);
+  });
+
+  testWidgets("DistanceETACard contains multiple Text widgets", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
+
+    final textWidget = find.byType(Text);
+
+    expect(textWidget, findsWidgets);
+  });
+
+  testWidgets("DistanceETACard contains a Circular Progress Indicator", (WidgetTester tester) async {
+    RouteManager().setLoading(true);
+    await pumpWidget(tester, MaterialApp(home: Material(child: DistanceETACard())));
+
+    final textWidget = find.byType(CircularProgressIndicator);
+
+    expect(textWidget, findsOneWidget);
   });
 
 }

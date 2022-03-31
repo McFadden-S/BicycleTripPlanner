@@ -803,5 +803,4 @@ class ApplicationBloc with ChangeNotifier {
   getRouteManager(){
     return _routeManager;
   }
-
 }
