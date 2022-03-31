@@ -75,7 +75,6 @@ class _StationBarState extends State<StationBar> {
     firebaseSubscription =
         auth.authStateChanges().listen((event) {
       _isUserLogged = event != null && !event.isAnonymous;
-      print(_isUserLogged);
       setState(() {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
@@ -233,7 +232,7 @@ class _StationBarState extends State<StationBar> {
                             children: [
                               Row(
                                 children: [
-                                  _isUserLogged // changed this to true
+                                  _isUserLogged
                                       ? dropdownButtons(setModalState)
                                       : Text(
                                           "Nearby Stations",
@@ -333,7 +332,7 @@ class _StationBarState extends State<StationBar> {
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(
                   children: [
-                    _isUserLogged
+                    _isUserLogged // set this to true
                         ? dropdownButtons(setState)
                         : Text(
                             "Nearby Stations",

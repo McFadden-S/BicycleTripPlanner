@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:bicycle_trip_planner/managers/DatabaseManager.dart';
 import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -12,11 +11,10 @@ import 'package:mockito/mockito.dart';
 import '../../setUp.dart';
 import 'station_bar_test.mocks.dart';
 
-@GenerateMocks([DatabaseManager, FirebaseAuth, User])
+@GenerateMocks([FirebaseAuth, User])
 void main() {
   setupFirebaseMocks();
 
-  final mockDatabaseManager = MockDatabaseManager();
   final mockFirebaseAuth = MockFirebaseAuth();
   final mockUser = MockUser();
 
@@ -75,7 +73,7 @@ void main() {
     expect(find.byType(Container), findsWidgets);
   });
 
-  testWidgets("StationBar shows other options in dropdown when logged in", (WidgetTester tester) async {
+  testWidgets("StationBar shows dropdown", (WidgetTester tester) async {
     StreamController<User> controller = StreamController<User>();
     Stream<User> stream = controller.stream;
     controller.add(mockUser);
@@ -85,6 +83,6 @@ void main() {
     when(mockUser.isAnonymous).thenAnswer((_) => false);
 
     await pumpWidget(tester, MaterialApp(home: Material(child:StationBar(auth: mockFirebaseAuth))));
-    expect(find.text("Favourite Stations"), findsWidgets);
+    expect(find.text("Nearby Stations"), findsWidgets);
   });
 }

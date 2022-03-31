@@ -27,7 +27,8 @@ void main() {
   testWidgets("Home root is a stack", (WidgetTester tester) async {
     await tester.runAsync( () async {
       await pumpWidget(tester, MaterialApp(home: Home()));
-      expect(find.byType(Stack), findsWidgets);});
+      expect(find.byType(Stack), findsWidgets);
+    });
   });
 
   testWidgets("Home has a safeArea", (WidgetTester tester) async {
