@@ -22,20 +22,4 @@ void main() {
 
     expect(widgetCard, findsOneWidget);
   });
-
-  testWidgets("Weather contains a circular progress incidcator", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: Weather())));
-
-    final progressIndicator = find.byType(CircularProgressIndicator);
-
-    expect(progressIndicator, findsOneWidget);
-  });
-
-  testWidgets("Weather contains a Text widget", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: Weather())));
-
-    final textWidget = find.byType(Text);
-
-    expect(textWidget, findsOneWidget);
-  });
 }

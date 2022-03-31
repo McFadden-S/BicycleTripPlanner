@@ -9,6 +9,7 @@ import 'package:bicycle_trip_planner/widgets/home/StationBar.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:bicycle_trip_planner/widgets/settings/SettingsScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database_mocks/firebase_database_mocks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -17,7 +18,7 @@ import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 
 void main() {
-  setupFirebaseAuthMocks();
+  setupFirebaseMocks();
   MockStationsService mockStationsService = getAppBloc().getStationService();
   setMocks();
   Station station = Station(
