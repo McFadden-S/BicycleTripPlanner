@@ -44,7 +44,6 @@ void setMocks(){
   when(stationManager.getStationsCompliment([])).thenAnswer((realInvocation) => []);
 }
 
-
 pumpWidget(WidgetTester tester, Widget? home) async {
   await tester.pumpWidget(
     MultiProvider(

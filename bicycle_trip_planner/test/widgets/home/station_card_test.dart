@@ -42,7 +42,7 @@ void main() {
     await tester.runAsync(
             () async {
               await pumpWidget(tester, MaterialApp(
-                  home: Material(child: StationCard(station: station, ))));
+                  home: Material(child: StationCard(station: station,))));
               expect(find.text(station.name), findsWidgets);
             });
   });
@@ -94,6 +94,7 @@ void main() {
             )
         )
     ));
+
     final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
@@ -112,7 +113,8 @@ void main() {
                 toggleFavourite: (Station station) {},
             )
         )
-    ));    final widget = find.byType(InkWell);
+    ));    
+    final widget = find.byType(InkWell);
     expect(widget, findsOneWidget);
 
     expect(find.byType(IconButton), findsWidgets);
@@ -151,6 +153,7 @@ void main() {
             )
         )
     ));
+    
     final widget = find.byType(IconButton);
     expect(widget, findsOneWidget);
 
@@ -158,4 +161,5 @@ void main() {
     await tester.pump();
     expect(widget, findsOneWidget);
   });
+
 }

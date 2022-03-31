@@ -13,6 +13,7 @@ import '../../models/pathway.dart';
 import 'FavouriteRouteCard.dart';
 
 class StationBar extends StatefulWidget {
+
   final FirebaseAuth ?auth;
 
   @visibleForTesting
