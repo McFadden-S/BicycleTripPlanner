@@ -12,6 +12,8 @@ import '../../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
 
+  setMocks();
+
   setupFirebaseAuthMocks();
 
   setUpAll(() async {
@@ -36,16 +38,21 @@ void main() {
     expect(icon, findsOneWidget);
   });
 
+  testWidgets("CurrentLocationButton is an icon button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: CurrentLocationButton())));
+
+    final icon = find.widgetWithIcon(CurrentLocationButton, Icons.location_searching);
+
+    expect(icon, findsOneWidget);
+  });
+
   testWidgets("CurrentLocationButton locates user when clicked", (WidgetTester tester) async {
-    // CameraManager cameraManager = CameraManager();
     await pumpWidget(tester, MaterialApp(home: Material(child: Home())));
 
     final button = find.widgetWithIcon(CurrentLocationButton, Icons.location_searching);
 
-    // expect(button, findsOneWidget);
-
     await tester.press(button);
-    await tester.pumpAndSettle();
+    await tester.pump();
 
     expect(CameraManager.instance.isLocated(), true);
   });

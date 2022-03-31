@@ -32,4 +32,12 @@ void main() {
 
     expect(icon, findsOneWidget);
   });
+
+  testWidgets("RoundedRectangleButton has an icon button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoundedRectangleButton(buttonColor: Colors.black, iconIn: Icons.abc, onButtonClicked: (){}))));
+
+    final iconButton = find.widgetWithIcon(RoundedRectangleButton, Icons.abc);
+
+    expect(iconButton, findsOneWidget);
+  });
 }

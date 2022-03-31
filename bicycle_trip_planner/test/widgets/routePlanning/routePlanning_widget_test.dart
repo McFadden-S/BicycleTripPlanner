@@ -5,6 +5,7 @@ import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/DistanceETACard.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/Search.dart';
@@ -224,6 +225,24 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(stopSearchBar, findsOneWidget);
+  });
+
+  testWidgets("When the optimise button is clicked the user should be shown a dialog box with choices", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
+
+    final optimiseButton = find.widgetWithIcon(OptimiseCostButton, Icons.money_off);
+    final button1 = find.descendant(of: find.byWidget(BinaryChoiceDialog()), matching: find.byKey(ValueKey('Binary Button 1')));
+    final button2 = find.descendant(of: find.byWidget(BinaryChoiceDialog()), matching: find.byKey(ValueKey('Binary Button 2')));
+
+    expect(optimiseButton, findsOneWidget);
+    expect(button1, findsNothing);
+    expect(button2, findsNothing);
+
+    await tester.tap(optimiseButton);
+    await tester.pump();
+
+    expect(button1, findsOneWidget);
+    expect(button2, findsOneWidget);
   });
 
 }

@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
+import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimiseCostButton.dart';
+import 'package:bicycle_trip_planner/widgets/general/buttons/RoundedRectangleButton.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -55,6 +57,28 @@ void main() {
     await tester.pump();
 
     expect(DialogManager.instance.ifShowingBinaryChoice(), true);
+  });
+
+  testWidgets("OptimiseCostButton optimises route when yes button clicked", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: OptimiseCostButton())));
+
+    final button = find.widgetWithIcon(CircleButton, Icons.money_off);
+
+    expect(button, findsOneWidget);
+
+    await tester.tap(button);
+    await tester.pump();
+
+    expect(DialogManager.instance.ifShowingBinaryChoice(), true);
+
+    //final yesButton = find.widgetWithText(ElevatedButton, "Yes");
+    //final yesButton = find.byKey(Key('Binary Button 1'));
+    final yesButton = find.text('Yes');
+
+    await tester.tap(yesButton);
+    await tester.pump();
+
+    expect(RouteManager.instance.ifCostOptimised(), true);
   });
 
 }
