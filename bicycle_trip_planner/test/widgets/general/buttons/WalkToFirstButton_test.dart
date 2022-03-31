@@ -49,8 +49,6 @@ void main() {
   testWidgets("WalkToFirstButton shows a binary choice when pressed", (WidgetTester tester) async {
     await pumpWidget(tester, MaterialApp(home: Material(child: Stack(children: [WalkToFirstButton(), BinaryChoiceDialog()],))));
 
-    //final button = find.widgetWithIcon(WalkToFirstButton, Icons.directions_walk);
-
     final button = find.byKey(ValueKey("walkTo"));
     expect(button, findsOneWidget);
 
