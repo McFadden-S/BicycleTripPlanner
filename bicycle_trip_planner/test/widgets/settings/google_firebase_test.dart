@@ -16,13 +16,13 @@ void main() {
     expect(signInAuthentication.idToken, isNotNull);
   });
 
-  test('should return null when google login is cancelled by the user',
+  test('should return null when google settings is cancelled by the user',
           () async {
         googleSignIn.setIsCancelled(true);
         final signInAccount = await googleSignIn.signIn();
         expect(signInAccount, isNull);
       });
-  test('testing google login twice, once cancelled, once not cancelled at the same test.', () async {
+  test('testing google settings twice, once cancelled, once not cancelled at the same test.', () async {
     googleSignIn.setIsCancelled(true);
     final signInAccount = await googleSignIn.signIn();
     expect(signInAccount, isNull);

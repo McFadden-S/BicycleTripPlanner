@@ -17,10 +17,13 @@ import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:flutter/material.dart';
 import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanningCard.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import '../../bloc/application_bloc_test.mocks.dart';
+import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 import '../../setUp.dart';
 import 'package:firebase_core/firebase_core.dart';
-import '../login/mock.dart';
+
 
 void main() {
   setupFirebaseAuthMocks();
@@ -244,6 +247,22 @@ void main() {
   testWidgets(
       "When the optimise button is clicked the user should be shown a dialog box with choices",
       (WidgetTester tester) async {
+
+        //Play around with the when statements to perhaps get different results
+    MockStationsService stationsService = getAppBloc().getStationService();
+    MockNavigationManager navigationManager = getAppBloc().getNavigationManager();
+    MockUserSettings userSettings = getAppBloc().getUserSettings();
+    MockRouteManager routeManager = getAppBloc().getRouteManager();
+    MockStationManager stationManager = getAppBloc().getStationManager();
+
+    when(stationsService.getStations()).thenAnswer((realInvocation) async=> []);
+    when(navigationManager.ifNavigating()).thenAnswer((realInvocation) => false);
+    when(userSettings.nearbyStationsRange()).thenAnswer((realInvocation) async=> 5);
+    when(routeManager.getGroupSize()).thenAnswer((realInvocation) => 1);
+    when(stationManager.getNearStations(5.0)).thenAnswer((realInvocation) => []);
+    when(stationManager.getStationsWithBikes(1, [])).thenAnswer((realInvocation) => []);
+    when(stationManager.getStationsCompliment([])).thenAnswer((realInvocation) => []);
+
     await pumpWidget(
         tester,
         MaterialApp(

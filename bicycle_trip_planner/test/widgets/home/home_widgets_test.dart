@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import '../../setUp.dart';
-import '../login/mock.dart';
+import '../../managers/firebase_mocks/firebase_auth_mocks.dart';
 
 void main() {
   setupFirebaseAuthMocks();
