@@ -75,12 +75,13 @@ class _StationBarState extends State<StationBar> {
     firebaseSubscription =
         auth.authStateChanges().listen((event) {
       _isUserLogged = event != null && !event.isAnonymous;
-      print(_isUserLogged);
       setState(() {
         if (!_isUserLogged) {
           _isFavouriteStations = false;
           _isFavouriteRoutes = false;
+          print("hi");
         } else {
+          print("------------right--------------");
           getFavouriteStations();
           getFavouriteRoutes();
         }
