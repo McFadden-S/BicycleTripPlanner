@@ -12,7 +12,8 @@ import 'package:provider/provider.dart';
 
 class RoutePlanningCard extends StatefulWidget {
   final loadRoute;
-  const RoutePlanningCard({Key? key, required this.loadRoute})
+  final RouteManager ? routeManager;
+  const RoutePlanningCard({Key? key, required this.loadRoute, this.routeManager})
       : super(key: key);
 
   @override
@@ -23,10 +24,16 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
   final TextEditingController startSearchController = TextEditingController();
   final TextEditingController endSearchController = TextEditingController();
 
-  final RouteManager routeManager = RouteManager();
+  late RouteManager routeManager;
   final PolylineManager polylineManager = PolylineManager();
 
   bool isShowingIntermediate = false;
+
+  @override
+  void initState() {
+    routeManager = widget.routeManager ?? RouteManager();
+    super.initState();
+  }
 
   void toggleShowingIntermediate() {
     setState(() => {isShowingIntermediate = !isShowingIntermediate});
@@ -75,8 +82,6 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
         : applicationBloc.findRoute(origin, destination, places, groupSize);
   }
 
-  //TODO:Look into preventing rebuild
-  //Build method is called one more time before navigation starts resulting in a waste of api calls
   @override
   Widget build(BuildContext context) {
     final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -135,7 +140,6 @@ class _RoutePlanningCardState extends State<RoutePlanningCard> {
                     uid: routeManager.getDestination().getUID(),
                   ),
                 ),
-                // const Icon(Icons.expand_more),
               ],
             ),
           ),

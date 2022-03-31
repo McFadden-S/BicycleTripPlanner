@@ -8,10 +8,10 @@ class CustomBottomSheet extends StatefulWidget {
   const CustomBottomSheet({Key? key, required this.child}) : super(key: key);
 
   @override
-  _StationCardState createState() => _StationCardState();
+  _CustomBottomSheetState createState() => _CustomBottomSheetState();
 }
 
-class _StationCardState extends State<CustomBottomSheet> {
+class _CustomBottomSheetState extends State<CustomBottomSheet> {
   bool isExpanded = true;
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _StationCardState extends State<CustomBottomSheet> {
                     height: MediaQuery.of(context).size.height * 0.05,
                     child: Column(
                       children: [
-                        // top bar where the expand/shrink ion is
+                        // top bar where the expand/shrink icon is
                         Align(
                             alignment: Alignment.topCenter,
                             child: IconButton(

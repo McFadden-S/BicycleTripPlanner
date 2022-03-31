@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bicycle_trip_planner/bloc/application_bloc.dart';
 import 'package:bicycle_trip_planner/constants.dart';
 import 'package:bicycle_trip_planner/managers/MarkerManager.dart';
@@ -7,8 +6,6 @@ import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/models/stop.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../managers/DatabaseManager.dart';
 import '../../models/pathway.dart';
 
 class FavouriteRouteCard extends StatefulWidget {

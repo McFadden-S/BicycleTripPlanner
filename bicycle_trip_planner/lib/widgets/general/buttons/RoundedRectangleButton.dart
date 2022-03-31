@@ -17,10 +17,10 @@ class RoundedRectangleButton extends StatefulWidget {
       : super(key: key);
 
   @override
-  _StationCardState createState() => _StationCardState();
+  _RoundedRectangleButtonState createState() => _RoundedRectangleButtonState();
 }
 
-class _StationCardState extends State<RoundedRectangleButton> {
+class _RoundedRectangleButtonState extends State<RoundedRectangleButton> {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(

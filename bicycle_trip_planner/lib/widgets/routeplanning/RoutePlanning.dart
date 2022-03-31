@@ -5,7 +5,6 @@ import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/managers/NavigationManager.dart';
 import 'package:bicycle_trip_planner/managers/RouteManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
-import 'package:bicycle_trip_planner/widgets/general/dialogs/BinaryChoiceDialog.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/CustomBottomSheet.dart';
 import 'package:bicycle_trip_planner/widgets/general/other/GroupSizeSelector.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
@@ -25,7 +24,10 @@ import 'RecentRouteCard.dart';
 import 'RoutePlanningCard.dart';
 
 class RoutePlanning extends StatefulWidget {
-  RoutePlanning({Key? key}) : super(key: key);
+  final DatabaseManager ? databaseManager;
+  final RouteManager ? routeManager;
+  final UserSettings ? userSettings;
+  RoutePlanning({Key? key, this.databaseManager, this.routeManager, this.userSettings}) : super(key: key);
 
   @override
   _RoutePlanningState createState() => _RoutePlanningState();
@@ -37,13 +39,17 @@ class _RoutePlanningState extends State<RoutePlanning> {
   bool loadRoute = true;
   late int _recentRoutesCount;
 
-  final RouteManager _routeManager = RouteManager();
+  late RouteManager _routeManager;
   final NavigationManager _navigationManager = NavigationManager();
-  final UserSettings _userSettings = UserSettings();
+  late UserSettings _userSettings;
   final DialogManager _dialogManager = DialogManager();
+  late DatabaseManager _databaseManager;
 
   @override
   void initState() {
+    _databaseManager = widget.databaseManager ?? DatabaseManager();
+    _userSettings = widget.userSettings ?? UserSettings();
+    _routeManager = widget.routeManager ?? RouteManager();
     super.initState();
     _recentRoutesCount = 0;
     getRecentRoutesCount();
@@ -126,7 +132,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
                       children: [
                         Column(
                           children: [
-                            DatabaseManager().isUserLogged()
+                            _databaseManager.isUserLogged()
                                 ? CircleButton(
                                     iconIn: Icons.star,
                                     iconColor: ThemeStyle.primaryIconColor,
@@ -283,7 +289,7 @@ class _RoutePlanningState extends State<RoutePlanning> {
   }
 }
 
-// Note: This is outside of the state class...
+// Note: This is outside of the state class.
 saveRoute(context) async {
   final databaseManager = DatabaseManager();
   final routeManager = RouteManager();

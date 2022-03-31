@@ -4,11 +4,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 /// Displays a error when there is no connection to the internet
 class Error extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _ErrorState createState() => _ErrorState();
 }
 
-class _State extends State<Error> {
   //WillPop stops the user from leaving the error page
+class _ErrorState extends State<Error> {
   @override
   Widget build(BuildContext context) => WillPopScope(
     onWillPop: () async {

@@ -11,6 +11,7 @@ import 'package:geolocator/geolocator.dart' as geo;
 /// location and distances
 
 class LocationManager {
+
   //********** Fields **********
 
   // This is specifying the Locator class in locator.dart
@@ -40,6 +41,15 @@ class LocationManager {
   }
 
   //********** Private **********
+
+  /// Returns the distance between the two points in metres
+  double _calculateDistance(LatLng pos1, LatLng pos2) {
+    return geo.Geolocator.distanceBetween(
+        pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
+  }
+
+  //********** Public *********
+
   /// Returns true if device is turned on and GPS is turned on
   @visibleForTesting
   Future<bool> checkServiceEnabled() async {
@@ -70,27 +80,18 @@ class LocationManager {
     return grantedPermission;
   }
 
-
+  /// Opens location settings on device
   Future<void> openLocationSettingsOnDevice() async {
     await geo.Geolocator.openLocationSettings();
   }
 
+  /// Change location settings
   Future<bool> locationSettings([double distanceFilter = 0]) {
     return _location.changeSettings(
         accuracy: LocationAccuracy.navigation,
         interval: 1000,
         distanceFilter: distanceFilter);
   }
-
-  //********** private *********
-
-  /// Returns the distance between the two points in metres
-  double _calculateDistance(LatLng pos1, LatLng pos2) {
-    return geo.Geolocator.distanceBetween(
-        pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
-  }
-
-  //********** Public *********
 
   /// Returns the users current location
   Future<LatLng> locate() async {
@@ -142,13 +143,6 @@ class LocationManager {
     Location location = _location;
     locationSettings(distanceFilter);
     return location.onLocationChanged;
-  }
-
-  Future<bool> _locationSettings([double distanceFilter = 0]) {
-    return Location().changeSettings(
-        accuracy: LocationAccuracy.navigation,
-        interval: 1000,
-        distanceFilter: distanceFilter);
   }
 
   /// Set the units for distance
