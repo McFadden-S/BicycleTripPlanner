@@ -65,6 +65,7 @@ class RouteManager {
   //********** Singleton **********
 
   static final RouteManager _routeManager = RouteManager._internal();
+  static RouteManager get instance => _routeManager;
 
   // @param void
   // @return RouteManager

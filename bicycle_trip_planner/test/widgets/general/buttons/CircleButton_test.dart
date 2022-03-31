@@ -32,4 +32,12 @@ void main() {
 
     expect(icon, findsOneWidget);
   });
+
+  testWidgets("CircleButton has an icon button", (WidgetTester tester) async {
+    await pumpWidget(tester, MaterialApp(home: Material(child: CircleButton(iconIn: Icons.abc, onButtonClicked: (){}))));
+
+    final iconButton = find.widgetWithIcon(CircleButton, Icons.abc);
+
+    expect(iconButton, findsOneWidget);
+  });
 }

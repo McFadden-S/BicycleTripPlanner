@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bicycle_trip_planner/managers/DialogManager.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/CircleButton.dart';
 import 'package:bicycle_trip_planner/widgets/general/buttons/OptimisedButton.dart';
+import 'package:bicycle_trip_planner/widgets/routeplanning/RoutePlanning.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,8 +37,7 @@ void main() {
   });
 
   testWidgets("OptimisedButton shows has an icon button", (WidgetTester tester) async {
-    await pumpWidget(
-        tester, MaterialApp(home: Material(child: OptimisedButton())));
+    await pumpWidget(tester, MaterialApp(home: Material(child: OptimisedButton())));
 
     final button = find.widgetWithIcon(CircleButton, Icons.alt_route);
 
@@ -45,9 +45,9 @@ void main() {
   });
 
   testWidgets("OptimisedButton shows a binary choice when pressed", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: OptimisedButton())));
+    await pumpWidget(tester, MaterialApp(home: Material(child: RoutePlanning())));
 
-    final button = find.widgetWithIcon(CircleButton, Icons.alt_route);
+    final button = find.byType(OptimisedButton);
 
     expect(button, findsOneWidget);
 

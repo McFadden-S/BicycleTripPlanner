@@ -47,16 +47,14 @@ void main() {
   });
 
   testWidgets("EndRouteButton shows dialog when clicked", (WidgetTester tester) async {
-    await pumpWidget(tester, MaterialApp(home: Material(child: EndRouteButton(onPressed: (){setClicked();}))));
+    await pumpWidget(tester, MaterialApp(home: Material(child: Navigation())));
 
-    final button = find.widgetWithText(EndRouteButton, "End");
+    final button = find.byType(EndRouteButton);
 
     expect(button, findsOneWidget);
 
     await tester.tap(button);
     await tester.pump();
-
-    // final dialog = find.descendant(of: find.byType(Navigation), matching: find.byType(Dialog));
 
     expect(DialogManager.instance.ifShowingBinaryChoice(), true);
   });
