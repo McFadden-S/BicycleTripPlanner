@@ -34,6 +34,17 @@ var appBloc = ApplicationBloc.forMock(
     databaseManager
 );
 
+void setMocks(){
+  when(stationsService.getStations()).thenAnswer((realInvocation) async=> []);
+  when(mockNavigationManager.ifNavigating()).thenAnswer((realInvocation) => false);
+  when(userSettings.nearbyStationsRange()).thenAnswer((realInvocation) async=> 5);
+  when(mockRouteManager.getGroupSize()).thenAnswer((realInvocation) => 1);
+  when(stationManager.getNearStations(5.0)).thenAnswer((realInvocation) => []);
+  when(stationManager.getStationsWithBikes(1, [])).thenAnswer((realInvocation) => []);
+  when(stationManager.getStationsCompliment([])).thenAnswer((realInvocation) => []);
+}
+
+
 pumpWidget(WidgetTester tester, Widget? home) async {
   await tester.pumpWidget(
     MultiProvider(

@@ -29,6 +29,7 @@ class Helper {
   /// @return Pathway; a route devised from the mapIn parameter
   static Pathway mapToPathway(dynamic mapIn) {
     Pathway output = Pathway();
+
     output.changeStart(mapToPlace(mapIn['start']));
     output.changeDestination(mapToPlace(mapIn['end']));
     if (mapIn['stops'] != null) {
