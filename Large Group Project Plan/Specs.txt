@@ -1,0 +1,57 @@
+Mobile Development
+  Tutorial/Crash Course: https://www.youtube.com/watch?v=1gDhl4leEzA
+  Technology: Flutter
+  Language: Dart
+  IDE: VS Code
+  Naming Convention: British English with camelCase
+
+Prototype
+  TFL API test Prototype
+  Map API test Prototype
+
+Meeting Minutes
+  Make minutes match the agenda
+  have good descriptive agenda
+
+Risk Assessment
+  - Covid: Probability Medium/High, Impact Low
+    - If Test Positive: Hybrid approach, people in person on call with those at home
+    - Masks and Hand Sanitizer
+  - Github Crash: Probability Very Low, Impact Low/Medium
+  - Flutter: Being newer could have issue Probability Low, Impact Medium
+  - API(s): we rely on becoming unusable
+      Likelihood: Unlikely
+      Impact: High
+      Response: Try to find a new API as similar as possible to the one we were using, otherwise, meet with client to replan the project
+  - Personal Information Security Risk (Epic 3): Personal frequent routes get leaked
+      Likelihood: Medium unmitigated, low if we implement security (research firebase security)
+      Impact: High
+
+TA Meeting Notes
+  Epics & User Story
+    Make Sure epics cover all client requirements/wants
+    Individual User, Multiple users, Tourists/Everyday Users
+  Wireframe UI Diagrams
+    Any Changes?
+    Any Other Pages?
+    If there is login there will be an account page
+  Clarification
+    Timeline for meetings going forward
+    Login?
+    Offline Capability?
+    Starting Trip?
+      - button to switch to bike directions?
+      - if someone already has a bike should user be able to put time in?
+      - if you want to cancel trip does directions stop or guide to nearest station?
+    Do we need to handle payment?
+    How to handle large groups(splitting, distance)?
+    Sharing with other user?
+    Security(What level, what level of threat does the client see)?
+      - how should security be implemented
+    Redundancy?
+
+
+
+Client Meeting
+  - Suggested Routes
+  - https://github.com/oussamaRakye/CBAH/

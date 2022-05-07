@@ -1,0 +1,26 @@
+Notes for second academic meeting
+
+key decisions/achievements
+- Completed from last meeting's plan
+  - Finalized requirements
+  - Decided on Github workflow (branching/using issues)
+  - Functionality wise mostly complete epic one and partially complete two
+- Decided on Google Maps API
+- UI Prototype
+- TFL prototyping
+- Navigation prototype
+- Mapping prototype
+- Firebase/ Login Prototype
+- Formal UI Documentation and Standardization
+- Integration of prototypes
+
+current challenges and barriers to progress,
+- ? can we delete branches
+- technical debt from lack of automated testing
+-
+
+plan for the next two weeks
+- remaining time timeline
+- implement automated testing suite for current Functionality
+- finalizing epic one & two functionality
+- stabilization / produce "release" version

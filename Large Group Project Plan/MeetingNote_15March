@@ -1,0 +1,47 @@
+Discussed
+
+- Prevent From Closing No Connection Message
+- User Setting Page
+App Not Running in Release
+- Optimize Current Location calls (change on distance change not on timer)
+- Complete Optimize Route
+- Walk/Bike Toggle (Dialogs & Complete)
+- What to do when arrive at final destination (At Dialog)
+- Search Bar Bug
+- Allow user to select nearby station distance
+What are we going to do in regards to api calls
+
+Testing
+Bug Fixes
+UI Polishing
+
+
+
+Navigation/Optimize Route (Sean, Aarjav, Aadit, Linda)
+- Finish Optimize
+- Refactor Navigation
+- Optimize Current Location calls (change on distance change not on timer)
+- Filter Route Card to show only nearby stations (the stations which the markers are displayed)
+- Orientate Camera to Route
+- Mockuito
+
+Ease of Use Extension (Edward)
+- Walk/Bike Toggle (Dialogs & Complete)
+- What to do when arrive at final destination (At Dialog)
+- Search Bar Bug
+
+Login Extension (Ahmed, Riccardo, Alvin)
+- Favourite Route
+- Past Routes
+- Favourite Stations
+- User Setting Page
+  - Nearby Station Filter Distance
+  - Day/Night
+
+Micheal's TODO List
+- Display Non Closing No Connection widget (use a page like loading to wait until connection) Need information about where current implementation ask alvin
+- Add Weather to home page
+- Make loading wait until Nearby Stations and initial current location is loaded
+
+Shae
+- Report
