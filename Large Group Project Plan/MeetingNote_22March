@@ -1,0 +1,70 @@
+
+Reports / Deliverables
+- .app & .apk
+- Testing Report (Done)
+- Installation Instructions
+- Screen Cast
+
+**************************************************
+
+Orientate Camera (Scrapped)
+- Polyline not reliable
+- Where the User is facing is not reliable
+
+Change Password (Implement if we have time)
+
+***************************************************
+
+Commenting Code
+
+Replace API Keys and make new account for API
+Hide API Keys by storing in firebase
+
+Filter Route Card to show only nearby stations (the stations which the markers are displayed)
+
+Change walk/route pop up to show when you press navigate and not at current location
+
+Optimize button only appearing when there are multiple intermediates
+
+If user declines current location handling
+
+Alvin to complete past routes and Past Searchs by Wednesday at Noon
+
+Model Test Coverage 100%
+
+Manager Test Coverage 100%
+
+Cost Optimize Route Complete by Friday
+
+*****************************************************
+
+Cost Optimize Route (Sean, Aarjav, Linda) Due Friday
+
+Past Search, Past Route (Alvin) Due Noon Wednesday
+
+Aadit, Alvin, Edward, Micheal, Riccardo
+Code Commenting
+Model, Manager, Widget, Manual Tests
+Priority on Manual, Model & Manager Tests
+
+Shae
+Refactor
+Commenting
+Bug Fixing
+Change walk/route pop up to show when you press navigate and not at current location
+Filter Route Card to show only nearby stations (the stations which the markers are displayed)
+
+Ahmed
+Hide API Keys by storing in firebase
+Bug Fixing
+Optimize button only appearing when there are multiple intermediates
+If user declines current location handling
+
+
+
+
+Shae
+Current Location not working in release
+View Current Location
+Disable navigate when pressed
+If Time API call validation

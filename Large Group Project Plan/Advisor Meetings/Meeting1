@@ -1,0 +1,26 @@
+Notes for first academic meeting
+
+key decisions/achievements
+- Project choice: Bike tour planner project
+- Technologies: flutter, firebase, started research into TFL api
+- the team went through flutter tutorials
+- decided on using the android studio IDE
+- Set up Trello Kanban board and epic planning board
+- Established Meeting Date: Tuesday 14:00-16:00 and optional meeting throughout week depending on work
+- Repository and flutter project set up
+- UI Framework
+- Initial Epic and user story planning (Requirements elicitation)
+- planning social activities for team building
+- team communication Slack
+
+current challenges and barriers to progress,
+- not yet having met with the client to solidify user stories and clarify requirements (ex. if there should be a log in)
+- map API selection
+- team role division
+
+plan for the next two weeks
+- stakeholder Analysis (require: client meeting)
+- finish requirements elicitation (require: client meeting)
+- decide on Github workflow and set up Github automated testing
+- complete epic one
+- start work on epic two

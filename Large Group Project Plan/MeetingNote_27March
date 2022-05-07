@@ -1,0 +1,27 @@
+
+
+**************
+
+Shae
+- Current Location not working in release
+- View Current Location
+- Disable navigate when pressed
+If Time API call validation
+
+Navigation Camera not turning off
+
+Android Restrict API Key
+Refactor Loading
+
+[VERBOSE-2:ui_dart_state.cc(209)] Unhandled Exception: RangeError (index): Invalid value: Valid value range is empty: 0
+#0      List.[] (dart:core-patch/growable_array.dart:281:36)
+#1      DirectionsService.getRoutes (package:bicycle_trip_planner/services/directions_service.dart:24:37)
+<asynchronous suspension>
+#2      ApplicationBloc._setRoutes (package:bicycle_trip_planner/bloc/application_bloc.dart:275:30)
+<asynchronous suspension>
+#3      ApplicationBloc.findRoute (package:bicycle_trip_planner/bloc/application_bloc.dart:255:5)
+<asynchronous suspension>
+
+
+
+Refactor all manager objects to private

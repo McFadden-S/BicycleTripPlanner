@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "755682009749",
+    "project_id": "biketripplanner-2022",
+    "storage_bucket": "biketripplanner-2022.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755682009749:android:9298104c19e0a955c0f19c",
+        "android_client_info": {
+          "package_name": "bike.trip.planner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755682009749-r5skdquevq94bbu8vfoavpteh7osfi4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8N3a8w8YQ6gn9o-iRFMzbZo8a0l6_lMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755682009749-r5skdquevq94bbu8vfoavpteh7osfi4j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "755682009749-7kks00cltft6b3umbr0aofqnk7jocshp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "BikeTripPlanner"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

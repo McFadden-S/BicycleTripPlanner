@@ -1,0 +1,15 @@
+Loading all bike points: no need
+  load/show as you view an area
+  filter by distance
+
+As a user i would like to select destination by pressing area on map
+
+As a user i would like to minimize route card if you press outside of it
+
+If start destination is not current location give two options either:
+show walking directions to the start locations or
+or change start location to current location and make start an intermediate
+
+Oriente camera to where user is looking
+
+When expanding/minimizing cards animate it
